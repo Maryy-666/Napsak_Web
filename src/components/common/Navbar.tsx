@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
   // Dynamic animation configurations respecting reduced motion settings
   const transitionConfig = shouldReduceMotion
     ? { duration: 0 }
-    : { duration: 0.25, ease: [0.16, 1, 0.3, 1] }; // easeOutExpo
+    : { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }; // easeOutExpo
 
   const navbarVariants = {
     hidden: { y: -16, opacity: 0 },

@@ -12,10 +12,7 @@ function cn(...classes: (string | undefined | null | false)[]) {
 }
 
 export interface LogoProps {
-  // "default": full badge (green square) — used for normal, foreground branding.
-  // "decorative": transparent brand-green icon only — used for background watermarks (no jpg background box).
-  // "decorative-white": transparent white icon only — used for background watermarks on dark surfaces.
-  variant?: "default" | "decorative" | "decorative-white";
+  variant?: "default" | "mark" | "decorative" | "decorative-white";
   size?: number | { width: number; height: number };
   className?: string;
   priority?: boolean;
@@ -36,11 +33,9 @@ export const Logo: React.FC<LogoProps> = ({
   const isDecorative = variant === "decorative" || variant === "decorative-white";
 
   const activeSrc =
-    variant === "decorative"
-      ? logoMarkGreen
-      : variant === "decorative-white"
+    variant === "decorative-white"
       ? logoMarkWhite
-      : logoImg;
+      : logoMarkGreen;
 
   // Calculate dimensions keeping aspect ratio intact
   const imageWidth = typeof size === "number" ? size : size.width;

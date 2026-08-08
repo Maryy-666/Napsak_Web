@@ -69,7 +69,7 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
       ),
       secondary: cn(
         "bg-white border border-[#EEF0F2] text-[#0F1115] font-medium shadow-[0_1px_2px_rgba(15,17,21,0.03)]",
-        "hover:bg-[#F8F9FA] hover:border-[#D1D5DB]",
+        "hover:bg-[#F8F9FA] hover:border-[#0A5C3A]/30 hover:text-[#0A5C3A]",
         "active:bg-[#EEF7F3]",
         "focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 focus-visible:outline-none"
       ),
@@ -113,18 +113,19 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
     };
 
     const baseClasses = cn(
-      "inline-flex items-center justify-center select-none transition-colors duration-150 relative",
+      "inline-flex items-center justify-center select-none transition-all duration-150 relative",
       fullWidth ? "w-full flex" : "w-auto",
-      isCurrentlyDisabled ? "opacity-60 cursor-not-allowed pointer-events-none" : "cursor-pointer",
       sizeClasses[size],
-      variantClasses[variant],
+      isCurrentlyDisabled
+        ? "!bg-[#E5E7EB] !border-[#D1D5DB] !text-[#9FA6B2] !shadow-none cursor-not-allowed pointer-events-none"
+        : cn("cursor-pointer", variantClasses[variant]),
       className
     );
 
     // Animation settings based on v1.2 Design System — tactile elevation over flashy scaling
     const transition = {
       duration: 0.18,
-      ease: [0.16, 1, 0.3, 1], // easeOutExpo
+      ease: [0.16, 1, 0.3, 1] as const,
     };
 
     const sharedVariants = isCurrentlyDisabled
@@ -153,7 +154,7 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
 
         {/* Button Label */}
         <span className={cn("inline-flex items-center", isLoading && "opacity-80")}>
-          {children}
+          {children as React.ReactNode}
         </span>
 
         {/* Right Icon */}
@@ -179,8 +180,8 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
           rel={isExternalLink ? "noopener noreferrer" : undefined}
           whileHover="hover"
           whileTap="tap"
-          variants={sharedVariants}
-          transition={transition}
+          variants={sharedVariants as any}
+          transition={transition as any}
           aria-disabled={isCurrentlyDisabled}
           tabIndex={isCurrentlyDisabled ? -1 : 0}
           {...(props as any)}
@@ -199,8 +200,8 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
         disabled={isCurrentlyDisabled}
         whileHover="hover"
         whileTap="tap"
-        variants={sharedVariants}
-        transition={transition}
+        variants={sharedVariants as any}
+        transition={transition as any}
         onClick={isCurrentlyDisabled ? undefined : onClick}
         aria-busy={isLoading}
         aria-disabled={isCurrentlyDisabled}

@@ -10,35 +10,40 @@ import { TransitionPhase } from "./LoginPageContent";
 interface LoginCardProps {
   phase: TransitionPhase;
   setPhase: (phase: TransitionPhase) => void;
-  isMobile: boolean;
-  springConfig: any;
+  isMobile?: boolean;
+  springConfig?: any;
 }
 
 export const LoginCard: React.FC<LoginCardProps> = ({
   phase,
   setPhase,
-  isMobile,
+  isMobile = false,
   springConfig,
 }) => {
   const shouldReduceMotion = useReducedMotion();
 
   // Success card mounts when the logo starts shrinking to its final position
   const showSuccessCard =
-    phase === "logo-shrink" ||
-    phase === "success-text" ||
-    phase === "progress" ||
+    (phase as string) === "logo-shrink" ||
+    (phase as string) === "success-text" ||
+    (phase as string) === "progress" ||
+    phase === "logo-move" ||
+    phase === "success-title" ||
+    phase === "success-line1" ||
+    phase === "success-line2" ||
+    phase === "success-progress" ||
     phase === "redirect";
 
   return (
     <div className="relative flex items-center justify-center min-h-[440px] w-full">
       <AnimatePresence mode="wait">
-        {phase === "idle" || phase === "freeze" || phase === "dissolve" ? (
+        {phase === "idle" || phase === "freeze" || (phase as string) === "dissolve" ? (
           // View 1: Standard Active Card containing Login Form
           <motion.div
             key="login-form-card"
             initial={{ opacity: 0, scale: 0.97, y: 16 }}
             animate={
-              phase === "dissolve"
+              (phase as string) === "dissolve"
                 ? { opacity: 0, scale: 0.97, filter: "blur(6px)", y: 8 }
                 : { opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }
             }
@@ -53,7 +58,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
             >
               <LoginForm
                 onSubmitSuccess={() => setPhase("freeze")}
-                isFrozen={phase === "freeze" || phase === "dissolve"}
+                isFrozen={phase === "freeze" || (phase as string) === "dissolve"}
               />
             </Card>
           </motion.div>
@@ -96,7 +101,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                   Only fades in when phase is "success-text" or later
                 */}
                 <AnimatePresence>
-                  {(phase === "success-text" || phase === "progress" || phase === "redirect") && (
+                  {((phase as string) === "success-text" || (phase as string) === "progress" || phase === "redirect") && (
                     <div className="flex flex-col items-center w-full">
                       {/* "Hoş Geldiniz" title */}
                       <motion.h2
@@ -136,7 +141,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                         <motion.div
                           initial={{ width: "0%" }}
                           animate={
-                            phase === "progress" || phase === "redirect"
+                            (phase as string) === "progress" || phase === "redirect"
                               ? { width: "100%" }
                               : { width: "0%" }
                           }

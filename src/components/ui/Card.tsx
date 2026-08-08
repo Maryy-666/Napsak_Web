@@ -69,7 +69,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
         y: 0,
         transition: {
           duration: 0.3,
-          ease: [0.16, 1, 0.3, 1], // easeOutExpo
+          ease: [0.16, 1, 0.3, 1] as const, // easeOutExpo
         },
       },
     };
@@ -92,7 +92,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
         initial={animate ? "hidden" : undefined}
         animate={animate ? "visible" : undefined}
         whileHover={hoverAnimation}
-        variants={entryVariants}
+        variants={entryVariants as any}
         className={cn(
           "flex flex-col text-left transition-shadow duration-150 relative overflow-hidden",
           variantClasses[variant],
@@ -120,7 +120,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
         )}
 
         {/* Content Body Area */}
-        <div className="flex-1 w-full">{children}</div>
+        <div className="flex-1 w-full">{children as React.ReactNode}</div>
 
         {/* Custom Footer Layout */}
         {footer && <div className="mt-6 pt-4 border-t border-[#EEF0F2]">{footer}</div>}

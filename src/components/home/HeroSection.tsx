@@ -33,7 +33,7 @@ export const HeroSection: React.FC = () => {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.16, 1, 0.3, 1], // easeOutExpo
+        ease: [0.16, 1, 0.3, 1] as const, // easeOutExpo
       },
     },
   };
@@ -61,14 +61,14 @@ export const HeroSection: React.FC = () => {
 
       {/* Hero Content Container */}
       <motion.div
-        variants={containerVariants}
+        variants={containerVariants as any}
         initial="hidden"
         animate="visible"
         className="relative z-10 w-full max-w-4xl text-center flex flex-col items-center"
       >
         {/* Title */}
         <motion.h1
-          variants={fadeUpVariants}
+          variants={fadeUpVariants as any}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-[#0F1115] font-headings select-none leading-none mb-6"
         >
           N'apsak?
@@ -76,7 +76,7 @@ export const HeroSection: React.FC = () => {
 
         {/* Subtitle */}
         <motion.p
-          variants={fadeUpVariants}
+          variants={fadeUpVariants as any}
           className="text-lg sm:text-xl md:text-2xl text-[#5F6773] font-medium leading-relaxed max-w-2xl mx-auto mb-10 select-none"
         >
           Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.
@@ -84,7 +84,7 @@ export const HeroSection: React.FC = () => {
 
         {/* CTA Buttons */}
         <motion.div
-          variants={fadeUpVariants}
+          variants={fadeUpVariants as any}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16"
         >
           <Button
@@ -107,7 +107,7 @@ export const HeroSection: React.FC = () => {
 
         {/* Semantic Statistics List */}
         <motion.div 
-          variants={fadeUpVariants} 
+          variants={fadeUpVariants as any} 
           className="w-full max-w-xl border-t border-[#EEF0F2] pt-8"
         >
           <dl className="grid grid-cols-3 gap-6 sm:gap-12" id="hero-stats">

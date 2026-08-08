@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, AlertCircle } from "lucide-react";
+import { X, AlertCircle, CheckCircle2 } from "lucide-react";
 
 // Simple utility function to merge classes without external library dependencies
 function cn(...classes: (string | undefined | null | false)[]) {
@@ -13,6 +13,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label?: string;
   helperText?: string;
   errorText?: string;
+  isValid?: boolean;
   required?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -29,6 +30,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       label,
       helperText,
       errorText,
+      isValid = false,
       required,
       disabled,
       type = "text",
@@ -59,7 +61,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={cn("flex flex-col w-full text-left", containerClassName)}>
-        {/* Label block with required asterisk */}
+        {/* Label block with required asterisk and (zorunlu) text for accessibility */}
         {label && (
           <label
             htmlFor={inputId}
@@ -67,9 +69,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           >
             {label}
             {required && (
-              <span className="text-[#DC2626]" aria-hidden="true">
-                *
-              </span>
+              <>
+                <span className="text-[#DC2626]" aria-hidden="true">
+                  *
+                </span>
+                <span className="text-xs text-[#9FA6B2] font-normal font-sans ml-0.5">
+                  (zorunlu)
+                </span>
+              </>
             )}
           </label>
         )}
@@ -102,7 +109,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               "w-full h-10 text-base bg-white text-[#0F1115] rounded-[8px] border outline-none shadow-sm transition-all duration-150 ease-in-out",
               // Responsive Padding adjustments for icons
               leftIcon ? "pl-10" : "pl-3.5",
-              rightIcon || (showClearButton && value) ? "pr-10" : "pr-3.5",
+              rightIcon || (showClearButton && value) || hasError || isValid ? "pr-10" : "pr-3.5",
               // Disabled layout state
               disabled
                 ? "bg-[#F8F9FA] text-[#9FA6B2] border-[#EEF0F2] cursor-not-allowed"
@@ -113,6 +120,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                     // Dynamic Validation and Focus Ring glows
                     hasError
                       ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-[4px] focus:ring-[#DC2626]/12"
+                      : isValid
+                      ? "border-[#0A5C3A] focus:border-[#0A5C3A] focus:ring-[4px] focus:ring-[#0A5C3A]/12"
                       : "focus:border-[#0A5C3A] focus:ring-[4px] focus:ring-[#0A5C3A]/12"
                   ),
               className
@@ -120,14 +129,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          {/* Right Area: Clear Button or Custom Right Icon */}
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          {/* Right Area: Clear Button or Custom Right Icon or Validation Icons */}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
             {/* Clear Button */}
             {showClearButton && value && !disabled && (
               <button
                 type="button"
                 onClick={onClear}
-                className="p-0.5 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A]/20 transition-all cursor-pointer"
+                className="p-0.5 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A]/20 transition-all cursor-pointer pointer-events-auto"
                 title="Temizle"
                 aria-label="Input alanını temizle"
               >
@@ -138,6 +147,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {/* Error indicator icon */}
             {hasError && !rightIcon && (
               <AlertCircle className="w-4 h-4 text-[#DC2626]" aria-hidden="true" />
+            )}
+
+            {/* Success indicator icon */}
+            {isValid && !hasError && !rightIcon && (
+              <CheckCircle2 className="w-4 h-4 text-[#0A5C3A]" aria-hidden="true" />
             )}
 
             {/* Custom Right Icon */}

@@ -1,19 +1,27 @@
 import { Metadata } from "next";
-import LoginPageContent from "../components/auth/LoginPageContent";
+import { Navbar } from "../components/common/Navbar";
+import HomeContent from "../components/home/HomeContent";
+import { Footer } from "../components/common/Footer";
 
-// Premium SEO Metadata Configuration for N'apsak? Gençlik Topluluğu Login
+// SEO Metadata for N'apsak? Gençlik Topluluğu Home Page
 export const metadata: Metadata = {
-  title: "Giriş Yap | N'apsak? Gençlik Topluluğu",
+  title: "N'apsak? Gençlik Topluluğu",
   description:
-    "N'apsak? Gençlik Topluluğu resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
+    "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.",
   openGraph: {
-    title: "Giriş Yap | N'apsak? Gençlik Topluluğu",
+    title: "N'apsak? Gençlik Topluluğu",
     description:
-      "N'apsak? Gençlik Topluluğu resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
+      "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.",
     type: "website",
   },
 };
 
-export default function LoginPage() {
-  return <LoginPageContent />;
+export default function HomePage() {
+  return (
+    <>
+      <Navbar />
+      <HomeContent />
+      <Footer />
+    </>
+  );
 }
