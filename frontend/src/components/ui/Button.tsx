@@ -10,7 +10,7 @@ function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 // Define base props shared by both button and link behaviors
@@ -73,6 +73,12 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
         "active:bg-[#EEF7F3]",
         "focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 focus-visible:outline-none"
       ),
+      outline: cn(
+        "bg-transparent border border-[#0A5C3A] text-[#0A5C3A] font-semibold",
+        "hover:bg-[#0A5C3A]/5 hover:border-[#0D7449]",
+        "active:bg-[#0A5C3A]/10",
+        "focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 focus-visible:outline-none"
+      ),
       ghost: cn(
         "bg-transparent text-[#5F6773] font-medium",
         "hover:bg-[#F1F3F5] hover:text-[#0F1115]",
@@ -104,6 +110,16 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
         tap: {
           y: 0,
           boxShadow: "0 1px 2px rgba(15,17,21,0.04)",
+        },
+      },
+      outline: {
+        hover: {
+          y: -1,
+          boxShadow: "0 6px 16px -4px rgba(10,92,58,0.10)",
+        },
+        tap: {
+          y: 0,
+          boxShadow: "none",
         },
       },
       ghost: {

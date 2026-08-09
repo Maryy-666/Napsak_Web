@@ -1,168 +1,214 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Mail } from "lucide-react";
-import { Logo } from "../common/Logo";
-import { Button } from "../ui/Button";
+import React from "react";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Users,
+  Target,
+  Sparkles,
+  ShieldCheck,
+} from "lucide-react";
+import { Button, Card, Badge, PageContainer, Section } from "../ui";
+import { TeamCarousel } from "./TeamCarousel";
 import { ROUTES } from "../../constants/routes";
+import { SITE_CONFIG } from "../../config/site";
+
+// Real Core Values
+const CORE_VALUES = [
+  "Çeşitlilik",
+  "Tarafsızlık",
+  "Birliktelik",
+  "Katılımcılık",
+  "Yenilikçilik",
+];
 
 export default function HomeContent() {
-  const shouldReduceMotion = useReducedMotion();
-  const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-      const handleResize = () => {
-        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, []);
-
-  const isMobile = windowSize.width < 640;
-
-  const springConfig = {
-    type: "spring" as const,
-    stiffness: 110,
-    damping: 18,
-    mass: 0.8,
-  };
-
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.15,
-      },
-    },
-  };
-
-  const fadeUpVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1] as const,
-      },
-    },
-  };
-
   return (
-    <div
-      className="relative min-h-[calc(100vh-80px)] w-full flex flex-col justify-center items-center bg-white px-4 py-16 sm:py-24 overflow-hidden pt-28"
-      id="home-page-root"
-    >
-      {/* Subtle Radial Gradient at Center */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(10,92,58,0.04)_0%,transparent_75%)] pointer-events-none z-0" />
+    <div className="w-full flex flex-col items-center bg-white overflow-hidden" id="home-page-root">
+      
+      {/* 1. HERO SECTION WITH FOREST BACKGROUND */}
+      <section className="relative w-full min-h-[75vh] md:min-h-[85vh] pt-28 pb-16 sm:pt-36 sm:pb-24 flex items-center justify-start overflow-hidden bg-[#07452C]">
+        {/* Forest Hero Background Image */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          <img
+            src="/images/forest-hero.jpg"
+            alt="N'apsak? Orman Arka Planı"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Subtle Dark/Green Gradient Overlay to maintain text contrast while preserving lush forest green tones */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#07452C]/90 via-[#0A5C3A]/75 to-[#07452C]/50 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-black/25" />
+        </div>
 
-      {/* Premium Line Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0" />
-
-      {/* Grid Dot Intersections */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(10,92,58,0.14)_2px,transparent_2px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0" />
-
-      {/* Subtle Noise Grain Layer */}
-      <div className="absolute inset-0 bg-noise opacity-[0.015] pointer-events-none mix-blend-overlay z-0" />
-
-      {/* Corner Green Spotlights */}
-      <div
-        className="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none z-0"
-        style={{ backgroundColor: "rgba(10, 92, 58, 0.28)" }}
-      />
-      <div
-        className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-[550px] h-[550px] rounded-full blur-[130px] pointer-events-none z-0"
-        style={{ backgroundColor: "rgba(10, 92, 58, 0.32)" }}
-      />
-
-      {/* Background Decorative Watermark Logo */}
-      <motion.div
-        animate={
-          shouldReduceMotion
-            ? {
-                width: isMobile ? 420 : 840,
-                height: isMobile ? 420 : 840,
-                x: isMobile ? "25vw" : "28vw",
-                y: "-10vh",
-                rotate: -12,
-                opacity: 0.06,
-              }
-            : {
-                width: isMobile ? 420 : 840,
-                height: isMobile ? 420 : 840,
-                x: isMobile ? "25vw" : "28vw",
-                y: "-10vh",
-                rotate: -12,
-                opacity: 0.06,
-              }
-        }
-        transition={springConfig}
-        style={{ translateX: "-50%", translateY: "-50%" }}
-        className="fixed left-1/2 top-1/2 pointer-events-none z-0 flex items-center justify-center select-none"
-      >
-        <Logo
-          variant="decorative"
-          size={isMobile ? 420 : 840}
-          opacity={1.0}
-          priority
-          className="w-full h-full select-none [&_img]:w-full [&_img]:h-full"
-        />
-      </motion.div>
-
-      {/* HERO SECTION CONTENT */}
-      <main className="w-full max-w-4xl mx-auto z-10 flex flex-col items-center justify-center text-center">
-        <motion.div
-          variants={containerVariants as any}
-          initial="hidden"
-          animate="visible"
-          className="w-full flex flex-col items-center"
-        >
-          {/* Main Title */}
-          <motion.h1
-            variants={fadeUpVariants as any}
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0F1115] font-headings select-none leading-tight mb-6"
-          >
-            N'apsak? Gençlik Topluluğu
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p
-            variants={fadeUpVariants as any}
-            className="text-lg sm:text-xl text-[#5F6773] font-medium leading-relaxed max-w-2xl mx-auto mb-10 select-none font-sans"
-          >
-            Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.
-          </motion.p>
-
-          {/* Two Action Buttons: Topluluğa Katıl & İletişime Geç */}
+        <PageContainer className="relative z-10 text-left flex flex-col items-start">
           <motion.div
-            variants={fadeUpVariants as any}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-2xl rounded-[24px] bg-[#07452C]/65 backdrop-blur-[16px] border border-white/20 p-7 sm:p-10 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.3)] text-left flex flex-col items-start"
           >
-            <Button
-              href={ROUTES.BASVURU}
-              variant="primary"
-              size="lg"
-              rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
-              className="w-full sm:w-56 font-semibold text-base"
-            >
-              Topluluğa Katıl
-            </Button>
-            <Button
-              href={ROUTES.ILETISIM}
-              variant="secondary"
-              size="lg"
-              leftIcon={<Mail className="w-4 h-4 stroke-[2]" />}
-              className="w-full sm:w-56 font-semibold text-base"
-            >
-              İletişime Geç
-            </Button>
+            {/* Badge */}
+            <Badge variant="brand" size="md" className="!bg-white/15 !text-white !border-white/25 mb-4 sm:mb-5 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 mr-1.5" /> 2025'ten Beri Harekete Geçenler
+            </Badge>
+
+            {/* Title */}
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-headings select-none leading-[1.15] mb-4">
+              N'apsak? Gençlik Topluluğu
+            </h1>
+
+            {/* Main Message Slogan */}
+            <p className="text-base sm:text-lg lg:text-xl text-[#EEF7F3] font-semibold font-sans italic leading-relaxed mb-3 select-none">
+              “Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.
+            </p>
+
+            {/* Supporting Description Text */}
+            <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none">
+              Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.
+            </p>
           </motion.div>
-        </motion.div>
-      </main>
+        </PageContainer>
+      </section>
+
+      {/* 2. REAL STATS TRUST BAR */}
+      <Section padding="none" className="z-10 -mt-6 mb-12">
+        <PageContainer>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="w-full max-w-xl mx-auto rounded-[20px] bg-white border border-[#EEF0F2] p-6 sm:p-8 shadow-[0_8px_30px_rgba(15,17,21,0.06)] text-center flex flex-col items-center select-none"
+          >
+            <span className="text-4xl sm:text-5xl font-extrabold font-headings text-[#0A5C3A] leading-none mb-2">
+              86+
+            </span>
+            <span className="text-xs sm:text-sm font-semibold text-[#5F6773] uppercase tracking-wider font-sans">
+              AKTİF ÜYE
+            </span>
+          </motion.div>
+        </PageContainer>
+      </Section>
+
+      {/* 3. KISA TOPLULUK TANITIMI (VİZYON & MİSYON) */}
+      <Section padding="md" background="subtle">
+        <PageContainer>
+          <div className="text-center max-w-3xl mx-auto mb-12 select-none">
+            <Badge variant="brand" size="md" className="mb-3">
+              Topluluğumuz Hakkında
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
+              Gençlerin Potansiyelini Harekete Geçiriyoruz
+            </h2>
+            <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
+              {SITE_CONFIG.description}
+            </p>
+          </div>
+
+          {/* Vision & Mission Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+            <Card
+              variant="default"
+              animate={false}
+              className="p-6 sm:p-8 bg-white border border-[#EEF0F2] rounded-[16px] flex flex-col text-left"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center mb-5">
+                <Target className="w-6 h-6 stroke-[2]" />
+              </div>
+              <h3 className="text-xl font-bold text-[#0F1115] font-headings mb-3">
+                Vizyonumuz
+              </h3>
+              <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-relaxed">
+                Gençlerin potansiyellerini ortaya çıkararak onları yalnızca bugünün değil, yarının dünyasına da hazırlamak; akademik gelişimin yanında sosyal, kültürel, teknolojik ve sanatsal alanlarda da gelişimi desteklemektir.
+              </p>
+            </Card>
+
+            <Card
+              variant="default"
+              animate={false}
+              className="p-6 sm:p-8 bg-white border border-[#EEF0F2] rounded-[16px] flex flex-col text-left"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center mb-5">
+                <Users className="w-6 h-6 stroke-[2]" />
+              </div>
+              <h3 className="text-xl font-bold text-[#0F1115] font-headings mb-3">
+                Misyonumuz
+              </h3>
+              <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-relaxed">
+                Gençlerin enerjisini, merakını ve yaratıcılığını doğru yönlendirerek gelişim yolculuklarına katkıda bulunmak; eğitim, hobi, sanat, teknoloji ve sosyal sorumluluk alanlarında birlikte üretme kültürünü desteklemektir.
+              </p>
+            </Card>
+          </div>
+
+          {/* Core Values Bar */}
+          <div className="max-w-3xl mx-auto text-center select-none pt-4">
+            <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-4">
+              Temel Değerlerimiz
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-2.5">
+              {CORE_VALUES.map((val, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center px-4 py-2 rounded-full bg-white border border-[#EEF0F2] text-xs sm:text-sm font-semibold text-[#0A5C3A] shadow-sm"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 mr-1.5 opacity-80" />
+                  {val}
+                </span>
+              ))}
+            </div>
+          </div>
+        </PageContainer>
+      </Section>
+
+      {/* 4. WORKING TEAMS (PERSPECTIVE 3D TEAM CAROUSEL) */}
+      <Section padding="lg" background="white" className="overflow-hidden">
+        <PageContainer>
+          <div className="text-center max-w-3xl mx-auto mb-8 select-none">
+            <Badge variant="brand" size="md" className="mb-3">
+              Çalışma Ekiplerimiz
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
+              Farklı Alanlarda Birlikte Üretiyoruz
+            </h2>
+            <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
+              Topluluğumuz bünyesinde farklı ilgi alanlarına yönelik çalışmalar yürüten ekiplerimizle üretmenin ve gelişmenin gücünü birlikte keşfediyoruz.
+            </p>
+          </div>
+
+          {/* 3D Perspective Arc Carousel Component */}
+          <TeamCarousel />
+        </PageContainer>
+      </Section>
+
+      {/* 5. FINAL CTA BANNER */}
+      <Section padding="lg" background="white">
+        <PageContainer>
+          <div className="relative overflow-hidden rounded-[24px] bg-[#0A5C3A] text-white p-8 sm:p-14 text-center flex flex-col items-center justify-center select-none shadow-[0_20px_50px_rgba(10,92,58,0.22)]">
+            {/* Background Decorative Circles */}
+            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-white/5 pointer-events-none" />
+
+            <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings tracking-tight mb-4 leading-tight">
+                N'apsak?'ta birlikte üretelim.
+              </h2>
+              <p className="text-base sm:text-lg text-white/85 font-sans font-medium mb-8 leading-relaxed">
+                Sen de potansiyelini harekete geçir, projelerini hayata geçir ve gelişen topluluğumuzun bir parçası ol.
+              </p>
+              <Button
+                href={ROUTES.BASVURU}
+                variant="secondary"
+                size="lg"
+                rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
+                className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold text-base px-8 h-14"
+              >
+                Topluluğa Katıl
+              </Button>
+            </div>
+          </div>
+        </PageContainer>
+      </Section>
     </div>
   );
 }

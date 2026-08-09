@@ -2,13 +2,17 @@ import { ROUTES } from "../constants/routes";
 
 export const SITE_CONFIG = {
   name: "N'apsak? Gençlik Topluluğu",
-  description: "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.",
-  url: "https://napsak.com",
+  slogan: "“Keşke..” diyenlerin değil, “N’apsak?” deyip harekete geçenlerin topluluğuyuz.",
+  description:
+    "N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik topluluğudur.",
+  url: "https://napsak.org",
+  established: "2025",
   contact: {
-    email: "",
+    email: "kurumsal@napsak.org",
+    phone: "0535 634 06 54",
   },
   social: {
-    instagram: "https://www.instagram.com/napsak_genclik_toplulugu?igsh=Z3R3aW4wMjFzdDBy",
+    instagram: "https://www.instagram.com/napsakgencliktoplulugu",
     linkedin: "https://www.linkedin.com/company/napsakgen%C3%A7lik/",
   },
   mainNav: [

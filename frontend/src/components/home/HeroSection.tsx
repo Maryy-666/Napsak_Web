@@ -1,127 +1,54 @@
 "use client";
 
 import React from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Logo } from "../common/Logo";
-import { Button } from "../ui/Button";
-import { ROUTES } from "../../constants/routes";
-
-const STATS = [
-  { value: "120+", label: "Gönüllü" },
-  { value: "12+", label: "Çalışma Grubu" },
-  { value: "40+", label: "Etkinlik" },
-];
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+import { Badge, PageContainer } from "../ui";
 
 export const HeroSection: React.FC = () => {
-  const shouldReduceMotion = useReducedMotion();
-
-  // Staggered Container Motion Variants
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.15,
-      },
-    },
-  };
-
-  // Fade Up Content Motion Variants
-  const fadeUpVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 28 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1] as const, // easeOutExpo
-      },
-    },
-  };
-
   return (
-    <div className="relative min-h-[calc(100vh-80px)] w-full flex flex-col justify-center items-center overflow-hidden px-4 sm:px-6 lg:px-8 py-20 bg-white">
-      {/* 
-        Decorative Rotating Logo Watermark
-        - 3% opacity to prevent contrast distraction
-        - Pointer events and user selection disabled
-        - Rotated -12 degrees matching v1.1 spec
-      */}
-      <div 
-        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
-        aria-hidden="true"
-      >
-        <Logo
-          variant="decorative"
-          size={580}
-          rotation={-12}
-          opacity={3}
-          className="select-none"
+    <section className="relative w-full min-h-[75vh] md:min-h-[85vh] pt-28 pb-16 sm:pt-36 sm:pb-24 flex items-center justify-start overflow-hidden bg-[#07452C]">
+      {/* Forest Hero Background Image */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <img
+          src="/images/forest-hero.jpg"
+          alt="N'apsak? Orman Arka Planı"
+          className="w-full h-full object-cover object-center"
         />
+        {/* Subtle Dark/Green Gradient Overlay to maintain text contrast while preserving lush forest green tones */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07452C]/90 via-[#0A5C3A]/75 to-[#07452C]/50 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-black/25" />
       </div>
 
-      {/* Hero Content Container */}
-      <motion.div
-        variants={containerVariants as any}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 w-full max-w-4xl text-center flex flex-col items-center"
-      >
-        {/* Title */}
-        <motion.h1
-          variants={fadeUpVariants as any}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-[#0F1115] font-headings select-none leading-none mb-6"
-        >
-          N'apsak?
-        </motion.h1>
-
-        {/* Subtitle */}
-        <motion.p
-          variants={fadeUpVariants as any}
-          className="text-lg sm:text-xl md:text-2xl text-[#5F6773] font-medium leading-relaxed max-w-2xl mx-auto mb-10 select-none"
-        >
-          Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.
-        </motion.p>
-
-        {/* CTA Buttons */}
+      <PageContainer className="relative z-10 text-left flex flex-col items-start">
         <motion.div
-          variants={fadeUpVariants as any}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto mb-16"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-2xl rounded-[24px] bg-[#07452C]/65 backdrop-blur-[16px] border border-white/20 p-7 sm:p-10 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.3)] text-left flex flex-col items-start"
         >
-          <Button
-            href={ROUTES.BASVURU}
-            variant="primary"
-            size="lg"
-            className="w-full sm:w-48 font-semibold text-base"
-          >
-            Topluluğa Katıl
-          </Button>
-        </motion.div>
+          {/* Badge */}
+          <Badge variant="brand" size="md" className="!bg-white/15 !text-white !border-white/25 mb-4 sm:mb-5 shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> 2025'ten Beri Harekete Geçenler
+          </Badge>
 
-        {/* Semantic Statistics List */}
-        <motion.div 
-          variants={fadeUpVariants as any} 
-          className="w-full max-w-xl border-t border-[#EEF0F2] pt-8"
-        >
-          <dl className="grid grid-cols-3 gap-6 sm:gap-12" id="hero-stats">
-            {STATS.map((stat, index) => (
-              <div 
-                key={index} 
-                className="flex flex-col items-center select-none"
-              >
-                {/* Description term rendered below value for readability but ordered properly for screen readers */}
-                <dt className="order-2 text-xs sm:text-sm font-semibold text-[#5F6773] mt-1.5 uppercase tracking-wider">
-                  {stat.label}
-                </dt>
-                {/* Description definition holds numerical value */}
-                <dd className="order-1 text-3xl sm:text-4xl font-extrabold font-headings text-[#0A5C3A] leading-tight">
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
+          {/* Title */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-headings select-none leading-[1.15] mb-4">
+            N'apsak? Gençlik Topluluğu
+          </h1>
+
+          {/* Main Message Slogan */}
+          <p className="text-base sm:text-lg lg:text-xl text-[#EEF7F3] font-semibold font-sans italic leading-relaxed mb-3 select-none">
+            “Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.
+          </p>
+
+          {/* Supporting Description Text */}
+          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none">
+            Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.
+          </p>
         </motion.div>
-      </motion.div>
-    </div>
+      </PageContainer>
+    </section>
   );
 };
 

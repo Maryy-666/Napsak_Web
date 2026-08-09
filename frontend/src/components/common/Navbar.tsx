@@ -4,13 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { SITE_CONFIG } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
 
-// Helper function to merge classes
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -18,23 +17,21 @@ function cn(...classes: (string | undefined | null | false)[]) {
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
-  
-  // Navigation states
+
+  // Scroll and mobile menu states
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Menu references for keyboard event handling
+
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Monitor scroll for height shrink effect using a passive listener for performance
+  // Monitor scroll state using a passive scroll listener
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Run once on mount to handle reload states
     handleScroll();
 
     return () => {
@@ -52,7 +49,7 @@ export const Navbar: React.FC = () => {
     };
 
     if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden"; // Prevent background scrolling
+      document.body.style.overflow = "hidden";
       window.addEventListener("keydown", handleKeyDown);
     } else {
       document.body.style.overflow = "unset";
@@ -64,10 +61,9 @@ export const Navbar: React.FC = () => {
     };
   }, [isMobileMenuOpen]);
 
-  // Dynamic animation configurations respecting reduced motion settings
   const transitionConfig = shouldReduceMotion
     ? { duration: 0 }
-    : { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }; // easeOutExpo
+    : { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const };
 
   const navbarVariants = {
     hidden: { y: -16, opacity: 0 },
@@ -79,7 +75,6 @@ export const Navbar: React.FC = () => {
     open: { opacity: 1, y: 0 },
   };
 
-  // Helper function to check active state of navigation links
   const isLinkActive = (href: string) => {
     if (href === ROUTES.HOME) {
       return pathname === ROUTES.HOME;
@@ -96,23 +91,27 @@ export const Navbar: React.FC = () => {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out border-b",
         isScrolled
-          ? "h-16 bg-white/80 border-[#EEF0F2]/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]"
-          : "h-20 bg-white/70 border-transparent",
-        "backdrop-blur-md"
+          ? "h-16 bg-[#07452C]/95 border-white/15 shadow-[0_4px_24px_rgba(0,0,0,0.25)] backdrop-blur-md"
+          : "h-20 bg-black/40 border-white/10 backdrop-blur-md"
       )}
     >
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        
         {/* Brand Logo - Left */}
-        <Link 
-          href={ROUTES.HOME} 
-          className="flex items-center select-none outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 rounded-lg p-1.5 transition-shadow"
+        <Link
+          href={ROUTES.HOME}
+          className="flex items-center select-none outline-none focus-visible:ring-4 focus-visible:ring-white/20 rounded-lg p-1 transition-shadow"
           aria-label="N'apsak? Ana Sayfa"
         >
-          {/* Scroll transitions scaling of brand Logo smoothly */}
-          <Logo variant="default" size={isScrolled ? 90 : 105} priority className="transition-all duration-300 ease-in-out" />
+          <Logo
+            variant="default"
+            size={isScrolled ? 90 : 105}
+            priority
+            className="transition-all duration-300 ease-in-out filter brightness-110"
+          />
         </Link>
 
-        {/* Desktop Navigation Menu - Center */}
+        {/* Center Navigation Links */}
         <nav className="hidden md:flex items-center gap-8" aria-label="Ana Navigasyon">
           {SITE_CONFIG.mainNav.map((item) => {
             const active = isLinkActive(item.href);
@@ -121,20 +120,20 @@ export const Navbar: React.FC = () => {
                 key={item.title}
                 href={item.href}
                 className={cn(
-                  "text-sm font-medium transition-colors relative py-1 select-none outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 rounded-md px-2",
+                  "text-sm font-medium transition-colors relative py-1 select-none outline-none focus-visible:ring-4 focus-visible:ring-white/20 rounded-md px-2.5",
                   active
-                    ? "text-[#0A5C3A]"
-                    : "text-[#5F6773] hover:text-[#0F1115]"
+                    ? "text-white font-semibold"
+                    : "text-white/80 hover:text-white"
                 )}
                 aria-current={active ? "page" : undefined}
               >
                 {item.title}
-                {/* Visual active state bottom glow indicator */}
+                {/* Active Indicator Underline */}
                 {active && (
                   <motion.div
                     layoutId="activeNavIndicator"
                     transition={transitionConfig}
-                    className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#0A5C3A] rounded-full"
+                    className="absolute bottom-0 left-2.5 right-2.5 h-0.5 bg-[#0A5C3A] rounded-full shadow-[0_0_8px_#0A5C3A]"
                   />
                 )}
               </Link>
@@ -142,25 +141,35 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* CTA Button / Actions Area - Right */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Right Dual Action Buttons: Giriş Yap & Topluluğa Katıl */}
+        <div className="hidden md:flex items-center gap-3">
           <Button
             href={ROUTES.LOGIN}
             variant="secondary"
-            size="md"
-            className="text-sm font-semibold"
+            size="sm"
+            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-4 h-9"
           >
             Giriş Yap
           </Button>
+
+          <Button
+            href={ROUTES.BASVURU}
+            variant="primary"
+            size="sm"
+            rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
+            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-4 h-9 shadow-md"
+          >
+            Topluluğa Katıl
+          </Button>
         </div>
 
-        {/* Hamburger Mobile Menu Toggle Button */}
+        {/* Mobile Hamburger Toggle Button */}
         <div className="flex items-center md:hidden">
           <button
             ref={menuButtonRef}
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 rounded-lg text-[#5F6773] hover:bg-[#F8F9FA] hover:text-[#0F1115] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12 transition-all select-none cursor-pointer"
+            className="p-2 rounded-lg text-white/90 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20 transition-all select-none cursor-pointer"
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-drawer"
             aria-label={isMobileMenuOpen ? "Menüyü Kapat" : "Menüyü Aç"}
@@ -174,7 +183,7 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation Full-screen Drawer Overlay */}
+      {/* Mobile Navigation Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -185,13 +194,13 @@ export const Navbar: React.FC = () => {
             exit="closed"
             variants={drawerVariants}
             transition={transitionConfig}
-            className="absolute top-full left-0 right-0 z-40 w-full bg-white border-b border-[#EEF0F2] shadow-xl md:hidden overflow-hidden"
+            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl md:hidden overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Mobil Menü"
           >
-            <div className="px-4 pt-4 pb-6 space-y-3 bg-[#F8F9FA]/50">
-              <nav className="flex flex-col gap-1" aria-label="Mobil Navigasyon">
+            <div className="px-4 pt-4 pb-6 space-y-3 bg-black/20">
+              <nav className="flex flex-col gap-1.5" aria-label="Mobil Navigasyon">
                 {SITE_CONFIG.mainNav.map((item) => {
                   const active = isLinkActive(item.href);
                   return (
@@ -200,10 +209,10 @@ export const Navbar: React.FC = () => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "flex items-center h-11 px-4 text-base font-medium rounded-lg transition-all outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/12",
+                        "flex items-center h-11 px-4 text-base font-medium rounded-lg transition-all outline-none focus-visible:ring-4 focus-visible:ring-white/20",
                         active
-                          ? "bg-[#0A5C3A]/6 text-[#0A5C3A] font-semibold"
-                          : "text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115]"
+                          ? "bg-white/15 text-white font-semibold"
+                          : "text-white/80 hover:bg-white/10 hover:text-white"
                       )}
                       aria-current={active ? "page" : undefined}
                     >
@@ -212,15 +221,28 @@ export const Navbar: React.FC = () => {
                   );
                 })}
               </nav>
-              <div className="pt-4 border-t border-[#EEF0F2]/80 flex flex-col gap-3">
+
+              <div className="pt-4 border-t border-white/15 flex flex-col gap-3">
                 <Button
                   href={ROUTES.LOGIN}
+                  variant="secondary"
+                  size="lg"
+                  fullWidth
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold"
+                >
+                  Giriş Yap
+                </Button>
+
+                <Button
+                  href={ROUTES.BASVURU}
                   variant="primary"
                   size="lg"
                   fullWidth
                   onClick={() => setIsMobileMenuOpen(false)}
+                  className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
                 >
-                  Giriş Yap
+                  Topluluğa Katıl
                 </Button>
               </div>
             </div>

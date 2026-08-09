@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { FaInstagram, FaLinkedin } from "react-icons/fa6";
-import { MessageCircleHeart, Sparkles, Zap } from "lucide-react";
+import { Mail, Phone, MessageCircleHeart, Sparkles } from "lucide-react";
 import { SITE_CONFIG } from "../../config/site";
 import { Card } from "../ui/Card";
 import { Logo } from "../common/Logo";
@@ -33,21 +33,18 @@ export default function IletisimContent() {
     mass: 0.8,
   };
 
-  const whyContactUs = [
+  const contactItems = [
     {
-      icon: MessageCircleHeart,
-      title: "Soru & Görüşleriniz",
-      description: "Topluluğumuz, projelerimiz ve etkinliklerimiz hakkında merak ettiklerinizi iletebilirsiniz.",
+      icon: Mail,
+      title: "E-posta",
+      value: SITE_CONFIG.contact.email,
+      href: `mailto:${SITE_CONFIG.contact.email}`,
     },
     {
-      icon: Sparkles,
-      title: "İş Birliği & Sponsorluk",
-      description: "Ortak proje veya sponsorluk fırsatları için ekibimizle doğrudan görüşebilirsiniz.",
-    },
-    {
-      icon: Zap,
-      title: "Hızlı & Doğrudan İletişim",
-      description: "İlettiğiniz mesajlar ekibimiz tarafından en kısa sürede değerlendirilip yanıtlanır.",
+      icon: Phone,
+      title: "Topluluk Hattı",
+      value: SITE_CONFIG.contact.phone,
+      href: `tel:${SITE_CONFIG.contact.phone.replace(/\s+/g, "")}`,
     },
   ];
 
@@ -116,7 +113,7 @@ export default function IletisimContent() {
         {/* 2-COLUMN MAIN CONTENT CONTAINER */}
         <div className="w-full max-w-6xl mx-auto z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start py-4">
           
-          {/* LEFT COLUMN: Title, Description, Value Points & Social Links */}
+          {/* LEFT COLUMN: Title, Description, Real Contact Details & Social Links */}
           <motion.div
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
@@ -128,62 +125,73 @@ export default function IletisimContent() {
                 İletişim
               </h1>
               <p className="text-base sm:text-lg text-[#5F6773] font-medium leading-relaxed font-sans max-w-md mb-6">
-                Soruların, önerilerin veya iş birliklerin için bize ulaşabilirsin.
+                Soruların, önerilerin veya iş birliklerin için bizimle doğrudan iletişime geçebilirsin.
               </p>
 
-              {/* "Neden Bize Ulaşmalısınız?" 3-Item Info Block */}
+              {/* Real Direct Contact Info Block */}
               <div className="space-y-4 my-6 py-4 border-y border-[#EEF0F2]/80">
                 <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-3">
-                  Neden Bize Ulaşmalısınız?
+                  İletişim Kanalları
                 </p>
-                {whyContactUs.map((item, idx) => {
+                {contactItems.map((item, idx) => {
                   const Icon = item.icon;
                   return (
-                    <div key={idx} className="flex items-start gap-3.5 group">
-                      <div className="w-9 h-9 rounded-[12px] bg-[linear-gradient(135deg,rgba(10,92,58,0.12)_0%,rgba(10,92,58,0.04)_100%)] border border-[#0A5C3A]/15 text-[#0A5C3A] flex items-center justify-center shrink-0 mt-0.5 shadow-sm group-hover:scale-105 transition-transform">
-                        <Icon className="w-4.5 h-4.5 stroke-[1.8]" />
+                    <a
+                      key={idx}
+                      href={item.href}
+                      className="flex items-center gap-3.5 group p-2 rounded-xl hover:bg-[#F8F9FA] transition-all duration-150 cursor-pointer"
+                    >
+                      <div className="w-10 h-10 rounded-[12px] bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center shrink-0 shadow-sm group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors">
+                        <Icon className="w-5 h-5 stroke-[1.8]" />
                       </div>
                       <div className="flex flex-col text-left">
-                        <span className="text-sm font-semibold text-[#0F1115] font-headings">
+                        <span className="text-xs text-[#9FA6B2] font-semibold uppercase tracking-wide">
                           {item.title}
                         </span>
-                        <span className="text-xs text-[#5F6773] font-medium font-sans leading-relaxed">
-                          {item.description}
+                        <span className="text-sm sm:text-base font-bold text-[#0F1115] group-hover:text-[#0A5C3A] font-sans transition-colors">
+                          {item.value}
                         </span>
                       </div>
-                    </div>
+                    </a>
                   );
                 })}
               </div>
 
-              {/* Social Media Section Header + Compact Square Icons */}
-              <div className="mt-6">
-                <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-2.5">
-                  Bizi Takip Edin
+              {/* Social Media Section Header + Social Accounts */}
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-3">
+                  Sosyal Medyada N'apsak?
                 </p>
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-col gap-2.5">
                   {SITE_CONFIG.social?.instagram && (
                     <a
                       href={SITE_CONFIG.social.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Instagram"
-                      title="Instagram"
-                      className="w-10 h-10 rounded-[12px] bg-[#F8F9FA] border border-[#EEF0F2] text-[#0A5C3A] hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] hover:shadow-[0_4px_12px_rgba(10,92,58,0.2)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer"
+                      className="flex items-center gap-3 px-3.5 py-2.5 rounded-[12px] bg-[#F8F9FA] border border-[#EEF0F2] text-[#0F1115] hover:bg-[#0A5C3A]/5 hover:border-[#0A5C3A]/30 hover:text-[#0A5C3A] transition-all duration-200 cursor-pointer group"
                     >
-                      <FaInstagram className="w-4.5 h-4.5" />
+                      <div className="w-8 h-8 rounded-lg bg-[#0A5C3A]/10 text-[#0A5C3A] group-hover:bg-[#0A5C3A] group-hover:text-white flex items-center justify-center transition-colors">
+                        <FaInstagram className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-semibold font-sans">
+                        @napsakgencliktoplulugu
+                      </span>
                     </a>
                   )}
+
                   {SITE_CONFIG.social?.linkedin && (
                     <a
                       href={SITE_CONFIG.social.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="LinkedIn"
-                      title="LinkedIn"
-                      className="w-10 h-10 rounded-[12px] bg-[#F8F9FA] border border-[#EEF0F2] text-[#0A5C3A] hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] hover:shadow-[0_4px_12px_rgba(10,92,58,0.2)] hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer"
+                      className="flex items-center gap-3 px-3.5 py-2.5 rounded-[12px] bg-[#F8F9FA] border border-[#EEF0F2] text-[#0F1115] hover:bg-[#0A5C3A]/5 hover:border-[#0A5C3A]/30 hover:text-[#0A5C3A] transition-all duration-200 cursor-pointer group"
                     >
-                      <FaLinkedin className="w-4.5 h-4.5" />
+                      <div className="w-8 h-8 rounded-lg bg-[#0A5C3A]/10 text-[#0A5C3A] group-hover:bg-[#0A5C3A] group-hover:text-white flex items-center justify-center transition-colors">
+                        <FaLinkedin className="w-4 h-4" />
+                      </div>
+                      <span className="text-sm font-semibold font-sans">
+                        Napsak Gençlik Topluluğu
+                      </span>
                     </a>
                   )}
                 </div>
