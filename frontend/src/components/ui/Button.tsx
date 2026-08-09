@@ -118,19 +118,9 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
       sizeClasses[size],
       isCurrentlyDisabled
         ? "!bg-[#E5E7EB] !border-[#D1D5DB] !text-[#9FA6B2] !shadow-none cursor-not-allowed pointer-events-none"
-        : cn("cursor-pointer", variantClasses[variant]),
+        : cn("cursor-pointer hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99]", variantClasses[variant]),
       className
     );
-
-    // Animation settings based on v1.2 Design System — tactile elevation over flashy scaling
-    const transition = {
-      duration: 0.18,
-      ease: [0.16, 1, 0.3, 1] as const,
-    };
-
-    const sharedVariants = isCurrentlyDisabled
-      ? { hover: {}, tap: {} }
-      : elevationVariants[variant];
 
     const content = (
       <>
@@ -168,47 +158,39 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
 
     // Render polymorphic Link anchor
     if (isLink) {
-      const MotionLink = motion.create(Link);
       const isExternalLink = external || href.startsWith("http");
 
       return (
-        <MotionLink
+        <Link
           href={isCurrentlyDisabled ? "#" : href}
           ref={ref as any}
           className={baseClasses}
           target={isExternalLink ? "_blank" : undefined}
           rel={isExternalLink ? "noopener noreferrer" : undefined}
-          whileHover="hover"
-          whileTap="tap"
-          variants={sharedVariants as any}
-          transition={transition as any}
           aria-disabled={isCurrentlyDisabled}
           tabIndex={isCurrentlyDisabled ? -1 : 0}
+          onClick={isCurrentlyDisabled ? (e) => e.preventDefault() : onClick}
           {...(props as any)}
         >
           {content}
-        </MotionLink>
+        </Link>
       );
     }
 
     // Render standard HTML Button
     return (
-      <motion.button
+      <button
         type="button"
         ref={ref as any}
         className={baseClasses}
         disabled={isCurrentlyDisabled}
-        whileHover="hover"
-        whileTap="tap"
-        variants={sharedVariants as any}
-        transition={transition as any}
         onClick={isCurrentlyDisabled ? undefined : onClick}
         aria-busy={isLoading}
         aria-disabled={isCurrentlyDisabled}
-        {...props}
+        {...(props as any)}
       >
         {content}
-      </motion.button>
+      </button>
     );
   }
 );

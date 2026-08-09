@@ -1,15 +1,22 @@
 # dependencies
 node_modules/
+**/node_modules/
 
 # Next.js
 .next/
+**/.next/
 out/
+*.tsbuildinfo
+**/*.tsbuildinfo
 
 # environment
 .env
 .env.local
 .env.development.local
 .env.production.local
+**/.env
+**/.env.local
+**/.env.*.local
 
 # logs
 npm-debug.log*
@@ -20,9 +27,10 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# IDE
+# IDE & Virtual Environments
 .vscode/
 .idea/
+.venv/
 
 # build
 dist/

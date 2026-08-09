@@ -317,7 +317,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
           }
           transition={shouldReduceMotion ? { duration: 0.3 } : springConfig}
           style={{ translateX: "-50%", translateY: "-50%" }}
-          className="fixed left-1/2 top-1/2 pointer-events-none z-30 flex items-center justify-center select-none"
+          className="fixed left-1/2 top-1/2 pointer-events-none z-0 flex items-center justify-center select-none [&_*]:pointer-events-none"
         >
           <Logo
             variant="decorative"
