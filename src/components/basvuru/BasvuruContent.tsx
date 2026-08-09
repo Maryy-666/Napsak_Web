@@ -38,8 +38,8 @@ export default function BasvuruContent() {
 
   return (
     <LayoutGroup id="basvuru-layout-group">
-      <main
-        className="relative min-h-screen w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
+      <div
+        className="relative min-h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
         id="basvuru-page-root"
       >
         {/* Subtle Radial Gradient at Center */}
@@ -175,7 +175,7 @@ export default function BasvuruContent() {
             </Card>
           </motion.div>
         </div>
-      </main>
+      </div>
     </LayoutGroup>
   );
 }

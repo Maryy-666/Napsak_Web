@@ -168,7 +168,7 @@ export const Button = forwardRef<HTMLButtonElement & HTMLAnchorElement, ButtonPr
 
     // Render polymorphic Link anchor
     if (isLink) {
-      const MotionLink = motion(Link);
+      const MotionLink = motion.create(Link);
       const isExternalLink = external || href.startsWith("http");
 
       return (

@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { Navbar } from "../../components/common/Navbar";
+import { Footer } from "../../components/common/Footer";
 import ForgotPasswordContent from "../../components/auth/ForgotPasswordContent";
 
 // Premium SEO Metadata Configuration for N'apsak? Gençlik Topluluğu Forgot Password
@@ -15,5 +17,13 @@ export const metadata: Metadata = {
 };
 
 export default function ForgotPasswordPage() {
-  return <ForgotPasswordContent />;
+  return (
+    <>
+      <Navbar />
+      <main className="flex-1 w-full flex flex-col pt-20">
+        <ForgotPasswordContent />
+      </main>
+      <Footer />
+    </>
+  );
 }

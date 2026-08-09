@@ -109,8 +109,8 @@ export default function LoginPageContent() {
 
   return (
     <LayoutGroup id="login-layout-group">
-      <main
-        className="relative min-h-screen w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
+      <div
+        className="relative min-h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
         id="login-page-root"
       >
         {/* Fullscreen Interaction Blocker during transition */}
@@ -283,7 +283,7 @@ export default function LoginPageContent() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </LayoutGroup>
   );
 }

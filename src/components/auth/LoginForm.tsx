@@ -176,7 +176,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              href="/sifremi-unuttum"
+              href="/forgot-password"
               className="text-xs p-0 h-auto font-medium text-[#5F6773] hover:text-[#0A5C3A] hover:bg-transparent transition-colors duration-150"
               disabled={disabled}
               tabIndex={0}

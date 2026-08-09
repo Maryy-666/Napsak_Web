@@ -256,8 +256,8 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
 
   return (
     <LayoutGroup id="reset-password-layout-group">
-      <main
-        className="relative min-h-screen w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
+      <div
+        className="relative min-h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
         id="reset-password-page-root"
       >
         {/* Fullscreen Interaction Blocker ONLY active during initial transition animation */}
@@ -428,11 +428,16 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                       rightIcon={
                         <button
                           type="button"
-                          onClick={() => setShowPass(!showPass)}
-                          className="text-[#5F6773] hover:text-[#0A5C3A] transition-colors"
-                          tabIndex={-1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowPass(!showPass);
+                          }}
+                          className="p-1 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus:outline-none transition-colors cursor-pointer select-none pointer-events-auto"
+                          aria-label={showPass ? "Şifreyi gizle" : "Şifreyi göster"}
+                          tabIndex={0}
                         >
-                          {showPass ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                          {showPass ? <EyeOff className="w-4.5 h-4.5 stroke-[1.75px]" /> : <Eye className="w-4.5 h-4.5 stroke-[1.75px]" />}
                         </button>
                       }
                       className="!h-[56px] !rounded-[14px] text-base focus:ring-[5px] focus:ring-[#0A5C3A]/14 focus:border-[#0A5C3A] transition-all duration-150 border-[#EEF0F2] hover:border-[#D1D5DB]"
@@ -486,11 +491,16 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                       rightIcon={
                         <button
                           type="button"
-                          onClick={() => setShowConfirmPass(!showConfirmPass)}
-                          className="text-[#5F6773] hover:text-[#0A5C3A] transition-colors"
-                          tabIndex={-1}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setShowConfirmPass(!showConfirmPass);
+                          }}
+                          className="p-1 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus:outline-none transition-colors cursor-pointer select-none pointer-events-auto"
+                          aria-label={showConfirmPass ? "Şifreyi gizle" : "Şifreyi göster"}
+                          tabIndex={0}
                         >
-                          {showConfirmPass ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                          {showConfirmPass ? <EyeOff className="w-4.5 h-4.5 stroke-[1.75px]" /> : <Eye className="w-4.5 h-4.5 stroke-[1.75px]" />}
                         </button>
                       }
                       className="!h-[56px] !rounded-[14px] text-base focus:ring-[5px] focus:ring-[#0A5C3A]/14 focus:border-[#0A5C3A] transition-all duration-150 border-[#EEF0F2] hover:border-[#D1D5DB]"
@@ -598,7 +608,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
             </div>
           </div>
         )}
-      </main>
+      </div>
     </LayoutGroup>
   );
 }

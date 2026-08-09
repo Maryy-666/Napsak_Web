@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { Navbar } from "../../components/common/Navbar";
+import { Footer } from "../../components/common/Footer";
 import BasvuruContent from "../../components/basvuru/BasvuruContent";
 
 export const metadata: Metadata = {
@@ -14,5 +16,13 @@ export const metadata: Metadata = {
 };
 
 export default function BasvuruPage() {
-  return <BasvuruContent />;
+  return (
+    <>
+      <Navbar />
+      <main className="flex-1 w-full flex flex-col pt-20">
+        <BasvuruContent />
+      </main>
+      <Footer />
+    </>
+  );
 }

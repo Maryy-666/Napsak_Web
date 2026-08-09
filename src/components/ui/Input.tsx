@@ -156,7 +156,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
             {/* Custom Right Icon */}
             {rightIcon && (
-              <div className="flex items-center justify-center text-[#5F6773]" aria-hidden="true">
+              <div className="flex items-center justify-center text-[#5F6773] pointer-events-auto">
                 {rightIcon}
               </div>
             )}

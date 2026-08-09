@@ -95,14 +95,6 @@ export const HeroSection: React.FC = () => {
           >
             Topluluğa Katıl
           </Button>
-          <Button
-            href={ROUTES.HAKKIMIZDA}
-            variant="secondary"
-            size="lg"
-            className="w-full sm:w-48 font-medium text-base"
-          >
-            Hakkımızda
-          </Button>
         </motion.div>
 
         {/* Semantic Statistics List */}

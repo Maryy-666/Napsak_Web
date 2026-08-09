@@ -235,8 +235,8 @@ export default function ForgotPasswordContent() {
 
   return (
     <LayoutGroup id="forgot-password-layout-group">
-      <main
-        className="relative min-h-screen w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
+      <div
+        className="relative min-h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
         id="forgot-password-page-root"
       >
         {/* Fullscreen Interaction Blocker ONLY active during initial transition animation */}
@@ -511,7 +511,7 @@ export default function ForgotPasswordContent() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </LayoutGroup>
   );
 }

@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { Navbar } from "../../../components/common/Navbar";
+import { Footer } from "../../../components/common/Footer";
 import ResetPasswordContent from "../../../components/auth/ResetPasswordContent";
 
 // Premium SEO Metadata Configuration for N'apsak? Gençlik Topluluğu Reset Password
@@ -21,5 +23,13 @@ interface ResetPasswordPageProps {
 }
 
 export default function ResetPasswordPage({ params }: ResetPasswordPageProps) {
-  return <ResetPasswordContent token={params.token} />;
+  return (
+    <>
+      <Navbar />
+      <main className="flex-1 w-full flex flex-col pt-20">
+        <ResetPasswordContent token={params.token} />
+      </main>
+      <Footer />
+    </>
+  );
 }
