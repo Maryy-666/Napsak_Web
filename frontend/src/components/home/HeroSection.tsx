@@ -7,15 +7,15 @@ import { Badge, PageContainer } from "../ui";
 
 export const HeroSection: React.FC = () => {
   return (
-    <section className="relative w-full min-h-[75vh] md:min-h-[85vh] pt-28 pb-16 sm:pt-36 sm:pb-24 flex items-center justify-start overflow-hidden bg-[#07452C]">
-      {/* Forest Hero Background Image */}
+    <section className="relative w-full h-[100vh] min-h-[100vh] h-[100svh] min-h-[100svh] pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-start overflow-hidden bg-[#07452C]">
+      {/* Forest Hero Background Image - Full Viewport Cover */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <img
           src="/images/forest-hero.jpg"
           alt="N'apsak? Orman Arka Planı"
           className="w-full h-full object-cover object-center"
         />
-        {/* Subtle Dark/Green Gradient Overlay to maintain text contrast while preserving lush forest green tones */}
+        {/* Dark/Green Overlay for text contrast */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#07452C]/90 via-[#0A5C3A]/75 to-[#07452C]/50 mix-blend-multiply" />
         <div className="absolute inset-0 bg-black/25" />
       </div>
