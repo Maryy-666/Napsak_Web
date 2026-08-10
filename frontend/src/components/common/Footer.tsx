@@ -27,16 +27,33 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-wrap justify-center items-center gap-6" aria-label="Footer Navigasyon">
-          {SITE_CONFIG.mainNav.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="text-xs font-medium text-[#5F6773] hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A]/12 rounded-sm"
-            >
-              {item.title}
-            </Link>
-          ))}
+        <nav className="flex flex-wrap justify-center items-center gap-5 sm:gap-6" aria-label="Footer Navigasyon">
+          {SITE_CONFIG.mainNav.map((item) => {
+            const isPassive = item.status === "coming-soon";
+
+            if (isPassive) {
+              return (
+                <span
+                  key={item.title}
+                  className="text-xs font-medium text-[#9FA6B2] cursor-not-allowed select-none opacity-70 flex items-center gap-1"
+                  title="Yakında"
+                >
+                  {item.title}
+                  <span className="text-[9px] px-1 py-0.5 rounded bg-black/5 text-[#7E8794]">Yakında</span>
+                </span>
+              );
+            }
+
+            return (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="text-xs font-medium text-[#5F6773] hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A]/12 rounded-sm"
+              >
+                {item.title}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Copyright */}

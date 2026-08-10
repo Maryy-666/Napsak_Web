@@ -1,5 +1,14 @@
 import { ROUTES } from "../constants/routes";
 
+export type NavItemStatus = "active" | "coming-soon";
+
+export interface NavItem {
+  title: string;
+  href: string;
+  status: NavItemStatus;
+  items?: NavItem[];
+}
+
 export const SITE_CONFIG = {
   name: "N'apsak? Gençlik Topluluğu",
   slogan: "“Keşke..” diyenlerin değil, “N’apsak?” deyip harekete geçenlerin topluluğuyuz.",
@@ -17,15 +26,71 @@ export const SITE_CONFIG = {
   },
   mainNav: [
     {
-      title: "İletişim",
-      href: ROUTES.ILETISIM,
+      title: "Ana Sayfa",
+      href: ROUTES.HOME,
+      status: "active",
     },
     {
-      title: "Topluluğa Katıl",
-      href: ROUTES.BASVURU,
+      title: "Hakkımızda",
+      href: ROUTES.HAKKIMIZDA,
+      status: "coming-soon",
     },
-  ],
+    {
+      title: "Etkinlikler",
+      href: ROUTES.ETKINLIKLER,
+      status: "coming-soon",
+    },
+    {
+      title: "Çalışmalar",
+      href: "#calismalar",
+      status: "coming-soon",
+      items: [
+        {
+          title: "Dergiler",
+          href: ROUTES.DERGILER,
+          status: "coming-soon",
+        },
+        {
+          title: "Raporlar",
+          href: ROUTES.RAPORLAR,
+          status: "coming-soon",
+        },
+        {
+          title: "Faaliyetler",
+          href: ROUTES.FAALIYETLER,
+          status: "coming-soon",
+        },
+      ],
+    },
+    {
+      title: "Topluluk",
+      href: "#topluluk",
+      status: "coming-soon",
+      items: [
+        {
+          title: "Etkileşim / Katılım",
+          href: ROUTES.KATILIM,
+          status: "coming-soon",
+        },
+        {
+          title: "TR Haritası",
+          href: ROUTES.HARITA,
+          status: "coming-soon",
+        },
+        {
+          title: "SSS",
+          href: ROUTES.SSS,
+          status: "coming-soon",
+        },
+      ],
+    },
+    {
+      title: "İletişim",
+      href: ROUTES.ILETISIM,
+      status: "active",
+    },
+  ] as NavItem[],
 } as const;
 
 export type SiteConfig = typeof SITE_CONFIG;
-export type NavItem = typeof SITE_CONFIG.mainNav[number];
+

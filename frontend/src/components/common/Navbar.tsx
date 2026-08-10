@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X, ArrowRight } from "lucide-react";
-import { SITE_CONFIG } from "../../config/site";
+import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { SITE_CONFIG, NavItem } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
@@ -18,9 +18,10 @@ export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
 
-  // Scroll and mobile menu states
+  // Scroll, mobile menu, and desktop dropdown states
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -42,9 +43,12 @@ export const Navbar: React.FC = () => {
   // Keyboard navigation & accessibility helpers for mobile drawer
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-        menuButtonRef.current?.focus();
+      if (event.key === "Escape") {
+        if (isMobileMenuOpen) {
+          setIsMobileMenuOpen(false);
+          menuButtonRef.current?.focus();
+        }
+        setActiveDropdown(null);
       }
     };
 
@@ -53,6 +57,7 @@ export const Navbar: React.FC = () => {
       window.addEventListener("keydown", handleKeyDown);
     } else {
       document.body.style.overflow = "unset";
+      window.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
@@ -79,7 +84,7 @@ export const Navbar: React.FC = () => {
     if (href === ROUTES.HOME) {
       return pathname === ROUTES.HOME;
     }
-    return pathname.startsWith(href);
+    return href !== "#" && pathname.startsWith(href);
   };
 
   return (
@@ -100,21 +105,129 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo - Left */}
         <Link
           href={ROUTES.HOME}
-          className="flex items-center select-none outline-none focus-visible:ring-4 focus-visible:ring-white/20 rounded-lg p-1 transition-shadow"
+          className="flex items-center justify-center select-none outline-none focus-visible:ring-4 focus-visible:ring-white/20 rounded-lg p-1 transition-all shrink-0"
           aria-label="N'apsak? Ana Sayfa"
         >
           <Logo
             variant="default"
-            size={isScrolled ? 90 : 105}
+            size={isScrolled ? 44 : 54}
             priority
-            className="transition-all duration-300 ease-in-out filter brightness-110"
+            className="transition-all duration-300 ease-in-out filter brightness-110 flex items-center justify-center"
           />
         </Link>
 
         {/* Center Navigation Links */}
-        <nav className="hidden md:flex items-center gap-8" aria-label="Ana Navigasyon">
+        <nav className="hidden md:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
           {SITE_CONFIG.mainNav.map((item) => {
+            const hasSubItems = Boolean(item.items && item.items.length > 0);
+            const isPassive = item.status === "coming-soon";
             const active = isLinkActive(item.href);
+
+            // Dropdown Item (Çalışmalar, Topluluk etc.)
+            if (hasSubItems) {
+              const isOpen = activeDropdown === item.title;
+              const hasActiveChild = item.items?.some((child) => isLinkActive(child.href));
+
+              return (
+                <div
+                  key={item.title}
+                  className="relative"
+                  onMouseEnter={() => setActiveDropdown(item.title)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveDropdown(isOpen ? null : item.title)}
+                    className={cn(
+                      "flex items-center gap-1.5 text-sm font-medium transition-colors py-1 px-2.5 rounded-md outline-none select-none focus-visible:ring-4 focus-visible:ring-white/20",
+                      hasActiveChild
+                        ? "text-white font-semibold"
+                        : isPassive
+                        ? "text-white/60 hover:text-white/80"
+                        : "text-white/80 hover:text-white"
+                    )}
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                  >
+                    <span>{item.title}</span>
+                    <ChevronDown
+                      className={cn(
+                        "w-3.5 h-3.5 stroke-[2.5] transition-transform duration-200",
+                        isOpen ? "rotate-180 text-white" : "text-white/60"
+                      )}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className="absolute top-full left-0 mt-1 min-w-[210px] bg-[#07452C]/95 border border-white/15 shadow-[0_16px_36px_rgba(0,0,0,0.4)] backdrop-blur-xl rounded-xl p-1.5 z-50 flex flex-col gap-0.5"
+                      >
+                        {item.items?.map((subItem) => {
+                          const isSubPassive = subItem.status === "coming-soon";
+
+                          if (isSubPassive) {
+                            return (
+                              <div
+                                key={subItem.title}
+                                className="flex items-center justify-between px-3 py-2 text-xs font-medium text-white/40 cursor-not-allowed select-none rounded-lg hover:bg-white/[0.03]"
+                                title="Yakında Hizmetinizde"
+                              >
+                                <span>{subItem.title}</span>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-normal">
+                                  Yakında
+                                </span>
+                              </div>
+                            );
+                          }
+
+                          const subActive = isLinkActive(subItem.href);
+                          return (
+                            <Link
+                              key={subItem.title}
+                              href={subItem.href}
+                              onClick={() => setActiveDropdown(null)}
+                              className={cn(
+                                "flex items-center justify-between px-3 py-2 text-xs font-medium rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-white/20",
+                                subActive
+                                  ? "bg-white/20 text-white font-semibold shadow-sm"
+                                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                              )}
+                            >
+                              <span>{subItem.title}</span>
+                            </Link>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            }
+
+            // Single Passive Item (Hakkımızda, Etkinlikler etc.)
+            if (isPassive) {
+              return (
+                <span
+                  key={item.title}
+                  className="flex items-center gap-1.5 text-sm font-medium text-white/40 cursor-not-allowed select-none py-1 px-2.5"
+                  title="Yakında Hizmetinizde"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <span>{item.title}</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-normal">
+                    Yakında
+                  </span>
+                </span>
+              );
+            }
+
+            // Single Active Item (Ana Sayfa, İletişim etc.)
             return (
               <Link
                 key={item.title}
@@ -128,7 +241,6 @@ export const Navbar: React.FC = () => {
                 aria-current={active ? "page" : undefined}
               >
                 {item.title}
-                {/* Active Indicator Underline */}
                 {active && (
                   <motion.div
                     layoutId="activeNavIndicator"
@@ -194,15 +306,84 @@ export const Navbar: React.FC = () => {
             exit="closed"
             variants={drawerVariants}
             transition={transitionConfig}
-            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl md:hidden overflow-hidden"
+            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl md:hidden max-h-[calc(100vh-80px)] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label="Mobil Menü"
           >
             <div className="px-4 pt-4 pb-6 space-y-3 bg-black/20">
-              <nav className="flex flex-col gap-1.5" aria-label="Mobil Navigasyon">
+              <nav className="flex flex-col gap-2" aria-label="Mobil Navigasyon">
                 {SITE_CONFIG.mainNav.map((item) => {
+                  const hasSubItems = Boolean(item.items && item.items.length > 0);
+                  const isPassive = item.status === "coming-soon";
                   const active = isLinkActive(item.href);
+
+                  // Mobile Group with SubItems
+                  if (hasSubItems) {
+                    return (
+                      <div key={item.title} className="flex flex-col gap-1 py-1">
+                        <div className="flex items-center justify-between px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
+                          <span>{item.title}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
+                            Yakında
+                          </span>
+                        </div>
+                        <div className="pl-3 border-l-2 border-white/15 flex flex-col gap-1">
+                          {item.items?.map((sub) => {
+                            const isSubPassive = sub.status === "coming-soon";
+
+                            if (isSubPassive) {
+                              return (
+                                <div
+                                  key={sub.title}
+                                  className="flex items-center justify-between h-10 px-3 text-sm font-medium rounded-lg text-white/40 cursor-not-allowed select-none bg-white/[0.02]"
+                                >
+                                  <span>{sub.title}</span>
+                                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
+                                    Yakında
+                                  </span>
+                                </div>
+                              );
+                            }
+
+                            const subActive = isLinkActive(sub.href);
+                            return (
+                              <Link
+                                key={sub.title}
+                                href={sub.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={cn(
+                                  "flex items-center h-10 px-3 text-sm font-medium rounded-lg transition-all outline-none focus-visible:ring-4 focus-visible:ring-white/20",
+                                  subActive
+                                    ? "bg-white/20 text-white font-semibold"
+                                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                                )}
+                              >
+                                {sub.title}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Mobile Single Passive Item
+                  if (isPassive) {
+                    return (
+                      <div
+                        key={item.title}
+                        className="flex items-center justify-between h-11 px-4 text-base font-medium rounded-lg text-white/40 cursor-not-allowed select-none bg-white/[0.02]"
+                      >
+                        <span>{item.title}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 text-white/50 font-normal">
+                          Yakında
+                        </span>
+                      </div>
+                    );
+                  }
+
+                  // Mobile Single Active Item
                   return (
                     <Link
                       key={item.title}
@@ -254,3 +435,4 @@ export const Navbar: React.FC = () => {
 };
 
 Navbar.displayName = "Navbar";
+

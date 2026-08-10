@@ -1,9 +1,15 @@
 export const ROUTES = {
   HOME: "/",
-  HAKKIMIZDA: "/#hakkimizda",
-  EKIPLER: "/ekipler",
+  HAKKIMIZDA: "/hakkimizda",
   ETKINLIKLER: "/etkinlikler",
-  BLOG: "/blog",
+  DERGILER: "/dergiler",
+  RAPORLAR: "/raporlar",
+  FAALIYETLER: "/faaliyetler",
+  KATILIM: "/katilim",
+  HARITA: "/harita",
+  SSS: "/sss",
+  KVKK: "/kvkk",
+  CEREZ_POLITIKASI: "/cerez-politikasi",
   ILETISIM: "/iletisim",
   LOGIN: "/login",
   BASVURU: "/basvuru",
@@ -13,3 +19,4 @@ export const ROUTES = {
 
 export type RouteKey = keyof typeof ROUTES;
 export type RoutePath = typeof ROUTES[RouteKey];
+

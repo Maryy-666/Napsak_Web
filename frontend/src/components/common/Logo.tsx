@@ -80,7 +80,7 @@ export const Logo: React.FC<LogoProps> = ({
         height={imageHeight}
         alt={isDecorative ? "" : alt || "N'apsak? Gençlik Topluluğu"}
         priority={priority}
-        className="h-auto object-contain"
+        className="h-auto w-auto max-h-full max-w-full object-contain"
         draggable={!isDecorative}
       />
     </div>

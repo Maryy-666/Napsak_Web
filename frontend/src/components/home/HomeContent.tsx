@@ -8,9 +8,14 @@ import {
   Target,
   Sparkles,
   ShieldCheck,
+  Compass,
+  UserPlus,
+  Lightbulb,
+  TrendingUp,
 } from "lucide-react";
 import { Button, Card, Badge, PageContainer, Section } from "../ui";
 import { TeamCarousel } from "./TeamCarousel";
+import { StatsSection } from "./StatsSection";
 import { ROUTES } from "../../constants/routes";
 import { SITE_CONFIG } from "../../config/site";
 
@@ -21,6 +26,34 @@ const CORE_VALUES = [
   "Birliktelik",
   "Katılımcılık",
   "Yenilikçilik",
+];
+
+// N'apsak Culture & Process Steps
+const CULTURAL_STEPS = [
+  {
+    num: "01",
+    title: "Keşfet",
+    description: "İlgi alanlarını keşfet, topluluğumuzu ve ekiplerimizi tanı.",
+    icon: Compass,
+  },
+  {
+    num: "02",
+    title: "Katıl",
+    description: "Sana en yakın çalışma alanına dahil ol, diğer gençlerle birlikte üret.",
+    icon: UserPlus,
+  },
+  {
+    num: "03",
+    title: "Üret",
+    description: "Projelerde, etkinliklerde ve ekip çalışmalarında aktif rol al.",
+    icon: Lightbulb,
+  },
+  {
+    num: "04",
+    title: "Geliş",
+    description: "Yeni şeyler öğren, deneyim kazan ve topluluğun gelişimine katkı sağla.",
+    icon: TrendingUp,
+  },
 ];
 
 export default function HomeContent() {
@@ -71,25 +104,68 @@ export default function HomeContent() {
         </PageContainer>
       </section>
 
-      {/* 2. REAL STATS TRUST BAR */}
-      <Section padding="none" className="z-10 -mt-6 mb-12">
+      {/* 2. "N'APSAK'LI OLMAK NE DEMEK?" CULTURAL PROCESS SECTION */}
+      <Section padding="none" background="white" className="py-12 sm:py-20 border-b border-[#EEF0F2]">
         <PageContainer>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="w-full max-w-xl mx-auto rounded-[20px] bg-white border border-[#EEF0F2] p-6 sm:p-8 shadow-[0_8px_30px_rgba(15,17,21,0.06)] text-center flex flex-col items-center select-none"
-          >
-            <span className="text-4xl sm:text-5xl font-extrabold font-headings text-[#0A5C3A] leading-none mb-2">
-              86+
-            </span>
-            <span className="text-xs sm:text-sm font-semibold text-[#5F6773] uppercase tracking-wider font-sans">
-              AKTİF ÜYE
-            </span>
-          </motion.div>
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-10 select-none">
+            <Badge variant="brand" size="md" className="mb-3">
+              Topluluk Kültürü
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-3">
+              N'apsak'lı olmak ne demek?
+            </h2>
+            <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
+              Sadece bir topluluğun parçası olmak değil; üretmek, öğrenmek ve birlikte gelişmek.
+            </p>
+          </div>
+
+          {/* 4 Steps Process Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-6xl mx-auto">
+            {CULTURAL_STEPS.map((step, index) => {
+              const IconComp = step.icon;
+              return (
+                <motion.div
+                  key={step.num}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: index * 0.08 }}
+                  className="group relative bg-white rounded-[20px] border border-[#EEF0F2] p-6 flex flex-col justify-between transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_16px_36px_rgba(10,92,58,0.14)] hover:border-[#0A5C3A]/50 hover:z-10 select-none cursor-default"
+                >
+                  <div>
+                    {/* Top Header: Step Number Pill & Icon Box */}
+                    <div className="flex items-center justify-between w-full mb-5">
+                      <span className="text-xs font-black tracking-widest text-[#0A5C3A] bg-[#0A5C3A]/10 px-2.5 py-1 rounded-md font-sans">
+                        {step.num}
+                      </span>
+                      <div className="w-10 h-10 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <IconComp className="w-5 h-5 stroke-[2]" />
+                      </div>
+                    </div>
+
+                    {/* Step Title */}
+                    <h3 className="text-xl font-bold font-headings text-[#0F1115] mb-2.5 group-hover:text-[#0A5C3A] transition-colors">
+                      {step.title}
+                    </h3>
+
+                    {/* Step Description */}
+                    <p className="text-xs sm:text-sm text-[#5F6773] font-sans leading-relaxed">
+                      {step.description}
+                    </p>
+                  </div>
+
+                  {/* Soft Green Accent Bar at Bottom of Card on Hover */}
+                  <div className="w-full h-1 bg-transparent group-hover:bg-[#0A5C3A] rounded-full mt-6 transition-colors duration-300" />
+                </motion.div>
+              );
+            })}
+          </div>
         </PageContainer>
       </Section>
+
+      {/* 2.5 ISTATISTIK BANDI */}
+      <StatsSection />
 
       {/* 3. KISA TOPLULUK TANITIMI (VİZYON & MİSYON) */}
       <Section padding="md" background="subtle">
