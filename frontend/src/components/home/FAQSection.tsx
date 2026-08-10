@@ -48,10 +48,17 @@ export function FAQSection() {
 
   return (
     <>
+      {/* FAQ ALANI */}
       <Section padding="lg" background="subtle">
         <PageContainer>
+
+          {/* Başlık */}
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <Badge variant="brand" size="md" className="mb-3">
+            <Badge
+              variant="brand"
+              size="md"
+              className="mb-3"
+            >
               Sıkça Sorulan Sorular
             </Badge>
 
@@ -65,18 +72,19 @@ export function FAQSection() {
             </p>
           </div>
 
+          {/* SORULAR */}
           <div className="max-w-3xl mx-auto flex flex-col gap-3">
             {FAQS.map((faq, index) => (
               <Card
                 key={index}
                 variant="outlined"
                 animate={false}
-                className="!p-0 overflow-hidden"
+                className="!p-0 overflow-hidden !bg-[#F7FBF8] !border-[#DCEAE1]"
               >
                 <button
                   type="button"
                   onClick={() => setSelectedQuestion(index)}
-                  className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left hover:bg-[#F8FAF9] transition-colors"
+                  className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left hover:bg-[#EAF4EE] transition-colors"
                 >
                   <span className="text-base sm:text-lg font-semibold text-[#0F1115]">
                     {faq.question}
@@ -87,13 +95,15 @@ export function FAQSection() {
               </Card>
             ))}
           </div>
+
         </PageContainer>
       </Section>
 
+      {/* MODAL */}
       <AnimatePresence>
         {selectedQuestion !== null && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#03261A]/75 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -107,29 +117,38 @@ export function FAQSection() {
               onClick={(event) => event.stopPropagation()}
               className="w-full max-w-2xl"
             >
+
+              {/* MODAL KUTUSU */}
               <Card
                 variant="elevated"
                 animate={false}
-                className="!p-6 sm:!p-8"
+                className="!p-6 sm:!p-8 !bg-[#0A5C3A]/95 !border-white/10 backdrop-blur-xl"
               >
+
+                {/* Modal başlık */}
                 <div className="flex items-start justify-between gap-4 mb-6">
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#0F1115] font-headings">
+
+                  <h3 className="text-xl sm:text-2xl font-bold text-white font-headings">
                     {FAQS[selectedQuestion].question}
                   </h3>
 
+                  {/* Kapat */}
                   <button
                     type="button"
                     onClick={() => setSelectedQuestion(null)}
                     aria-label="Kapat"
-                    className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#EEF0F2] transition-colors"
+                    className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
                   >
-                    <X className="w-5 h-5 text-[#5F6773]" />
+                    <X className="w-5 h-5 text-white" />
                   </button>
+
                 </div>
 
-                <p className="text-base text-[#5F6773] leading-relaxed">
+                {/* Cevap */}
+                <p className="text-base text-[#E8F5EE] leading-relaxed">
                   {FAQS[selectedQuestion].answer}
                 </p>
+
               </Card>
             </motion.div>
           </motion.div>
