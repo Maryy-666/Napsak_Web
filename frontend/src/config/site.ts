@@ -80,7 +80,7 @@ export const SITE_CONFIG = {
         {
           title: "SSS",
           href: ROUTES.SSS,
-          status: "coming-soon",
+          status: "active",
         },
       ],
     },

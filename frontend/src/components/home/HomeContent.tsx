@@ -17,7 +17,6 @@ import { Button, Card, Badge, PageContainer, Section } from "../ui";
 import { HeroSection } from "./HeroSection";
 import { TeamCarousel } from "./TeamCarousel";
 import { StatsSection } from "./StatsSection";
-import { FAQSection } from "./FAQSection";
 import { CoreValuesSection } from "./CoreValuesSection";
 import { ROUTES } from "../../constants/routes";
 import { SITE_CONFIG } from "../../config/site";
@@ -195,8 +194,7 @@ export default function HomeContent() {
           {/* 3D Perspective Arc Carousel Component */}
           <TeamCarousel />
         </PageContainer>
-      </Section>
-          <FAQSection /> 
+      </Section> 
 
       {/* 5. FINAL CTA BANNER */}
       <Section padding="lg" background="white">
