@@ -43,7 +43,7 @@ const FAQS = [
   },
 ];
 
-export default function FAQSection() {
+export function FAQSection() {
   const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
 
   return (
