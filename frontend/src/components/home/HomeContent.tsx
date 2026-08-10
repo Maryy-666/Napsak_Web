@@ -196,6 +196,7 @@ export default function HomeContent() {
           <TeamCarousel />
         </PageContainer>
       </Section>
+          <FAQSection /> 
 
       {/* 5. FINAL CTA BANNER */}
       <Section padding="lg" background="white">
