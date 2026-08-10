@@ -9,37 +9,37 @@ const FAQS = [
   {
     question: "Nasıl katılabilirim?",
     answer:
-      "Dm üzerinden otomatik yanıtları kullanabilir ya da biyografimizdeki başvuru formunu doldurarak aramıza katılabilirsiniz :).",
+      "DM üzerinden otomatik yanıtları kullanabilir ya da biyografimizdeki başvuru formunu doldurarak aramıza katılabilirsiniz :).",
   },
   {
     question: "Kimler katılabilir?",
     answer:
-      "Liseden itibaren her genç,şehir fark etmeksizin başvuru yapabilir.",
+      "Liseden itibaren her genç, şehir fark etmeksizin başvuru yapabilir.",
   },
   {
     question: "N'apsak? Gençlik Topluluğu ne yapar?",
     answer:
-      "Hayata geçirmek istediğimiz fikirleri birlikte üretmek için kuruldu.Amacımız sadece etkinlik yapmak değil;gençlerin potansiyelini keşfetmesini,yeteneklerini geliştirmesini ve topluma değer katan projeler üretmesini sağlamak.",
+      "Hayata geçirmek istediğimiz fikirleri birlikte üretmek için kuruldu. Amacımız sadece etkinlik yapmak değil; gençlerin potansiyelini keşfetmesini, yeteneklerini geliştirmesini ve topluma değer katan projeler üretmesini sağlamak.",
   },
   {
     question: "Hangi alanlarda yer alabilirim?",
     answer:
-      "Sanat,teknoloji,çevre&sağlık,programlar ve kurumsal iletişim ekiplerimiz bulunuyor.Yazmayı,çizmeyi,kodlamayı ya da organizasyon yapmayı seviyorsanız kendinize uygun bir alan mutlaka bulursunuz.",
-  }, 
-  {
-    question: "Tecrübem yok,katılabilir miyim?",
-    answer:
-        `Eğer gelişmeye açık, öğrenmeye istekli ve "N'apsak?" deyip harekete geçmeye hazırsan hiçbir tecrübeye ihtiyacın yok. Biz, tecrübesi olmayan arkadaşlarımızın da tecrübe kazanması için buradayız.`,
+      "Sanat, teknoloji, çevre & sağlık, programlar ve kurumsal iletişim ekiplerimiz bulunuyor. Yazmayı, çizmeyi, kodlamayı ya da organizasyon yapmayı seviyorsanız kendinize uygun bir alan mutlaka bulursunuz.",
   },
   {
-    question: "Daha önce böyle bir ortamda bulunmadım,süreç nasıl ilerliyor?",
+    question: "Tecrübem yok, katılabilir miyim?",
     answer:
-        "Endişelenmene hiç gerek yok :).Süreç boyunca sana destek oluyor,ekiplerle tanışmanı sağlıyor ve adım adım adapte olmanı kolaylaştırıyoruz.Burada herkes bir zamanlar ilk adımını attı.",
+      `Eğer gelişmeye açık, öğrenmeye istekli ve "N'apsak?" deyip harekete geçmeye hazırsan hiçbir tecrübeye ihtiyacın yok. Biz, tecrübesi olmayan arkadaşlarımızın da tecrübe kazanması için buradayız.`,
+  },
+  {
+    question: "Daha önce böyle bir ortamda bulunmadım, süreç nasıl ilerliyor?",
+    answer:
+      "Endişelenmene hiç gerek yok :). Süreç boyunca sana destek oluyor, ekiplerle tanışmanı sağlıyor ve adım adım adapte olmanı kolaylaştırıyoruz. Burada herkes bir zamanlar ilk adımını attı.",
   },
   {
     question: "Kısaca...",
     answer:
-        `Biz "keşke" diyen değil,"N'apsak?" deyip harekeete geçenkerin topluluğuyuz.`,
+      `Biz "keşke" diyen değil, "N'apsak?" deyip harekete geçenlerin topluluğuyuz.`,
   },
 ];
 
