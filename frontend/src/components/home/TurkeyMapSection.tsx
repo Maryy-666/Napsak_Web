@@ -28,40 +28,39 @@ const cities = [
 
 export function TurkeyMapSection() {
   return (
-    <section className="relative overflow-hidden bg-[#F7FAF7] py-20 sm:py-24">
+    <section className="relative overflow-hidden bg-[#F7FAF7] py-16 sm:py-20">
 
-      {/* Sağ üst dekorasyon */}
-      <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-60" />
+      {/* Dekoratif köşeler */}
+      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#DCE9DF] opacity-60" />
 
-      {/* Sol alt dekorasyon */}
       <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-50" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
 
-        {/* BAŞLIK */}
-        <div className="mb-10 text-center">
+        {/* Başlık */}
+        <div className="mb-8 text-center sm:mb-10">
           <h2 className="font-headings text-4xl font-extrabold tracking-tight text-[#064E3B] sm:text-5xl md:text-6xl">
             Biz Her Yerdeyiz
           </h2>
         </div>
 
-        {/* HARİTA */}
+        {/* Harita */}
         <div className="mx-auto w-full max-w-6xl">
 
           <ComposableMap
             projection="geoMercator"
             projectionConfig={{
-              center: [35.2, 38.9],
-              scale: 2400,
+              center: [35.4, 38.95],
+              scale: 3400,
             }}
             width={1000}
-            height={500}
+            height={450}
             className="h-auto w-full"
           >
 
             <defs>
 
-              {/* HARİTA GÖLGESİ */}
+              {/* Harita gölgesi */}
               <filter
                 id="mapShadow"
                 x="-30%"
@@ -78,7 +77,7 @@ export function TurkeyMapSection() {
                 />
               </filter>
 
-              {/* PIN GÖLGESİ */}
+              {/* Pin gölgesi */}
               <filter
                 id="pinShadow"
                 x="-100%"
@@ -97,7 +96,7 @@ export function TurkeyMapSection() {
 
             </defs>
 
-            {/* TÜRKİYE HARİTASI */}
+            {/* Türkiye haritası */}
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
                 geographies.map((geo) => (
@@ -109,21 +108,17 @@ export function TurkeyMapSection() {
                       default: {
                         fill: "#EAF2E9",
                         stroke: "#FFFFFF",
-                        strokeWidth: 0.7,
+                        strokeWidth: 0.6,
                         outline: "none",
                       },
-
                       hover: {
                         fill: "#EAF2E9",
                         stroke: "#FFFFFF",
-                        strokeWidth: 0.7,
                         outline: "none",
                       },
-
                       pressed: {
                         fill: "#EAF2E9",
                         stroke: "#FFFFFF",
-                        strokeWidth: 0.7,
                         outline: "none",
                       },
                     }}
@@ -132,29 +127,27 @@ export function TurkeyMapSection() {
               }
             </Geographies>
 
-            {/* PINLER */}
+            {/* Şehir pinleri */}
             {cities.map(({ name, coordinates }) => (
               <Marker
                 key={name}
                 coordinates={coordinates as [number, number]}
               >
-
                 <g filter="url(#pinShadow)">
 
-                  {/* PIN */}
+                  {/* Pin */}
                   <path
                     d="
                       M0,-18
                       C-9,-18 -15,-11 -15,-3
                       C-15,7 0,22 0,22
                       C0,22 15,7 15,-3
-                      C15,-11 9,-18 0,-18
-                      Z
+                      C15,-11 9,-18 0,-18Z
                     "
                     fill="#075C43"
                   />
 
-                  {/* PINİN ORTASINDAKİ BEYAZ DAİRE */}
+                  {/* Pin içindeki beyaz daire */}
                   <circle
                     cx="0"
                     cy="-4"
@@ -163,7 +156,6 @@ export function TurkeyMapSection() {
                   />
 
                 </g>
-
               </Marker>
             ))}
 
