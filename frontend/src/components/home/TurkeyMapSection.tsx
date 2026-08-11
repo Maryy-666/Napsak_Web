@@ -29,7 +29,6 @@ const cities = [
 export function TurkeyMapSection() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAF7] py-20 sm:py-24">
-      
       {/* Dekoratif köşe */}
       <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#DCE9DF] opacity-60" />
       <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-50" />
@@ -37,23 +36,23 @@ export function TurkeyMapSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         
         {/* Başlık */}
-        <div className="mb-8 text-center sm:mb-12">
+        <div className="mb-12 text-center">
           <h2 className="font-headings text-4xl font-extrabold tracking-tight text-[#064E3B] sm:text-5xl md:text-6xl">
             Biz Her Yerdeyiz
           </h2>
         </div>
 
-        {/* Harita */}
-        <div className="mx-auto w-full max-w-6xl">
+        {/* Harita - Daha büyük görünüm için max-w genişletildi */}
+        <div className="mx-auto w-full max-w-5xl">
           <ComposableMap
             projection="geoMercator"
             projectionConfig={{
-              center: [35, 39],
-              scale: 1700,
+              center: [35.2, 38.9], // Haritayı tam ortalamak için hafif güncellendi
+              scale: 2400,          // Haritayı büyüten ana ayar
             }}
             width={1000}
             height={500}
-            className="h-auto w-full"
+            className="h-auto w-full drop-shadow-sm"
           >
             <defs>
               {/* Haritanın gölgesi */}
