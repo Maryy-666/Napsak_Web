@@ -17,6 +17,7 @@ import { Button, Card, Badge, PageContainer, Section } from "../ui";
 import { HeroSection } from "./HeroSection";
 import { TeamCarousel } from "./TeamCarousel";
 import { StatsSection } from "./StatsSection";
+import { TurkeyMapSection } from "./TurkeyMapSection";
 import { CoreValuesSection } from "./CoreValuesSection";
 import { NewsSection } from "./NewsSection";
 import { ROUTES } from "../../constants/routes";
