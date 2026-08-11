@@ -174,6 +174,7 @@ export default function HomeContent() {
           </div>
         </PageContainer>
       </Section>
+      <TurkeyMapSection /> 
 
       {/* 3.5 TEMEL DEĞERLERİMİZ (RADIAL CORE VALUES SECTION) */}
       <CoreValuesSection />
