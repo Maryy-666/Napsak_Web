@@ -14,12 +14,12 @@ const cities = [
   { name: "İstanbul", coordinates: [28.9784, 41.0082] },
   { name: "Edirne", coordinates: [26.5557, 41.6771] },
   { name: "Kocaeli", coordinates: [29.9408, 40.7654] },
-  { name: "Bursa", coordinates: [29.0600, 40.1950] },
+  { name: "Bursa", coordinates: [29.06, 40.195] },
   { name: "Ankara", coordinates: [32.8597, 39.9334] },
   { name: "İzmir", coordinates: [27.1428, 38.4237] },
   { name: "Düzce", coordinates: [31.1636, 40.8438] },
   { name: "Kastamonu", coordinates: [33.7827, 41.3766] },
-  { name: "Elazığ", coordinates: [39.2264, 38.6810] },
+  { name: "Elazığ", coordinates: [39.2264, 38.681] },
   { name: "Gaziantep", coordinates: [37.3781, 37.0662] },
   { name: "Hatay", coordinates: [36.1613, 36.2022] },
   { name: "Antalya", coordinates: [30.7133, 36.8969] },
@@ -29,33 +29,39 @@ const cities = [
 export function TurkeyMapSection() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAF7] py-20 sm:py-24">
-      {/* Dekoratif köşe */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#DCE9DF] opacity-60" />
+
+      {/* Sağ üst dekorasyon */}
+      <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-60" />
+
+      {/* Sol alt dekorasyon */}
       <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-50" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-        
-        {/* Başlık */}
-        <div className="mb-12 text-center">
+
+        {/* BAŞLIK */}
+        <div className="mb-10 text-center">
           <h2 className="font-headings text-4xl font-extrabold tracking-tight text-[#064E3B] sm:text-5xl md:text-6xl">
             Biz Her Yerdeyiz
           </h2>
         </div>
 
-        {/* Harita - Daha büyük görünüm için max-w genişletildi */}
-        <div className="mx-auto w-full max-w-5xl">
+        {/* HARİTA */}
+        <div className="mx-auto w-full max-w-6xl">
+
           <ComposableMap
             projection="geoMercator"
             projectionConfig={{
-              center: [35.2, 38.9], // Haritayı tam ortalamak için hafif güncellendi
-              scale: 2400,          // Haritayı büyüten ana ayar
+              center: [35.2, 38.9],
+              scale: 2400,
             }}
             width={1000}
             height={500}
-            className="h-auto w-full drop-shadow-sm"
+            className="h-auto w-full"
           >
+
             <defs>
-              {/* Haritanın gölgesi */}
+
+              {/* HARİTA GÖLGESİ */}
               <filter
                 id="mapShadow"
                 x="-30%"
@@ -72,7 +78,7 @@ export function TurkeyMapSection() {
                 />
               </filter>
 
-              {/* Pin gölgesi */}
+              {/* PIN GÖLGESİ */}
               <filter
                 id="pinShadow"
                 x="-100%"
@@ -85,12 +91,13 @@ export function TurkeyMapSection() {
                   dy="5"
                   stdDeviation="4"
                   floodColor="#064E3B"
-                  floodOpacity="0.35"
+                  floodOpacity="0.40"
                 />
               </filter>
+
             </defs>
 
-            {/* Türkiye */}
+            {/* TÜRKİYE HARİTASI */}
             <Geographies geography={geoUrl}>
               {({ geographies }) =>
                 geographies.map((geo) => (
@@ -105,14 +112,18 @@ export function TurkeyMapSection() {
                         strokeWidth: 0.7,
                         outline: "none",
                       },
+
                       hover: {
                         fill: "#EAF2E9",
                         stroke: "#FFFFFF",
+                        strokeWidth: 0.7,
                         outline: "none",
                       },
+
                       pressed: {
                         fill: "#EAF2E9",
                         stroke: "#FFFFFF",
+                        strokeWidth: 0.7,
                         outline: "none",
                       },
                     }}
@@ -121,34 +132,43 @@ export function TurkeyMapSection() {
               }
             </Geographies>
 
-            {/* Şehir pinleri */}
+            {/* PINLER */}
             {cities.map(({ name, coordinates }) => (
-              <Marker key={name} coordinates={coordinates as [number, number]}>
-                <g
-                  filter="url(#pinShadow)"
-                  style={{ cursor: "default" }}
-                >
-                  {/* Pin */}
+              <Marker
+                key={name}
+                coordinates={coordinates as [number, number]}
+              >
+
+                <g filter="url(#pinShadow)">
+
+                  {/* PIN */}
                   <path
-                    d="M0,-18
-                       C-9,-18 -15,-11 -15,-3
-                       C-15,7 0,22 0,22
-                       C0,22 15,7 15,-3
-                       C15,-11 9,-18 0,-18Z"
+                    d="
+                      M0,-18
+                      C-9,-18 -15,-11 -15,-3
+                      C-15,7 0,22 0,22
+                      C0,22 15,7 15,-3
+                      C15,-11 9,-18 0,-18
+                      Z
+                    "
                     fill="#075C43"
                   />
 
-                  {/* Pin içindeki daire */}
+                  {/* PINİN ORTASINDAKİ BEYAZ DAİRE */}
                   <circle
                     cx="0"
                     cy="-4"
                     r="5"
                     fill="#F7FAF7"
                   />
+
                 </g>
+
               </Marker>
             ))}
+
           </ComposableMap>
+
         </div>
       </div>
     </section>
