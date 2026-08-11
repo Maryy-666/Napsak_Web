@@ -30,13 +30,6 @@ export function TurkeyMapSection() {
   return (
     <section className="relative overflow-hidden bg-[#F7FAF7] py-16 sm:py-20">
 
-      {/* Dekoratif köşeler */}
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#DCE9DF] opacity-60" />
-
-      <div className="absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-[#DCE9DF] opacity-50" />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-
         {/* Başlık */}
         <div className="mb-8 text-center sm:mb-10">
           <h2 className="font-headings text-4xl font-extrabold tracking-tight text-[#064E3B] sm:text-5xl md:text-6xl">
