@@ -13,6 +13,8 @@ export const ROUTES = {
   ILETISIM: "/iletisim",
   LOGIN: "/login",
   BASVURU: "/basvuru",
+  EKIPLER: "/ekipler",
+  HABERLER: "/haberler",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
 } as const;

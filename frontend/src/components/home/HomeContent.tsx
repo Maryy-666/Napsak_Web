@@ -18,6 +18,7 @@ import { HeroSection } from "./HeroSection";
 import { TeamCarousel } from "./TeamCarousel";
 import { StatsSection } from "./StatsSection";
 import { CoreValuesSection } from "./CoreValuesSection";
+import { NewsSection } from "./NewsSection";
 import { ROUTES } from "../../constants/routes";
 import { SITE_CONFIG } from "../../config/site";
 
@@ -195,6 +196,9 @@ export default function HomeContent() {
           <TeamCarousel />
         </PageContainer>
       </Section> 
+
+      {/* 4.5 BİZDEN HABERLER (N'APSAK? NAPTIK! NEWS SECTION) */}
+      <NewsSection />
 
       {/* 5. FINAL CTA BANNER */}
       <Section padding="lg" background="white">

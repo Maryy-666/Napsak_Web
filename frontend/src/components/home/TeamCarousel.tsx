@@ -1,63 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
-  Cpu,
-  Palette,
-  HeartPulse,
-  BookOpen,
-  Share2,
   MousePointerClick,
   Pause,
   Play,
 } from "lucide-react";
-
-// 5 Real Working Teams of N'apsak? Gençlik Topluluğu with assigned background images
-const TEAMS = [
-  {
-    id: "teknoloji",
-    icon: Cpu,
-    title: "Teknoloji Ekibi",
-    bgImage: "/images/istockphoto-1173149385-612x612.jpg",
-    description:
-      "Dijitalleşme, inovasyon, yazılım, yapay zeka ve sürdürülebilir teknoloji alanlarında eğitim içerikleri, projeler ve etkinlikler geliştirir.",
-  },
-  {
-    id: "sanat",
-    icon: Palette,
-    title: "Sanat Ekibi",
-    bgImage: "/images/stock-photo-close-up-of-painting-brushes-in-studio-of-artist.jpg",
-    description:
-      "Gençlerin sanatsal ve yaratıcı ifade becerilerini geliştirmelerini destekleyen atölyeler ve estetik projeler yürütür.",
-  },
-  {
-    id: "cevre-saglik",
-    icon: HeartPulse,
-    title: "Çevre ve Sağlık Ekibi",
-    bgImage: "/images/pngtree-vibrant-earth-planet-surrounded-by-fresh-green-leaves-eco-friendly-concept-image_21673995.webp",
-    description:
-      "Sürdürülebilirlik, çevre bilinci, sağlıklı yaşam ve toplumsal fayda odaklı sosyal sorumluluk projeleri gerçekleştirir.",
-  },
-  {
-    id: "programlar",
-    icon: BookOpen,
-    title: "Programlar Ekibi",
-    bgImage: "/images/krm.png",
-    description:
-      "Gençlerin kişisel, akademik ve mesleki gelişim yolculuklarına katkı sağlayan kapsayıcı eğitim ve gelişim programları kurgular.",
-  },
-  {
-    id: "kurumsal-iletisim",
-    icon: Share2,
-    title: "Kurumsal İletişim Ekibi",
-    bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
-    description:
-      "Topluluğun kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
-  },
-];
+import { TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
 
 export const TeamCarousel: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -67,7 +20,7 @@ export const TeamCarousel: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const requestRef = useRef<number | null>(null);
-  const totalTeams = TEAMS.length;
+  const totalTeams = TEAMS_DATA.length;
   const angleStep = 360 / totalTeams; // 72 degrees per card
 
   // Check screen width for mobile fallback
@@ -92,7 +45,6 @@ export const TeamCarousel: React.FC = () => {
 
       if (!isPaused) {
         // Rotate approx 10 degrees per second for smooth 36s full revolution
-        // Keeps spinning continuously even while a card is hovered
         setRotationAngle((prev) => (prev - (delta * 0.010)) % 360);
       }
 
@@ -145,8 +97,8 @@ export const TeamCarousel: React.FC = () => {
     return (
       <div className="w-full flex flex-col items-center select-none py-4">
         <div className="w-full flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-4 no-scrollbar">
-          {TEAMS.map((team, idx) => {
-            const IconComp = team.icon;
+          {TEAMS_DATA.map((team, idx) => {
+            const IconComp = TEAM_ICONS[team.iconName];
             const isActive = idx === frontIndex;
 
             return (
@@ -195,15 +147,25 @@ export const TeamCarousel: React.FC = () => {
                     {team.title}
                   </h3>
                   <p className="text-xs font-sans leading-relaxed text-white/90">
-                    {team.description}
+                    {team.shortDescription}
                   </p>
                 </div>
 
                 <div className="relative z-10 w-full pt-3 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
                   <span className="text-white/90">N'apsak? Ekibi</span>
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isActive ? "bg-white text-[#0A5C3A]" : "bg-white/20 text-white backdrop-blur-sm"}`}>
+                  <Link
+                    href={`/ekipler/${team.slug}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                      isActive
+                        ? "bg-white text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white"
+                        : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/40"
+                    }`}
+                    title={`${team.title} Detayına Git`}
+                    aria-label={`${team.title} Detay Sayfası`}
+                  >
                     →
-                  </div>
+                  </Link>
                 </div>
               </div>
             );
@@ -212,7 +174,7 @@ export const TeamCarousel: React.FC = () => {
 
         {/* Mobile Dots */}
         <div className="flex items-center gap-2 mt-4">
-          {TEAMS.map((_, idx) => (
+          {TEAMS_DATA.map((_, idx) => (
             <button
               key={idx}
               type="button"
@@ -259,8 +221,8 @@ export const TeamCarousel: React.FC = () => {
           className="relative w-full h-full flex items-center justify-center"
           style={{ transformStyle: "preserve-3d" }}
         >
-          {TEAMS.map((team, idx) => {
-            const IconComp = team.icon;
+          {TEAMS_DATA.map((team, idx) => {
+            const IconComp = TEAM_ICONS[team.iconName];
 
             // Compute exact angle on 360-degree cylinder
             const cardAngle = (rotationAngle + idx * angleStep) % 360;
@@ -308,7 +270,13 @@ export const TeamCarousel: React.FC = () => {
                   zIndex: zIndexVal,
                   transformStyle: "preserve-3d",
                 }}
-                onClick={() => snapToCard(idx)}
+                onClick={() => {
+                  if (isFront) {
+                    window.location.href = `/ekipler/${team.slug}`;
+                  } else {
+                    snapToCard(idx);
+                  }
+                }}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 className={`group absolute w-[280px] sm:w-[320px] h-[350px] sm:h-[400px] rounded-[24px] overflow-hidden p-6 sm:p-8 flex flex-col justify-between cursor-pointer transition-all duration-300 ${
@@ -369,7 +337,7 @@ export const TeamCarousel: React.FC = () => {
                         : "text-white/80 opacity-90"
                     }`}
                   >
-                    {team.description}
+                    {team.shortDescription}
                   </p>
                 </div>
 
@@ -378,15 +346,18 @@ export const TeamCarousel: React.FC = () => {
                   <span className="text-white/90">
                     N'apsak? Ekibi
                   </span>
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-transform ${
+                  <Link
+                    href={`/ekipler/${team.slug}`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                       isFront || isHovered
-                        ? "bg-white text-[#0A5C3A] scale-110 shadow-md"
-                        : "bg-white/20 text-white backdrop-blur-sm"
+                        ? "bg-white text-[#0A5C3A] scale-110 shadow-md hover:bg-[#0A5C3A] hover:text-white"
+                        : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/40"
                     }`}
+                    title={`${team.title} Detayına Git`}
+                    aria-label={`${team.title} Detay Sayfası`}
                   >
                     →
-                  </div>
+                  </Link>
                 </div>
               </motion.div>
             );
@@ -408,7 +379,7 @@ export const TeamCarousel: React.FC = () => {
 
         {/* 5 Dots Indicator */}
         <div className="flex items-center gap-2">
-          {TEAMS.map((team, idx) => (
+          {TEAMS_DATA.map((team, idx) => (
             <button
               key={team.id}
               type="button"
@@ -433,3 +404,4 @@ export const TeamCarousel: React.FC = () => {
 };
 
 TeamCarousel.displayName = "TeamCarousel";
+

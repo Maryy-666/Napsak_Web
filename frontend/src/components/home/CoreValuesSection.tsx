@@ -103,37 +103,37 @@ export function CoreValuesSection() {
     };
   }, [updateLines]);
 
-  // Perfectly balanced orbital positioning mapping with generous clearance:
+  // Balanced radial positioning mapping:
   // 0: Çeşitlilik (Top Center)
-  // 1: Tarafsızlık (Middle Left)
-  // 2: Yenilikçilik (Middle Right)
-  // 3: Birliktelik (Bottom Left)
-  // 4: Katılımcılık (Bottom Right)
+  // 1: Tarafsızlık (Upper Left)
+  // 2: Yenilikçilik (Upper Right)
+  // 3: Birliktelik (Lower Left)
+  // 4: Katılımcılık (Lower Right)
   const getDesktopPositionStyle = (index: number) => {
-    const cardDimensionClass = "w-[300px] lg:w-[335px] min-h-[220px]";
+    const cardDimensionClass = "w-[280px] lg:w-[300px] xl:w-[325px] min-h-[215px]";
     switch (index) {
       case 0:
-        return `top-[1%] left-1/2 -translate-x-1/2 ${cardDimensionClass}`;
+        return `top-[13%] left-1/2 -translate-x-1/2 -translate-y-1/2 ${cardDimensionClass}`;
       case 1:
-        return `top-1/2 -translate-y-1/2 left-[0%] lg:left-[1%] ${cardDimensionClass}`;
+        return `top-[27%] left-[10%] lg:left-[11%] xl:left-[13%] -translate-x-1/2 -translate-y-1/2 ${cardDimensionClass}`;
       case 2:
-        return `top-1/2 -translate-y-1/2 right-[0%] lg:right-[1%] ${cardDimensionClass}`;
+        return `top-[27%] left-[90%] lg:left-[89%] xl:left-[87%] -translate-x-1/2 -translate-y-1/2 ${cardDimensionClass}`;
       case 3:
-        return `bottom-[1%] left-[6%] lg:left-[10%] ${cardDimensionClass}`;
+        return `top-[75%] left-[16%] lg:left-[17%] xl:left-[19%] -translate-x-1/2 -translate-y-1/2 ${cardDimensionClass}`;
       case 4:
-        return `bottom-[1%] right-[6%] lg:right-[10%] ${cardDimensionClass}`;
+        return `top-[75%] left-[84%] lg:left-[83%] xl:left-[81%] -translate-x-1/2 -translate-y-1/2 ${cardDimensionClass}`;
       default:
         return cardDimensionClass;
     }
   };
 
   return (
-    <Section padding="lg" background="white" className="py-20 sm:py-28 border-b border-[#EEF0F2] overflow-hidden">
-      <PageContainer className="max-w-7xl">
-        {/* ================= DESKTOP & TABLET RADIAL/STAR LAYOUT ================= */}
+    <Section padding="lg" background="white" className="py-12 sm:py-16 border-b border-[#EEF0F2] overflow-hidden">
+      <PageContainer className="max-w-[1400px]">
+        {/* ================= DESKTOP RADIAL/STAR LAYOUT ================= */}
         <div
           ref={containerRef}
-          className="hidden md:block relative w-full mx-auto min-h-[860px] pt-6 pb-6 select-none"
+          className="hidden lg:block relative w-full mx-auto h-[780px] xl:h-[820px] select-none"
         >
           {/* Ambient Background Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full bg-[#0A5C3A]/[0.03] blur-3xl pointer-events-none z-0" />
@@ -151,26 +151,26 @@ export function CoreValuesSection() {
                     x2={line.x2}
                     y2={line.y2}
                     stroke="#0A5C3A"
-                    strokeOpacity={isHovered ? 0.75 : 0.2}
-                    strokeWidth={isHovered ? 2.2 : 1.5}
+                    strokeOpacity={isHovered ? 0.5 : 0.12}
+                    strokeWidth={isHovered ? 2 : 1.25}
                     className="transition-all duration-300 ease-out"
                   />
                   {/* Node Dot on Card */}
                   <circle
                     cx={line.x2}
                     cy={line.y2}
-                    r={isHovered ? 4.5 : 3}
+                    r={isHovered ? 4 : 2.5}
                     fill="#0A5C3A"
-                    opacity={isHovered ? 0.9 : 0.35}
+                    opacity={isHovered ? 0.6 : 0.18}
                     className="transition-all duration-300 ease-out"
                   />
                   {/* Node Dot on Center Hub */}
                   <circle
                     cx={line.x1}
                     cy={line.y1}
-                    r={isHovered ? 4 : 2.5}
+                    r={isHovered ? 3.5 : 2}
                     fill="#0A5C3A"
-                    opacity={isHovered ? 0.85 : 0.3}
+                    opacity={isHovered ? 0.55 : 0.15}
                     className="transition-all duration-300 ease-out"
                   />
                 </g>
@@ -186,7 +186,7 @@ export function CoreValuesSection() {
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="w-[330px] sm:w-[370px] lg:w-[400px] h-[68px] sm:h-[76px] rounded-full bg-white border-2 border-[#0A5C3A]/25 shadow-[0_12px_36px_rgba(10,92,58,0.12)] flex items-center justify-center transition-all duration-300 hover:border-[#0A5C3A]/70 hover:shadow-[0_18px_44px_rgba(10,92,58,0.18)]"
+              className="w-[320px] sm:w-[355px] lg:w-[380px] h-[68px] sm:h-[72px] lg:h-[76px] rounded-full bg-white border-2 border-[#0A5C3A]/25 shadow-[0_14px_40px_rgba(10,92,58,0.14)] flex items-center justify-center transition-all duration-300 hover:border-[#0A5C3A]/70 hover:shadow-[0_20px_48px_rgba(10,92,58,0.20)]"
             >
               <h2 className="text-lg sm:text-xl lg:text-[22px] font-extrabold font-headings text-[#0A5C3A] tracking-wider uppercase text-center leading-none select-none">
                 TEMEL DEĞERLERİMİZ
@@ -215,24 +215,24 @@ export function CoreValuesSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
-                  className={`group relative bg-white rounded-[24px] border p-6 sm:p-7 transition-all duration-300 ease-out cursor-default flex flex-col justify-start min-h-[220px] ${
+                  className={`group relative bg-white rounded-[24px] border p-5 sm:p-6 transition-all duration-300 ease-out cursor-default flex flex-col justify-start h-full ${
                     isHovered
-                      ? "-translate-y-1.5 scale-[1.03] border-[#0A5C3A] shadow-[0_18px_40px_rgba(15,17,21,0.10)] z-30"
-                      : "border-[#EEF0F2] shadow-[0_10px_30px_rgba(15,17,21,0.06)] hover:-translate-y-1.5 hover:scale-[1.03] hover:border-[#0A5C3A] hover:shadow-[0_18px_40px_rgba(15,17,21,0.10)]"
+                      ? "-translate-y-1.5 scale-[1.03] border-[#0A5C3A] shadow-[0_20px_44px_rgba(15,17,21,0.14)] z-30"
+                      : "border-[#EEF0F2] shadow-[0_12px_36px_rgba(15,17,21,0.08)] hover:-translate-y-1.5 hover:scale-[1.03] hover:border-[#0A5C3A] hover:shadow-[0_20px_44px_rgba(15,17,21,0.14)]"
                   }`}
                 >
                   {/* Icon Box */}
-                  <div className="w-11 h-11 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center mb-3.5 group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 shrink-0">
-                    <IconComp className="w-5.5 h-5.5 stroke-[2]" />
+                  <div className="w-10 h-10 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center mb-3 group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 shrink-0">
+                    <IconComp className="w-5 h-5 stroke-[2]" />
                   </div>
 
                   {/* Value Title */}
-                  <h3 className="text-xl sm:text-[22px] font-bold font-headings text-[#0F1115] mb-2.5 group-hover:text-[#0A5C3A] transition-colors duration-300 text-left">
+                  <h3 className="text-lg sm:text-xl font-bold font-headings text-[#0F1115] mb-2 group-hover:text-[#0A5C3A] transition-colors duration-300 text-left">
                     {item.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-[1.6] text-left">
+                  <p className="text-xs sm:text-sm text-[#5F6773] font-sans leading-[1.6] text-left">
                     {item.description}
                   </p>
                 </motion.div>
@@ -241,19 +241,22 @@ export function CoreValuesSection() {
           })}
         </div>
 
-        {/* ================= MOBILE VERTICAL STACK ================= */}
-        <div className="block md:hidden w-full max-w-xl mx-auto select-none">
-          {/* Mobile Center Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-extrabold font-headings text-[#0A5C3A] tracking-wider uppercase">
-              TEMEL DEĞERLERİMİZ
-            </h2>
+        {/* ================= MOBILE & TABLET RESPONSIVE LAYOUT ================= */}
+        <div className="block lg:hidden w-full max-w-4xl mx-auto select-none">
+          {/* Header Hub Badge */}
+          <div className="text-center mb-8 sm:mb-10">
+            <div className="inline-block px-6 py-3 sm:px-8 sm:py-3.5 rounded-full bg-white border-2 border-[#0A5C3A]/25 shadow-[0_14px_40px_rgba(10,92,58,0.14)]">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold font-headings text-[#0A5C3A] tracking-wider uppercase leading-none">
+                TEMEL DEĞERLERİMİZ
+              </h2>
+            </div>
           </div>
 
-          {/* Vertical Cards Stack */}
-          <div className="flex flex-col gap-5">
+          {/* Cards Grid: 1 col on mobile (<768px), 2 cols on tablet (768px-1023px) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {CORE_VALUES_DATA.map((item, index) => {
               const IconComp = item.icon;
+              const isFirst = index === 0;
               return (
                 <motion.div
                   key={item.id}
@@ -261,17 +264,17 @@ export function CoreValuesSection() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.35, delay: index * 0.06 }}
-                  className="group bg-white rounded-[24px] border border-[#EEF0F2] p-6 sm:p-7 shadow-[0_10px_30px_rgba(15,17,21,0.06)] transition-all duration-300 hover:border-[#0A5C3A] hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,17,21,0.10)] active:scale-[0.99]"
+                  className={`group bg-white rounded-[24px] border border-[#EEF0F2] p-6 sm:p-7 shadow-[0_12px_36px_rgba(15,17,21,0.08)] transition-all duration-300 hover:border-[#0A5C3A] hover:-translate-y-1 hover:shadow-[0_20px_44px_rgba(15,17,21,0.14)] active:scale-[0.99] flex flex-col ${
+                    isFirst ? "md:col-span-2 md:max-w-xl md:mx-auto md:w-full" : "col-span-1"
+                  }`}
                 >
-                  <div className="flex items-center gap-3.5 mb-3.5">
-                    <div className="w-11 h-11 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 shrink-0">
-                      <IconComp className="w-5.5 h-5.5 stroke-[2]" />
-                    </div>
-                    <h3 className="text-xl sm:text-[22px] font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors duration-300">
-                      {item.title}
-                    </h3>
+                  <div className="w-11 h-11 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center mb-3.5 group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 shrink-0">
+                    <IconComp className="w-5.5 h-5.5 stroke-[2]" />
                   </div>
-                  <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-[1.6]">
+                  <h3 className="text-xl sm:text-[22px] font-bold font-headings text-[#0F1115] mb-2.5 group-hover:text-[#0A5C3A] transition-colors duration-300 text-left">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-[1.6] text-left">
                     {item.description}
                   </p>
                 </motion.div>
