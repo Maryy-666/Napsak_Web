@@ -1,26 +1,25 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import {
   ArrowRight,
-  Award,
-  BookOpen,
   Calendar,
   Check,
   CheckCircle2,
   MapPin,
-  Mail,
-  Phone,
   Send,
   Ticket,
-  User,
   Users,
   X,
   Zap,
 } from "lucide-react";
 import { Badge, Button, PageContainer, Section } from "../ui";
 import { EventItem, EventsRepository } from "../../lib/eventsStore";
+import { getCurrentUser, getMemberProfile } from "../../lib/memberAuth";
+import { ROUTES } from "../../constants/routes";
+import { PageBackground } from "../common/PageBackground";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -31,14 +30,8 @@ const fadeInUp: Variants = {
   }),
 };
 
-const categoryColorMap: Record<string, string> = {
-  teknoloji: "bg-[#0A5C3A]/10 text-[#0A5C3A] border-[#0A5C3A]/25",
-  sanat: "bg-[#0D7A4D]/10 text-[#0D7A4D] border-[#0D7A4D]/25",
-  "cevre-saglik": "bg-[#128C59]/10 text-[#128C59] border-[#128C59]/25",
-  programlar: "bg-[#08472D]/10 text-[#08472D] border-[#08472D]/25",
-};
-
 export default function EtkinliklerContent() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"aktif" | "gecmis">("aktif");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -70,19 +63,31 @@ export default function EtkinliklerContent() {
   const activeCount = events.filter((event) => event.status === "aktif").length;
   const pastCount = events.filter((event) => event.status === "gecmis").length;
 
+  const openApplication = (event: EventItem) => {
+    const currentUser = getCurrentUser();
+
+    if (!currentUser) {
+      router.push(`${ROUTES.LOGIN}?returnTo=${encodeURIComponent(ROUTES.ETKINLIKLER)}`);
+      return;
+    }
+
+    const profile = getMemberProfile(currentUser);
+    setFullName(profile.fullName || currentUser.name || "");
+    setEmail(profile.email || currentUser.email);
+    setPhone(profile.phone);
+    setCity(profile.city);
+    setSchool(profile.school);
+    setDepartment(profile.department);
+    setGrade(profile.grade);
+    setNote("");
+    setApplyingEvent(event);
+    setIsSubmitted(false);
+  };
+
   const handleFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (
-      !fullName.trim() ||
-      !email.trim() ||
-      !phone.trim() ||
-      !city.trim() ||
-      !school.trim() ||
-      !department.trim() ||
-      !grade.trim() ||
-      !note.trim()
-    ) {
-      setFormError("Lütfen tüm zorunlu (*) alanları eksiksiz doldurunuz.");
+    if (!note.trim()) {
+      setFormError("Lütfen etkinlikten beklentini kısaca yaz.");
       return;
     }
 
@@ -126,8 +131,8 @@ export default function EtkinliklerContent() {
   };
 
   return (
-    <div className="w-full flex flex-col bg-white overflow-hidden" id="etkinlikler-root">
-      <Section padding="none" background="white" className="pt-16 sm:pt-22 pb-16 sm:pb-22 border-b border-[#EEF0F2] relative">
+    <PageBackground id="etkinlikler-root" className="px-0 py-0">
+      <Section padding="none" background="transparent" className="pt-16 sm:pt-22 pb-9 sm:pb-12 border-b border-[#EEF0F2] relative">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -152,16 +157,16 @@ export default function EtkinliklerContent() {
         </PageContainer>
       </Section>
 
-      <Section padding="none" background="subtle" className="py-10 sm:py-14 border-b border-[#EEF0F2]">
+      <Section padding="none" background="transparent" className="pt-4 sm:pt-6 pb-10 sm:pb-14 border-b border-[#EEF0F2]">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 select-none mb-8 rounded-[24px] border border-[#E5E7EB] bg-white p-3 sm:p-4 shadow-[0_14px_34px_rgba(15,17,21,0.05)]">
-            <div className="flex items-center gap-2 p-1 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB] w-full lg:w-auto">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 select-none mb-8 rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,17,21,0.045)]">
+            <div className="flex items-center gap-2 w-full lg:w-auto">
               <button
                 onClick={() => setActiveTab("aktif")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold font-headings transition-all duration-200 flex items-center justify-center gap-2 ${
+                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
                   activeTab === "aktif"
-                    ? "bg-[#0F1115] text-white shadow-[0_10px_24px_rgba(15,17,21,0.16)]"
-                    : "bg-white text-[#5F6773] border border-[#E5E7EB] hover:text-[#0F1115] hover:border-[#C9D8D0]"
+                    ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
+                    : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
                 }`}
               >
                 <Zap className="w-3.5 h-3.5 stroke-[2]" />
@@ -175,10 +180,10 @@ export default function EtkinliklerContent() {
 
               <button
                 onClick={() => setActiveTab("gecmis")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold font-headings transition-all duration-200 flex items-center justify-center gap-2 ${
+                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
                   activeTab === "gecmis"
-                    ? "bg-[#0F1115] text-white shadow-[0_10px_24px_rgba(15,17,21,0.18)]"
-                    : "bg-white text-[#5F6773] border border-[#E5E7EB] hover:text-[#0F1115] hover:border-[#C9D8D0]"
+                    ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
+                    : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5 stroke-[2]" />
@@ -204,7 +209,7 @@ export default function EtkinliklerContent() {
                   onClick={() => setSelectedCategory(category.id)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-sans shrink-0 transition-all ${
                     selectedCategory === category.id
-                      ? "bg-[#0F1115] text-white font-bold shadow-sm"
+                      ? "bg-[#0A5C3A] text-white font-semibold shadow-sm"
                       : "bg-[#F8FAFC] text-[#4B5563] border border-[#E5E7EB] hover:bg-white hover:border-[#0A5C3A]/35 hover:text-[#0F1115]"
                   }`}
                 >
@@ -227,7 +232,6 @@ export default function EtkinliklerContent() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 select-none">
               {filteredEvents.map((event, index) => {
-                const catStyle = categoryColorMap[event.category] || categoryColorMap.programlar;
                 return (
                   <motion.div
                     key={event.id}
@@ -242,23 +246,7 @@ export default function EtkinliklerContent() {
                       <div className="h-1 w-full bg-[#0A5C3A]" />
                       <div className="p-5 sm:p-6 flex flex-col justify-between flex-1">
                         <div>
-                          <div className="flex items-center justify-between gap-2 mb-4 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-2.5">
-                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg font-sans border ${catStyle}`}>
-                              {event.categoryLabel}
-                            </span>
-                            {event.status === "aktif" ? (
-                              <span className="flex items-center gap-1.5 text-[10.5px] font-bold text-[#0A5C3A] bg-white px-2.5 py-1 rounded-full border border-[#0A5C3A]/20">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#0A5C3A] animate-pulse" />
-                                Yayında
-                              </span>
-                            ) : (
-                              <span className="text-[10.5px] font-bold px-2.5 py-1 rounded-full bg-white text-slate-600 font-sans border border-slate-200">
-                                Tamamlandı
-                              </span>
-                            )}
-                          </div>
-
-                          <h3 className="text-lg sm:text-xl font-bold font-headings text-[#0F1115] mb-4 group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2 min-h-[56px]">
+                          <h3 className="text-lg sm:text-xl font-semibold font-headings text-[#0F1115] mb-4 group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2 min-h-[56px]">
                             {event.title}
                           </h3>
 
@@ -279,14 +267,10 @@ export default function EtkinliklerContent() {
                         </div>
 
                         <div className="pt-4 border-t border-[#EEF0F2] mt-auto">
-                          <div className="mb-3 text-[11px] font-bold font-sans text-[#5F6773]">
-                            <span>{event.badge}</span>
-                          </div>
                           {event.status === "aktif" ? (
                             <button
                               onClick={() => {
-                                setApplyingEvent(event);
-                                setIsSubmitted(false);
+                                openApplication(event);
                               }}
                               className="w-full h-10 rounded-xl bg-gradient-to-r from-[#0A5C3A] to-[#128C59] hover:from-[#08472D] hover:to-[#0A5C3A] text-white font-bold text-xs transition-all shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 flex items-center justify-center gap-2 tracking-wide"
                             >
@@ -325,7 +309,7 @@ export default function EtkinliklerContent() {
       />
 
       <DetailModal event={detailEvent} onClose={() => setDetailEvent(null)} />
-    </div>
+    </PageBackground>
   );
 }
 
@@ -386,7 +370,7 @@ function ApplyModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25 }}
-            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-8 z-10 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-7 z-10 max-h-[90vh] overflow-y-auto"
           >
             <button
               onClick={onClose}
@@ -396,7 +380,7 @@ function ApplyModal({
             </button>
 
             {!isSubmitted ? (
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-5">
                 <div className="space-y-2 mb-5 pb-3.5 border-b border-[#EEF0F2]">
                   <span className="inline-flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-wider text-[#0A5C3A] bg-[#0A5C3A]/10 px-3 py-1 rounded-lg border border-[#0A5C3A]/20">
                     <Ticket className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -417,31 +401,42 @@ function ApplyModal({
                   </div>
                 )}
 
-                <div className="space-y-3.5 pt-2">
-                  <Field icon={User} label="Ad Soyad" required value={values.fullName} onChange={setters.setFullName} placeholder="Adınız ve soyadınız" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Field icon={Mail} label="E-posta Adresi" required type="email" value={values.email} onChange={setters.setEmail} placeholder="ornek@domain.com" />
-                    <Field icon={Phone} label="Telefon Numarası" required type="tel" value={values.phone} onChange={setters.setPhone} placeholder="05XX XXX XX XX" />
+                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#0F1115]">Başvuru bilgilerin</h3>
+                      <p className="mt-1 text-xs font-normal text-[#5F6773]">Profilindeki bilgilerle başvuru yapılacak.</p>
+                    </div>
+                    <Button
+                      href={ROUTES.PROFIL}
+                      variant="secondary"
+                      size="sm"
+                      className="h-8 rounded-lg text-xs font-semibold"
+                    >
+                      Güncelle
+                    </Button>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Field icon={MapPin} label="Yaşadığınız Şehir" required value={values.city} onChange={setters.setCity} placeholder="Örn: İstanbul" />
-                    <Field icon={Award} label="Sınıf / Seviye" required value={values.grade} onChange={setters.setGrade} placeholder="Örn: 2. Sınıf" />
+
+                  <div className="grid gap-2 text-xs sm:grid-cols-2">
+                    <SummaryItem label="Ad Soyad" value={values.fullName || "Profilde yok"} />
+                    <SummaryItem label="E-posta" value={values.email || "Profilde yok"} />
+                    <SummaryItem label="Telefon" value={values.phone || "Profilde yok"} />
+                    <SummaryItem label="Okul / Bölüm" value={[values.school, values.department].filter(Boolean).join(" / ") || "Profilde yok"} />
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Field icon={BookOpen} label="Okul / Üniversite" required value={values.school} onChange={setters.setSchool} placeholder="Okulunuz" />
-                    <Field icon={BookOpen} label="Bölüm" required value={values.department} onChange={setters.setDepartment} placeholder="Bölümünüz" />
-                  </div>
+                </div>
+
+                <div className="space-y-3 pt-1">
                   <div>
-                    <label className="text-xs font-bold text-[#0F1115] font-headings mb-1 block">
-                      Etkinlikten Beklentiniz <span className="text-rose-500">*</span>
+                    <label className="text-sm font-semibold text-[#0F1115] font-headings mb-2 block">
+                      Bu etkinlikten beklentin nedir? <span className="text-rose-500">*</span>
                     </label>
                     <textarea
-                      rows={3}
+                      rows={4}
                       required
-                      placeholder="Bu etkinlikten beklentileriniz ve katmak istediğiniz değerler..."
+                      placeholder="Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
                       value={values.note}
                       onChange={(event) => setters.setNote(event.target.value)}
-                      className="w-full p-3 rounded-xl border border-[#EEF0F2] text-xs font-sans text-[#0F1115] focus:outline-none focus:border-[#0A5C3A] focus:ring-1 focus:ring-[#0A5C3A]"
+                      className="w-full p-3.5 rounded-xl border border-[#E5E7EB] text-sm font-sans font-normal text-[#0F1115] leading-relaxed focus:outline-none focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
                     />
                   </div>
                 </div>
@@ -460,20 +455,20 @@ function ApplyModal({
                 </div>
               </form>
             ) : (
-              <div className="text-center py-6 space-y-4">
-                <div className="w-16 h-16 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center mx-auto shadow-xs border border-[#0A5C3A]/20">
-                  <Check className="w-8 h-8 stroke-[3]" />
+              <div className="text-center py-3 sm:py-4 space-y-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#EEF7F3] text-[#0A5C3A] flex items-center justify-center mx-auto border border-[#C9D8D0]">
+                  <Check className="w-7 h-7 stroke-[2.5]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-extrabold text-[#0F1115] font-headings mb-1.5">
-                    Başvurunuz Başarıyla Alındı!
+                  <h3 className="text-lg sm:text-xl font-semibold text-[#0F1115] font-headings mb-2">
+                    Başvurunuz alındı
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#5F6773] font-sans font-medium max-w-sm mx-auto leading-relaxed">
-                    {event.title} için kaydınız oluşturulmuştur.
+                  <p className="text-sm text-[#5F6773] font-sans font-normal max-w-sm mx-auto leading-relaxed">
+                    {event.title} için başvurun kaydedildi.
                   </p>
                 </div>
-                <Button onClick={onClose} variant="primary" size="md" className="w-full justify-center font-bold text-xs h-11 rounded-xl mt-2">
-                  Tamamdır, Teşekkürler
+                <Button onClick={onClose} variant="primary" size="md" className="w-full justify-center font-semibold text-sm h-11 rounded-xl mt-1">
+                  Tamam
                 </Button>
               </div>
             )}
@@ -484,39 +479,11 @@ function ApplyModal({
   );
 }
 
-function Field({
-  icon: Icon,
-  label,
-  required = false,
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  required?: boolean;
-  type?: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-}) {
+function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <label className="text-xs font-bold text-[#0F1115] font-headings mb-1 block">
-        {label} {required && <span className="text-rose-500">*</span>}
-      </label>
-      <div className="relative">
-        <Icon className="w-4 h-4 text-[#5F6773] absolute left-3.5 top-3 stroke-[2]" />
-        <input
-          type={type}
-          required={required}
-          placeholder={placeholder}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#EEF0F2] text-xs font-sans text-[#0F1115] focus:outline-none focus:border-[#0A5C3A] focus:ring-1 focus:ring-[#0A5C3A]"
-        />
-      </div>
+    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5">
+      <p className="text-[10.5px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
+      <p className="mt-1 truncate text-xs font-medium text-[#0F1115]">{value}</p>
     </div>
   );
 }

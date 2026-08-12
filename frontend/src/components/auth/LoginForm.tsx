@@ -9,6 +9,7 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { PasswordInput } from "./PasswordInput";
 import { Logo } from "../common/Logo";
+import { ROUTES } from "../../constants/routes";
 
 // Zod Validation Schema for Login Credentials
 const loginSchema = z.object({
@@ -232,19 +233,30 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.30 }}
-          className="w-full text-center flex flex-col items-center"
+          className="w-full text-center flex flex-col items-center gap-2"
         >
-          <p className="text-sm text-[#5F6773] select-none font-medium mb-[18px]">
-            Henüz N'apsak? topluluğunun bir parçası değil misin?
+          <p className="text-sm text-[#5F6773] select-none font-medium">
+            Hesabınız yok mu?
           </p>
-          <Button
-            href="/basvuru"
-            variant="ghost"
-            disabled={disabled}
-            className="text-base font-semibold text-[#0A5C3A] hover:text-[#0D7449] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
-          >
-            Topluluğa Katıl →
-          </Button>
+          <div className="flex items-center justify-center gap-4 text-sm font-semibold">
+            <Button
+              href={ROUTES.KAYIT}
+              variant="ghost"
+              disabled={disabled}
+              className="text-base font-semibold text-[#0A5C3A] hover:text-[#0D7449] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
+            >
+              Kayıt Ol →
+            </Button>
+            <span className="text-[#D1D5DB]">•</span>
+            <Button
+              href={ROUTES.BASVURU}
+              variant="ghost"
+              disabled={disabled}
+              className="text-sm font-semibold text-[#5F6773] hover:text-[#0A5C3A] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
+            >
+              Topluluğa Katıl
+            </Button>
+          </div>
         </motion.div>
 
         {/* Pin security caption message */}

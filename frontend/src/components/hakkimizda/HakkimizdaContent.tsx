@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Badge, Button, Card, PageContainer, Section } from "../ui";
 import { ROUTES } from "../../constants/routes";
+import { PageBackground } from "../common/PageBackground";
 
 // Kaydırdıkça süzülerek açılan Framer Motion varyantı
 const fadeInUp: Variants = {
@@ -167,9 +168,45 @@ const JOINING_STEPS = [
   },
 ];
 
+// --- MERKEZİ GÖRSEL SLIDESHOW ARRAY'İ ---
+const ABOUT_SLIDES = [
+  {
+    src: "/images/news-ani-cover.jpg",
+    alt: "N'apsak? Gençlik Topluluğu Anı Defteri Atölyesi",
+    tag: "Gençlik Hareketi",
+    caption: "Bilgiyi tecrübeye, merakı üretime dönüştüren bir gençlik alanı.",
+  },
+  {
+    src: "/images/news-kariyer-cover.jpg",
+    alt: "N'apsak? Gençlik Topluluğu Kariyer Buluşması",
+    tag: "Gelişim & Zirve",
+    caption: "Gençlerin kendi geleceğinin mimarı olduğu özgür bir alan.",
+  },
+  {
+    src: "/images/news-kil-main.png",
+    alt: "N'apsak? Gençlik Topluluğu Sanat Atölyesi",
+    tag: "Sanat & Atölye",
+    caption: "Resim, müzik, seramik ve dijital sanatla üretimi destekliyoruz.",
+  },
+  {
+    src: "/images/news-23nisan-cover.jpg",
+    alt: "N'apsak? Gençlik Topluluğu 23 Nisan Buluşması",
+    tag: "Topluluk Ruhu",
+    caption: "Birlikte gelişen, paylaşan ve geleceğe yön veren gençlik.",
+  },
+  {
+    src: "/images/news-cd-cover.jpg",
+    alt: "N'apsak? Gençlik Topluluğu Sosyal Buluşma Etkinliği",
+    tag: "Sosyal Fayda",
+    caption: "Küçük adımlarla büyük değişimler yaratan tutkulu topluluk.",
+  },
+];
+
 export default function HakkimizdaContent() {
   const [wordIndex, setWordIndex] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const slideTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -177,6 +214,37 @@ export default function HakkimizdaContent() {
     }, 2400);
     return () => clearInterval(interval);
   }, []);
+
+  const resetSlideTimer = useCallback(() => {
+    if (slideTimerRef.current) {
+      clearInterval(slideTimerRef.current);
+    }
+    slideTimerRef.current = setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % ABOUT_SLIDES.length);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    resetSlideTimer();
+    return () => {
+      if (slideTimerRef.current) clearInterval(slideTimerRef.current);
+    };
+  }, [resetSlideTimer]);
+
+  const handleNextSlide = () => {
+    setSlideIndex((prev) => (prev + 1) % ABOUT_SLIDES.length);
+    resetSlideTimer();
+  };
+
+  const handlePrevSlide = () => {
+    setSlideIndex((prev) => (prev - 1 + ABOUT_SLIDES.length) % ABOUT_SLIDES.length);
+    resetSlideTimer();
+  };
+
+  const goToSlide = (index: number) => {
+    setSlideIndex(index);
+    resetSlideTimer();
+  };
 
   const currentWord = DYNAMIC_WORDS[wordIndex];
 
@@ -189,11 +257,11 @@ export default function HakkimizdaContent() {
   };
 
   return (
-    <div className="w-full flex flex-col bg-white overflow-hidden" id="hakkimizda-root">
+    <PageBackground id="hakkimizda-root" className="select-none px-0 py-0">
       {/* -------------------------------------------------------------
           1. GİRİŞ (HERO): FERAH ÜST/ALT BOŞLUK
       ------------------------------------------------------------- */}
-      <Section padding="none" background="white" className="pt-16 sm:pt-24 pb-16 sm:pb-24 border-b border-[#EEF0F2] relative">
+      <Section padding="none" background="transparent" className="pt-16 sm:pt-24 pb-16 sm:pb-24 border-b border-[#EEF0F2] relative">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -250,7 +318,7 @@ export default function HakkimizdaContent() {
       {/* -------------------------------------------------------------
           2. BİZ KİMİZ?: FERAH ÜST/ALT BOŞLUK
       ------------------------------------------------------------- */}
-      <Section id="biz-kimiz" padding="none" background="subtle" className="py-16 sm:py-22 lg:py-24 border-b border-[#EEF0F2]">
+      <Section id="biz-kimiz" padding="none" background="transparent" className="py-16 sm:py-22 lg:py-24 border-b border-[#EEF0F2]">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             {/* Sol Taraf: Scroll Reveal */}
@@ -291,7 +359,7 @@ export default function HakkimizdaContent() {
               </div>
             </motion.div>
 
-            {/* Sağ Taraf: Fotoğraf Çerçevesi - Scroll Reveal */}
+            {/* Sağ Taraf: Fotoğraf Çerçevesi - Otomatik Crossfade Slideshow */}
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -302,20 +370,68 @@ export default function HakkimizdaContent() {
             >
               <div className="relative rounded-[24px] overflow-hidden border border-[#EEF0F2] bg-white p-3 shadow-[0_14px_36px_rgba(15,17,21,0.06)]">
                 <div className="relative h-80 sm:h-96 lg:h-[400px] w-full rounded-[18px] overflow-hidden group">
-                  <img
-                    src="/images/news-ani-cover.jpg"
-                    alt="N'apsak Gençlik Topluluğu"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent flex items-end p-6">
-                    <div className="text-white">
-                      <span className="bg-[#0A5C3A] text-white text-[11px] font-extrabold px-3.5 py-1 rounded-md uppercase tracking-wider mb-2.5 inline-block">
-                        Gençlik Hareketi
-                      </span>
-                      <p className="text-sm font-medium text-white/95 leading-relaxed">
-                        Bilgiyi tecrübeye, merakı üretime dönüştüren bir gençlik alanı.
-                      </p>
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.img
+                      key={slideIndex}
+                      src={ABOUT_SLIDES[slideIndex].src}
+                      alt={ABOUT_SLIDES[slideIndex].alt}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </AnimatePresence>
+
+                  {/* Dark Overlay with Tag & Caption */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-6 z-10 pointer-events-none">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={slideIndex}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.4 }}
+                        className="text-white"
+                      >
+                        <span className="bg-[#0A5C3A] text-white text-[11px] font-extrabold px-3.5 py-1 rounded-md uppercase tracking-wider mb-2.5 inline-block">
+                          {ABOUT_SLIDES[slideIndex].tag}
+                        </span>
+                        <p className="text-sm font-medium text-white/95 leading-relaxed">
+                          {ABOUT_SLIDES[slideIndex].caption}
+                        </p>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Navigation Controls: Arrows & Indicators */}
+                  <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/20">
+                    <button
+                      onClick={handlePrevSlide}
+                      aria-label="Önceki Görsel"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+                    </button>
+                    <div className="flex items-center gap-1 px-1">
+                      {ABOUT_SLIDES.map((_: unknown, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => goToSlide(idx)}
+                          aria-label={`Görsel ${idx + 1}`}
+                          className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                            idx === slideIndex ? "w-4 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+                          }`}
+                        />
+                      ))}
                     </div>
+                    <button
+                      onClick={handleNextSlide}
+                      aria-label="Sonraki Görsel"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
+                    >
+                      <ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -730,6 +846,6 @@ export default function HakkimizdaContent() {
           </motion.div>
         </PageContainer>
       </Section>
-    </div>
+    </PageBackground>
   );
 }

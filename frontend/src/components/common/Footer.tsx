@@ -56,9 +56,16 @@ export const Footer: React.FC = () => {
           })}
         </nav>
 
-        {/* Copyright */}
-        <div className="text-xs text-[#9FA6B2] text-center md:text-right font-sans font-normal">
-          © {currentYear} {SITE_CONFIG.name}. Tüm hakları saklıdır.
+        {/* Copyright & Legal Links */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 text-xs text-[#9FA6B2] text-center md:text-right font-sans font-normal">
+          <Link
+            href={ROUTES.KVKK}
+            className="hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A]/12 rounded-sm"
+          >
+            KVKK Aydınlatma Metni
+          </Link>
+          <span className="hidden sm:inline">•</span>
+          <span>© {currentYear} {SITE_CONFIG.name}. Tüm hakları saklıdır.</span>
         </div>
       </div>
     </footer>

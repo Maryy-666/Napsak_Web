@@ -253,15 +253,24 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Dual Action Buttons: Giriş Yap & Topluluğa Katıl */}
-        <div className="hidden md:flex items-center gap-3">
+        {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
+        <div className="hidden md:flex items-center gap-2 lg:gap-3">
           <Button
             href={ROUTES.LOGIN}
             variant="secondary"
             size="sm"
-            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-4 h-9"
+            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
           >
             Giriş Yap
+          </Button>
+
+          <Button
+            href={ROUTES.KAYIT}
+            variant="secondary"
+            size="sm"
+            className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
+          >
+            Kayıt Ol
           </Button>
 
           <Button
@@ -269,7 +278,7 @@ export const Navbar: React.FC = () => {
             variant="primary"
             size="sm"
             rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
-            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-4 h-9 shadow-md"
+            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
           >
             Topluluğa Katıl
           </Button>
@@ -403,17 +412,30 @@ export const Navbar: React.FC = () => {
                 })}
               </nav>
 
-              <div className="pt-4 border-t border-white/15 flex flex-col gap-3">
-                <Button
-                  href={ROUTES.LOGIN}
-                  variant="secondary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold"
-                >
-                  Giriş Yap
-                </Button>
+              <div className="pt-4 border-t border-white/15 flex flex-col gap-2.5">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    href={ROUTES.LOGIN}
+                    variant="secondary"
+                    size="lg"
+                    fullWidth
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
+                  >
+                    Giriş Yap
+                  </Button>
+
+                  <Button
+                    href={ROUTES.KAYIT}
+                    variant="secondary"
+                    size="lg"
+                    fullWidth
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
+                  >
+                    Kayıt Ol
+                  </Button>
+                </div>
 
                 <Button
                   href={ROUTES.BASVURU}

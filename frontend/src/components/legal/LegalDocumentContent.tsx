@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ShieldCheck, FileText, Lock, CheckCircle2 } from "lucide-react";
+import { PageBackground } from "../common/PageBackground";
 
 interface LegalDocumentProps {
   title: string;
@@ -20,9 +21,9 @@ export default function LegalDocumentContent({
   sections,
 }: LegalDocumentProps) {
   return (
-    <div className="w-full bg-[#F8FAFC] min-h-screen text-[#0F1115] pb-24">
+    <PageBackground className="px-0 py-0 pb-24 text-[#0F1115]">
       {/* Banner */}
-      <section className="bg-[#063823] text-white pt-24 pb-16 md:pt-28 md:pb-20 relative overflow-hidden">
+      <section className="w-full bg-[#063823] text-white pt-24 pb-16 md:pt-28 md:pb-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.25),transparent_60%)] pointer-events-none" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-emerald-300 text-xs font-semibold mb-4 border border-white/15">
@@ -42,8 +43,8 @@ export default function LegalDocumentContent({
       </section>
 
       {/* Body */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
-        <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200/80 space-y-10">
+      <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 sm:p-12 shadow-xl border border-slate-200/80 space-y-10">
           {sections.map((section, idx) => (
             <div key={idx} className="space-y-4 pb-8 border-b border-slate-100 last:border-b-0 last:pb-0">
               <h2 className="text-xl font-bold font-headings text-slate-900 flex items-center gap-2">
@@ -68,6 +69,6 @@ export default function LegalDocumentContent({
           ))}
         </div>
       </main>
-    </div>
+    </PageBackground>
   );
 }

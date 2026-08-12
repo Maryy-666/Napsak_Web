@@ -18,6 +18,8 @@ export const ROUTES = {
   HABERLER: "/haberler",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
+  PROFIL: "/profil",
+  KAYIT: "/kayit",
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

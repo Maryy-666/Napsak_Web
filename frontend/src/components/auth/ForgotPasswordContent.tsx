@@ -11,6 +11,7 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
+import { PageBackground } from "../common/PageBackground";
 
 // Form validation schema
 const schema = z.object({
@@ -235,34 +236,11 @@ export default function ForgotPasswordContent() {
 
   return (
     <LayoutGroup id="forgot-password-layout-group">
-      <div
-        className="relative min-h-[calc(100vh-5rem)] w-full flex flex-col justify-center items-center bg-white px-4 py-12 overflow-hidden select-none"
-        id="forgot-password-page-root"
-      >
+      <PageBackground id="forgot-password-page-root" className="justify-center select-none" showWatermark={false} glowOpacity={glowOpacity}>
         {/* Fullscreen Interaction Blocker ONLY active during initial transition animation */}
         {(phase === "freeze" || phase === "logo-move") && (
           <div className="fixed inset-0 z-50 pointer-events-auto cursor-wait bg-transparent" />
         )}
-
-        {/* Background Visual Elements */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(10,92,58,0.04)_0%,transparent_75%)] pointer-events-none z-0" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0" />
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(10,92,58,0.14)_2px,transparent_2px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_80%,transparent_100%)] pointer-events-none z-0" />
-        <div className="absolute inset-0 bg-noise opacity-[0.015] pointer-events-none mix-blend-overlay z-0" />
-
-        {/* Spotlight light glows */}
-        <motion.div
-          animate={{ opacity: glowOpacity }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none z-0"
-          style={{ backgroundColor: "rgba(10, 92, 58, 0.28)" }}
-        />
-        <motion.div
-          animate={{ opacity: glowOpacity }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-[550px] h-[550px] rounded-full blur-[130px] pointer-events-none z-0"
-          style={{ backgroundColor: "rgba(10, 92, 58, 0.32)" }}
-        />
 
         {/* Shared watermark / success logo */}
         <motion.div
@@ -511,7 +489,7 @@ export default function ForgotPasswordContent() {
             </div>
           </div>
         )}
-      </div>
+      </PageBackground>
     </LayoutGroup>
   );
 }
