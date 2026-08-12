@@ -33,12 +33,12 @@ export const SITE_CONFIG = {
     {
       title: "Hakkımızda",
       href: ROUTES.HAKKIMIZDA,
-      status: "coming-soon",
+      status: "active",
     },
     {
       title: "Etkinlikler",
       href: ROUTES.ETKINLIKLER,
-      status: "coming-soon",
+      status: "active",
     },
     {
       title: "Çalışmalar",
@@ -74,8 +74,8 @@ export const SITE_CONFIG = {
         },
         {
           title: "TR Haritası",
-          href: ROUTES.HARITA,
-          status: "coming-soon",
+          href: "/#harita",
+          status: "active",
         },
         {
           title: "SSS",

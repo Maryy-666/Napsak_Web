@@ -123,6 +123,9 @@ export default function HomeContent() {
       {/* 2.5 ISTATISTIK BANDI */}
       <StatsSection />
 
+      {/* 2.6 BİZ HER YERDEYİZ (TÜRKİYE HARİTASI) */}
+      <TurkeyMapSection />
+
       {/* 3. KISA TOPLULUK TANITIMI (VİZYON & MİSYON) */}
       <Section padding="md" background="subtle">
         <PageContainer>
@@ -173,8 +176,7 @@ export default function HomeContent() {
             </Card>
           </div>
         </PageContainer>
-      </Section>
-       <TurkeyMapSection /> 
+      </Section> 
 
       {/* 3.5 TEMEL DEĞERLERİMİZ (RADIAL CORE VALUES SECTION) */}
       <CoreValuesSection />

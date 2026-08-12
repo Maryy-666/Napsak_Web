@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { NEWS_DATA } from "../../data/news";
+import { ROUTES } from "../../constants/routes";
 import { PageContainer, Section } from "../ui";
 
 export const NewsSection: React.FC = () => {
@@ -82,8 +83,15 @@ export const NewsSection: React.FC = () => {
             </motion.p>
           </div>
 
-          {/* Navigation Controls (Arrows) */}
+          {/* Navigation Controls (Arrows) & All Events Button */}
           <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href={ROUTES.ETKINLIKLER}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0A5C3A] text-white text-xs font-bold shadow-md hover:bg-[#084A2F] transition-all"
+            >
+              <span>Tüm Etkinlikler</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
             <button
               type="button"
               onClick={handlePrev}
