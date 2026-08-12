@@ -155,7 +155,6 @@ export function TurkeyMapSection() {
           </ComposableMap>
 
         </div>
-      </div>
     </section>
   );
 }
