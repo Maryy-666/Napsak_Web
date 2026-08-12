@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Calendar,
   ChevronRight,
@@ -16,6 +16,7 @@ import {
   Menu,
   MessageSquare,
   Moon,
+  Network,
   ShieldCheck,
   Sparkles,
   Sun,
@@ -25,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { AdminThemeProvider, useAdminTheme } from "../../context/AdminThemeContext";
+import { clearCurrentUser, getCurrentUser } from "../../lib/memberAuth";
 
 type NavItem = {
   title: string;
@@ -40,6 +42,7 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { title: "Genel Bakış", href: "/admin", icon: LayoutDashboard, badge: null, published: true },
       { title: "Etkinlik Yönetimi", href: "/admin/etkinlikler", icon: Calendar, badge: "3 Aktif", published: true },
+      { title: "Topluluk Yönetimi", href: "/admin/topluluklar", icon: Network, badge: null, published: true },
       { title: "Etkinlik Başvuruları", href: "/admin/basvurular", icon: Ticket, badge: "Yakında", published: false },
       { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: "Yakında", published: false },
       { title: "İçerik Yönetimi", href: "/admin/icerik", icon: FileText, badge: "Yakında", published: false },
@@ -59,8 +62,36 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isAllowed, setIsAllowed] = useState(false);
   const { toggleTheme, isDark } = useAdminTheme();
+
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (currentUser?.role === "admin") {
+      setIsAllowed(true);
+      return;
+    }
+
+    router.replace("/login?returnTo=/admin");
+  }, [router]);
+
+  const handleLogout = () => {
+    if (!confirm("Çıkış yapmak istediğinize emin misiniz?")) return;
+    clearCurrentUser();
+    router.replace("/login");
+  };
+
+  if (!isAllowed) {
+    return (
+      <div className="min-h-screen bg-[#F4F6F8] flex items-center justify-center p-6">
+        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-600 shadow-sm">
+          Admin paneli kontrol ediliyor...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -251,13 +282,14 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
               <ShieldCheck className="w-4.5 h-4.5 text-emerald-500 stroke-[2]" />
               <span>Yönetici Paneli</span>
             </div>
-            <Link
-              href="/login"
+            <button
+              type="button"
+              onClick={handleLogout}
               className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
               title="Çıkış Yap"
             >
               <LogOut className="w-4.5 h-4.5 stroke-[2]" />
-            </Link>
+            </button>
           </div>
         </header>
 

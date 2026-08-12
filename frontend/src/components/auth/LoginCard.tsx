@@ -6,10 +6,12 @@ import { Card } from "../ui/Card";
 import { LoginForm } from "./LoginForm";
 import { Logo } from "../common/Logo";
 import { TransitionPhase } from "./LoginPageContent";
+import { AuthUser } from "../../lib/memberAuth";
 
 interface LoginCardProps {
   phase: TransitionPhase;
   setPhase: (phase: TransitionPhase) => void;
+  onLoginSuccess?: (user: AuthUser) => void;
   isMobile?: boolean;
   springConfig?: any;
 }
@@ -17,6 +19,7 @@ interface LoginCardProps {
 export const LoginCard: React.FC<LoginCardProps> = ({
   phase,
   setPhase,
+  onLoginSuccess,
   isMobile = false,
   springConfig,
 }) => {
@@ -57,7 +60,10 @@ export const LoginCard: React.FC<LoginCardProps> = ({
               className="w-full max-w-[520px] px-8 pt-8 pb-6 sm:px-12 sm:pt-10 sm:pb-6 rounded-[20px] sm:rounded-[24px] bg-white/84 backdrop-blur-[20px] border border-white/65 !shadow-[0_30px_80px_rgba(15,17,21,0.08)]"
             >
               <LoginForm
-                onSubmitSuccess={() => setPhase("freeze")}
+                onSubmitSuccess={(user) => {
+                  onLoginSuccess?.(user);
+                  setPhase("freeze");
+                }}
                 isFrozen={phase === "freeze" || (phase as string) === "dissolve"}
               />
             </Card>

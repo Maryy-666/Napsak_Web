@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Calendar, Clock, FileCheck2, FileText, Users } from "lucide-react";
+import { ArrowRight, Calendar, Clock, FileCheck2, FileText, Network, Users } from "lucide-react";
 
 export default function AdminDashboardPage() {
   return (
@@ -82,6 +82,23 @@ export default function AdminDashboardPage() {
           </h3>
           <p className="text-xs opacity-75 mt-2 mb-4 leading-relaxed">
             KVKK ve yasal metinlerin yayın durumunu panel üzerinden takip edin.
+          </p>
+          <div className="flex items-center gap-2 text-xs font-bold text-[#0A5C3A]">
+            <span>Yönetime Git</span>
+            <ArrowRight className="w-4 h-4" />
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/topluluklar"
+          className="p-6 rounded-2xl border border-[#0A5C3A]/20 bg-[#0A5C3A]/5 hover:border-[#0A5C3A]/50 transition-all group shadow-xs hover:shadow-md"
+        >
+          <Network className="w-8 h-8 text-[#0A5C3A] mb-4 stroke-[2]" />
+          <h3 className="text-lg font-bold font-headings group-hover:text-[#0A5C3A] transition-colors">
+            Topluluk Yönetimi
+          </h3>
+          <p className="text-xs opacity-75 mt-2 mb-4 leading-relaxed">
+            Çalışma ekiplerini ekleyin, açıklamalarını ve site üzerindeki içeriklerini güncelleyin.
           </p>
           <div className="flex items-center gap-2 text-xs font-bold text-[#0A5C3A]">
             <span>Yönetime Git</span>

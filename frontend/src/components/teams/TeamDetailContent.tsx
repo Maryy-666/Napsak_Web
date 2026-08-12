@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -16,7 +16,8 @@ import {
   Palette,
   Leaf,
 } from "lucide-react";
-import { TeamData, TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
+import { TeamData, TEAM_ICONS } from "../../data/teams";
+import { getStoredTeamBySlug, getStoredTeams, subscribeToTeamUpdates } from "../../lib/teamStore";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
 
@@ -25,9 +26,21 @@ interface TeamDetailContentProps {
 }
 
 export function TeamDetailContent({ team }: TeamDetailContentProps) {
-  const IconComp = TEAM_ICONS[team.iconName];
-  const featuredArt = team.gallery?.find((item) => item.isFeatured);
-  const gridArtItems = team.gallery?.filter((item) => !item.isFeatured) || [];
+  const [currentTeam, setCurrentTeam] = useState<TeamData>(team);
+  const [teams, setTeams] = useState<TeamData[]>(() => getStoredTeams());
+  const IconComp = TEAM_ICONS[currentTeam.iconName];
+  const featuredArt = currentTeam.gallery?.find((item) => item.isFeatured);
+  const gridArtItems = currentTeam.gallery?.filter((item) => !item.isFeatured) || [];
+
+  useEffect(() => {
+    const refreshTeams = () => {
+      setTeams(getStoredTeams());
+      setCurrentTeam(getStoredTeamBySlug(team.slug) || team);
+    };
+
+    refreshTeams();
+    return subscribeToTeamUpdates(refreshTeams);
+  }, [team]);
 
   return (
     <InnerPageBackground className="min-h-screen flex flex-col">
@@ -45,7 +58,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             <span className="text-[#CDD1D5]">/</span>
             <span className="text-[#5F6773]">Ekipler</span>
             <span className="text-[#CDD1D5]">/</span>
-            <span className="text-[#0F1115] font-semibold">{team.title}</span>
+            <span className="text-[#0F1115] font-semibold">{currentTeam.title}</span>
           </div>
 
           {/* Hero Grid */}
@@ -65,12 +78,12 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
 
               {/* 1. Ekip Adı */}
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight leading-[1.15] mb-6">
-                {team.title}
+                {currentTeam.title}
               </h1>
 
               {/* 2. Kısa Tanıtım */}
               <p className="text-lg sm:text-xl font-sans text-[#5F6773] leading-relaxed mb-8">
-                {team.shortDescription}
+                {currentTeam.shortDescription}
               </p>
 
               {/* Action CTA Buttons */}
@@ -100,8 +113,8 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             >
               <div className="relative rounded-[28px] overflow-hidden border-2 border-[#EEF0F2] shadow-xl group aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3]">
                 <Image
-                  src={team.bgImage}
-                  alt={team.title}
+                  src={currentTeam.bgImage}
+                  alt={currentTeam.title}
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -112,7 +125,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                   <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-2 border border-white/20">
                     <IconComp className="w-5 h-5 stroke-[2]" />
                   </div>
-                  <h3 className="text-xl font-bold font-headings">{team.title}</h3>
+                  <h3 className="text-xl font-bold font-headings">{currentTeam.title}</h3>
                   <p className="text-xs text-white/80 font-sans mt-1">N'apsak? Gençlik Topluluğu</p>
                 </div>
               </div>
@@ -131,7 +144,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               className={`bg-white/80 backdrop-blur-sm rounded-[24px] border border-[#EEF0F2] p-8 sm:p-10 shadow-sm hover:shadow-md transition-shadow ${
-                team.featuredSectionImage ? "lg:col-span-7" : "lg:col-span-12"
+                currentTeam.featuredSectionImage ? "lg:col-span-7" : "lg:col-span-12"
               }`}
             >
               <div className="flex items-center gap-3 mb-5">
@@ -143,12 +156,12 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                 </h2>
               </div>
               <p className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed">
-                {team.about}
+                {currentTeam.about}
               </p>
             </motion.div>
 
             {/* Çevre ve Sağlık (Doğa) Ekibi Özel Görseli */}
-            {team.featuredSectionImage && (
+            {currentTeam.featuredSectionImage && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -157,8 +170,8 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
               >
                 <div className="relative rounded-[24px] overflow-hidden border border-[#EEF0F2] shadow-md group bg-white aspect-[4/3]">
                   <Image
-                    src={team.featuredSectionImage}
-                    alt={`${team.title} Sürdürülebilirlik & Doğa İllüstrasyonu`}
+                    src={currentTeam.featuredSectionImage}
+                    alt={`${currentTeam.title} Sürdürülebilirlik & Doğa İllüstrasyonu`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 35vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -193,7 +206,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                 </div>
 
                 <ul className="space-y-3.5">
-                  {team.focusAreas.map((area, idx) => (
+                  {currentTeam.focusAreas.map((area, idx) => (
                     <li
                       key={idx}
                       className="flex items-center gap-3 p-3.5 rounded-xl bg-[#F8F9FA] border border-[#EEF0F2] text-sm sm:text-base font-semibold font-sans text-[#0F1115] hover:border-[#0A5C3A]/30 transition-colors"
@@ -225,7 +238,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                 </div>
 
                 <div className="space-y-4">
-                  {team.whatWeDo.map((item, idx) => (
+                  {currentTeam.whatWeDo.map((item, idx) => (
                     <div key={idx} className="flex items-start gap-3 text-left">
                       <CheckCircle2 className="w-5 h-5 text-[#0A5C3A] shrink-0 mt-0.5" />
                       <p className="text-sm sm:text-base font-sans text-[#5F6773] leading-relaxed">
@@ -239,7 +252,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
           </div>
 
           {/* Sanat Ekibi Özel Görsel Galerisi: "Sanatla Üretiyoruz" */}
-          {team.gallery && team.gallery.length > 0 && (
+          {currentTeam.gallery && currentTeam.gallery.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -254,7 +267,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                     <span>Yaratıcı Atölye & Üretim</span>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold font-headings text-[#0F1115]">
-                    {team.galleryTitle || "Sanatla Üretiyoruz"}
+                    {currentTeam.galleryTitle || "Sanatla Üretiyoruz"}
                   </h2>
                 </div>
                 <p className="text-sm text-[#5F6773] max-w-md">
@@ -313,7 +326,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
               </h2>
             </div>
             <p className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed">
-              {team.structure}
+              {currentTeam.structure}
             </p>
           </motion.div>
 
@@ -328,7 +341,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
 
             <div className="space-y-3 max-w-2xl relative z-10">
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight">
-                Sen de {team.title}'na Katıl!
+                Sen de {currentTeam.title}'na Katıl!
               </h3>
               <p className="text-white/90 text-sm sm:text-base font-sans leading-relaxed">
                 Fikirlerini projeye dönüştürmek, yetkinliklerini geliştirmek ve üretken gençlerle bir araya gelmek için hemen başvurunu yap.
@@ -367,9 +380,9 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
-              {TEAMS_DATA.map((item) => {
+              {teams.map((item) => {
                 const ItemIconComp = TEAM_ICONS[item.iconName];
-                const isCurrent = item.slug === team.slug;
+                const isCurrent = item.slug === currentTeam.slug;
 
                 if (isCurrent) {
                   return (

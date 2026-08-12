@@ -4,11 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { Menu, X, ArrowRight, ChevronDown, UserCircle } from "lucide-react";
 import { SITE_CONFIG, NavItem } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
+import { AuthUser, getCurrentUser } from "../../lib/memberAuth";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -22,6 +23,7 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +36,7 @@ export const Navbar: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
+    setCurrentUser(getCurrentUser());
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -254,25 +257,48 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Dual Action Buttons: Giriş Yap & Topluluğa Katıl */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button
-            href={ROUTES.LOGIN}
-            variant="secondary"
-            size="sm"
-            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-4 h-9"
-          >
-            Giriş Yap
-          </Button>
+        <div className="hidden md:flex items-center gap-2.5">
+          {currentUser ? (
+            <Button
+              href={currentUser.role === "admin" ? ROUTES.ADMIN : ROUTES.PROFIL}
+              variant="secondary"
+              size="sm"
+              leftIcon={<UserCircle className="w-3.5 h-3.5 stroke-[2.2]" />}
+              className="!bg-[#0A5C3A] !text-white !border-[#38B27C]/45 hover:!bg-[#0D7449] font-semibold text-xs px-4 h-9 shadow-[0_8px_22px_rgba(10,92,58,0.28)] ring-1 ring-white/15"
+            >
+              {currentUser.role === "admin" ? "Admin Paneli" : "Profilim"}
+            </Button>
+          ) : (
+            <>
+              <Button
+                href={ROUTES.LOGIN}
+                variant="secondary"
+                size="sm"
+                className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-4 h-9"
+              >
+                Giriş Yap
+              </Button>
 
-          <Button
-            href={ROUTES.BASVURU}
-            variant="primary"
-            size="sm"
-            rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
-            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-4 h-9 shadow-md"
-          >
-            Topluluğa Katıl
-          </Button>
+              <Button
+                href={ROUTES.KAYIT}
+                variant="secondary"
+                size="sm"
+                className="!bg-white !text-[#0A5C3A] !border-white hover:!bg-[#EEF7F3] font-semibold text-xs px-4 h-9 shadow-sm"
+              >
+                Kayıt Ol
+              </Button>
+
+              <Button
+                href={ROUTES.BASVURU}
+                variant="primary"
+                size="sm"
+                rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
+                className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-4 h-9 shadow-md"
+              >
+                Topluluğa Katıl
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Hamburger Toggle Button */}
@@ -404,27 +430,53 @@ export const Navbar: React.FC = () => {
               </nav>
 
               <div className="pt-4 border-t border-white/15 flex flex-col gap-3">
-                <Button
-                  href={ROUTES.LOGIN}
-                  variant="secondary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold"
-                >
-                  Giriş Yap
-                </Button>
+                {currentUser ? (
+                  <Button
+                    href={currentUser.role === "admin" ? ROUTES.ADMIN : ROUTES.PROFIL}
+                    variant="secondary"
+                    size="lg"
+                    fullWidth
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="!bg-[#0A5C3A] !text-white !border-[#38B27C]/45 hover:!bg-[#0D7449] font-semibold shadow-[0_8px_22px_rgba(10,92,58,0.26)] ring-1 ring-white/15"
+                  >
+                    {currentUser.role === "admin" ? "Admin Paneli" : "Profilim"}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      href={ROUTES.LOGIN}
+                      variant="secondary"
+                      size="lg"
+                      fullWidth
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold"
+                    >
+                      Giriş Yap
+                    </Button>
 
-                <Button
-                  href={ROUTES.BASVURU}
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
-                >
-                  Topluluğa Katıl
-                </Button>
+                    <Button
+                      href={ROUTES.KAYIT}
+                      variant="secondary"
+                      size="lg"
+                      fullWidth
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="!bg-white !text-[#0A5C3A] !border-white hover:!bg-[#EEF7F3] font-semibold"
+                    >
+                      Kayıt Ol
+                    </Button>
+
+                    <Button
+                      href={ROUTES.BASVURU}
+                      variant="primary"
+                      size="lg"
+                      fullWidth
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
+                    >
+                      Topluluğa Katıl
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

@@ -108,36 +108,7 @@ const INITIAL_EVENTS: EventItem[] = [
 ];
 
 // DEFAULT INITIAL APPLICATIONS
-const INITIAL_APPLICATIONS: EventApplication[] = [
-  {
-    id: "APP-EVT-01",
-    eventId: "evt-101",
-    eventTitle: "1923 Gençlik Topluluğu İş Birliği & Tanışma Zirvesi",
-    fullName: "Ahmet Yılmaz",
-    email: "ahmet@gmail.com",
-    phone: "0532 999 88 77",
-    city: "İstanbul",
-    school: "İstanbul Teknik Üniversitesi",
-    department: "Bilgisayar Mühendisliği",
-    grade: "3. Sınıf",
-    note: "Teknoloji masasında sunum yapmak istiyorum.",
-    appliedAt: "11 Ağustos 2025",
-  },
-  {
-    id: "APP-EVT-02",
-    eventId: "evt-102",
-    eventTitle: "Sürdürülebilir Teknoloji ve Yapay Zeka Atölyesi",
-    fullName: "Zeynep Kaya",
-    email: "zeynep@outlook.com",
-    phone: "0544 123 45 67",
-    city: "İstanbul",
-    school: "Marmara Üniversitesi",
-    department: "Yazılım Mühendisliği",
-    grade: "2. Sınıf",
-    note: "Yapay zeka araçlarının açık kaynak kullanımı üzerine fikir alışverişi.",
-    appliedAt: "10 Ağustos 2025",
-  },
-];
+const INITIAL_APPLICATIONS: EventApplication[] = [];
 
 // SINGLETON STORE MANAGEMENT
 const globalForEvents = globalThis as unknown as {
@@ -198,7 +169,6 @@ export const EventsRepository = {
     return false;
   },
 
-  // ETKİNLİK BAŞVURUSU EKLEME
   applyToEvent(data: Omit<EventApplication, "id" | "appliedAt">): EventApplication {
     const newApplication: EventApplication = {
       ...data,
@@ -211,7 +181,6 @@ export const EventsRepository = {
     };
     eventApplicationsStore.unshift(newApplication);
 
-    // Event applied count artırma
     const targetEvent = eventsStore.find((e) => e.id === data.eventId);
     if (targetEvent) {
       targetEvent.appliedCount += 1;

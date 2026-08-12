@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import LoginCard from "./LoginCard";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
+import { AuthUser } from "../../lib/memberAuth";
 
 export type TransitionPhase =
   | "idle"
@@ -20,6 +21,7 @@ export type TransitionPhase =
 export default function LoginPageContent() {
   const router = useRouter();
   const [phase, setPhase] = useState<TransitionPhase>("idle");
+  const [loggedInUser, setLoggedInUser] = useState<AuthUser | null>(null);
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   const shouldReduceMotion = useReducedMotion();
 
@@ -89,11 +91,18 @@ export default function LoginPageContent() {
     if (phase === "redirect") {
       // Step 7: Wait 200ms and redirect to Admin Panel using router.replace
       const timer = setTimeout(() => {
-        router.replace(ROUTES.ADMIN);
+        const params = new URLSearchParams(window.location.search);
+        const returnTo = params.get("returnTo");
+        if (returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")) {
+          router.replace(returnTo);
+          return;
+        }
+
+        router.replace(loggedInUser?.role === "admin" ? ROUTES.ADMIN : ROUTES.PROFIL);
       }, 200);
       return () => clearTimeout(timer);
     }
-  }, [phase, router]);
+  }, [loggedInUser?.role, phase, router]);
 
   // Spring transition config for the shared logo
   const springConfig = {
@@ -194,7 +203,7 @@ export default function LoginPageContent() {
         {/* Interactive Login Card Wrapper */}
         {(phase === "idle" || phase === "freeze" || phase === "logo-move") && (
           <div className="w-full max-w-[560px] px-4 sm:px-6 flex justify-center items-center z-20 -mt-8 sm:-mt-12">
-            <LoginCard phase={phase} setPhase={setPhase} />
+            <LoginCard phase={phase} setPhase={setPhase} onLoginSuccess={setLoggedInUser} />
           </div>
         )}
 

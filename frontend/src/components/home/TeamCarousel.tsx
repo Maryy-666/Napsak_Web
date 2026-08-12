@@ -10,7 +10,8 @@ import {
   Pause,
   Play,
 } from "lucide-react";
-import { TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
+import { TEAM_ICONS, TeamData } from "../../data/teams";
+import { getStoredTeams, subscribeToTeamUpdates } from "../../lib/teamStore";
 
 export const TeamCarousel: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -18,18 +19,25 @@ export const TeamCarousel: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [teams, setTeams] = useState<TeamData[]>(() => getStoredTeams());
 
   const requestRef = useRef<number | null>(null);
-  const totalTeams = TEAMS_DATA.length;
+  const totalTeams = Math.max(teams.length, 1);
   const angleStep = 360 / totalTeams; // 72 degrees per card
 
   // Check screen width for mobile fallback
   useEffect(() => {
     if (typeof window !== "undefined") {
+      const refreshTeams = () => setTeams(getStoredTeams());
+      refreshTeams();
+      const unsubscribe = subscribeToTeamUpdates(refreshTeams);
       const checkMobile = () => setIsMobile(window.innerWidth < 640);
       checkMobile();
       window.addEventListener("resize", checkMobile);
-      return () => window.removeEventListener("resize", checkMobile);
+      return () => {
+        window.removeEventListener("resize", checkMobile);
+        unsubscribe();
+      };
     }
   }, []);
 
@@ -97,7 +105,7 @@ export const TeamCarousel: React.FC = () => {
     return (
       <div className="w-full flex flex-col items-center select-none py-4">
         <div className="w-full flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-4 no-scrollbar">
-          {TEAMS_DATA.map((team, idx) => {
+          {teams.map((team, idx) => {
             const IconComp = TEAM_ICONS[team.iconName];
             const isActive = idx === frontIndex;
 
@@ -174,7 +182,7 @@ export const TeamCarousel: React.FC = () => {
 
         {/* Mobile Dots */}
         <div className="flex items-center gap-2 mt-4">
-          {TEAMS_DATA.map((_, idx) => (
+          {teams.map((_, idx) => (
             <button
               key={idx}
               type="button"
@@ -221,7 +229,7 @@ export const TeamCarousel: React.FC = () => {
           className="relative w-full h-full flex items-center justify-center"
           style={{ transformStyle: "preserve-3d" }}
         >
-          {TEAMS_DATA.map((team, idx) => {
+          {teams.map((team, idx) => {
             const IconComp = TEAM_ICONS[team.iconName];
 
             // Compute exact angle on 360-degree cylinder
@@ -379,7 +387,7 @@ export const TeamCarousel: React.FC = () => {
 
         {/* 5 Dots Indicator */}
         <div className="flex items-center gap-2">
-          {TEAMS_DATA.map((team, idx) => (
+          {teams.map((team, idx) => (
             <button
               key={team.id}
               type="button"

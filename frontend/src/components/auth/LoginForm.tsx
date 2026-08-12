@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Mail, Lock, ShieldCheck } from "lucide-react";
@@ -9,6 +9,8 @@ import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { PasswordInput } from "./PasswordInput";
 import { Logo } from "../common/Logo";
+import { AuthUser, saveCurrentUser } from "../../lib/memberAuth";
+import { ROUTES } from "../../constants/routes";
 
 // Zod Validation Schema for Login Credentials
 const loginSchema = z.object({
@@ -24,7 +26,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-  onSubmitSuccess?: (data: LoginFormData) => void;
+  onSubmitSuccess?: (user: AuthUser) => void;
   isFrozen?: boolean;
 }
 
@@ -33,6 +35,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   isFrozen = false,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   const disabled = isSubmitting || isFrozen;
   const isLoading = isSubmitting || isFrozen;
 
@@ -75,6 +78,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   });
 
   const emailValue = watch("email");
+  const registerHref = returnTo
+    ? `${ROUTES.KAYIT}?returnTo=${encodeURIComponent(returnTo)}`
+    : ROUTES.KAYIT;
+
+  useEffect(() => {
+    setReturnTo(new URLSearchParams(window.location.search).get("returnTo"));
+  }, []);
 
   const onSubmit = async (data: LoginFormData) => {
     if (disabled) return;
@@ -91,8 +101,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const responseData = await response.json().catch(() => ({}));
 
       if (response.ok && responseData.success) {
+        saveCurrentUser(responseData.user);
         if (onSubmitSuccess) {
-          onSubmitSuccess(data);
+          onSubmitSuccess(responseData.user);
         }
       } else {
         const { toast } = await import("sonner");
@@ -235,15 +246,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           className="w-full text-center flex flex-col items-center"
         >
           <p className="text-sm text-[#5F6773] select-none font-medium mb-[18px]">
-            Henüz N'apsak? topluluğunun bir parçası değil misin?
+            Henüz N'apsak? hesabın yok mu?
           </p>
           <Button
-            href="/basvuru"
+            href={registerHref}
             variant="ghost"
             disabled={disabled}
             className="text-base font-semibold text-[#0A5C3A] hover:text-[#0D7449] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
           >
-            Topluluğa Katıl →
+            Ücretsiz Kayıt Ol →
           </Button>
         </motion.div>
 
