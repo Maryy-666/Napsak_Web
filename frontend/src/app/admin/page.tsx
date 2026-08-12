@@ -2,13 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  Users,
-  Calendar,
-  FileText,
-  Clock,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight, Calendar, Clock, FileCheck2, FileText, Users } from "lucide-react";
 
 export default function AdminDashboardPage() {
   return (
@@ -18,7 +12,6 @@ export default function AdminDashboardPage() {
         <p className="text-xs opacity-70 mt-1">Topluluk verileri ve hızlı yönetim modülleri.</p>
       </div>
 
-      {/* İSTATİSTİK KARTLARI (KOMPAKT & TASARIMA UYGUN YEŞİL PALET) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-xl border border-[#0A5C3A]/20 bg-[#0A5C3A]/5 flex items-center justify-between transition-colors shadow-xs">
           <div>
@@ -52,8 +45,8 @@ export default function AdminDashboardPage() {
 
         <div className="p-4 rounded-xl border border-[#08472D]/20 bg-[#08472D]/5 flex items-center justify-between transition-colors shadow-xs">
           <div>
-            <span className="text-xs font-semibold opacity-80 block">Yayınlanan Dergi/Rapor</span>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-[#08472D] font-headings mt-1">4</h3>
+            <span className="text-xs font-semibold opacity-80 block">Yasal Metin</span>
+            <h3 className="text-xl sm:text-2xl font-extrabold text-[#08472D] font-headings mt-1">2</h3>
           </div>
           <div className="w-10 h-10 rounded-xl bg-[#08472D]/10 text-[#08472D] flex items-center justify-center font-bold">
             <FileText className="w-5 h-5 stroke-[2]" />
@@ -61,25 +54,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* HIZLI ERİŞİM KARTLARI */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link
-          href="/admin/basvurular"
-          className="p-6 rounded-2xl border border-[#0A5C3A]/20 bg-[#0A5C3A]/5 hover:border-[#0A5C3A]/50 transition-all group shadow-xs hover:shadow-md"
-        >
-          <Users className="w-8 h-8 text-emerald-500 mb-4 stroke-[2]" />
-          <h3 className="text-lg font-bold font-headings group-hover:text-[#0A5C3A] transition-colors">
-            Başvuru Yönetimi
-          </h3>
-          <p className="text-xs opacity-75 mt-2 mb-4 leading-relaxed">
-            Genç üyelik başvurularını listeleyin, durumlarını (Mülakat, Kabul, Ret) güncelleyin.
-          </p>
-          <div className="flex items-center gap-2 text-xs font-bold text-[#0A5C3A]">
-            <span>Yönetime Git</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
-        </Link>
-
         <Link
           href="/admin/etkinlikler"
           className="p-6 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:border-blue-500/50 transition-all group shadow-xs hover:shadow-md"
@@ -98,21 +73,37 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/icerik"
-          className="p-6 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:border-purple-500/50 transition-all group shadow-xs hover:shadow-md"
+          href="/admin/politikalar"
+          className="p-6 rounded-2xl border border-[#0A5C3A]/20 bg-[#0A5C3A]/5 hover:border-[#0A5C3A]/50 transition-all group shadow-xs hover:shadow-md"
         >
-          <FileText className="w-8 h-8 text-purple-500 mb-4 stroke-[2]" />
-          <h3 className="text-lg font-bold font-headings group-hover:text-purple-500 transition-colors">
-            İçerik Yönetimi
+          <FileCheck2 className="w-8 h-8 text-[#0A5C3A] mb-4 stroke-[2]" />
+          <h3 className="text-lg font-bold font-headings group-hover:text-[#0A5C3A] transition-colors">
+            Politika & KVKK
           </h3>
           <p className="text-xs opacity-75 mt-2 mb-4 leading-relaxed">
-            Dijital dergileri, faaliyet raporlarını ve kurumsal duyuruları yayınlayın.
+            KVKK ve yasal metinlerin yayın durumunu panel üzerinden takip edin.
           </p>
-          <div className="flex items-center gap-2 text-xs font-bold text-purple-500">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#0A5C3A]">
             <span>Yönetime Git</span>
             <ArrowRight className="w-4 h-4" />
           </div>
         </Link>
+
+        <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50/80 opacity-70 shadow-xs cursor-not-allowed">
+          <Users className="w-8 h-8 text-slate-400 mb-4 stroke-[2]" />
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-lg font-bold font-headings text-slate-500">Başvuru Yönetimi</h3>
+            <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-200 text-slate-500">
+              Yakında
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-2 mb-4 leading-relaxed">
+            Üyelik ve etkinlik başvuruları için detaylı yönetim ekranı hazırlanıyor.
+          </p>
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+            <span>Yakında Yayında</span>
+          </div>
+        </div>
       </div>
     </div>
   );
