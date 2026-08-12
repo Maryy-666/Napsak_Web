@@ -87,9 +87,9 @@ export default function LoginPageContent() {
     }
 
     if (phase === "redirect") {
-      // Step 7: Wait 200ms and redirect using router.replace
+      // Step 7: Wait 200ms and redirect to Admin Panel using router.replace
       const timer = setTimeout(() => {
-        router.replace(ROUTES.HOME);
+        router.replace(ROUTES.ADMIN);
       }, 200);
       return () => clearTimeout(timer);
     }

@@ -12,6 +12,7 @@ export const ROUTES = {
   CEREZ_POLITIKASI: "/cerez-politikasi",
   ILETISIM: "/iletisim",
   LOGIN: "/login",
+  ADMIN: "/admin",
   BASVURU: "/basvuru",
   EKIPLER: "/ekipler",
   HABERLER: "/haberler",
