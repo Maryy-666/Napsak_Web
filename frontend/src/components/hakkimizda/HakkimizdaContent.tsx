@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   ArrowRight,
@@ -25,6 +26,7 @@ import {
 import { Badge, Button, Card, PageContainer, Section } from "../ui";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
 
 // Kaydırdıkça süzülerek açılan Framer Motion varyantı
 const fadeInUp: Variants = {
@@ -47,6 +49,7 @@ const DYNAMIC_WORDS = ["üretime", "projeye", "yeniliğe", "gelişime", "başar�
 const WORKING_TEAMS = [
   {
     id: "sanat",
+    slug: "sanat",
     title: "Sanat Ekibi",
     icon: Palette,
     tag: "Kültür & Estetik",
@@ -56,6 +59,7 @@ const WORKING_TEAMS = [
   },
   {
     id: "saglik-cevre",
+    slug: "cevre-saglik",
     title: "Sağlık ve Çevre Ekibi",
     icon: ShieldAlert,
     tag: "Sürdürülebilirlik",
@@ -65,6 +69,7 @@ const WORKING_TEAMS = [
   },
   {
     id: "teknoloji",
+    slug: "teknoloji",
     title: "Teknoloji Ekibi",
     icon: Cpu,
     tag: "İnovasyon & Dijital",
@@ -74,6 +79,7 @@ const WORKING_TEAMS = [
   },
   {
     id: "iletisim",
+    slug: "kurumsal-iletisim",
     title: "Medya ve İletişim Ekibi",
     icon: Megaphone,
     tag: "İçerik & Yayın",
@@ -83,6 +89,7 @@ const WORKING_TEAMS = [
   },
   {
     id: "programlar",
+    slug: "programlar",
     title: "Programlar Ekibi",
     icon: Layers,
     tag: "Eğitim & Etkinlik",
@@ -490,8 +497,8 @@ export default function HakkimizdaContent() {
             className="flex gap-6 overflow-x-auto pb-6 pt-1 snap-x snap-mandatory scrollbar-none select-none scroll-smooth"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {WORKING_TEAMS.map((team, idx) => {
-              const IconComp = team.icon;
+            {TEAMS_DATA.map((team, idx) => {
+              const IconComp = TEAM_ICONS[team.iconName];
               return (
                 <motion.div
                   key={team.id}
@@ -510,21 +517,28 @@ export default function HakkimizdaContent() {
                   >
                     <div>
                       {/* İKON KUTUSU */}
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 shadow-xs ${team.iconBg}`}>
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 shadow-xs bg-[#0A5C3A]/10 text-[#0A5C3A] border border-[#0A5C3A]/20 group-hover:bg-[#0A5C3A] group-hover:text-white">
                         <IconComp className="w-5.5 h-5.5 stroke-[2]" />
                       </div>
 
                       {/* ETİKET */}
-                      <span className={`text-[11px] px-3 py-1 rounded-md mb-3 inline-block font-bold ${team.tagBg}`}>
-                        {team.tag}
+                      <span className="text-[11px] px-3 py-1 rounded-md mb-3 inline-block font-bold bg-[#0A5C3A]/10 text-[#0A5C3A]">
+                        N'apsak? Ekibi
                       </span>
 
                       <h3 className="text-lg sm:text-xl font-bold font-headings text-[#0F1115] mb-2 group-hover:text-[#0A5C3A] transition-colors">
                         {team.title}
                       </h3>
-                      <p className="text-sm text-[#5F6773] font-sans leading-relaxed font-medium">
-                        {team.description}
+                      <p className="text-sm text-[#5F6773] font-sans leading-relaxed font-medium mb-4 line-clamp-3">
+                        {team.shortDescription}
                       </p>
+                      <Link
+                        href={`/ekipler/${team.slug}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0A5C3A] group-hover:text-[#084A2F] transition-colors"
+                      >
+                        <span>Ekip Detayını İncele</span>
+                        <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                      </Link>
                     </div>
                   </Card>
                 </motion.div>

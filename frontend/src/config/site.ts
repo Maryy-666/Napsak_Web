@@ -68,14 +68,14 @@ export const SITE_CONFIG = {
       status: "coming-soon",
       items: [
         {
+          title: "Çalışma Ekiplerimiz",
+          href: ROUTES.EKIPLER,
+          status: "active",
+        },
+        {
           title: "Etkileşim / Katılım",
           href: ROUTES.KATILIM,
           status: "coming-soon",
-        },
-        {
-          title: "TR Haritası",
-          href: "/#harita",
-          status: "active",
         },
         {
           title: "SSS",

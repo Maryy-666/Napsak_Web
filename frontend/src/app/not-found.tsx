@@ -1,15 +1,9 @@
 import React from "react";
-import { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "../components/common/Navbar";
 import { Footer } from "../components/common/Footer";
 import { Logo } from "../components/common/Logo";
 import { PageBackground } from "../components/common/PageBackground";
-
-export const metadata: Metadata = {
-  title: "Sayfa Bulunamadı | N'apsak? Gençlik Topluluğu",
-  description: "Aradığınız sayfa bulunamadı.",
-};
 
 export default function NotFound() {
   return (

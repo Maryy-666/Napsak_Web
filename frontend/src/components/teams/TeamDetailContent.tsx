@@ -19,6 +19,7 @@ import {
 import { TeamData, TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
+import { ROUTES } from "../../constants/routes";
 
 interface TeamDetailContentProps {
   team: TeamData;
@@ -43,7 +44,9 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
               <ArrowLeft className="w-4 h-4" /> Ana Sayfa
             </Link>
             <span className="text-[#CDD1D5]">/</span>
-            <span className="text-[#5F6773]">Ekipler</span>
+            <Link href={ROUTES.EKIPLER} className="hover:text-[#0A5C3A] transition-colors">
+              Ekipler
+            </Link>
             <span className="text-[#CDD1D5]">/</span>
             <span className="text-[#0F1115] font-semibold">{team.title}</span>
           </div>
