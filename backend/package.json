@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsx server.ts"
+    "start": "tsx server.ts",
+    "seed": "tsx prisma/seed.ts"
+
   },
   "keywords": [],
   "author": "",
