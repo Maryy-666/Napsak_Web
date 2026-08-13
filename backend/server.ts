@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client.ts";
+import usersRouter from "./src/routes/users.ts";
+import authRouter from "./src/routes/auth.ts";
+
 
 const app = express();
 
@@ -23,17 +26,8 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/users", async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "Kullanıcılar alınamadı.",
-    });
-  }
-});
+app.use("/users", usersRouter);
+app.use("/auth", authRouter); 
 
 const PORT = 3001;
 
