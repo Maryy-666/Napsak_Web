@@ -65,7 +65,7 @@ export const SITE_CONFIG = {
     {
       title: "Topluluk",
       href: "#topluluk",
-      status: "coming-soon",
+      status: "active",
       items: [
         {
           title: "Çalışma Ekiplerimiz",

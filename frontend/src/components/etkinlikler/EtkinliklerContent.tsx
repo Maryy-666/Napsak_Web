@@ -131,25 +131,26 @@ export default function EtkinliklerContent() {
   };
 
   return (
-    <PageBackground id="etkinlikler-root" className="px-0 py-0">
-      <Section padding="none" background="transparent" className="pt-16 sm:pt-22 pb-9 sm:pb-12 border-b border-[#EEF0F2] relative">
+    <PageBackground id="etkinlikler-root" className="px-0 py-0 min-h-screen">
+      {/* HERO SECTION */}
+      <Section padding="none" background="transparent" className="pt-16 sm:pt-22 pb-8 sm:pb-12 border-b border-[#EEF0F2] relative">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center max-w-4xl mx-auto select-none space-y-5"
+            className="text-center max-w-4xl mx-auto select-none space-y-4 sm:space-y-5"
           >
-            <Badge variant="brand" size="md" className="mb-2">
+            <Badge variant="brand" size="md" className="mb-1 sm:mb-2">
               Etkinlik Takvimi
             </Badge>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
               Keşfet, Katıl ve <br className="hidden sm:inline" />
               <span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">
                 Birlikte Üret.
               </span>
             </h1>
-            <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
+            <p className="text-sm sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto px-2">
               Topluluğumuzun düzenlediği zirveler, atölyeler, doğa yürüyüşleri ve sosyal sorumluluk buluşmaları.
               Aktif etkinliklere kaydolabilir, geçmiş faaliyetlerimizi inceleyebilirsin.
             </p>
@@ -157,21 +158,26 @@ export default function EtkinliklerContent() {
         </PageContainer>
       </Section>
 
-      <Section padding="none" background="transparent" className="pt-4 sm:pt-6 pb-10 sm:pb-14 border-b border-[#EEF0F2]">
+      {/* FILTER & EVENTS LIST SECTION */}
+      <Section padding="none" background="transparent" className="pt-4 sm:pt-6 pb-12 sm:pb-16 border-b border-[#EEF0F2]">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 select-none mb-8 rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,17,21,0.045)]">
-            <div className="flex items-center gap-2 w-full lg:w-auto">
+          {/* TAB & CATEGORY TOOLBAR CONTAINER */}
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4 select-none mb-6 sm:mb-8 rounded-[20px] sm:rounded-[24px] border border-[#E5E7EB] bg-white p-3 sm:p-4 shadow-[0_10px_28px_rgba(15,17,21,0.045)] min-w-0 overflow-hidden">
+            
+            {/* MAIN STATUS TABS (Aktif vs Geçmiş) */}
+            <div className="flex items-center gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0">
               <button
+                type="button"
                 onClick={() => setActiveTab("aktif")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
+                className={`flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 border ${
                   activeTab === "aktif"
                     ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
                     : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
                 }`}
               >
-                <Zap className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Yaklaşan & Aktif Etkinlikler</span>
-                <span className={`text-[10px] px-1.5 rounded-md font-sans ${
+                <Zap className="w-3.5 h-3.5 shrink-0 stroke-[2]" />
+                <span className="truncate">Yaklaşan Etkinlikler</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-sans shrink-0 ${
                   activeTab === "aktif" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
                   {activeCount}
@@ -179,16 +185,17 @@ export default function EtkinliklerContent() {
               </button>
 
               <button
+                type="button"
                 onClick={() => setActiveTab("gecmis")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
+                className={`flex-1 lg:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 border ${
                   activeTab === "gecmis"
                     ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
                     : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
                 }`}
               >
-                <CheckCircle2 className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Geçmiş Etkinlikler</span>
-                <span className={`text-[10px] px-1.5 rounded-md font-sans ${
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 stroke-[2]" />
+                <span className="truncate">Geçmiş Etkinlikler</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-sans shrink-0 ${
                   activeTab === "gecmis" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
                   {pastCount}
@@ -196,7 +203,8 @@ export default function EtkinliklerContent() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 scrollbar-none">
+            {/* CATEGORY SCROLL PILLS */}
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto w-full lg:w-auto pt-1 lg:pt-0 pb-1 lg:pb-0 scrollbar-none min-w-0">
               {[
                 { id: "all", label: "Tümü" },
                 { id: "teknoloji", label: "Teknoloji" },
@@ -206,8 +214,9 @@ export default function EtkinliklerContent() {
               ].map((category) => (
                 <button
                   key={category.id}
+                  type="button"
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-sans shrink-0 transition-all ${
+                  className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold font-sans shrink-0 transition-all ${
                     selectedCategory === category.id
                       ? "bg-[#0A5C3A] text-white font-semibold shadow-sm"
                       : "bg-[#F8FAFC] text-[#4B5563] border border-[#E5E7EB] hover:bg-white hover:border-[#0A5C3A]/35 hover:text-[#0F1115]"
@@ -219,18 +228,19 @@ export default function EtkinliklerContent() {
             </div>
           </div>
 
+          {/* EVENTS LIST GRID */}
           {filteredEvents.length === 0 ? (
-            <div className="text-center py-14 bg-white rounded-[20px] border border-[#EEF0F2] p-8">
+            <div className="text-center py-12 sm:py-14 bg-white rounded-[20px] border border-[#EEF0F2] p-6 sm:p-8 select-none">
               <Calendar className="w-10 h-10 text-[#5F6773] mx-auto mb-3 opacity-40 stroke-[1.5]" />
               <h3 className="text-base font-bold text-[#0F1115] font-headings mb-1">
                 Bu kategoride henüz etkinlik bulunmuyor
               </h3>
-              <p className="text-xs text-[#5F6773] font-sans">
+              <p className="text-xs sm:text-sm text-[#5F6773] font-sans">
                 Farklı bir kategori seçerek etkinliklerimizi listeleyebilirsiniz.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 select-none">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 select-none">
               {filteredEvents.map((event, index) => {
                 return (
                   <motion.div
@@ -240,39 +250,40 @@ export default function EtkinliklerContent() {
                     viewport={{ once: true, amount: 0.1 }}
                     custom={index * 0.05}
                     variants={fadeInUp}
-                    className="h-full"
+                    className="h-full min-w-0"
                   >
                     <div className="h-full rounded-[24px] border border-[#E5E7EB] hover:border-[#B8C7BF] transition-all duration-300 bg-white group shadow-[0_12px_28px_rgba(15,17,21,0.05)] hover:shadow-[0_18px_42px_rgba(15,17,21,0.09)] flex flex-col overflow-hidden">
                       <div className="h-1 w-full bg-[#0A5C3A]" />
-                      <div className="p-5 sm:p-6 flex flex-col justify-between flex-1">
+                      <div className="p-4 sm:p-6 flex flex-col justify-between flex-1 min-w-0">
                         <div>
-                          <h3 className="text-lg sm:text-xl font-semibold font-headings text-[#0F1115] mb-4 group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2 min-h-[56px]">
+                          <h3 className="text-base sm:text-lg lg:text-xl font-semibold font-headings text-[#0F1115] mb-3.5 sm:mb-4 group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2 min-h-0 sm:min-h-[56px] break-words">
                             {event.title}
                           </h3>
 
-                          <div className="grid gap-2 mb-4 text-xs font-semibold text-[#0F1115] font-sans">
-                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5">
+                          <div className="grid gap-2 mb-4 text-xs font-semibold text-[#0F1115] font-sans min-w-0">
+                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5 min-w-0 overflow-hidden">
                               <Calendar className="w-4 h-4 text-[#0A5C3A] shrink-0 stroke-[2]" />
-                              <span>{event.date} - {event.time}</span>
+                              <span className="truncate">{event.date} - {event.time}</span>
                             </div>
-                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5">
+                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5 min-w-0 overflow-hidden">
                               <MapPin className="w-4 h-4 text-[#0A5C3A] shrink-0 stroke-[2]" />
                               <span className="truncate">{event.location}</span>
                             </div>
                           </div>
 
-                          <p className="text-sm text-[#4B5563] font-sans leading-relaxed mb-5 line-clamp-3">
+                          <p className="text-xs sm:text-sm text-[#4B5563] font-sans leading-relaxed mb-4 sm:mb-5 line-clamp-3 break-words">
                             {event.description}
                           </p>
                         </div>
 
-                        <div className="pt-4 border-t border-[#EEF0F2] mt-auto">
+                        <div className="pt-3.5 sm:pt-4 border-t border-[#EEF0F2] mt-auto">
                           {event.status === "aktif" ? (
                             <button
+                              type="button"
                               onClick={() => {
                                 openApplication(event);
                               }}
-                              className="w-full h-10 rounded-xl bg-gradient-to-r from-[#0A5C3A] to-[#128C59] hover:from-[#08472D] hover:to-[#0A5C3A] text-white font-bold text-xs transition-all shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 flex items-center justify-center gap-2 tracking-wide"
+                              className="w-full h-10.5 rounded-xl bg-gradient-to-r from-[#0A5C3A] to-[#128C59] hover:from-[#08472D] hover:to-[#0A5C3A] text-white font-bold text-xs transition-all shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 flex items-center justify-center gap-2 tracking-wide cursor-pointer"
                             >
                               <Ticket className="w-4 h-4 stroke-[2]" />
                               <span>Başvuru Yap</span>
@@ -280,8 +291,9 @@ export default function EtkinliklerContent() {
                             </button>
                           ) : (
                             <button
+                              type="button"
                               onClick={() => setDetailEvent(event)}
-                              className="w-full h-10 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-center"
+                              className="w-full h-10.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-center cursor-pointer"
                             >
                               Detayları İncele
                             </button>
@@ -357,7 +369,7 @@ function ApplyModal({
   return (
     <AnimatePresence>
       {event && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 select-none">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -370,28 +382,30 @@ function ApplyModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.25 }}
-            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-7 z-10 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-5 sm:p-7 z-10 max-h-[85vh] overflow-y-auto min-w-0"
           >
             <button
+              type="button"
               onClick={onClose}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] hover:bg-[#EEF0F2] flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] hover:bg-[#EEF0F2] flex items-center justify-center transition-colors cursor-pointer"
+              title="Kapat"
             >
               <X className="w-4 h-4 stroke-[2]" />
             </button>
 
             {!isSubmitted ? (
-              <form onSubmit={onSubmit} className="space-y-5">
-                <div className="space-y-2 mb-5 pb-3.5 border-b border-[#EEF0F2]">
-                  <span className="inline-flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-wider text-[#0A5C3A] bg-[#0A5C3A]/10 px-3 py-1 rounded-lg border border-[#0A5C3A]/20">
+              <form onSubmit={onSubmit} className="space-y-4 sm:space-y-5">
+                <div className="space-y-1.5 mb-4 pb-3 border-b border-[#EEF0F2]">
+                  <span className="inline-flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-wider text-[#0A5C3A] bg-[#0A5C3A]/10 px-2.5 py-0.5 rounded-lg border border-[#0A5C3A]/20">
                     <Ticket className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Etkinlik Kayıt Formu</span>
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-extrabold font-headings text-[#0F1115] leading-snug pt-1">
+                  <h2 className="text-lg sm:text-2xl font-extrabold font-headings text-[#0F1115] leading-snug pt-1 break-words">
                     {event.title}
                   </h2>
-                  <p className="text-xs text-[#5F6773] font-sans font-medium pt-1 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
-                    <span>{event.date} - {event.location}</span>
+                  <p className="text-xs text-[#5F6773] font-sans font-medium pt-0.5 flex items-center gap-1.5 min-w-0">
+                    <Calendar className="w-3.5 h-3.5 text-[#0A5C3A] shrink-0" />
+                    <span className="truncate">{event.date} - {event.location}</span>
                   </p>
                 </div>
 
@@ -401,23 +415,23 @@ function ApplyModal({
                   </div>
                 )}
 
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-3.5 sm:p-4 min-w-0">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <div>
-                      <h3 className="text-sm font-semibold text-[#0F1115]">Başvuru bilgilerin</h3>
-                      <p className="mt-1 text-xs font-normal text-[#5F6773]">Profilindeki bilgilerle başvuru yapılacak.</p>
+                      <h3 className="text-xs sm:text-sm font-semibold text-[#0F1115]">Başvuru bilgilerin</h3>
+                      <p className="mt-0.5 text-[11px] sm:text-xs font-normal text-[#5F6773]">Profilindeki bilgilerle başvuru yapılacak.</p>
                     </div>
                     <Button
                       href={ROUTES.PROFIL}
                       variant="secondary"
                       size="sm"
-                      className="h-8 rounded-lg text-xs font-semibold"
+                      className="h-8 rounded-lg text-xs font-semibold shrink-0"
                     >
                       Güncelle
                     </Button>
                   </div>
 
-                  <div className="grid gap-2 text-xs sm:grid-cols-2">
+                  <div className="grid gap-2 text-xs sm:grid-cols-2 min-w-0">
                     <SummaryItem label="Ad Soyad" value={values.fullName || "Profilde yok"} />
                     <SummaryItem label="E-posta" value={values.email || "Profilde yok"} />
                     <SummaryItem label="Telefon" value={values.phone || "Profilde yok"} />
@@ -425,9 +439,9 @@ function ApplyModal({
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-1">
+                <div className="space-y-2 pt-1">
                   <div>
-                    <label className="text-sm font-semibold text-[#0F1115] font-headings mb-2 block">
+                    <label className="text-xs sm:text-sm font-semibold text-[#0F1115] font-headings mb-1.5 block">
                       Bu etkinlikten beklentin nedir? <span className="text-rose-500">*</span>
                     </label>
                     <textarea
@@ -436,19 +450,19 @@ function ApplyModal({
                       placeholder="Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
                       value={values.note}
                       onChange={(event) => setters.setNote(event.target.value)}
-                      className="w-full p-3.5 rounded-xl border border-[#E5E7EB] text-sm font-sans font-normal text-[#0F1115] leading-relaxed focus:outline-none focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
+                      className="w-full p-3 rounded-xl border border-[#E5E7EB] text-xs sm:text-sm font-sans font-normal text-[#0F1115] leading-relaxed focus:outline-none focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
                     />
                   </div>
                 </div>
 
-                <div className="pt-3">
+                <div className="pt-2">
                   <Button
                     type="submit"
                     disabled={isSubmitting}
                     variant="primary"
                     size="lg"
                     rightIcon={<Send className="w-4 h-4 stroke-[2]" />}
-                    className="w-full justify-center font-bold text-sm h-12 rounded-xl"
+                    className="w-full justify-center font-bold text-sm h-11.5 rounded-xl cursor-pointer"
                   >
                     {isSubmitting ? "Başvuru Gönderiliyor..." : "Başvuruyu Tamamla"}
                   </Button>
@@ -463,11 +477,11 @@ function ApplyModal({
                   <h3 className="text-lg sm:text-xl font-semibold text-[#0F1115] font-headings mb-2">
                     Başvurunuz alındı
                   </h3>
-                  <p className="text-sm text-[#5F6773] font-sans font-normal max-w-sm mx-auto leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#5F6773] font-sans font-normal max-w-sm mx-auto leading-relaxed">
                     {event.title} için başvurun kaydedildi.
                   </p>
                 </div>
-                <Button onClick={onClose} variant="primary" size="md" className="w-full justify-center font-semibold text-sm h-11 rounded-xl mt-1">
+                <Button onClick={onClose} variant="primary" size="md" className="w-full justify-center font-semibold text-sm h-11 rounded-xl mt-1 cursor-pointer">
                   Tamam
                 </Button>
               </div>
@@ -481,9 +495,9 @@ function ApplyModal({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5">
-      <p className="text-[10.5px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
-      <p className="mt-1 truncate text-xs font-medium text-[#0F1115]">{value}</p>
+    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 min-w-0 overflow-hidden">
+      <p className="text-[10px] sm:text-[10.5px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
+      <p className="mt-0.5 truncate text-xs font-medium text-[#0F1115]">{value}</p>
     </div>
   );
 }
@@ -492,7 +506,7 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
   return (
     <AnimatePresence>
       {event && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 select-none">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -504,11 +518,13 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-7 z-10"
+            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-5 sm:p-7 z-10 max-h-[85vh] overflow-y-auto min-w-0"
           >
             <button
+              type="button"
               onClick={onClose}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] flex items-center justify-center"
+              className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] flex items-center justify-center cursor-pointer"
+              title="Kapat"
             >
               <X className="w-4 h-4 stroke-[2]" />
             </button>
@@ -516,26 +532,26 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
               <span className="text-[10.5px] font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-md inline-block font-sans">
                 Tamamlanan Etkinlik
               </span>
-              <h3 className="text-xl font-bold font-headings text-[#0F1115]">{event.title}</h3>
-              <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-[#EEF0F2] text-xs font-medium space-y-2 text-[#5F6773]">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Tarih: {event.date} ({event.time})</span>
+              <h3 className="text-lg sm:text-xl font-bold font-headings text-[#0F1115] break-words">{event.title}</h3>
+              <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-[#EEF0F2] text-xs font-medium space-y-2 text-[#5F6773] min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Calendar className="w-4 h-4 text-[#0A5C3A] shrink-0" />
+                  <span className="truncate">Tarih: {event.date} ({event.time})</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Konum: {event.location}</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <MapPin className="w-4 h-4 text-[#0A5C3A] shrink-0" />
+                  <span className="truncate">Konum: {event.location}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Katılımcı Sayısı: {event.appliedCount} Kişi</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <Users className="w-4 h-4 text-[#0A5C3A] shrink-0" />
+                  <span className="truncate">Katılımcı Sayısı: {event.appliedCount} Kişi</span>
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-normal">
+              <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-normal break-words">
                 {event.description}
               </p>
               <div className="pt-2 flex justify-end">
-                <Button onClick={onClose} variant="outline" size="md" className="font-bold text-xs px-5 h-10 rounded-xl">
+                <Button onClick={onClose} variant="outline" size="md" className="font-bold text-xs px-5 h-10 rounded-xl cursor-pointer">
                   Kapat
                 </Button>
               </div>

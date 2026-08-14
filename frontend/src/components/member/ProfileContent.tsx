@@ -15,6 +15,7 @@ import {
   getMemberProfile,
   saveMemberProfile,
 } from "../../lib/memberAuth";
+import { isSafeReturnUrl } from "../../lib/security/url";
 import { ROUTES } from "../../constants/routes";
 import { EventApplication, EventItem, EventsRepository } from "../../lib/eventsStore";
 
@@ -33,6 +34,7 @@ export default function ProfileContent() {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [applications, setApplications] = useState<EventApplication[]>([]);
@@ -42,7 +44,8 @@ export default function ProfileContent() {
   useEffect(() => {
     const currentUser = getCurrentUser();
     if (!currentUser) {
-      router.replace(`${ROUTES.LOGIN}?returnTo=${encodeURIComponent(ROUTES.PROFIL)}`);
+      const returnUrl = isSafeReturnUrl(ROUTES.PROFIL) ? ROUTES.PROFIL : ROUTES.HOME;
+      router.replace(`${ROUTES.LOGIN}?returnTo=${encodeURIComponent(returnUrl)}`);
       return;
     }
 
@@ -64,6 +67,7 @@ export default function ProfileContent() {
     setIsEditing(!hasSavedDetails);
     setApplications(EventsRepository.getApplications());
     setEvents(EventsRepository.getAllEvents());
+    setIsLoading(false);
   }, [router]);
 
   const updateField = (field: keyof MemberProfile, value: string) => {
@@ -156,18 +160,24 @@ export default function ProfileContent() {
     }
   };
 
-  if (!user || !profile) {
+  // Public loading state matching N'apsak? design system (zero flash)
+  if (isLoading || !user || !profile) {
     return (
-      <PageBackground className="pt-24">
-        <PageContainer>
-          <p className="text-sm font-semibold text-[#5F6773]">Profil hazırlanıyor...</p>
+      <PageBackground className="pt-28 pb-20 min-h-screen">
+        <PageContainer className="max-w-7xl">
+          <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
+            <div className="w-10 h-10 rounded-full border-3 border-[#0A5C3A]/20 border-t-[#0A5C3A] animate-spin" />
+            <p className="text-xs font-semibold text-[#5F6773] tracking-wide font-sans">
+              Oturum kontrol ediliyor...
+            </p>
+          </div>
         </PageContainer>
       </PageBackground>
     );
   }
 
   const inputClass =
-    "h-12 w-full rounded-xl border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10";
+    "h-11 sm:h-12 w-full min-w-0 rounded-xl border border-[#E5E7EB] bg-white px-3 text-sm font-medium text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10";
   const userEmail = (profile.email || user.email).toLowerCase();
   const userApplications = applications.filter((application) => application.email.toLowerCase() === userEmail);
   const appliedEventIds = new Set(userApplications.map((application) => application.eventId));
@@ -178,18 +188,19 @@ export default function ProfileContent() {
     <PageBackground className="pt-28 pb-20">
       <PageContainer className="max-w-7xl">
         <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <aside className="rounded-3xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,17,21,0.045)] lg:sticky lg:top-28 lg:self-start">
-            <div className="mb-4 flex items-center gap-3 rounded-2xl bg-[#F8FBF9] p-3.5">
+          {/* ASIDE PROFILE NAVIGATION CARD */}
+          <aside className="w-full min-w-0 rounded-3xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,17,21,0.045)] lg:sticky lg:top-28 lg:self-start overflow-hidden">
+            <div className="mb-4 flex items-center gap-3 rounded-2xl bg-[#F8FBF9] p-3.5 min-w-0 overflow-hidden">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#C9D8D0] bg-[#EEF7F3] text-[#0A5C3A]">
                 <User className="h-5 w-5" />
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1 overflow-hidden">
                 <p className="truncate text-sm font-semibold text-[#0F1115]">{profile.fullName || user.name}</p>
-                <p className="truncate text-xs font-medium text-[#5F6773]">{user.email}</p>
+                <p className="truncate text-xs font-medium text-[#5F6773] break-all">{user.email}</p>
               </div>
             </div>
 
-            <div className="grid gap-2">
+            <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-col sm:gap-2">
               <PanelButton active={activePanel === "account"} onClick={() => setActivePanel("account")} label="Hesap Bilgileri" />
               <PanelButton active={activePanel === "events"} onClick={() => setActivePanel("events")} label="Etkinliklerim" />
               <PanelButton active={activePanel === "cv"} onClick={() => setActivePanel("cv")} label="CV Dosyası" />
@@ -201,11 +212,12 @@ export default function ProfileContent() {
             </Button>
           </aside>
 
+          {/* MAIN PROFILE CONTENT PANEL */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,17,21,0.045)] sm:p-7"
+            className="w-full min-w-0 rounded-3xl border border-[#E5E7EB] bg-white p-4 sm:p-7 shadow-[0_10px_30px_rgba(15,17,21,0.045)] overflow-hidden"
           >
             <div className="mb-7 border-b border-[#EEF0F2] pb-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -239,7 +251,7 @@ export default function ProfileContent() {
 
             {activePanel === "account" && (isEditing ? (
               <>
-                <div className="grid gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
                   <Field label="Ad Soyad" value={profile.fullName} onChange={(value) => updateField("fullName", value)} placeholder="Ad Soyad" autoComplete="name" maxLength={100} />
                   <Field label="E-posta" value={profile.email} onChange={(value) => updateField("email", value)} type="email" placeholder="ornek@domain.com" autoComplete="email" maxLength={120} />
                   <Field label="Telefon" value={profile.phone} onChange={(value) => updateField("phone", value)} type="tel" placeholder="05XX XXX XX XX" autoComplete="tel" inputMode="tel" maxLength={20} />
@@ -281,7 +293,7 @@ export default function ProfileContent() {
 
                 <div className="mt-5 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4">
                   <p className="text-xs font-semibold text-[#5F6773]">Kısa Tanıtım</p>
-                  <p className="mt-2 text-sm font-normal leading-relaxed text-[#0F1115]">
+                  <p className="mt-2 text-sm font-normal leading-relaxed text-[#0F1115] break-words">
                     {profile.bio || "Henüz kısa tanıtım eklenmedi."}
                   </p>
                 </div>
@@ -307,10 +319,10 @@ export default function ProfileContent() {
                   </span>
                   <input type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
                 </label>
-                <div className="mt-6 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                <div className="mt-6 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4 overflow-hidden">
                   <div className="flex items-center gap-2 text-sm font-semibold text-[#0F1115] break-all">
-                    <Mail className="h-4 w-4 text-[#0A5C3A]" />
-                    {user.email}
+                    <Mail className="h-4 w-4 shrink-0 text-[#0A5C3A]" />
+                    <span className="truncate">{user.email}</span>
                   </div>
                   <p className="mt-2 text-xs font-normal leading-relaxed text-[#5F6773]">
                     Bu demo sürümde CV dosyasının kendisi değil, dosya bilgisi saklanır. DB/storage bağlanınca gerçek dosya yükleme yapılır.
@@ -321,36 +333,36 @@ export default function ProfileContent() {
 
             {activePanel === "settings" && (
               <>
-                <div className="rounded-3xl border border-[#DDE7E1] bg-[#F8FBF9] p-4">
+                <div className="rounded-3xl border border-[#DDE7E1] bg-[#F8FBF9] p-4 sm:p-6">
                   <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-[#0A5C3A] ring-1 ring-[#DDE7E1]">
-                    <Settings className="h-5 w-5" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#0A5C3A] ring-1 ring-[#DDE7E1]">
+                      <Settings className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#0F1115]">Hesap Ayarları</h3>
+                      <p className="text-xs font-medium text-[#5F6773]">Profilin kaydedildi, hesap seçeneklerin burada.</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#0F1115]">Hesap Ayarları</h3>
-                    <p className="text-xs font-medium text-[#5F6773]">Profilin kaydedildi, hesap seçeneklerin burada.</p>
-                  </div>
-                </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() => toast.info("Şifre güncelleme DB/auth bağlantısı ile aktif edilecek.")}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-[#DDE7E1] bg-white px-3 py-3 text-xs font-semibold text-[#0F1115] transition hover:border-[#0A5C3A]/40"
-                  >
-                    <Shield className="h-4 w-4 text-[#0A5C3A]" />
-                    Şifre Güncelle
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDeleteAccount}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-3 py-3 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    Hesabı Sil
-                  </button>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      onClick={() => toast.info("Şifre güncelleme DB/auth bağlantısı ile aktif edilecek.")}
+                      className="flex items-center justify-center gap-2 rounded-xl border border-[#DDE7E1] bg-white px-3 py-3 text-xs font-semibold text-[#0F1115] transition hover:border-[#0A5C3A]/40"
+                    >
+                      <Shield className="h-4 w-4 text-[#0A5C3A]" />
+                      Şifre Güncelle
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteAccount}
+                      className="flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-3 py-3 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Hesabı Sil
+                    </button>
+                  </div>
                 </div>
-              </div>
               </>
             )}
           </motion.div>
@@ -380,7 +392,7 @@ function Field({
   maxLength?: number;
 }) {
   return (
-    <label className="block">
+    <label className="block w-full min-w-0">
       <span className="mb-1.5 block text-xs font-semibold text-[#0F1115]">{label}</span>
       <input
         type={type}
@@ -409,7 +421,7 @@ function PanelButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition ${
+      className={`rounded-xl px-3 py-2.5 text-left text-xs sm:text-sm font-semibold transition truncate ${
         active
           ? "bg-[#0A5C3A] text-white shadow-sm"
           : "bg-white text-[#5F6773] hover:bg-[#F8FAFC] hover:text-[#0F1115]"
@@ -422,9 +434,9 @@ function PanelButton({
 
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-h-[74px] rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5">
+    <div className="min-h-[74px] w-full min-w-0 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
-      <p className="mt-1.5 text-sm font-medium text-[#0F1115] break-words">{value}</p>
+      <p className="mt-1.5 text-sm font-medium text-[#0F1115] break-words overflow-hidden">{value}</p>
     </div>
   );
 }
@@ -439,7 +451,7 @@ function EventList({
   events: EventItem[];
 }) {
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4">
+    <div className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4 overflow-hidden">
       <h4 className="text-sm font-semibold text-[#0F1115]">{title}</h4>
       {events.length === 0 ? (
         <p className="mt-3 rounded-xl border border-dashed border-[#DDE7E1] bg-white px-3 py-4 text-xs font-medium text-[#5F6773]">
@@ -448,9 +460,9 @@ function EventList({
       ) : (
         <div className="mt-3 space-y-2">
           {events.map((event) => (
-            <div key={event.id} className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-3">
-              <p className="text-sm font-medium text-[#0F1115]">{event.title}</p>
-              <p className="mt-1 text-xs font-normal text-[#5F6773]">
+            <div key={event.id} className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-3 overflow-hidden">
+              <p className="text-sm font-medium text-[#0F1115] truncate">{event.title}</p>
+              <p className="mt-1 text-xs font-normal text-[#5F6773] truncate">
                 {event.date} - {event.location}
               </p>
             </div>

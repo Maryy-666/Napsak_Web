@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Center Navigation Links */}
-        <nav className="hidden md:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
+        <nav className="hidden lg:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
           {SITE_CONFIG.mainNav.map((item) => {
             const hasSubItems = Boolean(item.items && item.items.length > 0);
             const isPassive = item.status === "coming-soon";
@@ -254,7 +254,7 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
-        <div className="hidden md:flex items-center gap-2 lg:gap-3">
+        <div className="hidden lg:flex items-center gap-2 lg:gap-3">
           <Button
             href={ROUTES.LOGIN}
             variant="secondary"
@@ -285,7 +285,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Hamburger Toggle Button */}
-        <div className="flex items-center md:hidden">
+        <div className="flex items-center lg:hidden">
           <button
             ref={menuButtonRef}
             type="button"
@@ -315,7 +315,7 @@ export const Navbar: React.FC = () => {
             exit="closed"
             variants={drawerVariants}
             transition={transitionConfig}
-            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl md:hidden max-h-[calc(100vh-80px)] overflow-y-auto"
+            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl lg:hidden max-h-[calc(100vh-80px)] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label="Mobil Menü"
@@ -333,9 +333,11 @@ export const Navbar: React.FC = () => {
                       <div key={item.title} className="flex flex-col gap-1 py-1">
                         <div className="flex items-center justify-between px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
                           <span>{item.title}</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
-                            Yakında
-                          </span>
+                          {isPassive && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
+                              Yakında
+                            </span>
+                          )}
                         </div>
                         <div className="pl-3 border-l-2 border-white/15 flex flex-col gap-1">
                           {item.items?.map((sub) => {
