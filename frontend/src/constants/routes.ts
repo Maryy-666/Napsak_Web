@@ -15,6 +15,7 @@ export const ROUTES = {
   ADMIN: "/admin",
   BASVURU: "/basvuru",
   EKIPLER: "/ekipler",
+  UYELER: "/uyeler",
   HABERLER: "/haberler",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",

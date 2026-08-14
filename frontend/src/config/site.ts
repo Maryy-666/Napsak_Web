@@ -73,6 +73,11 @@ export const SITE_CONFIG = {
           status: "active",
         },
         {
+          title: "Üyelerimiz",
+          href: ROUTES.UYELER,
+          status: "active",
+        },
+        {
           title: "Etkileşim / Katılım",
           href: ROUTES.KATILIM,
           status: "coming-soon",
