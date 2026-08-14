@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client.ts";
+import { PrismaClient } from "../../generated/prisma/client.js";
 
 const router = Router();
 
@@ -40,7 +40,7 @@ router.post("/register", async (req, res) => {
       data: {
         name,
         email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         role: "USER",
       },
     });
@@ -84,7 +84,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordMatch) {
       return res.status(401).json({
@@ -110,4 +110,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-export default router; 
+export default router;

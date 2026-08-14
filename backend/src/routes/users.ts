@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client.ts";
+import { PrismaClient } from "../../generated/prisma/client.js";
 
 const router = Router();
 
@@ -15,6 +15,8 @@ const prisma = new PrismaClient({
 // Tüm kullanıcıları getir
 router.get("/", async (req, res) => {
   try {
+    console.log("USERS API ÇALIŞTI");
+
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -26,9 +28,12 @@ router.get("/", async (req, res) => {
       },
     });
 
+    console.log("KULLANICILAR:", users);
+
     res.json(users);
   } catch (error) {
-    console.error(error);
+    console.error("USERS API HATASI:", error);
+
     res.status(500).json({
       error: "Kullanıcılar alınamadı.",
     });
@@ -66,11 +71,12 @@ router.get("/:id", async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error(error);
+    console.error("USER ID API HATASI:", error);
+
     res.status(500).json({
       error: "Kullanıcı alınamadı.",
     });
   }
 });
 
-export default router; 
+export default router;
