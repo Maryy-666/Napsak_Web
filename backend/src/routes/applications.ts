@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client.js";
+import {
+  authenticate,
+  requireAdmin,
+  AuthRequest,
+} from "../middleware/auth.js";
 
 const router = Router();
 
@@ -12,8 +17,8 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-// Tüm başvuruları getir
-router.get("/", async (req, res) => {
+// Tüm başvuruları getir - SADECE ADMIN
+router.get("/", authenticate, requireAdmin, async (req, res) => {
   try {
     const applications = await prisma.application.findMany({
       include: {
@@ -36,37 +41,24 @@ router.get("/", async (req, res) => {
 
     res.status(500).json({
       error: "Başvurular getirilemedi.",
-      details: String(error),
     });
   }
 });
 
-// Yeni başvuru oluştur
-router.post("/", async (req, res) => {
+// Yeni başvuru oluştur - GİRİŞ YAPMIŞ USER/ADMIN
+router.post("/", authenticate, async (req: AuthRequest, res) => {
   try {
-    const { userId, program } = req.body;
+    const { program } = req.body;
 
-    if (!userId || !program) {
+    if (!program) {
       return res.status(400).json({
-        error: "userId ve program zorunludur.",
-      });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: Number(userId),
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        error: "Kullanıcı bulunamadı.",
+        error: "program zorunludur.",
       });
     }
 
     const application = await prisma.application.create({
       data: {
-        userId: Number(userId),
+        userId: req.user!.id,
         program,
       },
     });
@@ -80,68 +72,87 @@ router.post("/", async (req, res) => {
 
     res.status(500).json({
       error: "Başvuru oluşturulurken hata oluştu.",
-      details: String(error),
     });
   }
 });
 
-// Başvuru durumunu güncelle
-router.patch("/:id/status", async (req, res) => {
-  try {
-    const id = Number(req.params.id);
-    const { status } = req.body;
+// Başvuru durumunu güncelle - SADECE ADMIN
+router.patch(
+  "/:id/status",
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const { status } = req.body;
 
-    if (!["PENDING", "APPROVED", "REJECTED"].includes(status)) {
-      return res.status(400).json({
-        error: "Geçersiz başvuru durumu.",
+      if (!Number.isInteger(id)) {
+        return res.status(400).json({
+          error: "Geçersiz başvuru ID'si.",
+        });
+      }
+
+      if (!["PENDING", "APPROVED", "REJECTED"].includes(status)) {
+        return res.status(400).json({
+          error: "Geçersiz başvuru durumu.",
+        });
+      }
+
+      const application = await prisma.application.update({
+        where: {
+          id,
+        },
+        data: {
+          status,
+        },
+      });
+
+      res.json({
+        message: "Başvuru durumu güncellendi.",
+        application,
+      });
+    } catch (error) {
+      console.error("APPLICATION STATUS ERROR:", error);
+
+      res.status(500).json({
+        error: "Başvuru durumu güncellenemedi.",
       });
     }
-
-    const application = await prisma.application.update({
-      where: {
-        id,
-      },
-      data: {
-        status,
-      },
-    });
-
-    res.json({
-      message: "Başvuru durumu güncellendi.",
-      application,
-    });
-  } catch (error) {
-    console.error("APPLICATION STATUS ERROR:", error);
-
-    res.status(500).json({
-      error: "Başvuru durumu güncellenemedi.",
-      details: String(error),
-    });
   }
-});
+);
 
-// Başvuru sil
-router.delete("/:id", async (req, res) => {
-  try {
-    const id = Number(req.params.id);
+// Başvuru sil - SADECE ADMIN
+router.delete(
+  "/:id",
+  authenticate,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const id = Number(req.params.id);
 
-    await prisma.application.delete({
-      where: {
-        id,
-      },
-    });
+      if (!Number.isInteger(id)) {
+        return res.status(400).json({
+          error: "Geçersiz başvuru ID'si.",
+        });
+      }
 
-    res.json({
-      message: "Başvuru başarıyla silindi.",
-    });
-  } catch (error) {
-    console.error("APPLICATION DELETE ERROR:", error);
+      await prisma.application.delete({
+        where: {
+          id,
+        },
+      });
 
-    res.status(500).json({
-      error: "Başvuru silinemedi.",
-      details: String(error),
-    });
+      res.json({
+        message: "Başvuru başarıyla silindi.",
+      });
+    } catch (error) {
+      console.error("APPLICATION DELETE ERROR:", error);
+
+      res.status(500).json({
+        error: "Başvuru silinemedi.",
+      });
+    }
   }
-});
+);
 
 export default router;

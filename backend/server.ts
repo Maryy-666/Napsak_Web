@@ -53,7 +53,11 @@ app.get("/events-test", (req, res) => {
 
 // API Routes
 app.use("/users", usersRouter);
+console.log("🔥 AUTH ROUTER BAĞLANIYOR");
 app.use("/auth", authRouter);
+app.post("/auth-test", (req, res) => {
+  res.json({ message: "AUTH TEST ÇALIŞIYOR" });
+});
 app.use("/applications", applicationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/events", eventsRouter);

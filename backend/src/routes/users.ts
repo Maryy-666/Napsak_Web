@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -12,8 +13,8 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-// Tüm kullanıcıları getir
-router.get("/", async (req, res) => {
+// Tüm kullanıcıları getir - SADECE ADMIN
+router.get("/", authenticate, requireAdmin, async (req, res) => {
   try {
     console.log("USERS API ÇALIŞTI");
 
@@ -40,8 +41,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ID'ye göre kullanıcı getir
-router.get("/:id", async (req, res) => {
+// ID'ye göre kullanıcı getir - SADECE ADMIN
+router.get("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const id = Number(req.params.id);
 
