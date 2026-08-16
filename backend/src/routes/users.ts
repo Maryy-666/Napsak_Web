@@ -80,4 +80,45 @@ router.get("/:id", authenticate, requireAdmin, async (req, res) => {
   }
 });
 
+// Kullanıcı rolünü değiştir - SADECE ADMIN
+router.patch("/:id/role", authenticate, requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { role } = req.body;
+
+    if (!Number.isInteger(id)) {
+      return res.status(400).json({
+        error: "Geçersiz kullanıcı ID'si.",
+      });
+    }
+
+    if (role !== "USER" && role !== "ADMIN") {
+      return res.status(400).json({
+        error: "Geçersiz rol.",
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    res.json(user);
+  } catch (error) {
+    console.error("ROLE UPDATE HATASI:", error);
+
+    res.status(500).json({
+      error: "Kullanıcı rolü güncellenemedi.",
+    });
+  }
+});
+
 export default router;

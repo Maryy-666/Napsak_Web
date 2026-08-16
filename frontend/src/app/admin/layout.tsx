@@ -53,9 +53,9 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   {
     title: "SİSTEM & YETKİLENDİRME",
     items: [
-      { title: "Kullanıcı Yönetimi", href: "/admin/kullanicilar", icon: UserCog, badge: "Yakında", published: false },
-      { title: "Yetkilendirme", href: "/admin/yetkilendirme", icon: Lock, badge: "Yakında", published: false },
-      { title: "Mesaj Yönetimi", href: "/admin/mesajlar", icon: MailCheck, badge: "Yakında", published: false },
+      { title: "Kullanıcı Yönetimi", href: "/admin/kullanicilar", icon: UserCog, badge: null, published: true },
+      { title: "Yetkilendirme", href: "/admin/yetkilendirme", icon: Lock, badge: null, published: true },                                                                                                                                                                                              
+      { title: "Mesaj Yönetimi", href: "/admin/mesajlar", icon: MailCheck, badge: null, published: true },
       { title: "Politika & KVKK", href: "/admin/politikalar", icon: FileCheck2, badge: null, published: true },
     ],
   },
