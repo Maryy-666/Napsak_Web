@@ -2,12 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Caveat:wght@600;700&family=Kalam:wght@700&display=swap');
 
 @layer base {
   :root {
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-headings: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-handwritten: 'Caveat', 'Kalam', 'Marker Felt', 'Comic Sans MS', cursive;
   }
 
   body {
@@ -20,6 +21,10 @@
 
   h1, h2, h3, h4, h5, h6, .font-headings {
     font-family: var(--font-headings);
+  }
+
+  .font-handwriting {
+    font-family: var(--font-handwritten);
   }
 }
 
@@ -63,4 +68,75 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #0F1115 !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* ============================================================
+   N'APSAK? GLOBAL ACCESSIBILITY MODIFIER CLASSES
+   ============================================================ */
+
+/* 1. Font Scaling */
+html.access-font-sm {
+  font-size: 87.5% !important; /* 14px base */
+}
+html.access-font-lg {
+  font-size: 112.5% !important; /* 18px base */
+}
+
+/* 2. High Contrast Mode */
+html.access-high-contrast {
+  filter: contrast(1.25) !important;
+}
+html.access-high-contrast body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* 3. Readable Font / Layout Mode */
+html.access-readable-mode *,
+html.access-readable-mode h1,
+html.access-readable-mode h2,
+html.access-readable-mode h3,
+html.access-readable-mode h4,
+html.access-readable-mode p,
+html.access-readable-mode span {
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* 4. Text Spacing */
+html.access-wide-spacing * {
+  letter-spacing: 0.06em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* 5. Line Height */
+html.access-wide-line-height * {
+  line-height: 1.85 !important;
+}
+
+/* 6. Reduce Motion */
+html.access-reduce-motion *,
+html.access-reduce-motion *::before,
+html.access-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* 7. Highlight Links */
+html.access-highlight-links a {
+  text-decoration: underline !important;
+  text-decoration-color: #07452C !important;
+  text-decoration-thickness: 2px !important;
+  font-weight: 700 !important;
+}
+
+/* 8. Enhanced Focus Ring */
+html.access-enhanced-focus *:focus,
+html.access-enhanced-focus *:focus-visible {
+  outline: 3px solid #07452C !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(7, 69, 44, 0.3) !important;
+}
+
 

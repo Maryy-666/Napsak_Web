@@ -43,22 +43,22 @@ export const SITE_CONFIG = {
     {
       title: "Çalışmalar",
       href: "#calismalar",
-      status: "coming-soon",
+      status: "active",
       items: [
         {
           title: "Dergiler",
           href: ROUTES.DERGILER,
-          status: "coming-soon",
+          status: "active",
         },
         {
           title: "Raporlar",
           href: ROUTES.RAPORLAR,
-          status: "coming-soon",
+          status: "active",
         },
         {
           title: "Faaliyetler",
           href: ROUTES.FAALIYETLER,
-          status: "coming-soon",
+          status: "active",
         },
       ],
     },
@@ -98,4 +98,3 @@ export const SITE_CONFIG = {
 } as const;
 
 export type SiteConfig = typeof SITE_CONFIG;
-
