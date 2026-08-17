@@ -15,6 +15,7 @@ import {
 import { Button, PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { ReportCoverPreview } from "./ReportCoverPreview";
+import { downloadReportPdf } from "../../lib/pdfExporter";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 14 },
@@ -205,48 +206,23 @@ export default function ReportsContent() {
       return;
     }
 
-    const reportContent = `
-============================================================
-N'APSAK? GENÇLİK TOPLULUĞU - RESMİ RAPOR ÖZETİ
-============================================================
+    try {
+      downloadReportPdf({
+        id: report.id,
+        title: report.title,
+        category: report.category,
+        date: report.publishDate,
+        pages: report.pages,
+        summary: report.summary,
+        keyTakeaways: report.keyTakeaways,
+        methodology: report.methodology,
+      });
 
-Rapor Başlığı: ${report.title}
-Kategori: ${report.category}
-Yayın Tarihi: ${report.publishDate}
-Dönem: ${report.period}
-Sayfa Sayısı: ${report.pages} Sayfa
-
-------------------------------------------------------------
-YÖNETİCİ ÖZETİ:
-------------------------------------------------------------
-${report.summary}
-
-------------------------------------------------------------
-ÖNE ÇIKAN BULGULAR & SONUÇLAR:
-------------------------------------------------------------
-${report.keyTakeaways.map((item, idx) => `${idx + 1}. ${item}`).join("\n")}
-
-------------------------------------------------------------
-METODOLOJİ:
-------------------------------------------------------------
-${report.methodology}
-
-============================================================
-N'apsak? Gençlik Topluluğu | www.napsak.org
-============================================================
-    `.trim();
-
-    const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${report.id}-napsak-raporu.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    triggerToast(`"${report.title}" özeti indirildi!`);
+      triggerToast(`"${report.title}" PDF raporu başarıyla indirildi!`);
+    } catch (error) {
+      console.error("PDF indirme hatası:", error);
+      triggerToast("PDF raporu oluşturulurken bir hata oluştu.");
+    }
   };
 
   return (

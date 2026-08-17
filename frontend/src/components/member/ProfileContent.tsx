@@ -49,6 +49,16 @@ export default function ProfileContent() {
       return;
     }
 
+    const isAdmin =
+      currentUser.role === "admin" ||
+      (currentUser.role as string) === "ADMIN" ||
+      currentUser.email?.toLowerCase() === "admin@napsak.com";
+
+    if (isAdmin) {
+      router.replace(ROUTES.ADMIN);
+      return;
+    }
+
     const savedProfile = getMemberProfile(currentUser);
     const hasProfileDetails = Boolean(
       savedProfile.phone ||

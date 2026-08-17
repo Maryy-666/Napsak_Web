@@ -177,8 +177,8 @@ export default function AdminEtkinliklerPage() {
   // TEMA STİLLERİ
   const cardBg = isDark ? "bg-[#0F1623] border-slate-800 text-slate-100" : "bg-white border-slate-200 text-[#0F1115] shadow-xs";
   const innerCardBg = isDark ? "bg-[#141C2E] border-slate-800 text-slate-200" : "bg-[#F8F9FA] border-slate-200 text-[#0F1115]";
-  const tableHeaderBg = isDark ? "bg-[#141C2E] text-slate-400 border-slate-800" : "bg-slate-100 text-[#5F6773] border-slate-200";
-  const tableRowBorder = isDark ? "border-slate-800/70 hover:bg-[#141C2E]/40" : "border-slate-100 hover:bg-slate-50/80";
+  const tableHeaderBg = isDark ? "bg-[#141C2E] text-slate-400 border-slate-800/60" : "bg-slate-50/60 text-[#5F6773] border-slate-100";
+  const tableRowBorder = isDark ? "border-slate-800/60 hover:bg-[#141C2E]/40" : "border-slate-100 hover:bg-slate-50/80";
   const inputBg = isDark ? "bg-[#141C2E] border-slate-800 text-slate-200" : "bg-slate-50 border-slate-200 text-[#0F1115]";
   const modalBg = isDark ? "bg-[#0F1623] border-slate-800 text-slate-200" : "bg-white border-slate-200 text-[#0F1115] shadow-2xl";
   const titleColor = isDark ? "text-white" : "text-[#0F1115]";
@@ -250,50 +250,46 @@ export default function AdminEtkinliklerPage() {
               placeholder="Etkinlik, partner veya konum ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full border-2 rounded-full pl-11 pr-4 py-2.5 text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:border-[#0A5C3A] ${
-                isDark
-                  ? "bg-[#141C2E] border-slate-700 text-slate-100 placeholder:text-slate-500"
-                  : "bg-white border-slate-300 text-[#0F1115] placeholder:text-slate-400 shadow-xs"
-              }`}
+              className={`w-full border-2 rounded-full pl-11 pr-4 py-2.5 text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:border-[#0A5C3A] ${isDark
+                ? "bg-[#141C2E] border-slate-700 text-slate-100 placeholder:text-slate-500"
+                : "bg-white border-slate-300 text-[#0F1115] placeholder:text-slate-400 shadow-xs"
+                }`}
             />
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
             <button
               onClick={() => setSelectedStatusFilter("all")}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                selectedStatusFilter === "all"
-                  ? isDark
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "bg-[#0A5C3A] text-white shadow-sm"
-                  : isDark
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${selectedStatusFilter === "all"
+                ? isDark
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "bg-[#0A5C3A] text-white shadow-sm"
+                : isDark
                   ? "bg-[#141C2E] text-slate-400 hover:text-white"
                   : "bg-slate-100 text-[#5F6773] hover:bg-slate-200"
-              }`}
+                }`}
             >
               Tümü ({events.length})
             </button>
             <button
               onClick={() => setSelectedStatusFilter("aktif")}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                selectedStatusFilter === "aktif"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : isDark
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${selectedStatusFilter === "aktif"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : isDark
                   ? "bg-[#141C2E] text-slate-400 hover:text-white"
                   : "bg-slate-100 text-[#5F6773] hover:bg-slate-200"
-              }`}
+                }`}
             >
               Aktif ({activeCount})
             </button>
             <button
               onClick={() => setSelectedStatusFilter("gecmis")}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                selectedStatusFilter === "gecmis"
-                  ? "bg-slate-700 text-white shadow-sm"
-                  : isDark
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${selectedStatusFilter === "gecmis"
+                ? "bg-slate-700 text-white shadow-sm"
+                : isDark
                   ? "bg-[#141C2E] text-slate-400 hover:text-white"
                   : "bg-slate-100 text-[#5F6773] hover:bg-slate-200"
-              }`}
+                }`}
             >
               Geçmiş ({pastCount})
             </button>
@@ -303,7 +299,7 @@ export default function AdminEtkinliklerPage() {
         {/* GERÇEKTEN FERAH VE NEFES ALAN DİKEY AKAN TABLO LİSTESİ */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
-            <thead className={`${tableHeaderBg} uppercase font-extrabold text-[11px] tracking-wider border-b`}>
+            <thead className={`${tableHeaderBg} uppercase font-extrabold text-[11px] tracking-wider border-b border-slate-100 dark:border-slate-800/60`}>
               <tr>
                 <th className="py-4.5 px-6 min-w-[300px]">Etkinlik Adı</th>
                 <th className="py-4.5 px-3.5 whitespace-nowrap">Kategori</th>
@@ -314,9 +310,9 @@ export default function AdminEtkinliklerPage() {
                 <th className="py-4.5 px-6 text-right whitespace-nowrap">İşlemler</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800/80">
+            <tbody>
               {filteredEvents.map((evt) => (
-                <tr key={evt.id} className={`${tableRowBorder} transition-colors group`}>
+                <tr key={evt.id} className={`border-b border-slate-100 dark:border-slate-800/50 last:border-b-0 transition-colors ${isDark ? "hover:bg-[#141C2E]/40" : "hover:bg-slate-50/80"}`}>
                   <td className="py-6 px-6 min-w-[300px]">
                     <div className={`text-sm font-semibold leading-relaxed ${titleColor}`}>{evt.title}</div>
                     {evt.partner && (
@@ -327,9 +323,8 @@ export default function AdminEtkinliklerPage() {
                     )}
                   </td>
                   <td className="py-6 px-3.5 whitespace-nowrap">
-                    <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold inline-block whitespace-nowrap ${
-                      isDark ? "bg-slate-800 text-slate-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-200"
-                    }`}>
+                    <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold inline-block whitespace-nowrap ${isDark ? "bg-slate-800 text-slate-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-200"
+                      }`}>
                       {evt.categoryLabel}
                     </span>
                   </td>
@@ -344,13 +339,12 @@ export default function AdminEtkinliklerPage() {
                     <button
                       onClick={() => handleToggleStatus(evt)}
                       title="Durumu Aktif/Geçmiş Yap"
-                      className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border transition-all whitespace-nowrap ${
-                        evt.status === "aktif"
-                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20"
-                          : isDark
+                      className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border transition-all whitespace-nowrap ${evt.status === "aktif"
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20"
+                        : isDark
                           ? "bg-slate-800 text-slate-400 border-slate-700 hover:text-white"
                           : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                      }`}
+                        }`}
                     >
                       {evt.status === "aktif" ? "● Aktif" : "✓ Geçmiş"}
                     </button>

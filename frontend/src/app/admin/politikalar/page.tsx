@@ -104,7 +104,7 @@ export default function AdminPolitikalarPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className={`${tableHeaderBg} uppercase font-bold text-[10px] tracking-wider border-b`}>
+            <thead className={`${tableHeaderBg} uppercase font-bold text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800/60`}>
               <tr>
                 <th className="p-4">Politika Başlığı</th>
                 <th className="p-4">Sayfa Bağlantısı</th>
@@ -114,9 +114,9 @@ export default function AdminPolitikalarPage() {
                 <th className="p-4 text-right">İşlem</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60">
+            <tbody>
               {policies.map((pol) => (
-                <tr key={pol.id} className={`${tableRowBorder} transition-colors`}>
+                <tr key={pol.id} className={`border-b border-slate-100 dark:border-slate-800/50 last:border-b-0 transition-colors ${isDark ? "hover:bg-[#141C2E]/40" : "hover:bg-slate-50/80"}`}>
                   <td className={`p-4 font-bold ${titleColor}`}>{pol.title}</td>
                   <td className="p-4 font-mono text-emerald-600">{pol.slug}</td>
                   <td className={`p-4 ${subColor}`}>{pol.lastUpdated}</td>

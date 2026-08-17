@@ -80,7 +80,7 @@ export const SITE_CONFIG = {
         {
           title: "Etkileşim / Katılım",
           href: ROUTES.KATILIM,
-          status: "coming-soon",
+          status: "active",
         },
         {
           title: "SSS",

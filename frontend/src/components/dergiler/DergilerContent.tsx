@@ -14,6 +14,7 @@ import { Button, PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { MagazineShowcaseSlider } from "./MagazineShowcaseSlider";
 import { MagazineReaderModal } from "./MagazineReaderModal";
+import { downloadMagazinePdf } from "../../lib/pdfExporter";
 
 export type MagazineIssue = {
   id: string;
@@ -250,48 +251,25 @@ export default function DergilerContent() {
   };
 
   const handleDownloadPDF = (mag: MagazineIssue) => {
-    const content = `
-============================================================
-N'APSAK? GENÇLİK TOPLULUĞU - DİJİTAL DERGİ KÜNYESİ & ÖZETİ
-============================================================
+    try {
+      downloadMagazinePdf({
+        id: mag.id,
+        issueNumber: mag.issueNumber,
+        title: mag.title,
+        category: mag.category,
+        publishDate: mag.publishDate,
+        period: mag.period,
+        pages: mag.pages,
+        editorialNote: mag.editorialNote,
+        articles: mag.articles,
+        contributors: mag.contributors,
+      });
 
-Dergi Sayısı: ${mag.issueNumber}
-Başlık: ${mag.title}
-Kategori: ${mag.category}
-Yayın Tarihi: ${mag.publishDate} (${mag.period})
-Sayfa Sayısı: ${mag.pages} Sayfa
-
-------------------------------------------------------------
-EDİTÖRDEN NOT:
-------------------------------------------------------------
-${mag.editorialNote}
-
-------------------------------------------------------------
-ÖNE ÇIKAN MAKALELER & İÇİNDEKİLER:
-------------------------------------------------------------
-${mag.articles.map((art, idx) => `${idx + 1}. ${art}`).join("\n")}
-
-------------------------------------------------------------
-YAZARLAR VE KATKIDA BULUNANLAR:
-------------------------------------------------------------
-${mag.contributors.join(", ")}
-
-============================================================
-N'apsak? Gençlik Topluluğu | www.napsak.org
-============================================================
-    `.trim();
-
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${mag.id}-napsak-dergisi.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    triggerToast(`"${mag.issueNumber} - ${mag.title}" özeti indirildi!`);
+      triggerToast(`"${mag.issueNumber} - ${mag.title}" PDF dergisi başarıyla indirildi!`);
+    } catch (error) {
+      console.error("Dergi PDF indirme hatası:", error);
+      triggerToast("Dergi PDF dosyası oluşturulurken bir hata oluştu.");
+    }
   };
 
   return (

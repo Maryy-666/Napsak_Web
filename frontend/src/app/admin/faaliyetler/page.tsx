@@ -10,11 +10,12 @@ import {
   Pin,
   RefreshCw,
   Eye,
+  Users,
+  Save,
 } from "lucide-react";
 import {
   FaaliyetItem,
   FaaliyetStatus,
-  BoardCardType,
   FaaliyetlerRepository,
   subscribeFaaliyetlerChanges,
 } from "../../../lib/faaliyetlerStore";
@@ -34,7 +35,6 @@ export default function AdminFaaliyetlerPage() {
 
   // Form State'leri
   const [title, setTitle] = useState("");
-  const [type, setType] = useState<BoardCardType>("sticky");
   const [category, setCategory] = useState("Toplumsal Etki");
   const [team, setTeam] = useState("N'apsak Ekibi");
   const [status, setStatus] = useState<FaaliyetStatus>("Devam Eden");
@@ -43,8 +43,6 @@ export default function AdminFaaliyetlerPage() {
   const [summary, setSummary] = useState("");
   const [participantCount, setParticipantCount] = useState<number>(0);
   const [image, setImage] = useState("");
-  const [tagText, setTagText] = useState("");
-  const [noteColor, setNoteColor] = useState("sage");
 
   useEffect(() => {
     refreshData();
@@ -58,6 +56,12 @@ export default function AdminFaaliyetlerPage() {
     setFaaliyetler(FaaliyetlerRepository.getAllFaaliyetler());
   };
 
+  // İstatistik Sayıları
+  const totalCount = faaliyetler.length;
+  const activeCount = faaliyetler.filter((f) => f.status === "Devam Eden").length;
+  const upcomingCount = faaliyetler.filter((f) => f.status === "Yakında").length;
+  const completedCount = faaliyetler.filter((f) => f.status === "Tamamlanan").length;
+
   const filteredFaaliyetler = faaliyetler.filter((item) => {
     const matchesStatus =
       selectedStatusFilter === "all" || item.status === selectedStatusFilter;
@@ -70,7 +74,6 @@ export default function AdminFaaliyetlerPage() {
 
   const resetForm = () => {
     setTitle("");
-    setType("sticky");
     setCategory("Toplumsal Etki");
     setTeam("N'apsak Ekibi");
     setStatus("Devam Eden");
@@ -79,60 +82,8 @@ export default function AdminFaaliyetlerPage() {
     setSummary("");
     setParticipantCount(0);
     setImage("");
-    setTagText("");
-    setNoteColor("sage");
     setEditingItem(null);
     setShowAddModal(false);
-  };
-
-  const getColorPreset = (color: string) => {
-    switch (color) {
-      case "mint":
-        return {
-          noteBg: "bg-[#F0FDF4]",
-          borderColor: "border-[#BBF7D0]",
-          badgeBg: "bg-[#166534]",
-          badgeText: "text-white",
-          tapeColor: "bg-emerald-200/60 border-emerald-300/40",
-          pinColor: "text-emerald-700",
-        };
-      case "cream":
-        return {
-          noteBg: "bg-[#FAF9F4]",
-          borderColor: "border-[#E5E2D5]",
-          badgeBg: "bg-[#0A5C3A]/15",
-          badgeText: "text-[#0A5C3A]",
-          tapeColor: "bg-amber-200/50 border-amber-300/40",
-          pinColor: "text-[#0A5C3A]",
-        };
-      case "olive":
-        return {
-          noteBg: "bg-[#F3F7EE]",
-          borderColor: "border-[#D8E4CB]",
-          badgeBg: "bg-[#3B5226]",
-          badgeText: "text-white",
-          tapeColor: "bg-[#D8E4CB]/60 border-[#B5C99A]/40",
-          pinColor: "text-[#3B5226]",
-        };
-      case "white":
-        return {
-          noteBg: "bg-white",
-          borderColor: "border-[#DDE7E1]",
-          badgeBg: "bg-[#0A5C3A]",
-          badgeText: "text-white",
-          tapeColor: "bg-emerald-200/50 border-emerald-300/40",
-          pinColor: "text-[#0A5C3A]",
-        };
-      default: // sage (#EAF5EF)
-        return {
-          noteBg: "bg-[#EAF5EF]",
-          borderColor: "border-[#CDEAD9]",
-          badgeBg: "bg-[#0A5C3A]",
-          badgeText: "text-white",
-          tapeColor: "bg-[#86EFAC]/50 border-[#4ADE80]/40",
-          pinColor: "text-[#0A5C3A]",
-        };
-    }
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -142,30 +93,23 @@ export default function AdminFaaliyetlerPage() {
       return;
     }
 
-    const style = getColorPreset(noteColor);
+    const defaultStyle = {
+      noteBg: "bg-[#EAF5EF]",
+      borderColor: "border-[#CDEAD9]",
+      badgeBg: "bg-[#0A5C3A]",
+      badgeText: "text-white",
+      tapeColor: "bg-[#86EFAC]/50 border-[#4ADE80]/40",
+      pinColor: "text-[#0A5C3A]",
+    };
+
     const rotationOptions = ["rotate-2", "-rotate-2", "rotate-3", "-rotate-3"];
     const randomRotation = rotationOptions[Math.floor(Math.random() * rotationOptions.length)];
 
     if (editingItem) {
       FaaliyetlerRepository.updateFaaliyet(editingItem.id, {
         title: title.trim(),
-        type,
-        category,
-        team: team.trim(),
-        status,
-        date: date.trim() || "2025",
-        location: location.trim() || "Genel",
-        summary: summary.trim(),
-        participantCount: participantCount > 0 ? participantCount : undefined,
-        image: image.trim() || undefined,
-        tagText: tagText.trim() || undefined,
-        ...style,
-      });
-    } else {
-      FaaliyetlerRepository.addFaaliyet({
-        title: title.trim(),
-        type,
-        category,
+        type: "sticky",
+        category: category.trim(),
         team: team.trim() || "N'apsak Ekibi",
         status,
         date: date.trim() || "2025",
@@ -173,9 +117,22 @@ export default function AdminFaaliyetlerPage() {
         summary: summary.trim(),
         participantCount: participantCount > 0 ? participantCount : undefined,
         image: image.trim() || undefined,
-        tagText: tagText.trim() || undefined,
+        ...defaultStyle,
+      });
+    } else {
+      FaaliyetlerRepository.addFaaliyet({
+        title: title.trim(),
+        type: "sticky",
+        category: category.trim() || "Toplumsal Etki",
+        team: team.trim() || "N'apsak Ekibi",
+        status,
+        date: date.trim() || "2025",
+        location: location.trim() || "Genel",
+        summary: summary.trim(),
+        participantCount: participantCount > 0 ? participantCount : undefined,
+        image: image.trim() || undefined,
         rotation: randomRotation,
-        ...style,
+        ...defaultStyle,
       });
     }
 
@@ -186,7 +143,6 @@ export default function AdminFaaliyetlerPage() {
   const openEdit = (item: FaaliyetItem) => {
     setEditingItem(item);
     setTitle(item.title);
-    setType(item.type);
     setCategory(item.category);
     setTeam(item.team);
     setStatus(item.status);
@@ -195,7 +151,6 @@ export default function AdminFaaliyetlerPage() {
     setSummary(item.summary);
     setParticipantCount(item.participantCount || 0);
     setImage(item.image || "");
-    setTagText(item.tagText || "");
     setShowAddModal(true);
   };
 
@@ -214,39 +169,50 @@ export default function AdminFaaliyetlerPage() {
     }
   };
 
+  // Tema Yardımcı Stilleri
+  const cardBg = isDark ? "bg-[#0F1623] border-slate-800 text-slate-100" : "bg-white border-slate-200 text-[#0F1115] shadow-xs";
+  const tableHeaderBg = isDark ? "bg-[#141C2E] text-slate-400 border-slate-800/60" : "bg-slate-50/60 text-[#5F6773] border-slate-100";
+  const tableRowBorder = isDark ? "border-slate-800/60 hover:bg-[#141C2E]/40" : "border-slate-100 hover:bg-slate-50/80";
+  const inputBg = isDark ? "bg-[#141C2E] border-slate-800 text-slate-200" : "bg-slate-50 border-slate-200 text-[#0F1115]";
+  const modalBg = isDark ? "bg-[#0F1623] border-slate-800 text-slate-200" : "bg-white border-slate-200 text-[#0F1115] shadow-2xl";
+  const titleColor = isDark ? "text-white" : "text-[#0F1115]";
+  const subColor = isDark ? "text-slate-400" : "text-[#5F6773]";
+
   return (
-    <div className={`space-y-6 ${isDark ? "text-slate-100" : "text-slate-900"}`}>
-      {/* Üst Başlık & Eylemler */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="space-y-6 select-none font-sans">
+      {/* ÜST BAŞLIK VE EYLEMLER */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0A5C3A] text-white">
               <Pin className="h-4 w-4" />
             </span>
-            <h1 className="text-2xl font-bold font-headings">Faaliyetler & Pano Yönetimi</h1>
+            <h1 className={`text-xl sm:text-2xl font-bold font-headings tracking-tight ${titleColor}`}>
+              Faaliyet Yönetimi
+            </h1>
           </div>
-          <p className="mt-1 text-sm text-slate-500">
-            `/faaliyetler` mantar panosunda görünen sticky notları ve faaliyet kartlarını yönetin.
+          <p className={`text-xs ${subColor} mt-1 font-normal`}>
+            `/faaliyetler` mantar panosunda görünen faaliyetleri ve topluluk çalışmalarını yönetin.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <Link
             href="/faaliyetler"
             target="_blank"
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-xs hover:bg-slate-50"
+            className="flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#141C2E] px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
           >
-            <Eye className="h-4 w-4 text-[#0A5C3A]" />
-            Panoyu Canlı Gör
+            <Eye className="h-3.5 w-3.5 text-[#0A5C3A]" />
+            <span>Panoyu Canlı Gör</span>
           </Link>
 
           <button
             type="button"
             onClick={handleResetDefaults}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600 shadow-xs hover:bg-slate-50"
+            className="flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#141C2E] px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer"
             title="Varsayılana Sıfırla"
           >
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-3.5 w-3.5" />
           </button>
 
           <button
@@ -255,106 +221,133 @@ export default function AdminFaaliyetlerPage() {
               resetForm();
               setShowAddModal(true);
             }}
-            className="flex items-center gap-2 rounded-xl bg-[#0A5C3A] px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#08482D] transition-colors"
+            className="bg-[#0A5C3A] hover:bg-[#128C59] text-white px-4.5 py-2 rounded-full text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Plus className="h-4 w-4" />
-            Yeni Not / Faaliyet Ekle
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <span>Yeni Faaliyet Ekle</span>
           </button>
         </div>
       </div>
 
-      {/* Arama ve Filtreleme Barı */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs">
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Faaliyet veya not ara..."
-            className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 py-2 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          {["all", "Devam Eden", "Yakında", "Tamamlanan"].map((st) => (
-            <button
-              key={st}
-              type="button"
-              onClick={() => setSelectedStatusFilter(st)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-extrabold transition ${
-                selectedStatusFilter === st
-                  ? "bg-[#0A5C3A] text-white shadow-2xs"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+      {/* ARAMA VE FİLTRELER */}
+      <div className={`${cardBg} rounded-3xl border overflow-hidden transition-colors shadow-xs`}>
+        <div className={`p-5 sm:p-6 border-b ${isDark ? "border-slate-800/80" : "border-slate-200"} flex flex-col sm:flex-row items-center justify-between gap-4`}>
+          <div className="relative w-full sm:w-96">
+            <Search className="w-4 h-4 text-[#0A5C3A] absolute left-4 top-3.5 stroke-[2.5]" />
+            <input
+              type="text"
+              placeholder="Faaliyet veya açıklama ara..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`w-full border-2 rounded-full pl-11 pr-4 py-2.5 text-xs sm:text-sm font-semibold transition-all focus:outline-none focus:border-[#0A5C3A] ${
+                isDark
+                  ? "bg-[#141C2E] border-slate-700 text-slate-100 placeholder:text-slate-500"
+                  : "bg-white border-slate-300 text-[#0F1115] placeholder:text-slate-400 shadow-xs"
               }`}
-            >
-              {st === "all" ? "Tümü" : st}
-            </button>
-          ))}
-        </div>
-      </div>
+            />
+          </div>
 
-      {/* Tablo / Kart Listesi */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            {[
+              { id: "all", label: `Tümü (${totalCount})` },
+              { id: "Devam Eden", label: `Devam Eden (${activeCount})` },
+              { id: "Yakında", label: `Yakında (${upcomingCount})` },
+              { id: "Tamamlanan", label: `Tamamlanan (${completedCount})` },
+            ].map((st) => (
+              <button
+                key={st.id}
+                type="button"
+                onClick={() => setSelectedStatusFilter(st.id)}
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  selectedStatusFilter === st.id
+                    ? isDark
+                      ? "bg-white text-slate-900 shadow-sm"
+                      : "bg-[#0A5C3A] text-white shadow-sm"
+                    : isDark
+                    ? "bg-[#141C2E] text-slate-400 hover:text-white"
+                    : "bg-slate-100 text-[#5F6773] hover:bg-slate-200"
+                }`}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* ETKİNLİKLER SAYFASIYLA BİREBİR ETKİLEŞİMLİ VE YUMUŞAK TABLO */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-slate-100 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+          <table className="w-full text-left text-xs sm:text-sm">
+            <thead className={`${tableHeaderBg} uppercase font-extrabold text-[11px] tracking-wider border-b border-slate-100 dark:border-slate-800/60`}>
               <tr>
-                <th className="p-4">Kart / Not Başlığı</th>
-                <th className="p-4">Tip</th>
-                <th className="p-4">Kategori & Ekip</th>
-                <th className="p-4">Durum</th>
-                <th className="p-4">Katılımcı</th>
-                <th className="p-4 text-right">İşlemler</th>
+                <th className="py-4.5 px-6 min-w-[300px]">Faaliyet Adı</th>
+                <th className="py-4.5 px-3.5 whitespace-nowrap">Kategori</th>
+                <th className="py-4.5 px-3.5 whitespace-nowrap">Durum</th>
+                <th className="py-4.5 px-5 whitespace-nowrap">Katılımcı</th>
+                <th className="py-4.5 px-6 text-right whitespace-nowrap">İşlemler</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {filteredFaaliyetler.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="p-4">
-                    <div className="font-extrabold text-slate-900 text-sm">{item.title}</div>
-                    <div className="text-slate-500 line-clamp-1 max-w-md">{item.summary}</div>
+                <tr key={item.id} className={`border-b border-slate-100 dark:border-slate-800/50 last:border-b-0 transition-colors ${isDark ? "hover:bg-[#141C2E]/40" : "hover:bg-slate-50/80"}`}>
+                  {/* Faaliyet Adı ve Özeti */}
+                  <td className="py-6 px-6 min-w-[300px]">
+                    <div className={`text-sm font-semibold leading-relaxed ${titleColor}`}>{item.title}</div>
+                    <div className={`text-xs ${subColor} mt-1 font-normal line-clamp-1 max-w-md`}>{item.summary}</div>
                   </td>
-                  <td className="p-4">
-                    <span className="inline-flex items-center rounded-md bg-[#EAF5EF] px-2.5 py-1 text-[11px] font-extrabold text-[#0A5C3A] uppercase">
-                      {item.type}
+
+                  {/* Kategori */}
+                  <td className="py-6 px-3.5 whitespace-nowrap">
+                    <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold inline-block whitespace-nowrap ${
+                      isDark ? "bg-slate-800 text-slate-200 border border-slate-700" : "bg-slate-100 text-slate-700 border border-slate-200"
+                    }`}>
+                      {item.category}
                     </span>
                   </td>
-                  <td className="p-4">
-                    <div className="font-bold text-slate-800">{item.category}</div>
-                    <div className="text-slate-400 text-[11px]">{item.team}</div>
-                  </td>
-                  <td className="p-4">
+
+                  {/* Durum */}
+                  <td className="py-6 px-3.5 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase ${
+                      className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border transition-all whitespace-nowrap ${
                         item.status === "Devam Eden"
-                          ? "bg-[#0A5C3A] text-white"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                           : item.status === "Yakında"
-                          ? "bg-[#EAF5EF] text-[#0A5C3A]"
-                          : "bg-slate-100 text-slate-700"
+                          ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
+                          : isDark
+                          ? "bg-slate-800 text-slate-400 border-slate-700"
+                          : "bg-slate-100 text-slate-600 border-slate-200"
                       }`}
                     >
                       {item.status}
                     </span>
                   </td>
-                  <td className="p-4 font-bold text-slate-700">
-                    {item.participantCount ? `👥 ${item.participantCount}` : "-"}
+
+                  {/* Katılımcı Kayıt Sayısı */}
+                  <td className="py-6 px-5 whitespace-nowrap">
+                    {item.participantCount ? (
+                      <span className="text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-500/10 px-3.5 py-1.5 rounded-full border border-blue-500/20 inline-flex items-center gap-1.5 transition-colors whitespace-nowrap">
+                        <Users className="w-3.5 h-3.5 stroke-[2]" />
+                        <span>{item.participantCount} Kayıt</span>
+                      </span>
+                    ) : (
+                      <span className={`text-xs ${subColor}`}>-</span>
+                    )}
                   </td>
-                  <td className="p-4 text-right space-x-2">
+
+                  {/* İŞLEMLER BUTONLARI (ETKİNLİKLER SAYFASI İLE BİREBİR AYNI) */}
+                  <td className="py-6 px-6 text-right space-x-2 whitespace-nowrap">
                     <button
-                      type="button"
                       onClick={() => openEdit(item)}
-                      className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-[#0A5C3A]"
-                      title="Düzenle"
+                      className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20 hover:scale-105 active:scale-95 transition-all shadow-xs inline-flex items-center justify-center cursor-pointer"
+                      title="Faaliyeti Düzenle"
                     >
-                      <Edit3 className="h-4 w-4" />
+                      <Edit3 className="w-4 h-4 stroke-[2.5]" />
                     </button>
                     <button
-                      type="button"
                       onClick={() => setItemToDelete({ id: item.id, title: item.title })}
-                      className="rounded-lg p-2 text-slate-600 hover:bg-rose-50 hover:text-rose-600"
-                      title="Sil"
+                      className="p-2 rounded-xl bg-rose-500/10 text-rose-600 border border-rose-500/20 hover:bg-rose-500/20 hover:scale-105 active:scale-95 transition-all shadow-xs inline-flex items-center justify-center cursor-pointer"
+                      title="Faaliyeti Sil"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="w-4 h-4 stroke-[2.5]" />
                     </button>
                   </td>
                 </tr>
@@ -366,105 +359,65 @@ export default function AdminFaaliyetlerPage() {
 
       {/* EKLE / DÜZENLE MODALI */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 text-slate-900 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-bold font-headings text-slate-900">
-                {editingItem ? "Faaliyet / Sticky Not Düzenle" : "Yeni Faaliyet veya Sticky Not Ekle"}
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <form
+            onSubmit={handleSave}
+            className={`${modalBg} rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto`}
+          >
+            <div className={`flex items-center justify-between border-b pb-3 ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+              <h3 className={`text-base font-bold font-headings ${titleColor}`}>
+                {editingItem ? "Faaliyeti Düzenle" : "Yeni Faaliyet Ekle"}
               </h3>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="rounded-full p-1.5 text-slate-400 hover:bg-slate-100"
-              >
-                <X className="h-5 w-5" />
+              <button type="button" onClick={resetForm} className={`${subColor} hover:${titleColor} font-bold`}>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-4">
+            <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Başlık *
-                </label>
+                <label className={`font-bold ${titleColor} mb-1 block`}>Faaliyet Başlığı *</label>
                 <input
                   required
+                  type="text"
+                  placeholder="Örn: Kitap Bağış Kampanyası"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Örn: Kitap Bağış Kampanyası"
-                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                  className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Kart Tipi
-                  </label>
-                  <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value as BoardCardType)}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
-                  >
-                    <option value="sticky">Sticky Note (Post-it)</option>
-                    <option value="photo">Fotoğraf Kartı</option>
-                    <option value="polaroid">Polaroid Tarzı Fotoğraf</option>
-                    <option value="motto">Motto / El Yazısı Not</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Not Rengi (Marka Tonları)
-                  </label>
-                  <select
-                    value={noteColor}
-                    onChange={(e) => setNoteColor(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
-                  >
-                    <option value="sage">Adaçayı Yeşili (#EAF5EF)</option>
-                    <option value="mint">Okaliptüs Yeşili (#F0FDF4)</option>
-                    <option value="cream">Sıcak Krem Keten (#FAF9F4)</option>
-                    <option value="olive">Zeytin / Fıstık Yeşili (#F3F7EE)</option>
-                    <option value="white">Polaroid Beyaz (#FFFFFF)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Kategori
-                  </label>
+                  <label className={`font-bold ${titleColor} mb-1 block`}>Kategori *</label>
                   <input
+                    type="text"
+                    required
+                    placeholder="Örn: Toplumsal Etki"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    placeholder="Örn: Toplumsal Etki"
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                    className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Sorumlu Ekip
-                  </label>
+                  <label className={`font-bold ${titleColor} mb-1 block`}>Sorumlu Ekip</label>
                   <input
+                    type="text"
+                    placeholder="Örn: Sosyal Sorumluluk Ekibi"
                     value={team}
                     onChange={(e) => setTeam(e.target.value)}
-                    placeholder="Örn: Sosyal Sorumluluk Ekibi"
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                    className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Durum
-                  </label>
+                  <label className={`font-bold ${titleColor} mb-1 block`}>Durum *</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as FaaliyetStatus)}
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                    className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                   >
                     <option value="Devam Eden">Devam Eden</option>
                     <option value="Yakında">Yakında</option>
@@ -473,99 +426,97 @@ export default function AdminFaaliyetlerPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Tarih
-                  </label>
+                  <label className={`font-bold ${titleColor} mb-1 block`}>Tarih</label>
                   <input
+                    type="text"
+                    placeholder="Örn: 15 Haziran 2025"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    placeholder="Örn: 15 Haziran 2025"
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                    className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Katılımcı Sayısı
-                  </label>
+                  <label className={`font-bold ${titleColor} mb-1 block`}>Katılımcı Sayısı</label>
                   <input
                     type="number"
+                    placeholder="0"
                     value={participantCount}
                     onChange={(e) => setParticipantCount(Number(e.target.value))}
-                    placeholder="0"
-                    className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                    className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Özet / Açıklama *
-                </label>
+                <label className={`font-bold ${titleColor} mb-1 block`}>Özet / Açıklama *</label>
                 <textarea
                   required
                   rows={3}
+                  placeholder="Faaliyet özeti..."
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
-                  placeholder="Sticky note üzerinde görünecek kısa açıklama..."
-                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                  className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                  Görsel URL (Opsiyonel)
-                </label>
+                <label className={`font-bold ${titleColor} mb-1 block`}>Görsel URL (Opsiyonel)</label>
                 <input
+                  type="text"
+                  placeholder="Örn: /images/workshop.png"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
-                  placeholder="Örn: /images/workshop.png"
-                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium outline-none focus:border-[#0A5C3A]"
+                  className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
                 />
               </div>
+            </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
-                >
-                  İptal
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-xl bg-[#0A5C3A] px-5 py-2 text-xs font-bold text-white shadow-md hover:bg-[#08482D]"
-                >
-                  {editingItem ? "Güncelle" : "Panoya Kaydet"}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className={`pt-3 flex justify-end gap-3 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+              <button
+                type="button"
+                onClick={resetForm}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold ${subColor} hover:${titleColor}`}
+              >
+                İptal
+              </button>
+              <button
+                type="submit"
+                className="bg-[#0A5C3A] text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-[#128C59] transition-all inline-flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>{editingItem ? "Güncelle" : "Panoya Kaydet"}</span>
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
       {/* SİLME ONAY MODALI */}
       {itemToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 text-slate-900 space-y-4">
-            <h3 className="text-base font-bold font-headings text-slate-900">
-              Notu Silmek İstediğinize Emin Misiniz?
-            </h3>
-            <p className="text-xs text-slate-500">
-              <strong className="text-slate-800">{itemToDelete.title}</strong> notu panodan kalıcı olarak kaldırılacaktır.
-            </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className={`${modalBg} rounded-2xl max-w-md w-full p-6 space-y-4 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-150`}>
+            <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+              <Trash2 className="w-6 h-6 stroke-[2]" />
+            </div>
+            <div>
+              <h3 className={`text-lg font-bold font-headings ${titleColor}`}>Faaliyeti Sil</h3>
+              <p className={`text-xs ${subColor} mt-1.5 leading-relaxed`}>
+                "<span className="font-bold text-rose-500">{itemToDelete.title}</span>" faaliyetini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+              </p>
+            </div>
+            <div className="pt-2 flex items-center justify-center gap-3">
               <button
                 type="button"
                 onClick={() => setItemToDelete(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600"
+                className={`px-5 py-2.5 rounded-xl text-xs font-semibold ${subColor} hover:${titleColor} transition-colors`}
               >
                 İptal
               </button>
               <button
                 type="button"
                 onClick={handleDelete}
-                className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white shadow-md hover:bg-rose-700"
+                className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md shadow-rose-600/25"
               >
                 Evet, Sil
               </button>

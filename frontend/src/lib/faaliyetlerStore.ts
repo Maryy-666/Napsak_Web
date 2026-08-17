@@ -170,7 +170,7 @@ export const FaaliyetlerRepository = {
     }
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_FAALIYETLER));
-    } catch {}
+    } catch { }
     return INITIAL_FAALIYETLER;
   },
 
@@ -235,7 +235,7 @@ export const FaaliyetlerRepository = {
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_FAALIYETLER));
-      } catch {}
+      } catch { }
     }
     notifyListeners();
     return INITIAL_FAALIYETLER;

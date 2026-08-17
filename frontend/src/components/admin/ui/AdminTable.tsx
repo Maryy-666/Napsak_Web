@@ -119,17 +119,16 @@ export function AdminTable<T>({
             </tr>
           </thead>
 
-          {/* BODY */}
           <tbody
-            className={`divide-y text-xs sm:text-sm font-medium ${
-              isDark ? "divide-slate-800/70 text-slate-200" : "divide-slate-100 text-[#0F1115]"
+            className={`text-xs sm:text-sm font-medium ${
+              isDark ? "text-slate-200" : "text-[#0F1115]"
             }`}
           >
             {data.map((row, index) => (
               <tr
                 key={keyExtractor(row, index)}
                 onClick={() => onRowClick && onRowClick(row)}
-                className={`transition-colors ${
+                className={`border-b border-slate-100 dark:border-slate-800/50 last:border-b-0 transition-colors ${
                   onRowClick ? "cursor-pointer" : ""
                 } ${
                   isDark

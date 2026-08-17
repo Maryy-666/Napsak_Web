@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown, UserRound } from "lucide-react";
-import { SITE_CONFIG, NavItem } from "../../config/site";
+import { Menu, X, ArrowRight, ChevronDown, UserRound, LogOut, ShieldCheck } from "lucide-react";
+import { SITE_CONFIG } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
-import { AuthUser, getCurrentUser } from "../../lib/memberAuth";
+import { AuthUser, getCurrentUser, clearCurrentUser } from "../../lib/memberAuth";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -17,6 +17,7 @@ function cn(...classes: (string | undefined | null | false)[]) {
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
 
   // Scroll, mobile menu, and desktop dropdown states
@@ -102,6 +103,20 @@ export const Navbar: React.FC = () => {
     return href !== "#" && pathname.startsWith(href);
   };
 
+  const isAdmin = Boolean(
+    currentUser && (
+      currentUser.role === "admin" ||
+      (currentUser.role as string) === "ADMIN" ||
+      currentUser.email?.toLowerCase() === "admin@napsak.com"
+    )
+  );
+
+  const handleLogout = () => {
+    clearCurrentUser();
+    setCurrentUser(null);
+    router.push(ROUTES.HOME);
+  };
+
   return (
     <motion.header
       initial="hidden"
@@ -154,7 +169,7 @@ export const Navbar: React.FC = () => {
                     type="button"
                     onClick={() => setActiveDropdown(isOpen ? null : item.title)}
                     className={cn(
-                      "flex items-center gap-1.5 text-sm font-medium transition-colors py-1 px-2.5 rounded-md outline-none select-none focus-visible:ring-4 focus-visible:ring-white/20",
+                      "flex items-center gap-1.5 text-sm font-medium transition-colors py-1 px-2.5 rounded-md outline-none select-none focus-visible:ring-4 focus-visible:ring-white/20 cursor-pointer",
                       hasActiveChild
                         ? "text-white font-semibold"
                         : isPassive
@@ -271,43 +286,78 @@ export const Navbar: React.FC = () => {
         {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
         <div className="hidden lg:flex items-center gap-2 lg:gap-3">
           {currentUser ? (
-            <Link
-              href={ROUTES.PROFIL}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
-              aria-label="Profilim"
-              title="Profilim"
-            >
-              <UserRound className="h-5 w-5" />
-            </Link>
+            isAdmin ? (
+              <div className="flex items-center gap-2.5 shrink-0">
+                <Link
+                  href={ROUTES.ADMIN}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-emerald-400/40 bg-[#0A5C3A] text-white text-xs sm:text-sm font-semibold hover:bg-[#128C59] transition-all shadow-xs whitespace-nowrap shrink-0"
+                  title="Admin Paneli"
+                >
+                  <ShieldCheck className="w-4 h-4 stroke-[2]" />
+                  <span>Admin Panel</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 text-white text-xs sm:text-sm font-semibold hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  title="Çıkış Yap"
+                >
+                  <LogOut className="w-4 h-4 stroke-[2]" />
+                  <span>Çıkış Yap</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={ROUTES.PROFIL}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
+                  aria-label="Profilim"
+                  title="Profilim"
+                >
+                  <UserRound className="h-4.5 w-4.5" />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 text-white text-xs font-medium hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer"
+                  title="Çıkış Yap"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Çıkış</span>
+                </button>
+              </div>
+            )
           ) : (
             <>
-          <Button
-            href={ROUTES.LOGIN}
-            variant="secondary"
-            size="sm"
-            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
-          >
-            Giriş Yap
-          </Button>
+              <Button
+                href={ROUTES.LOGIN}
+                variant="secondary"
+                size="sm"
+                className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
+              >
+                Giriş Yap
+              </Button>
 
-          <Button
-            href={ROUTES.KAYIT}
-            variant="secondary"
-            size="sm"
-            className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
-          >
-            Kayıt Ol
-          </Button>
+              <Button
+                href={ROUTES.KAYIT}
+                variant="secondary"
+                size="sm"
+                className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
+              >
+                Kayıt Ol
+              </Button>
 
-          <Button
-            href={ROUTES.BASVURU}
-            variant="primary"
-            size="sm"
-            rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
-            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
-          >
-            Topluluğa Katıl
-          </Button>
+              <Button
+                href={ROUTES.BASVURU}
+                variant="primary"
+                size="sm"
+                rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
+                className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
+              >
+                Topluluğa Katıl
+              </Button>
             </>
           )}
         </div>
@@ -444,53 +494,100 @@ export const Navbar: React.FC = () => {
 
               <div className="pt-4 border-t border-white/15 flex flex-col gap-2.5">
                 {currentUser && (
-                  <Button
-                    href={ROUTES.PROFIL}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    leftIcon={<UserRound className="h-4 w-4" />}
-                    className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm"
-                  >
-                    Profilim
-                  </Button>
+                  isAdmin ? (
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        href={ROUTES.ADMIN}
+                        variant="primary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        leftIcon={<ShieldCheck className="h-4 w-4" />}
+                        className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-sm"
+                      >
+                        Admin Panel
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          handleLogout();
+                        }}
+                        leftIcon={<LogOut className="h-4 w-4" />}
+                        className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm"
+                      >
+                        Çıkış Yap
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        href={ROUTES.PROFIL}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        leftIcon={<UserRound className="h-4 w-4" />}
+                        className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm flex-1"
+                      >
+                        Profilim
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm px-3.5"
+                        title="Çıkış Yap"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
                 )}
 
-                <div className={cn("grid grid-cols-2 gap-2", currentUser && "hidden")}>
-                  <Button
-                    href={ROUTES.LOGIN}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
-                  >
-                    Giriş Yap
-                  </Button>
+                {!currentUser && (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        href={ROUTES.LOGIN}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
+                      >
+                        Giriş Yap
+                      </Button>
 
-                  <Button
-                    href={ROUTES.KAYIT}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
-                  >
-                    Kayıt Ol
-                  </Button>
-                </div>
+                      <Button
+                        href={ROUTES.KAYIT}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
+                      >
+                        Kayıt Ol
+                      </Button>
+                    </div>
 
-                <Button
-                  href={ROUTES.BASVURU}
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
-                >
-                  Topluluğa Katıl
-                </Button>
+                    <Button
+                      href={ROUTES.BASVURU}
+                      variant="primary"
+                      size="lg"
+                      fullWidth
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
+                    >
+                      Topluluğa Katıl
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
@@ -501,4 +598,3 @@ export const Navbar: React.FC = () => {
 };
 
 Navbar.displayName = "Navbar";
-
