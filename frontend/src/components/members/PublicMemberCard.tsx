@@ -34,28 +34,49 @@ export function PublicMemberCard({
         m.team.toLowerCase().includes(activeFilter.toLowerCase())
       );
       if (matched) {
+        let tag = matched.team.toUpperCase();
+        if (matched.subRole) {
+          const cleanTeamName = matched.team
+            .replace(" Ekibi", "")
+            .replace(" Çalışma Grubu", "")
+            .replace(" Departmanı", "")
+            .trim()
+            .toUpperCase();
+          tag = `${cleanTeamName} • ${matched.subRole.toUpperCase()}`;
+        }
         return {
           roleText: matched.role,
-          teamTagText: matched.team.toUpperCase(),
+          teamTagText: tag,
         };
       }
     }
 
     const primaryMembership = member.memberships[0];
+    let tag = primaryMembership ? primaryMembership.team.toUpperCase() : member.primaryTeam.toUpperCase();
+    if (primaryMembership?.subRole) {
+      const cleanTeamName = primaryMembership.team
+        .replace(" Ekibi", "")
+        .replace(" Çalışma Grubu", "")
+        .replace(" Departmanı", "")
+        .trim()
+        .toUpperCase();
+      tag = `${cleanTeamName} • ${primaryMembership.subRole.toUpperCase()}`;
+    }
+
     return {
       roleText: member.primaryRole,
-      teamTagText: primaryMembership ? primaryMembership.team.toUpperCase() : member.primaryTeam.toUpperCase(),
+      teamTagText: tag,
     };
   }, [member, activeFilter]);
 
-  // FEATURED CARD (For Topluluk Eş Başkanları as shown in screenshot)
+  // FEATURED CARD (For Topluluk Eş Başkanları)
   if (variant === "featured" || member.isPresident) {
     return (
       <div
         onClick={() => onSelect(member)}
         className="group relative flex items-center gap-4 sm:gap-6 bg-white border border-[#EEF0F2] rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(10,92,58,0.12)] hover:border-[#0A5C3A]/40 transition-all duration-300 cursor-pointer select-none overflow-hidden min-w-0 w-full text-left"
       >
-        {/* DECORATIVE VECTOR GRAPHICS (LIKE SCREENSHOT) */}
+        {/* DECORATIVE VECTOR GRAPHICS */}
         {index === 0 ? (
           <div className="absolute top-3 right-4 text-[#0A5C3A]/30 group-hover:text-[#0A5C3A]/60 transition-colors pointer-events-none">
             <svg className="w-8 h-8" viewBox="0 0 40 40" fill="none">
@@ -91,7 +112,7 @@ export function PublicMemberCard({
     );
   }
 
-  // COMPACT HORIZONTAL CARD (Matching exact screenshot for Working Group Members)
+  // COMPACT HORIZONTAL CARD (Matching exact design)
   return (
     <div
       onClick={() => onSelect(member)}

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { X, Sparkles, Layers, UserCheck, ShieldCheck } from "lucide-react";
 import { PublicMember } from "../../data/members";
 
@@ -11,6 +12,12 @@ export interface PublicMemberModalProps {
 }
 
 export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -19,12 +26,18 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
     };
 
     if (isOpen) {
+      // Calculate exact scrollbar width to prevent body layout shift when locking scroll
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
       window.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
@@ -42,22 +55,21 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
     return Array.from(map.entries()).map(([team, roles]) => ({ team, roles }));
   }, [member]);
 
-  if (!isOpen || !member) return null;
+  if (!isOpen || !member || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto select-none font-sans">
-      {/* BACKDROP */}
+  const modalJSX = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto select-none font-sans">
+      {/* BACKDROP OVERLAY */}
       <div
         className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* MODAL CONTAINER */}
-      <div className="relative w-full max-w-md bg-white rounded-[28px] border border-[#EEF0F2] shadow-2xl overflow-hidden z-10 my-auto flex flex-col max-h-[90vh] transition-all">
-        
+      {/* MODAL DIALOG CONTAINER */}
+      <div className="relative w-full max-w-md bg-white rounded-[28px] border border-[#EEF0F2] shadow-2xl overflow-hidden z-10 my-auto flex flex-col max-h-[85vh] sm:max-h-[90vh] transition-all">
         {/* EXECUTIVE INTEGRATED HEADER BANNER */}
-        <div className="relative bg-gradient-to-br from-[#0A5C3A] via-[#084A2F] to-[#128C59] p-6 text-white space-y-4 shrink-0 text-left">
+        <div className="relative bg-gradient-to-br from-[#0A5C3A] via-[#084A2F] to-[#128C59] p-5 sm:p-6 text-white space-y-4 shrink-0 text-left">
           {/* TOP BAR WITH CLOSE BUTTON */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-white/90 text-xs font-bold bg-black/25 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">
@@ -81,7 +93,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
               {member.initials}
             </div>
 
-            <div className="space-y-1 min-w-0">
+            <div className="space-y-1 min-w-0 flex-1">
               <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-200 bg-white/15 px-2.5 py-0.5 rounded-md inline-block">
                 {member.isPresident ? "Topluluk Eş Başkanı" : "Topluluk Üyesi"}
               </span>
@@ -92,9 +104,8 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           </div>
         </div>
 
-        {/* PROFILE BODY */}
-        <div className="p-6 space-y-6 overflow-y-auto">
-          
+        {/* PROFILE BODY WITH FLEX-1 AND MIN-H-0 SCROLLING */}
+        <div className="p-5 sm:p-6 space-y-6 overflow-y-auto flex-1 min-h-0">
           {/* WORKING GROUPS & ROLES */}
           <div className="space-y-3 text-left">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F1115] flex items-center gap-1.5">
@@ -138,4 +149,6 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
       </div>
     </div>
   );
+
+  return createPortal(modalJSX, document.body);
 }

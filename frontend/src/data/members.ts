@@ -1,6 +1,7 @@
 export interface GroupMembership {
   team: string;
   role: string;
+  subRole?: string;
 }
 
 export type MemberTeamRole = GroupMembership;
@@ -20,6 +21,7 @@ export const MEMBER_TEAMS = [
   "Kurumsal İletişim",
   "Programlar",
   "Sağlık ve Çevre",
+  "Teknoloji",
 ] as const;
 
 export type MemberTeamFilter = (typeof MEMBER_TEAMS)[number];
@@ -75,7 +77,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-eylul-deniz-yalcin",
     name: "Eylül Deniz Yalçın",
-    initials: "EY",
+    initials: "EDY",
     primaryTeam: "Sanat Çalışma Grubu",
     primaryRole: "Başkan Yardımcısı",
     memberships: [
@@ -86,7 +88,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-ayse-aksoy-dikici",
     name: "Ayşe Aksoy Dikici",
-    initials: "AD",
+    initials: "AAD",
     primaryTeam: "Sanat Çalışma Grubu",
     primaryRole: "Uzman",
     memberships: [
@@ -126,7 +128,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-ebrar-gonul-kurt",
     name: "Ebrar Gönül Kurt",
-    initials: "EK",
+    initials: "EGK",
     primaryTeam: "Sanat Çalışma Grubu",
     primaryRole: "Uzman",
     memberships: [
@@ -147,16 +149,17 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
     id: "m-meryem-bozkurt",
     name: "Meryem Bozkurt",
     initials: "MB",
-    primaryTeam: "Sanat Çalışma Grubu",
-    primaryRole: "Uzman",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Başkan Yardımcısı",
     memberships: [
       { team: "Sanat Çalışma Grubu", role: "Uzman" },
+      { team: "Teknoloji Ekibi", role: "Başkan Yardımcısı" },
     ],
   },
   {
     id: "m-meryem-rana-aslan",
     name: "Meryem Rana Aslan",
-    initials: "MA",
+    initials: "MRA",
     primaryTeam: "Sanat Çalışma Grubu",
     primaryRole: "Uzman",
     memberships: [
@@ -210,7 +213,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-eylul-burcu-kara",
     name: "Eylül Burcu Kara",
-    initials: "EK",
+    initials: "EBK",
     primaryTeam: "Sanat Çalışma Grubu",
     primaryRole: "Tiyatro Koordinatörü",
     memberships: [
@@ -245,7 +248,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-aysegul-tugce-kartal",
     name: "Ayşegül Tuğçe Kartal",
-    initials: "AK",
+    initials: "ATK",
     primaryTeam: "Kurumsal İletişim Departmanı",
     primaryRole: "Kİ Uzman",
     memberships: [
@@ -255,7 +258,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-deniz-ayse-brijavi",
     name: "Deniz Ayşe Brıjavı",
-    initials: "DB",
+    initials: "DAB",
     primaryTeam: "Kurumsal İletişim Departmanı",
     primaryRole: "Kİ Uzman",
     memberships: [
@@ -328,7 +331,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-gulsah-sena-kilic",
     name: "Gülşah Sena Kılıç",
-    initials: "GK",
+    initials: "GSK",
     primaryTeam: "Kurumsal İletişim Departmanı",
     primaryRole: "SM Uzman",
     memberships: [
@@ -350,7 +353,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-melis-ada-yazar",
     name: "Melis Ada Yazar",
-    initials: "MY",
+    initials: "MAY",
     primaryTeam: "Kurumsal İletişim Departmanı",
     primaryRole: "SM Uzman",
     memberships: [
@@ -380,7 +383,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-elif-tuana-akpinar",
     name: "Elif Tuana Akpınar",
-    initials: "EA",
+    initials: "ETA",
     primaryTeam: "Kurumsal İletişim Departmanı",
     primaryRole: "SDM Uzman",
     memberships: [
@@ -435,11 +438,12 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-abdullah-nazim-karanfil",
     name: "Abdullah Nazım Karanfil",
-    initials: "AK",
+    initials: "ANK",
     primaryTeam: "Programlar Çalışma Grubu",
     primaryRole: "Uzman",
     memberships: [
       { team: "Programlar Çalışma Grubu", role: "Uzman" },
+      { team: "Teknoloji Ekibi", role: "Uzman" },
     ],
   },
 
@@ -459,7 +463,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   {
     id: "m-ayse-ilayda-eracar",
     name: "Ayşe İlayda Eracar",
-    initials: "AE",
+    initials: "AİE",
     primaryTeam: "Sağlık ve Çevre Çalışma Grubu",
     primaryRole: "Uzman",
     memberships: [
@@ -474,6 +478,103 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
     primaryRole: "Uzman",
     memberships: [
       { team: "Sağlık ve Çevre Çalışma Grubu", role: "Uzman" },
+    ],
+  },
+
+  // ==================================================
+  // 5. TEKNOLOJİ EKİBİ (Yeni Ekip Üyeleri - Toplam 11 Kişi)
+  // ==================================================
+  {
+    id: "m-ege-berk-oter",
+    name: "Ege Berk Oter",
+    initials: "EBO",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Başkan",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Başkan" },
+    ],
+  },
+  {
+    id: "m-azra-fatma-kalayci",
+    name: "Azra Fatma Kalaycı",
+    initials: "AFK",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman" },
+    ],
+  },
+  {
+    id: "m-iskender-aras-ocak",
+    name: "İskender Aras Ocak",
+    initials: "İAO",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman" },
+    ],
+  },
+  {
+    id: "m-helin-akalin",
+    name: "Helin Akalın",
+    initials: "HA",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman" },
+    ],
+  },
+  {
+    id: "m-elif-yaldiz",
+    name: "Elif Yaldız",
+    initials: "EY",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Ekibi" },
+      { team: "Web Sitesi", role: "Web Sitesi Ekibi" },
+    ],
+  },
+  {
+    id: "m-dilara-ozocak",
+    name: "Dilara Özocak",
+    initials: "DÖ",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman" },
+    ],
+  },
+  {
+    id: "m-yusuf-barut",
+    name: "Yusuf Barut",
+    initials: "YB",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Sorumlusu" },
+      { team: "Web Sitesi", role: "Web Sitesi Sorumlusu" },
+    ],
+  },
+  {
+    id: "m-feyzanur-olcay",
+    name: "Feyzanur Olçay",
+    initials: "FO",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Ekibi" },
+      { team: "Web Sitesi", role: "Web Sitesi Ekibi" },
+    ],
+  },
+  {
+    id: "m-ayoub-rebhi",
+    name: "Ayoub Rebhi",
+    initials: "AR",
+    primaryTeam: "Teknoloji Ekibi",
+    primaryRole: "Uzman",
+    memberships: [
+      { team: "Teknoloji Ekibi", role: "Uzman" },
     ],
   },
 ];
