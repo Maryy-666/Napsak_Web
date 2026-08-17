@@ -13,10 +13,20 @@ export interface MemberProfile {
   fullName: string;
   email: string;
   phone: string;
+  birthDate?: string;
+  linkedin?: string;
   city: string;
+  university?: string;
+  universityType?: string;
   school: string;
   department: string;
   grade: string;
+  startDate?: string;
+  graduationDate?: string;
+  gpa?: string;
+  experience?: string;
+  interests?: string[];
+  careerPreferences?: string[];
   bio: string;
   skills: string;
   cv?: {
@@ -63,10 +73,20 @@ export function getMemberProfile(user: AuthUser): MemberProfile {
     fullName: user.name || "",
     email: user.email,
     phone: "",
+    birthDate: "",
+    linkedin: "",
     city: "",
+    university: "",
+    universityType: "",
     school: "",
     department: "",
     grade: "",
+    startDate: "",
+    graduationDate: "",
+    gpa: "",
+    experience: "",
+    interests: [],
+    careerPreferences: [],
     bio: "",
     skills: "",
   };

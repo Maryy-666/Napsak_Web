@@ -4,11 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { Menu, X, ArrowRight, ChevronDown, UserRound } from "lucide-react";
 import { SITE_CONFIG, NavItem } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
+import { AuthUser, getCurrentUser } from "../../lib/memberAuth";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -22,6 +23,7 @@ export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +41,19 @@ export const Navbar: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const syncUser = () => setCurrentUser(getCurrentUser());
+
+    syncUser();
+    window.addEventListener("storage", syncUser);
+    window.addEventListener("focus", syncUser);
+
+    return () => {
+      window.removeEventListener("storage", syncUser);
+      window.removeEventListener("focus", syncUser);
+    };
+  }, [pathname]);
 
   // Keyboard navigation & accessibility helpers for mobile drawer
   useEffect(() => {
@@ -255,6 +270,17 @@ export const Navbar: React.FC = () => {
 
         {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
         <div className="hidden lg:flex items-center gap-2 lg:gap-3">
+          {currentUser ? (
+            <Link
+              href={ROUTES.PROFIL}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
+              aria-label="Profilim"
+              title="Profilim"
+            >
+              <UserRound className="h-5 w-5" />
+            </Link>
+          ) : (
+            <>
           <Button
             href={ROUTES.LOGIN}
             variant="secondary"
@@ -282,6 +308,8 @@ export const Navbar: React.FC = () => {
           >
             Topluluğa Katıl
           </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Hamburger Toggle Button */}
@@ -415,7 +443,21 @@ export const Navbar: React.FC = () => {
               </nav>
 
               <div className="pt-4 border-t border-white/15 flex flex-col gap-2.5">
-                <div className="grid grid-cols-2 gap-2">
+                {currentUser && (
+                  <Button
+                    href={ROUTES.PROFIL}
+                    variant="secondary"
+                    size="lg"
+                    fullWidth
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    leftIcon={<UserRound className="h-4 w-4" />}
+                    className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm"
+                  >
+                    Profilim
+                  </Button>
+                )}
+
+                <div className={cn("grid grid-cols-2 gap-2", currentUser && "hidden")}>
                   <Button
                     href={ROUTES.LOGIN}
                     variant="secondary"

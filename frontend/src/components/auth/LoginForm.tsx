@@ -10,6 +10,7 @@ import { Button } from "../ui/Button";
 import { PasswordInput } from "./PasswordInput";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
+import { saveCurrentUser } from "../../lib/memberAuth";
 
 // Zod Validation Schema for Login Credentials
 const loginSchema = z.object({
@@ -92,6 +93,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const responseData = await response.json().catch(() => ({}));
 
       if (response.ok && responseData.success) {
+        if (responseData.user?.email) {
+          saveCurrentUser({
+            id: String(responseData.user.id || responseData.user.email),
+            email: responseData.user.email,
+            name: responseData.user.name,
+            role: responseData.user.role === "ADMIN" ? "admin" : "member",
+          });
+        }
+
         if (onSubmitSuccess) {
           onSubmitSuccess(data);
         }

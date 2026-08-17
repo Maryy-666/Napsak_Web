@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client.ts";
+import { PrismaClient } from "../../generated/prisma/client.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -12,9 +13,11 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-// Tüm kullanıcıları getir
-router.get("/", async (req, res) => {
+// Tüm kullanıcıları getir - SADECE ADMIN
+router.get("/", authenticate, requireAdmin, async (req, res) => {
   try {
+    console.log("USERS API ÇALIŞTI");
+
     const users = await prisma.user.findMany({
       select: {
         id: true,
@@ -26,17 +29,20 @@ router.get("/", async (req, res) => {
       },
     });
 
+    console.log("KULLANICILAR:", users);
+
     res.json(users);
   } catch (error) {
-    console.error(error);
+    console.error("USERS API HATASI:", error);
+
     res.status(500).json({
       error: "Kullanıcılar alınamadı.",
     });
   }
 });
 
-// ID'ye göre kullanıcı getir
-router.get("/:id", async (req, res) => {
+// ID'ye göre kullanıcı getir - SADECE ADMIN
+router.get("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const id = Number(req.params.id);
 
@@ -66,11 +72,53 @@ router.get("/:id", async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error(error);
+    console.error("USER ID API HATASI:", error);
+
     res.status(500).json({
       error: "Kullanıcı alınamadı.",
     });
   }
 });
 
-export default router; 
+// Kullanıcı rolünü değiştir - SADECE ADMIN
+router.patch("/:id/role", authenticate, requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { role } = req.body;
+
+    if (!Number.isInteger(id)) {
+      return res.status(400).json({
+        error: "Geçersiz kullanıcı ID'si.",
+      });
+    }
+
+    if (role !== "USER" && role !== "ADMIN") {
+      return res.status(400).json({
+        error: "Geçersiz rol.",
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { role },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    res.json(user);
+  } catch (error) {
+    console.error("ROLE UPDATE HATASI:", error);
+
+    res.status(500).json({
+      error: "Kullanıcı rolü güncellenemedi.",
+    });
+  }
+});
+
+export default router;
