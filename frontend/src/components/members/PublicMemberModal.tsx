@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { X, Sparkles, Layers, ShieldCheck, UserCheck } from "lucide-react";
+import React, { useEffect, useMemo } from "react";
+import { X, Sparkles, Layers, UserCheck, ShieldCheck } from "lucide-react";
 import { PublicMember } from "../../data/members";
 
 export interface PublicMemberModalProps {
@@ -28,6 +28,19 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+  // Group memberships by team name for structured multi-role display
+  const groupedMemberships = useMemo(() => {
+    if (!member) return [];
+    const map = new Map<string, string[]>();
+    member.memberships.forEach((m) => {
+      const existing = map.get(m.team) || [];
+      if (!existing.includes(m.role)) {
+        map.set(m.team, [...existing, m.role]);
+      }
+    });
+    return Array.from(map.entries()).map(([team, roles]) => ({ team, roles }));
+  }, [member]);
 
   if (!isOpen || !member) return null;
 
@@ -68,11 +81,11 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
               {member.initials}
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 min-w-0">
               <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-200 bg-white/15 px-2.5 py-0.5 rounded-md inline-block">
                 {member.isPresident ? "Topluluk Eş Başkanı" : "Topluluk Üyesi"}
               </span>
-              <h2 className="text-xl sm:text-2xl font-extrabold font-headings text-white leading-tight">
+              <h2 className="text-xl sm:text-2xl font-extrabold font-headings text-white leading-tight truncate">
                 {member.name}
               </h2>
             </div>
@@ -85,24 +98,28 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           {/* WORKING GROUPS & ROLES */}
           <div className="space-y-3 text-left">
             <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F1115] flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-[#0A5C3A]" /> Çalışma Alanları ve Görevleri
+              <Layers className="w-4 h-4 text-[#0A5C3A]" /> Çalışma Grupları
             </span>
 
-            <div className="space-y-2.5">
-              {member.memberships.map((m, idx) => (
+            <div className="space-y-3">
+              {groupedMemberships.map(({ team, roles }, idx) => (
                 <div
                   key={idx}
-                  className="p-3.5 rounded-2xl bg-[#F8F9FA] border border-[#EEF0F2] flex items-center justify-between gap-3"
+                  className="p-3.5 rounded-2xl bg-[#F8F9FA] border border-[#EEF0F2] space-y-1.5"
                 >
-                  <div>
+                  <div className="flex items-center justify-between gap-2">
                     <h4 className="text-xs font-bold text-[#0F1115]">
-                      {m.team}
+                      {team}
                     </h4>
-                    <p className="text-xs font-semibold text-[#0A5C3A] mt-0.5">
-                      {m.role}
-                    </p>
+                    <ShieldCheck className="w-4 h-4 text-[#0A5C3A] shrink-0" />
                   </div>
-                  <ShieldCheck className="w-4 h-4 text-[#0A5C3A] shrink-0" />
+                  <div className="space-y-1 pl-2 border-l-2 border-[#0A5C3A]/40">
+                    {roles.map((role, rIdx) => (
+                      <p key={rIdx} className="text-xs font-semibold text-[#0A5C3A]">
+                        → {role}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
