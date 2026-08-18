@@ -9,7 +9,7 @@ import { SITE_CONFIG } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
-import { AuthUser, getCurrentUser, clearCurrentUser } from "../../lib/memberAuth";
+import { AuthUser, MemberProfile, getCurrentUser, getMemberProfile, clearCurrentUser } from "../../lib/memberAuth";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -25,6 +25,7 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [userProfile, setUserProfile] = useState<MemberProfile | null>(null);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -44,15 +45,21 @@ export const Navbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const syncUser = () => setCurrentUser(getCurrentUser());
+    const syncUser = () => {
+      const user = getCurrentUser();
+      setCurrentUser(user);
+      setUserProfile(user ? getMemberProfile(user) : null);
+    };
 
     syncUser();
     window.addEventListener("storage", syncUser);
     window.addEventListener("focus", syncUser);
+    window.addEventListener("profile-updated", syncUser);
 
     return () => {
       window.removeEventListener("storage", syncUser);
       window.removeEventListener("focus", syncUser);
+      window.removeEventListener("profile-updated", syncUser);
     };
   }, [pathname]);
 
@@ -311,11 +318,15 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href={ROUTES.PROFIL}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
+                  className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white overflow-hidden transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
                   aria-label="Profilim"
                   title="Profilim"
                 >
-                  <UserRound className="h-4.5 w-4.5" />
+                  {userProfile?.avatar ? (
+                    <img src={userProfile.avatar} alt="Profilim" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <UserRound className="h-4.5 w-4.5" />
+                  )}
                 </Link>
 
                 <button
@@ -529,7 +540,13 @@ export const Navbar: React.FC = () => {
                         size="lg"
                         fullWidth
                         onClick={() => setIsMobileMenuOpen(false)}
-                        leftIcon={<UserRound className="h-4 w-4" />}
+                        leftIcon={
+                          userProfile?.avatar ? (
+                            <img src={userProfile.avatar} alt="Profilim" className="h-5 w-5 rounded-full object-cover shrink-0" />
+                          ) : (
+                            <UserRound className="h-4 w-4" />
+                          )
+                        }
                         className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm flex-1"
                       >
                         Profilim

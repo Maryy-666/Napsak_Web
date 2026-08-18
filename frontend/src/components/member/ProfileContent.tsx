@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Check, LogOut, Mail, Save, Settings, Trash2, Upload, User } from "lucide-react";
+import { Camera, Check, LogOut, Mail, Save, Settings, Trash2, Upload, User } from "lucide-react";
 import { toast } from "sonner";
 import { Button, PageContainer } from "../ui";
 import { PageBackground } from "../common/PageBackground";
@@ -40,6 +40,8 @@ export default function ProfileContent() {
   const [applications, setApplications] = useState<EventApplication[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [activePanel, setActivePanel] = useState<"account" | "events" | "cv" | "settings">("account");
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const currentUser = getCurrentUser();
@@ -82,6 +84,58 @@ export default function ProfileContent() {
   const updateField = (field: keyof MemberProfile, value: string) => {
     if (!profile) return;
     setProfile({ ...profile, [field]: field === "phone" ? formatPhone(value) : value });
+  };
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !profile || !user) return;
+
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+      toast.error("Yalnızca JPG, PNG ve WEBP formatında fotoğraf yükleyebilirsin.");
+      return;
+    }
+
+    const MAX_SIZE = 3 * 1024 * 1024; // 3MB limit
+    if (file.size > MAX_SIZE) {
+      toast.error("Profil fotoğrafı boyutu en fazla 3MB olmalıdır.");
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      if (result) {
+        const updatedProfile: MemberProfile = {
+          ...profile,
+          avatar: result,
+        };
+        saveMemberProfile(user, updatedProfile);
+        setProfile(updatedProfile);
+        toast.success("Profil fotoğrafın güncellendi.");
+      }
+      setIsUploadingAvatar(false);
+    };
+
+    reader.onerror = () => {
+      toast.error("Fotoğraf yüklenirken bir hata oluştu.");
+      setIsUploadingAvatar(false);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    if (!profile || !user) return;
+    const updatedProfile: MemberProfile = {
+      ...profile,
+      avatar: "",
+    };
+    saveMemberProfile(user, updatedProfile);
+    setProfile(updatedProfile);
+    toast.success("Profil fotoğrafın kaldırıldı.");
   };
 
   const toggleListValue = (field: "interests" | "careerPreferences", value: string, max?: number) => {
@@ -171,8 +225,8 @@ export default function ProfileContent() {
   // Public loading state matching N'apsak? design system (zero flash)
   if (isLoading || !user || !profile) {
     return (
-      <PageBackground className="pt-28 pb-20 min-h-screen">
-        <PageContainer className="max-w-7xl">
+      <PageBackground className="pt-28 sm:pt-32 lg:pt-36 pb-28 lg:pb-36 min-h-screen">
+        <PageContainer className="max-w-6xl">
           <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
             <div className="w-10 h-10 rounded-full border-3 border-[#0A5C3A]/20 border-t-[#0A5C3A] animate-spin" />
             <p className="text-xs font-semibold text-[#5F6773] tracking-wide font-sans">
@@ -184,7 +238,6 @@ export default function ProfileContent() {
     );
   }
 
-
   const userEmail = (profile.email || user.email).toLowerCase();
   const userApplications = applications.filter((application) => application.email.toLowerCase() === userEmail);
   const appliedEventIds = new Set(userApplications.map((application) => application.eventId));
@@ -192,29 +245,57 @@ export default function ProfileContent() {
   const attendedEvents = events.filter((event) => appliedEventIds.has(event.id) && event.status === "gecmis");
 
   return (
-    <PageBackground className="pt-28 pb-20">
-      <PageContainer className="max-w-7xl">
-        <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start">
+    <PageBackground className="pt-28 sm:pt-32 lg:pt-36 pb-28 lg:pb-36">
+      <PageContainer className="max-w-6xl">
+        <div className="grid gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-7 lg:items-start">
           {/* ASIDE PROFILE NAVIGATION CARD */}
-          <aside className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,17,21,0.045)] lg:sticky lg:top-28 lg:self-start overflow-hidden">
-            <div className="mb-4 flex items-center gap-3 rounded-2xl bg-[#F8FBF9] p-3.5 min-w-0 overflow-hidden">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#C9D8D0] bg-[#EEF7F3] text-[#0A5C3A]">
-                <User className="h-5 w-5" />
+          <aside className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,17,21,0.045)] lg:sticky lg:top-28 lg:self-start">
+            <div className="mb-3.5 flex items-center gap-3 rounded-xl bg-[#F8FBF9] p-3 min-w-0">
+              <div className="relative shrink-0">
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={isUploadingAvatar}
+                  title="Profil fotoğrafını değiştir"
+                  className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#C9D8D0] bg-[#EEF7F3] text-[#0A5C3A] group cursor-pointer overflow-hidden transition hover:border-[#0A5C3A] focus:outline-none focus:ring-2 focus:ring-[#0A5C3A]/20"
+                >
+                  {profile.avatar ? (
+                    <img src={profile.avatar} alt={profile.fullName || user.name} className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <User className="h-5 w-5 text-[#0A5C3A]" />
+                  )}
+                  {isUploadingAvatar ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
+                      <div className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition rounded-full">
+                      <Camera className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+                <input
+                  type="file"
+                  ref={avatarInputRef}
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
               </div>
-              <div className="min-w-0 flex-1 overflow-hidden">
+              <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-[#0F1115]">{profile.fullName || user.name}</p>
-                <p className="truncate text-xs font-medium text-[#5F6773] break-all">{user.email}</p>
+                <p className="truncate text-xs font-medium text-[#5F6773]">{user.email}</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-col sm:gap-2">
+            <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-col sm:gap-1.5">
               <PanelButton active={activePanel === "account"} onClick={() => setActivePanel("account")} label="Profil Bilgileri" />
               <PanelButton active={activePanel === "events"} onClick={() => setActivePanel("events")} label="Etkinliklerim" />
               <PanelButton active={activePanel === "cv"} onClick={() => setActivePanel("cv")} label="CV Dosyası" />
               <PanelButton active={activePanel === "settings"} onClick={() => setActivePanel("settings")} label="Ayarlar" />
             </div>
 
-            <Button variant="secondary" onClick={handleLogout} leftIcon={<LogOut className="h-4 w-4" />} className="mt-4 h-10 w-full rounded-xl">
+            <Button variant="secondary" onClick={handleLogout} leftIcon={<LogOut className="h-4 w-4" />} className="mt-4 h-10 w-full rounded-xl font-semibold">
               Çıkış Yap
             </Button>
           </aside>
@@ -224,18 +305,18 @@ export default function ProfileContent() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-4 sm:p-6 shadow-[0_10px_30px_rgba(15,17,21,0.045)] overflow-hidden"
+            className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-5 sm:p-7 shadow-[0_10px_30px_rgba(15,17,21,0.045)]"
           >
-            <div className="mb-7 border-b border-[#EEF0F2] pb-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h2 className="text-xl font-semibold text-[#0F1115]">
+            <div className="mb-6 border-b border-[#EEF0F2] pb-5 sm:pb-6">
+              <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-xl font-semibold text-[#0F1115] tracking-tight">
                     {activePanel === "account" && "Profil Bilgileri"}
                     {activePanel === "events" && "Etkinliklerim"}
                     {activePanel === "cv" && "CV Dosyası"}
                     {activePanel === "settings" && "Hesap Ayarları"}
                   </h2>
-                  <p className="mt-1.5 text-sm font-normal text-[#5F6773]">
+                  <p className="mt-1 text-sm font-normal text-[#5F6773] leading-relaxed">
                     {activePanel === "account" && "Kayıt formundaki alanları buradan güncelleyebilirsin. TC kimlik numarası istemiyoruz."}
                     {activePanel === "events" && "Başvurduğun ve katıldığın etkinlikleri buradan takip edebilirsin."}
                     {activePanel === "cv" && "Başvurular için CV dosyanı hazır tut."}
@@ -243,15 +324,17 @@ export default function ProfileContent() {
                   </p>
                 </div>
                 {activePanel === "account" && (
-                  isEditing ? (
-                    <Button onClick={handleSave} className="h-10 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] font-semibold" leftIcon={<Save className="h-4 w-4" />}>
-                      Kaydet
-                    </Button>
-                  ) : (
-                    <Button variant="secondary" onClick={() => setIsEditing(true)} className="h-10 rounded-xl font-semibold" leftIcon={<Settings className="h-4 w-4" />}>
-                      Güncelle
-                    </Button>
-                  )
+                  <div className="shrink-0 self-start sm:self-center">
+                    {isEditing ? (
+                      <Button onClick={handleSave} className="h-10 px-4 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] font-semibold text-white transition shadow-sm" leftIcon={<Save className="h-4 w-4" />}>
+                        Kaydet
+                      </Button>
+                    ) : (
+                      <Button variant="secondary" onClick={() => setIsEditing(true)} className="h-10 px-4 rounded-xl font-semibold transition" leftIcon={<Settings className="h-4 w-4" />}>
+                        Güncelle
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -272,8 +355,8 @@ export default function ProfileContent() {
             )}
 
             {activePanel === "cv" && (
-              <div>
-                <label className="flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-[#C9D8D0] bg-[#FAFAFA] px-5 text-center transition hover:border-[#0A5C3A]/45 hover:bg-white">
+              <div className="space-y-4">
+                <label className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-[#C9D8D0] bg-[#FAFAFA] px-5 text-center transition hover:border-[#0A5C3A]/45 hover:bg-white">
                   <Upload className="mb-3 h-8 w-8 text-[#0A5C3A]" />
                   <span className="text-sm font-semibold text-[#0F1115]">
                     {profile.cv ? profile.cv.name : "CV yükle"}
@@ -283,12 +366,12 @@ export default function ProfileContent() {
                   </span>
                   <input type="file" accept="application/pdf" className="hidden" onChange={handleFileChange} />
                 </label>
-                <div className="mt-6 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4 overflow-hidden">
-                  <div className="flex items-center gap-2 break-all text-sm font-semibold text-[#0F1115]">
+                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-[#0F1115] min-w-0">
                     <Mail className="h-4 w-4 shrink-0 text-[#0A5C3A]" />
-                    <span className="truncate">{user.email}</span>
+                    <span className="truncate min-w-0">{user.email}</span>
                   </div>
-                  <p className="mt-2 text-xs font-normal leading-relaxed text-[#5F6773]">
+                  <p className="mt-1.5 text-xs font-normal leading-relaxed text-[#5F6773]">
                     Bu demo sürümde CV dosyasının kendisi değil, dosya bilgisi saklanır.
                   </p>
                 </div>
@@ -296,25 +379,71 @@ export default function ProfileContent() {
             )}
 
             {activePanel === "settings" && (
-              <div className="rounded-2xl border border-[#DDE7E1] bg-[#F8FBF9] p-4 sm:p-6">
-                <div className="mb-5 flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#0A5C3A] ring-1 ring-[#DDE7E1]">
-                    <Settings className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#0F1115]">Hesap Ayarları</h3>
-                    <p className="text-xs font-medium text-[#5F6773]">Hesabınla ilgili işlemleri buradan yönetebilirsin.</p>
+              <div className="space-y-4">
+                {/* PROFIL FOTOĞRAFI YÖNETİM KARTI */}
+                <div className="rounded-2xl border border-[#DDE7E1] bg-[#F8FBF9] p-4 sm:p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#C9D8D0] bg-[#EEF7F3] text-[#0A5C3A] overflow-hidden">
+                        {profile.avatar ? (
+                          <img src={profile.avatar} alt={profile.fullName || user.name} className="h-full w-full object-cover rounded-full" />
+                        ) : (
+                          <User className="h-6 w-6 text-[#0A5C3A]" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm sm:text-base font-semibold text-[#0F1115]">Profil Fotoğrafı</h3>
+                        <p className="mt-0.5 text-xs font-medium text-[#5F6773] truncate">
+                          {profile.avatar ? "Yüklü profil fotoğrafın kullanılıyor." : "JPG, PNG veya WEBP formatında fotoğraf yükle (Max 3MB)."}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 shrink-0 sm:self-center">
+                      <Button
+                        type="button"
+                        onClick={() => avatarInputRef.current?.click()}
+                        disabled={isUploadingAvatar}
+                        leftIcon={<Upload className="h-4 w-4" />}
+                        className="h-9 px-3.5 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] text-xs font-semibold text-white transition shadow-sm"
+                      >
+                        {profile.avatar ? "Fotoğrafı Değiştir" : "Fotoğraf Yükle"}
+                      </Button>
+                      {profile.avatar && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={handleRemoveAvatar}
+                          leftIcon={<Trash2 className="h-4 w-4" />}
+                          className="h-9 px-3.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 hover:border-red-200 transition"
+                        >
+                          Kaldır
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleDeleteAccount}
-                  className="flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-3 py-3 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Hesabı Sil
-                </button>
+                {/* HESAP SİLME KARTI */}
+                <div className="rounded-2xl border border-[#DDE7E1] bg-[#F8FBF9] p-4 sm:p-5">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#0A5C3A] ring-1 ring-[#DDE7E1]">
+                      <Settings className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-semibold text-[#0F1115]">Hesap Ayarları</h3>
+                      <p className="text-xs font-medium text-[#5F6773]">Hesabınla ilgili işlemleri buradan yönetebilirsin.</p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleDeleteAccount}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-red-100 bg-white px-3.5 py-2.5 text-xs font-semibold text-red-600 transition hover:border-red-200 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Hesabı Sil
+                  </button>
+                </div>
               </div>
             )}
           </motion.div>
@@ -440,16 +569,16 @@ function ProfileSummary({ user, profile }: { user: AuthUser; profile: MemberProf
 
   return (
     <>
-      <div className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[#E5E7EB] bg-[#F8FBF9] p-2">
+      <div className="mb-5 flex flex-wrap gap-1.5 rounded-xl border border-[#E5E7EB] bg-[#F8FBF9] p-1.5">
         {sections.map((section) => (
           <button
             key={section.title}
             type="button"
             onClick={() => setActiveSection(section.title)}
-            className={`rounded-xl px-3 py-2 text-xs font-bold transition ${
+            className={`rounded-lg px-3.5 py-2 text-xs font-bold transition ${
               activeSection === section.title
                 ? "bg-[#0A5C3A] text-white shadow-sm"
-                : "bg-white text-[#5F6773] hover:text-[#0F1115]"
+                : "bg-transparent text-[#5F6773] hover:text-[#0F1115] hover:bg-white/60"
             }`}
           >
             {section.title}
@@ -463,9 +592,9 @@ function ProfileSummary({ user, profile }: { user: AuthUser; profile: MemberProf
         ))}
       </SummarySection>
 
-      <div className="mt-5 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4">
-        <p className="text-xs font-semibold text-[#5F6773]">Kısa Tanıtım</p>
-        <p className="mt-2 text-sm font-normal leading-relaxed text-[#0F1115]">
+      <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3.5 py-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5F6773]">Kısa Tanıtım</p>
+        <p className="mt-1 text-sm font-normal leading-relaxed text-[#0F1115] break-words">
           {profile.bio || "Henüz kısa tanıtım eklenmedi."}
         </p>
       </div>
@@ -475,12 +604,12 @@ function ProfileSummary({ user, profile }: { user: AuthUser; profile: MemberProf
 
 function SummarySection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mb-6">
+    <section className="mb-5">
       <div className="mb-3 flex items-center gap-3">
-        <h3 className="text-sm font-bold text-[#0A5C3A]">{title}</h3>
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#0A5C3A]">{title}</h3>
         <div className="h-px flex-1 bg-[#EEF0F2]" />
       </div>
-      <div className="grid gap-3.5 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         {children}
       </div>
     </section>
@@ -489,8 +618,8 @@ function SummarySection({ title, children }: { title: string; children: React.Re
 
 function ProfileSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <details className="mb-3 rounded-2xl border border-[#E5E7EB] bg-white p-0 open:p-5">
-      <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl px-5 py-4 text-sm font-bold text-[#0A5C3A] transition hover:bg-[#F8FBF9] open:mb-5">
+    <details className="mb-3 rounded-2xl border border-[#E5E7EB] bg-white p-0 open:p-4 sm:open:p-5">
+      <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl px-4 py-3.5 sm:px-5 text-sm font-bold text-[#0A5C3A] transition hover:bg-[#F8FBF9] open:mb-4">
         <span>{title}</span>
         <span className="text-xs font-semibold text-[#5F6773]">Aç / Kapat</span>
       </summary>
@@ -522,7 +651,7 @@ function Field({
 }) {
   return (
     <label className={`block w-full min-w-0 ${className || ""}`}>
-      <span className="mb-1.5 block text-xs font-semibold text-[#0F1115]">{label}</span>
+      <span className="mb-1 block text-xs font-semibold text-[#0F1115]">{label}</span>
       <input
         type={type}
         value={value}
@@ -531,7 +660,7 @@ function Field({
         autoComplete={autoComplete}
         inputMode={inputMode}
         maxLength={maxLength}
-        className="h-11 w-full rounded-xl border border-[#E5E7EB] bg-white px-3 text-sm font-normal text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
+        className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-white px-3 text-sm font-normal text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
       />
     </label>
   );
@@ -539,11 +668,11 @@ function Field({
 
 function CheckOption({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
-    <button type="button" onClick={onChange} className="flex items-center gap-3 rounded-xl px-1 py-1 text-left text-sm font-medium text-[#5F6773]">
-      <span className={`flex h-5 w-5 items-center justify-center rounded border ${checked ? "border-[#0A5C3A] bg-[#0A5C3A]" : "border-[#D1D5DB] bg-white"}`}>
-        {checked && <Check className="h-3.5 w-3.5 text-white" />}
+    <button type="button" onClick={onChange} className="flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-left text-xs sm:text-sm font-medium text-[#5F6773] hover:text-[#0F1115] transition">
+      <span className={`flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded border transition ${checked ? "border-[#0A5C3A] bg-[#0A5C3A]" : "border-[#D1D5DB] bg-white"}`}>
+        {checked && <Check className="h-3 w-3 text-white" />}
       </span>
-      <span>{label}</span>
+      <span className="truncate">{label}</span>
     </button>
   );
 }
@@ -553,7 +682,7 @@ function PanelButton({ active, onClick, label }: { active: boolean; onClick: () 
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-xl px-3 py-2.5 text-left text-xs sm:text-sm font-semibold transition truncate ${
+      className={`w-full rounded-xl px-3.5 py-2.5 text-left text-xs sm:text-sm font-semibold transition truncate ${
         active ? "bg-[#0A5C3A] text-white shadow-sm" : "bg-white text-[#5F6773] hover:bg-[#F8FAFC] hover:text-[#0F1115]"
       }`}
     >
@@ -564,27 +693,27 @@ function PanelButton({ active, onClick, label }: { active: boolean; onClick: () 
 
 function InfoItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-h-[74px] w-full min-w-0 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3.5">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
-      <p className="mt-1.5 text-sm font-medium text-[#0F1115] break-words overflow-hidden">{value}</p>
+    <div className="min-h-[64px] w-full min-w-0 flex flex-col justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5">
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-[#5F6773]">{label}</p>
+      <p className="mt-0.5 text-sm font-medium text-[#0F1115] break-words">{value}</p>
     </div>
   );
 }
 
 function EventList({ title, emptyText, events }: { title: string; emptyText: string; events: EventItem[] }) {
   return (
-    <div className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4 overflow-hidden">
+    <div className="w-full min-w-0 rounded-2xl border border-[#E5E7EB] bg-[#FAFAFA] p-4">
       <h4 className="text-sm font-semibold text-[#0F1115]">{title}</h4>
       {events.length === 0 ? (
-        <p className="mt-3 rounded-xl border border-dashed border-[#DDE7E1] bg-white px-3 py-4 text-xs font-medium text-[#5F6773]">
+        <p className="mt-3 rounded-xl border border-dashed border-[#DDE7E1] bg-white px-3.5 py-3 text-xs font-medium text-[#5F6773]">
           {emptyText}
         </p>
       ) : (
         <div className="mt-3 space-y-2">
           {events.map((event) => (
-            <div key={event.id} className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-3 overflow-hidden">
+            <div key={event.id} className="rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2.5">
               <p className="text-sm font-medium text-[#0F1115] truncate">{event.title}</p>
-              <p className="mt-1 text-xs font-normal text-[#5F6773] truncate">
+              <p className="mt-0.5 text-xs font-normal text-[#5F6773] truncate">
                 {event.date} - {event.location}
               </p>
             </div>

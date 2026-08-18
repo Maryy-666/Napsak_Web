@@ -29,6 +29,7 @@ export interface MemberProfile {
   careerPreferences?: string[];
   bio: string;
   skills: string;
+  avatar?: string;
   cv?: {
     name: string;
     size: number;
@@ -89,6 +90,7 @@ export function getMemberProfile(user: AuthUser): MemberProfile {
     careerPreferences: [],
     bio: "",
     skills: "",
+    avatar: "",
   };
 
   if (typeof window === "undefined") return fallback;
@@ -103,4 +105,7 @@ export function getMemberProfile(user: AuthUser): MemberProfile {
 
 export function saveMemberProfile(user: AuthUser, profile: MemberProfile) {
   window.localStorage.setItem(profileKey(user.email), JSON.stringify(profile));
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("profile-updated"));
+  }
 }
