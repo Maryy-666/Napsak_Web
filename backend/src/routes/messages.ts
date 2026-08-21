@@ -35,7 +35,7 @@ router.get("/", authenticate, requireAdmin, async (req, res) => {
 // Yeni mesaj oluştur - HERKES
 router.post("/", async (req, res) => {
   try {
-    const { name, email, subject, content } = req.body;
+    const { name, email, phone, subject, category, content } = req.body;
 
     if (!name || !email || !content) {
       return res.status(400).json({
@@ -47,7 +47,9 @@ router.post("/", async (req, res) => {
       data: {
         name,
         email,
+        phone: phone || null,
         subject: subject || null,
+        category: category || null,
         content,
       },
     });

@@ -121,4 +121,30 @@ router.patch("/:id/role", authenticate, requireAdmin, async (req, res) => {
   }
 });
 
+// Kullanıcı sil - SADECE ADMIN (ADMIN rollü kullanıcılar silinemez)
+router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id)) {
+      return res.status(400).json({ error: "Geçersiz kullanıcı ID'si." });
+    }
+
+    const targetUser = await prisma.user.findUnique({ where: { id } });
+    if (!targetUser) {
+      return res.status(404).json({ error: "Kullanıcı bulunamadı." });
+    }
+
+    if (targetUser.role === "ADMIN" || targetUser.email.toLowerCase() === "admin@napsak.com") {
+      return res.status(403).json({ error: "Yönetici (ADMIN) hesapları güvenlik nedeniyle silinemez!" });
+    }
+
+    await prisma.user.delete({ where: { id } });
+    res.json({ message: "Kullanıcı başarıyla silindi." });
+  } catch (error) {
+    console.error("USER DELETE API HATASI:", error);
+    res.status(500).json({ error: "Kullanıcı silinemedi." });
+  }
+});
+
 export default router;

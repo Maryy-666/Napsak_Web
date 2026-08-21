@@ -27,8 +27,8 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
-  applications       Application[]
-  sessions           Session[]
+  applications        Application[]
+  sessions            Session[]
   passwordResetTokens PasswordResetToken[]
 }
 
@@ -47,28 +47,110 @@ model Message {
   id        Int      @id @default(autoincrement())
   name      String
   email     String
-  subject    String?
+  phone     String?
+  subject   String?
+  category  String?
   content   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model Event {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  location    String?
-  startDate   DateTime
-  endDate     DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             Int       @id @default(autoincrement())
+  title          String
+  description    String?
+  category       String?
+  location       String?
+  status         String?   @default("Yaklaşan")
+  image          String?
+  capacity       Int?
+  targetAudience String?
+  startDate      DateTime
+  endDate        DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  eventApplications EventApplication[]
+}
+
+model EventApplication {
+  id         Int      @id @default(autoincrement())
+  eventId    Int
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  fullName   String
+  email      String
+  phone      String?
+  city       String?
+  school     String?
+  department String?
+  grade      String?
+  note       String?
+  status     String   @default("Beklemede")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Activity {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  type                 String   @default("polaroid")
+  title                String
+  category             String   @default("Genel")
+  team                 String   @default("N'apsak Ekibi")
+  status               String   @default("Devam Eden")
+  date                 String?
+  location             String?
+  summary              String?
+  participantCount     Int      @default(0)
+  image                String?
+  rotation             String?  @default("-rotate-1")
+  pinColor             String?  @default("text-[#0A5C3A]")
+  noteBg               String?  @default("bg-white")
+  borderColor          String?  @default("border-[#DDE7E1]")
+  badgeBg              String?  @default("bg-[#0A5C3A]")
+  badgeText            String?  @default("text-white")
+  mottoText            String?
+  tagText              String?
+  tapeColor            String?
+  tapeRotation         String?
+  youthStickerIconName String?
+  stickerBadgeBg       String?
+  objectives           String[] @default([])
+  impactMetrics        String?
+  outcomes             String[] @default([])
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Member {
+  id          Int      @id @default(autoincrement())
+  externalId  String   @unique
+  name        String
+  initials    String
+  primaryTeam String
+  primaryRole String
+  memberships Json
+  isPresident Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Team {
+  id                   Int      @id @default(autoincrement())
+  externalId           String   @unique
+  slug                 String   @unique
+  title                String
+  shortDescription     String
+  iconName             String   @default("cpu")
+  bgImage              String
+  about                String
+  focusAreas           String[] @default([])
+  whatWeDo             String[] @default([])
+  structure            String
+  featuredSectionImage String?
+  galleryTitle         String?
+  gallery              Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model Report {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FileCheck2, Shield, Eye, Save, RefreshCw, CheckCircle2, X } from "lucide-react";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 
@@ -38,8 +38,26 @@ export default function AdminPolitikalarPage() {
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyItem | null>(null);
   const [isSaved, setIsSaved] = useState(false);
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("napsak_admin_policies");
+      if (stored) {
+        setPolicies(JSON.parse(stored));
+      }
+    } catch { }
+  }, []);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    if (selectedPolicy) {
+      const updated = policies.map((p) =>
+        p.id === selectedPolicy.id ? { ...p, status: "Güncellendi" as const, lastUpdated: "Bugün" } : p
+      );
+      setPolicies(updated);
+      try {
+        localStorage.setItem("napsak_admin_policies", JSON.stringify(updated));
+      } catch { }
+    }
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Search, ShieldCheck, X, Filter, Users } from "lucide-react";
 import {
@@ -39,15 +39,26 @@ function getTeamIcon(team: string): string {
   return "✨";
 }
 
+import { MembersRepository } from "../../lib/membersStore";
+
 export function MembersContent() {
+  const [membersList, setMembersList] = useState<PublicMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeamFilter, setSelectedTeamFilter] = useState<MemberTeamFilter | null>(null);
   const [selectedMember, setSelectedMember] = useState<PublicMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  React.useEffect(() => {
+    MembersRepository.fetchMembersFromDB().then((data) => {
+      setMembersList(data);
+    });
+  }, []);
+
+  const activeMembers = membersList.length > 0 ? membersList : PUBLIC_MEMBERS;
+
   // Separate Co-Chairs from Working Group members
-  const coChairs = useMemo(() => PUBLIC_MEMBERS.filter((m) => m.isPresident), []);
-  const workingGroupMembers = useMemo(() => PUBLIC_MEMBERS.filter((m) => !m.isPresident), []);
+  const coChairs = useMemo(() => activeMembers.filter((m) => m.isPresident), [activeMembers]);
+  const workingGroupMembers = useMemo(() => activeMembers.filter((m) => !m.isPresident), [activeMembers]);
 
   // Filtered co-chairs matching search
   const filteredCoChairs = useMemo(() => {

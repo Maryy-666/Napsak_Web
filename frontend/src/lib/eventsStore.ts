@@ -30,6 +30,7 @@ export interface EventApplication {
   grade: string;
   note: string;
   appliedAt: string;
+  status: "Beklemede" | "Onaylandı" | "Reddedildi";
 }
 
 // DEFAULT INITIAL EVENTS (AKTİF VE GEÇMİŞ ETKİNLİKLER)
@@ -107,37 +108,8 @@ const INITIAL_EVENTS: EventItem[] = [
   },
 ];
 
-// DEFAULT INITIAL APPLICATIONS
-const INITIAL_APPLICATIONS: EventApplication[] = [
-  {
-    id: "APP-EVT-01",
-    eventId: "evt-101",
-    eventTitle: "1923 Gençlik Topluluğu İş Birliği & Tanışma Zirvesi",
-    fullName: "Ahmet Yılmaz",
-    email: "ahmet@gmail.com",
-    phone: "0532 999 88 77",
-    city: "İstanbul",
-    school: "İstanbul Teknik Üniversitesi",
-    department: "Bilgisayar Mühendisliği",
-    grade: "3. Sınıf",
-    note: "Teknoloji masasında sunum yapmak istiyorum.",
-    appliedAt: "11 Ağustos 2025",
-  },
-  {
-    id: "APP-EVT-02",
-    eventId: "evt-102",
-    eventTitle: "Sürdürülebilir Teknoloji ve Yapay Zeka Atölyesi",
-    fullName: "Zeynep Kaya",
-    email: "zeynep@outlook.com",
-    phone: "0544 123 45 67",
-    city: "İstanbul",
-    school: "Marmara Üniversitesi",
-    department: "Yazılım Mühendisliği",
-    grade: "2. Sınıf",
-    note: "Yapay zeka araçlarının açık kaynak kullanımı üzerine fikir alışverişi.",
-    appliedAt: "10 Ağustos 2025",
-  },
-];
+// DEFAULT INITIAL APPLICATIONS (Gerçek DB Verileri ile Çalışır)
+const INITIAL_APPLICATIONS: EventApplication[] = [];
 
 // SINGLETON STORE MANAGEMENT
 const globalForEvents = globalThis as unknown as {
@@ -162,6 +134,37 @@ export const EventsRepository = {
     return eventsStore;
   },
 
+  async fetchEventsFromDB(): Promise<EventItem[]> {
+    try {
+      const res = await fetch("/api/events", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const dbEvents: EventItem[] = json.data.map((item: any) => ({
+            id: String(item.id),
+            title: item.title,
+            category: (item.category as any) || "programlar",
+            categoryLabel: item.category === "teknoloji" ? "Teknoloji & İnovasyon" : "Programlar & Sosyal",
+            date: item.startDate ? new Date(item.startDate).toLocaleDateString("tr-TR") : "",
+            time: "14:00",
+            location: item.location || "Belirtilmedi",
+            status: item.status || "aktif",
+            description: item.description || "",
+            appliedCount: item.capacity || 0,
+            coverImage: item.image || undefined,
+          }));
+
+          eventsStore.length = 0;
+          eventsStore.push(...dbEvents);
+          return eventsStore;
+        }
+      }
+    } catch (err) {
+      console.warn("DB'den etkinlikler alınamadı, yerel depolama kullanılıyor:", err);
+    }
+    return eventsStore;
+  },
+
   getActiveEvents(): EventItem[] {
     return eventsStore.filter((e) => e.status === "aktif");
   },
@@ -177,6 +180,22 @@ export const EventsRepository = {
       appliedCount: 0,
     };
     eventsStore.unshift(newEvent);
+
+    // Background DB sync
+    fetch("/api/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: event.title,
+        description: event.description,
+        location: event.location,
+        category: event.category,
+        status: event.status,
+        image: event.coverImage,
+        startDate: new Date().toISOString(),
+      }),
+    }).then(() => this.fetchEventsFromDB()).catch(() => {});
+
     return newEvent;
   },
 
@@ -184,6 +203,16 @@ export const EventsRepository = {
     const index = eventsStore.findIndex((e) => e.id === id);
     if (index !== -1) {
       eventsStore[index] = { ...eventsStore[index], ...updatedFields };
+
+      const numericId = Number(id);
+      if (Number.isInteger(numericId)) {
+        fetch(`/api/events/${numericId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedFields),
+        }).then(() => this.fetchEventsFromDB()).catch(() => {});
+      }
+
       return eventsStore[index];
     }
     return null;
@@ -193,16 +222,58 @@ export const EventsRepository = {
     const index = eventsStore.findIndex((e) => e.id === id);
     if (index !== -1) {
       eventsStore.splice(index, 1);
+
+      const numericId = Number(id);
+      if (Number.isInteger(numericId)) {
+        fetch(`/api/events/${numericId}`, {
+          method: "DELETE",
+        }).then(() => this.fetchEventsFromDB()).catch(() => {});
+      }
+
       return true;
     }
     return false;
   },
 
-  // ETKİNLİK BAŞVURUSU EKLEME
-  applyToEvent(data: Omit<EventApplication, "id" | "appliedAt">): EventApplication {
+  // ETKİNLİK BAŞVURULARI DB VE STORE YÖNETİMİ
+  async fetchApplicationsFromDB(): Promise<EventApplication[]> {
+    try {
+      const res = await fetch("/api/event-applications", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          const dbApps: EventApplication[] = json.data.map((item: any) => ({
+            id: String(item.id),
+            eventId: String(item.eventId || item.event?.id || ""),
+            eventTitle: item.event?.title || "Etkinlik",
+            fullName: item.fullName || "",
+            email: item.email || "",
+            phone: item.phone || "",
+            city: item.city || "",
+            school: item.school || "",
+            department: item.department || "",
+            grade: item.grade || "",
+            note: item.note || "",
+            status: item.status || "Beklemede",
+            appliedAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString("tr-TR") : "",
+          }));
+
+          eventApplicationsStore.length = 0;
+          eventApplicationsStore.push(...dbApps);
+          return eventApplicationsStore;
+        }
+      }
+    } catch (err) {
+      console.warn("DB'den etkinlik başvuruları alınamadı, yerel bellek kullanılıyor:", err);
+    }
+    return eventApplicationsStore;
+  },
+
+  applyToEvent(data: Omit<EventApplication, "id" | "appliedAt" | "status"> & { status?: EventApplication["status"] }): EventApplication {
     const newApplication: EventApplication = {
       ...data,
       id: `APP-EVT-${Date.now().toString().slice(-4)}`,
+      status: data.status || "Beklemede",
       appliedAt: new Date().toLocaleDateString("tr-TR", {
         day: "numeric",
         month: "long",
@@ -217,7 +288,61 @@ export const EventsRepository = {
       targetEvent.appliedCount += 1;
     }
 
+    // Arka planda DB kaydı
+    fetch("/api/event-applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventId: data.eventId,
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        city: data.city,
+        school: data.school,
+        department: data.department,
+        grade: data.grade,
+        note: data.note,
+        status: newApplication.status,
+      }),
+    }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
+
     return newApplication;
+  },
+
+  updateApplicationStatus(id: string, status: "Beklemede" | "Onaylandı" | "Reddedildi"): EventApplication | null {
+    const index = eventApplicationsStore.findIndex((a) => a.id === id);
+    if (index !== -1) {
+      eventApplicationsStore[index].status = status;
+
+      const numericId = Number(id);
+      if (Number.isInteger(numericId)) {
+        fetch(`/api/event-applications/${numericId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
+      }
+
+      return eventApplicationsStore[index];
+    }
+    return null;
+  },
+
+  deleteApplication(id: string): boolean {
+    const index = eventApplicationsStore.findIndex((a) => a.id === id);
+    if (index !== -1) {
+      eventApplicationsStore.splice(index, 1);
+
+      const numericId = Number(id);
+      if (Number.isInteger(numericId)) {
+        fetch(`/api/event-applications/${numericId}`, {
+          method: "DELETE",
+        }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
+      }
+
+      return true;
+    }
+    return false;
   },
 
   getApplications(): EventApplication[] {

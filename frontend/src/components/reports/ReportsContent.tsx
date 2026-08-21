@@ -16,6 +16,7 @@ import { Button, PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { ReportCoverPreview } from "./ReportCoverPreview";
 import { downloadReportPdf } from "../../lib/pdfExporter";
+import { ReportsRepository } from "../../lib/reportsStore";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 14 },
@@ -161,10 +162,19 @@ const CATEGORIES = [
   "Saha Araştırmaları",
 ];
 
-export default function ReportsContent() {
-  const [activeCategory, setActiveCategory] = useState("Tümü");
-  const [query, setQuery] = useState("");
+export function ReportsContent() {
+  const [reportsList, setReportsList] = useState<Report[]>(REPORTS);
+  const [activeCategory, setActiveCategory] = useState<string>("Tümü");
+  const [query, setQuery] = useState<string>("");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+
+  useEffect(() => {
+    ReportsRepository.fetchReportsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setReportsList(data);
+      }
+    });
+  }, []);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Lock body scroll when modal is open
@@ -187,7 +197,7 @@ export default function ReportsContent() {
   const filteredReports = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return REPORTS.filter((report) => {
+    return reportsList.filter((report) => {
       const matchesCategory =
         activeCategory === "Tümü" || report.category === activeCategory;
       const matchesQuery =
@@ -198,7 +208,7 @@ export default function ReportsContent() {
 
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, reportsList]);
 
   const handleDownloadPDF = (report: Report) => {
     if (report.status !== "Yayınlandı") {
@@ -548,3 +558,5 @@ export default function ReportsContent() {
     </PageBackground>
   );
 }
+
+export default ReportsContent;

@@ -12,6 +12,8 @@ import {
   Eye,
   Users,
   Save,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 import {
   FaaliyetItem,
@@ -46,6 +48,9 @@ export default function AdminFaaliyetlerPage() {
 
   useEffect(() => {
     refreshData();
+    FaaliyetlerRepository.fetchFaaliyetlerFromDB().then((data) => {
+      setFaaliyetler(data);
+    });
     const unsubscribe = subscribeFaaliyetlerChanges(() => {
       refreshData();
     });
@@ -461,14 +466,67 @@ export default function AdminFaaliyetlerPage() {
               </div>
 
               <div>
-                <label className={`font-bold ${titleColor} mb-1 block`}>Görsel URL (Opsiyonel)</label>
-                <input
-                  type="text"
-                  placeholder="Örn: /images/workshop.png"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  className={`w-full ${inputBg} rounded-xl p-2.5 focus:outline-none focus:border-[#0A5C3A]`}
-                />
+                <label className={`font-bold ${titleColor} mb-1 block`}>Faaliyet Görseli (Dosya Seç / URL)</label>
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label
+                      className={`cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+                        isDark
+                          ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                          : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
+                      }`}
+                    >
+                      <Upload className="w-4 h-4 text-[#0A5C3A]" />
+                      <span>Dosya Seç</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              if (typeof reader.result === "string") {
+                                setImage(reader.result);
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+
+                    {image && (
+                      <button
+                        type="button"
+                        onClick={() => setImage("")}
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors flex items-center gap-1"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Görseli Kaldır</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {image ? (
+                    <div className="relative w-full h-32 rounded-xl overflow-hidden border border-slate-700/50 bg-black/10 flex items-center justify-center group">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={image} alt="Görsel Önizleme" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold">
+                        Seçilen Görsel
+                      </div>
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="veya Görsel URL'si girin (Örn: /images/workshop.png)"
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                      className={`w-full ${inputBg} rounded-xl p-2.5 text-xs focus:outline-none focus:border-[#0A5C3A]`}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 

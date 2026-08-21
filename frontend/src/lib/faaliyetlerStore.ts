@@ -139,7 +139,6 @@ const INITIAL_FAALIYETLER: FaaliyetItem[] = [
 ];
 
 const STORAGE_KEY = "napsak_faaliyetler_v4";
-
 const EVENT_LISTENERS: Array<() => void> = [];
 
 export function subscribeFaaliyetlerChanges(callback: () => void) {
@@ -174,6 +173,57 @@ export const FaaliyetlerRepository = {
     return INITIAL_FAALIYETLER;
   },
 
+  async fetchFaaliyetlerFromDB(): Promise<FaaliyetItem[]> {
+    try {
+      const res = await fetch("/api/activities", { cache: "no-store" });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const formatted: FaaliyetItem[] = json.data.map((item: any) => ({
+            id: String(item.id),
+            type: item.type || "polaroid",
+            title: item.title,
+            category: item.category || "Genel",
+            team: item.team || "N'apsak Ekibi",
+            status: item.status || "Devam Eden",
+            date: item.date || "",
+            location: item.location || "",
+            summary: item.summary || "",
+            participantCount: item.participantCount || 0,
+            image: item.image || "",
+            rotation: item.rotation || "-rotate-1",
+            pinColor: item.pinColor || "text-[#0A5C3A]",
+            noteBg: item.noteBg || "bg-white",
+            borderColor: item.borderColor || "border-[#DDE7E1]",
+            badgeBg: item.badgeBg || "bg-[#0A5C3A]",
+            badgeText: item.badgeText || "text-white",
+            mottoText: item.mottoText || undefined,
+            tagText: item.tagText || undefined,
+            tapeColor: item.tapeColor || undefined,
+            tapeRotation: item.tapeRotation || undefined,
+            youthStickerIconName: item.youthStickerIconName || undefined,
+            stickerBadgeBg: item.stickerBadgeBg || undefined,
+            objectives: item.objectives || [],
+            impactMetrics: item.impactMetrics || undefined,
+            outcomes: item.outcomes || [],
+            createdAt: item.createdAt ? new Date(item.createdAt).getTime() : Date.now(),
+          }));
+
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(formatted));
+            } catch { }
+          }
+          notifyListeners();
+          return formatted;
+        }
+      }
+    } catch (err) {
+      console.warn("DB'den faaliyetler alınamadı, yerel hafıza kullanılıyor:", err);
+    }
+    return this.getAllFaaliyetler();
+  },
+
   addFaaliyet(item: Omit<FaaliyetItem, "id" | "createdAt">): FaaliyetItem {
     const currentList = this.getAllFaaliyetler();
     const newItem: FaaliyetItem = {
@@ -190,6 +240,13 @@ export const FaaliyetlerRepository = {
         console.error("Faaliyet ekleme kaydedilemedi:", err);
       }
     }
+
+    // Backend DB sync in background
+    fetch("/api/activities", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(item),
+    }).then(() => this.fetchFaaliyetlerFromDB()).catch(() => {});
 
     notifyListeners();
     return newItem;
@@ -210,6 +267,16 @@ export const FaaliyetlerRepository = {
       }
     }
 
+    // Backend DB sync in background
+    const numericId = Number(id);
+    if (Number.isInteger(numericId)) {
+      fetch(`/api/activities/${numericId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedFields),
+      }).then(() => this.fetchFaaliyetlerFromDB()).catch(() => {});
+    }
+
     notifyListeners();
     return currentList[index];
   },
@@ -225,6 +292,14 @@ export const FaaliyetlerRepository = {
       } catch (err) {
         console.error("Faaliyet silme kaydedilemedi:", err);
       }
+    }
+
+    // Backend DB sync in background
+    const numericId = Number(id);
+    if (Number.isInteger(numericId)) {
+      fetch(`/api/activities/${numericId}`, {
+        method: "DELETE",
+      }).then(() => this.fetchFaaliyetlerFromDB()).catch(() => {});
     }
 
     notifyListeners();

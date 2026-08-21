@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
@@ -23,11 +23,26 @@ const fadeInUp: Variants = {
   }),
 };
 
+import { TeamsRepository } from "../../lib/teamsStore";
+
 export function TeamsIndexContent() {
+  const [teamsList, setTeamsList] = useState<TeamData[]>(TEAMS_DATA);
   const [selectedTeamId, setSelectedTeamId] = useState<string>(TEAMS_DATA[0].id);
 
-  const activeTeam = TEAMS_DATA.find((t) => t.id === selectedTeamId) || TEAMS_DATA[0];
-  const ActiveIcon = TEAM_ICONS[activeTeam.iconName];
+  React.useEffect(() => {
+    TeamsRepository.fetchTeamsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setTeamsList(data);
+        if (!data.some((t) => t.id === selectedTeamId)) {
+          setSelectedTeamId(data[0].id);
+        }
+      }
+    });
+  }, []);
+
+  const activeTeams = teamsList.length > 0 ? teamsList : TEAMS_DATA;
+  const activeTeam = activeTeams.find((t) => t.id === selectedTeamId) || activeTeams[0];
+  const ActiveIcon = TEAM_ICONS[activeTeam.iconName] || TEAM_ICONS["cpu"];
 
   return (
     <PageBackground id="ekipler-index-root" className="select-none px-0 py-0">

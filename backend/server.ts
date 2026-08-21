@@ -9,6 +9,13 @@ import authRouter from "./src/routes/auth.js";
 import applicationsRouter from "./src/routes/applications.js";
 import messagesRouter from "./src/routes/messages.js";
 import eventsRouter from "./src/routes/events.js";
+import activitiesRouter from "./src/routes/activities.js";
+import eventApplicationsRouter from "./src/routes/eventApplications.js";
+import membersRouter from "./src/routes/members.js";
+import teamsRouter from "./src/routes/teams.js";
+
+import reportsRouter from "./src/routes/reports.js";
+import magazinesRouter from "./src/routes/magazines.js";
 
 const app = express();
 
@@ -61,6 +68,12 @@ app.post("/auth-test", (req, res) => {
 app.use("/applications", applicationsRouter);
 app.use("/messages", messagesRouter);
 app.use("/events", eventsRouter);
+app.use("/activities", activitiesRouter);
+app.use("/event-applications", eventApplicationsRouter);
+app.use("/members", membersRouter);
+app.use("/teams", teamsRouter);
+app.use("/reports", reportsRouter);
+app.use("/magazines", magazinesRouter);
 
 const PORT = 3001;
 

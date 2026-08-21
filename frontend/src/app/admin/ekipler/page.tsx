@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
@@ -24,6 +24,8 @@ import {
   ArrowUpDown,
   Mail,
   Award,
+  Upload,
+  X,
 } from "lucide-react";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 import {
@@ -271,11 +273,40 @@ type TeamFormData = z.infer<typeof teamFormSchema>;
 // 3. ANA ADMIN ÇALIŞMA EKİPLERİ SAYFASI
 // ==========================================
 
+import { TeamsRepository } from "../../../lib/teamsStore";
+
 export default function AdminEkiplerPage() {
   const { isDark } = useAdminTheme();
 
-  // State Yönetimi (Frontend Mock State)
+  // State Yönetimi (Database & Store)
   const [teams, setTeams] = useState<AdminTeamItem[]>(INITIAL_MOCK_TEAMS);
+
+  useEffect(() => {
+    TeamsRepository.fetchTeamsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        const formatted: AdminTeamItem[] = data.map((t: any, idx: number) => ({
+          id: t.id || t.slug,
+          slug: t.slug || t.id,
+          title: t.title,
+          shortDescription: t.shortDescription || "",
+          about: t.about || "",
+          iconName: (t.iconName as any) || "cpu",
+          bgImage: t.bgImage || "/images/istockphoto-1173149385-612x612.jpg",
+          leaderName: t.leaderName || "Ekip Lideri",
+          leaderTitle: t.leaderTitle || "Lider",
+          leaderAvatar: t.leaderAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+          memberCount: t.memberCount || 0,
+          focusAreas: t.focusAreas || [],
+          whatWeDo: t.whatWeDo || [],
+          status: t.status || "Aktif",
+          displayOrder: t.displayOrder || idx + 1,
+          membersList: t.membersList || [],
+        }));
+        setTeams(formatted);
+      }
+    });
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Tümü");
   const [sortKey, setSortKey] = useState<"displayOrder" | "title" | "memberCount">("displayOrder");
@@ -439,27 +470,25 @@ export default function AdminEkiplerPage() {
 
     if (editingTeam) {
       // Düzenleme işlemi
+      const updatedFields = {
+        title: formData.title,
+        slug: formData.slug,
+        shortDescription: formData.shortDescription,
+        about: formData.about,
+        bgImage: formData.bgImage,
+        leaderName: formData.leaderName,
+        leaderTitle: formData.leaderTitle,
+        displayOrder: formData.displayOrder,
+        status: formData.status,
+        iconName: formData.iconName,
+        focusAreas: focusAreasArray,
+        whatWeDo: whatWeDoArray,
+      };
+
       setTeams((prev) =>
-        prev.map((t) =>
-          t.id === editingTeam.id
-            ? {
-                ...t,
-                title: formData.title,
-                slug: formData.slug,
-                shortDescription: formData.shortDescription,
-                about: formData.about,
-                bgImage: formData.bgImage,
-                leaderName: formData.leaderName,
-                leaderTitle: formData.leaderTitle,
-                displayOrder: formData.displayOrder,
-                status: formData.status,
-                iconName: formData.iconName,
-                focusAreas: focusAreasArray,
-                whatWeDo: whatWeDoArray,
-              }
-            : t
-        )
+        prev.map((t) => (t.id === editingTeam.id ? { ...t, ...updatedFields } : t))
       );
+      TeamsRepository.updateTeam(editingTeam.id, updatedFields as any);
     } else {
       // Yeni ekip ekleme işlemi
       const newTeam: AdminTeamItem = {
@@ -481,6 +510,7 @@ export default function AdminEkiplerPage() {
         membersList: [],
       };
       setTeams((prev) => [...prev, newTeam]);
+      TeamsRepository.addTeam(newTeam as any);
     }
 
     setIsFormModalOpen(false);
@@ -498,6 +528,7 @@ export default function AdminEkiplerPage() {
   const handleConfirmDelete = () => {
     if (teamToDelete) {
       setTeams((prev) => prev.filter((t) => t.id !== teamToDelete.id));
+      TeamsRepository.deleteTeam(teamToDelete.id);
     }
     setIsDeleteDialogOpen(false);
     setTeamToDelete(null);
@@ -1031,23 +1062,72 @@ export default function AdminEkiplerPage() {
               </select>
             </div>
           </div>
-
-          {/* KAPAK GÖRSELİ URL */}
+          {/* KAPAK GÖRSELİ (DOSYA SEÇ / URL) */}
           <div>
             <label className={`block font-bold mb-1 ${isDark ? "text-slate-200" : "text-[#0F1115]"}`}>
-              Kapak Görseli URL <span className="text-rose-500">*</span>
+              Kapak Görseli <span className="text-rose-500">*</span>
             </label>
-            <input
-              type="text"
-              value={formData.bgImage}
-              onChange={(e) => setFormData((prev) => ({ ...prev, bgImage: e.target.value }))}
-              placeholder="/images/ornek-gorsel.jpg"
-              className={`w-full h-10 px-3 rounded-xl border outline-none font-mono text-xs ${
-                isDark
-                  ? "bg-[#141C2E] border-slate-800 text-slate-100 focus:border-[#0A5C3A]"
-                  : "bg-slate-50 border-slate-200 text-[#0F1115] focus:border-[#0A5C3A]"
-              }`}
-            />
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <label
+                  className={`cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+                    isDark
+                      ? "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
+                  }`}
+                >
+                  <Upload className="w-4 h-4 text-[#0A5C3A]" />
+                  <span>Dosya Seç</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          if (typeof reader.result === "string") {
+                            setFormData((prev) => ({ ...prev, bgImage: reader.result as string }));
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </label>
+
+                {formData.bgImage && (
+                  <button
+                    type="button"
+                    onClick={() => setFormData((prev) => ({ ...prev, bgImage: "" }))}
+                    className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-colors flex items-center gap-1"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>Görseli Kaldır</span>
+                  </button>
+                )}
+              </div>
+
+              {formData.bgImage ? (
+                <div className="relative w-full h-28 rounded-xl overflow-hidden border border-slate-700/50 bg-black/10 flex items-center justify-center group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={formData.bgImage} alt="Kapak Önizleme" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={formData.bgImage}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, bgImage: e.target.value }))}
+                  placeholder="veya Görsel URL'si girin (/images/ornek-gorsel.jpg)"
+                  className={`w-full h-10 px-3 rounded-xl border outline-none font-mono text-xs ${
+                    isDark
+                      ? "bg-[#141C2E] border-slate-800 text-slate-100 focus:border-[#0A5C3A]"
+                      : "bg-slate-50 border-slate-200 text-[#0F1115] focus:border-[#0A5C3A]"
+                  }`}
+                />
+              )}
+            </div>
             {formErrors.bgImage && <p className="text-rose-500 font-medium text-[11px] mt-1">{formErrors.bgImage}</p>}
           </div>
 

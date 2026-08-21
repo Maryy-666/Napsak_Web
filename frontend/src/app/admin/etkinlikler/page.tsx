@@ -49,11 +49,14 @@ export default function AdminEtkinliklerPage() {
 
   useEffect(() => {
     refreshData();
+    EventsRepository.fetchEventsFromDB().then(() => {
+      refreshData();
+    });
   }, []);
 
   const refreshData = () => {
-    setEvents(EventsRepository.getAllEvents());
-    setApplications(EventsRepository.getApplications());
+    setEvents([...EventsRepository.getAllEvents()]);
+    setApplications([...EventsRepository.getApplications()]);
   };
 
   // İSTATİSTİKLER

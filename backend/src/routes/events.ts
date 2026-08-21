@@ -38,7 +38,12 @@ router.post("/", authenticate, requireAdmin, async (req, res) => {
     const {
       title,
       description,
+      category,
       location,
+      status,
+      image,
+      capacity,
+      targetAudience,
       startDate,
       endDate,
     } = req.body;
@@ -53,7 +58,12 @@ router.post("/", authenticate, requireAdmin, async (req, res) => {
       data: {
         title,
         description: description || null,
+        category: category || null,
         location: location || null,
+        status: status || "Yaklaşan",
+        image: image || null,
+        capacity: capacity !== undefined && capacity !== null && capacity !== "" ? Number(capacity) : null,
+        targetAudience: targetAudience || null,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
       },
@@ -90,7 +100,12 @@ router.patch(
       const {
         title,
         description,
+        category,
         location,
+        status,
+        image,
+        capacity,
+        targetAudience,
         startDate,
         endDate,
       } = req.body;
@@ -100,7 +115,14 @@ router.patch(
         data: {
           ...(title !== undefined && { title }),
           ...(description !== undefined && { description }),
+          ...(category !== undefined && { category }),
           ...(location !== undefined && { location }),
+          ...(status !== undefined && { status }),
+          ...(image !== undefined && { image }),
+          ...(capacity !== undefined && {
+            capacity: capacity !== null && capacity !== "" ? Number(capacity) : null,
+          }),
+          ...(targetAudience !== undefined && { targetAudience }),
           ...(startDate !== undefined && {
             startDate: new Date(startDate),
           }),

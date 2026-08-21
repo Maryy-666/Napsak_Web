@@ -33,7 +33,7 @@ export default function MesajlarPage() {
         throw new Error(data.error || "Mesajlar alınamadı.");
       }
 
-      setMessages(data);
+      setMessages(Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("MESSAGES GET ERROR:", error);
       setError(
