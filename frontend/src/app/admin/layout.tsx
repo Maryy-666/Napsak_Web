@@ -14,7 +14,6 @@ import {
   LogOut,
   MailCheck,
   Menu,
-  MessageSquare,
   Moon,
   Pin,
   ShieldCheck,
@@ -47,7 +46,6 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
       { title: "Etkinlik Başvuruları", href: "/admin/etkinlik-basvurulari", icon: Ticket, badge: null, published: true },
       { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: null, published: true },
       { title: "İçerik Yönetimi", href: "/admin/icerik", icon: FileText, badge: null, published: true },
-      { title: "Etkileşim & Katılım", href: "/admin/katilim", icon: MessageSquare, badge: null, published: true },
     ],
   },
   {
