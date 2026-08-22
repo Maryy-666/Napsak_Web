@@ -21,11 +21,12 @@ export function PublicMemberCard({
   const initials = useMemo(() => getInitials(member.name), [member.name]);
 
   // Compute active role and team tag text based on current context/filter
-  const { roleText, teamTagText } = useMemo(() => {
+  const { roleText, teamTagText, isLeaderRole } = useMemo(() => {
     if (member.isPresident) {
       return {
         roleText: "Topluluk Eş Başkanı",
         teamTagText: "TOPLULUK EŞ BAŞKANLARI",
+        isLeaderRole: true,
       };
     }
 
@@ -43,10 +44,14 @@ export function PublicMemberCard({
             .trim()
             .toUpperCase();
           tag = `${cleanTeamName} • ${matched.subRole.toUpperCase()}`;
+        } else if (matched.isLeader) {
+          tag = `${matched.team.toUpperCase()} • EKİP SORUMLUSU`;
         }
+        const isLd = Boolean(matched.isLeader || (matched.subRole && matched.subRole.toLowerCase().includes("sorumlus")));
         return {
           roleText: matched.role,
           teamTagText: tag,
+          isLeaderRole: isLd,
         };
       }
     }
@@ -61,11 +66,20 @@ export function PublicMemberCard({
         .trim()
         .toUpperCase();
       tag = `${cleanTeamName} • ${primaryMembership.subRole.toUpperCase()}`;
+    } else if (primaryMembership?.isLeader) {
+      tag = `${primaryMembership.team.toUpperCase()} • EKİP SORUMLUSU`;
     }
 
+    const fullRole = primaryMembership?.role || member.primaryRole;
+    const isLd = Boolean(
+      primaryMembership?.isLeader ||
+        (primaryMembership?.subRole && primaryMembership.subRole.toLowerCase().includes("sorumlus"))
+    );
+
     return {
-      roleText: member.primaryRole,
+      roleText: fullRole,
       teamTagText: tag,
+      isLeaderRole: isLd,
     };
   }, [member, activeFilter]);
 
@@ -116,10 +130,18 @@ export function PublicMemberCard({
   return (
     <div
       onClick={() => onSelect(member)}
-      className="group relative flex items-center gap-3.5 bg-white border border-[#EEF0F2] rounded-2xl p-3.5 sm:p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(10,92,58,0.08)] hover:border-[#0A5C3A]/30 transition-all duration-300 cursor-pointer select-none min-w-0 w-full text-left"
+      className={`group relative flex items-center gap-3.5 rounded-2xl p-3.5 sm:p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(10,92,58,0.12)] hover:border-[#0A5C3A] transition-all duration-300 cursor-pointer select-none min-w-0 w-full text-left ${
+        isLeaderRole
+          ? "bg-gradient-to-r from-emerald-50/70 to-white border-2 border-[#0A5C3A]/50"
+          : "bg-white border border-[#EEF0F2]"
+      }`}
     >
       {/* SMALLER CIRCULAR INITIALS AVATAR */}
-      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#07452C] text-white flex items-center justify-center font-headings font-bold text-xs sm:text-sm tracking-wider border-2 border-white shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300">
+      <div
+        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full text-white flex items-center justify-center font-headings font-bold text-xs sm:text-sm tracking-wider border-2 border-white shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 ${
+          isLeaderRole ? "bg-[#0A5C3A]" : "bg-[#07452C]"
+        }`}
+      >
         {initials}
       </div>
 
@@ -128,10 +150,10 @@ export function PublicMemberCard({
         <h4 className="text-sm sm:text-base font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-tight truncate">
           {member.name}
         </h4>
-        <p className="text-xs font-medium text-[#5F6773] font-sans truncate">
+        <p className="text-xs font-semibold text-[#0A5C3A] font-sans truncate">
           {roleText}
         </p>
-        <p className="text-[10px] font-extrabold text-[#0A5C3A] uppercase tracking-wider font-sans truncate">
+        <p className="text-[10px] font-extrabold text-[#5F6773] uppercase tracking-wider font-sans truncate">
           {teamTagText}
         </p>
       </div>

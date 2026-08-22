@@ -1,7 +1,9 @@
 export interface GroupMembership {
   team: string;
+  teamSlug?: string;
   role: string;
   subRole?: string;
+  isLeader?: boolean;
 }
 
 export type MemberTeamRole = GroupMembership;
@@ -14,6 +16,12 @@ export interface PublicMember {
   primaryRole: string;
   memberships: GroupMembership[];
   isPresident?: boolean;
+  bio?: string;
+  avatar?: string;
+  linkedin?: string;
+  city?: string;
+  school?: string;
+  department?: string;
 }
 
 export const MEMBER_TEAMS = [

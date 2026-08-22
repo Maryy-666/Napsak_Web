@@ -45,14 +45,10 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
   // Group memberships by team name for structured multi-role display
   const groupedMemberships = useMemo(() => {
     if (!member) return [];
-    const map = new Map<string, string[]>();
-    member.memberships.forEach((m) => {
-      const existing = map.get(m.team) || [];
-      if (!existing.includes(m.role)) {
-        map.set(m.team, [...existing, m.role]);
-      }
-    });
-    return Array.from(map.entries()).map(([team, roles]) => ({ team, roles }));
+    return member.memberships.map((m) => ({
+      team: m.team,
+      roles: [m.role],
+    }));
   }, [member]);
 
   if (!isOpen || !member || !mounted) return null;

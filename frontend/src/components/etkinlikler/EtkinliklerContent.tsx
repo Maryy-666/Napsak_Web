@@ -64,6 +64,11 @@ export default function EtkinliklerContent() {
 
   useEffect(() => {
     setEvents(EventsRepository.getAllEvents());
+    EventsRepository.fetchEventsFromDB().then((data) => {
+      if (Array.isArray(data)) {
+        setEvents(data);
+      }
+    });
   }, []);
 
   // Modal açıkken arka plan sayfasının kaymasını engelle
@@ -79,13 +84,27 @@ export default function EtkinliklerContent() {
   }, [applyingEvent, detailEvent]);
 
   const filteredEvents = events.filter((event) => {
-    const matchesTab = activeTab === "aktif" ? event.status === "aktif" : event.status === "gecmis";
+    const pubStatus = (event as any).publicationStatus;
+    if (pubStatus && pubStatus !== "PUBLISHED") return false; // Strictly hide DRAFT or ARCHIVED events
+
+    const isUpcoming = event.status === "aktif" || event.status === "Yaklaşan" || event.status === "Devam Ediyor";
+    const isPast = event.status === "gecmis" || event.status === "Geçmiş";
+    const matchesTab = activeTab === "aktif" ? isUpcoming : isPast;
     const matchesCategory = selectedCategory === "all" || event.category === selectedCategory;
     return matchesTab && matchesCategory;
   });
 
-  const activeCount = events.filter((event) => event.status === "aktif").length;
-  const pastCount = events.filter((event) => event.status === "gecmis").length;
+  const activeCount = events.filter((event) => {
+    const pub = (event as any).publicationStatus;
+    if (pub && pub !== "PUBLISHED") return false;
+    return event.status === "aktif" || event.status === "Yaklaşan" || event.status === "Devam Ediyor";
+  }).length;
+
+  const pastCount = events.filter((event) => {
+    const pub = (event as any).publicationStatus;
+    if (pub && pub !== "PUBLISHED") return false;
+    return event.status === "gecmis" || event.status === "Geçmiş";
+  }).length;
 
   const openApplication = (event: EventItem) => {
     const currentUser = getCurrentUser();

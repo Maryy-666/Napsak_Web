@@ -1,7 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client.js";
-import bcrypt from "bcrypt";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -11,208 +10,353 @@ const prisma = new PrismaClient({
   adapter,
 });
 
+// STATİK TEAMS VERİSİ
+const TEAMS_DATA = [
+  {
+    externalId: "teknoloji",
+    slug: "teknoloji",
+    title: "Teknoloji Ekibi",
+    iconName: "cpu",
+    bgImage: "/images/istockphoto-1173149385-612x612.jpg",
+    shortDescription:
+      "Dijitalleşme, inovasyon, yazılım, yapay zeka ve sürdürülebilir teknoloji alanlarında eğitim içerikleri, projeler ve etkinlikler geliştirir.",
+    about:
+      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin topluluk çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine, veri analizinden dijital ürün tasarımına kadar geniş bir yelpazede yenilikçi projeler kurgular ve hayata geçirir.",
+    focusAreas: [
+      "Yazılım & Web Geliştirme",
+      "Yapay Zeka & Veri Bilimi",
+      "Dijital Ürün Tasarımı & UX/UI",
+      "Açık Kaynak Projeler & Araçlar",
+      "Teknoloji Atölyeleri & Hackathonlar",
+    ],
+    whatWeDo: [
+      "Topluluğumuzun dijital platformlarını, web sitesini ve yazılım altyapılarını geliştiriyoruz.",
+      "Gençlere yönelik kodlama, yapay zeka ve dijital beceri atölyeleri düzenliyoruz.",
+      "Açık kaynak ekosistemine katkı sağlayan yenilikçi projeler kurguluyoruz.",
+      "Topluluk içi operasyonları otomatize eden dijital çözümler üretiyoruz.",
+    ],
+    structure:
+      "Ekibimiz Proje Yöneticisi, Yazılım Geliştiriciler, UI/UX Tasarımcıları ve Yapay Zeka / Veri masalarından oluşur. Haftalık çevrim içi buluşmalar ve esnek çalışma modelleriyle projelerimizi sürdürürüz.",
+    displayOrder: 1,
+  },
+  {
+    externalId: "sanat",
+    slug: "sanat",
+    title: "Sanat Ekibi",
+    iconName: "palette",
+    bgImage: "/images/stock-photo-close-up-of-painting-brushes-in-studio-of-artist.jpg",
+    shortDescription:
+      "Gençlerin sanatsal ve yaratıcı ifade becerilerini geliştirmelerini destekleyen atölyeler ve estetik projeler yürütür.",
+    about:
+      "Sanat Ekibimiz, görsel sanatlardan dijital tasarıma, estetik ifade biçimlerinden kültür-sanat projelerine kadar gençlerin yaratıcı potansiyellerini keşfetmelerine alan açar. Disiplinlerarası atölyeler ve sergilerle yaratıcılığı topluluk ruhuyla buluşturur.",
+    focusAreas: [
+      "Görsel Sanatlar & İllüstrasyon",
+      "Dijital Sanat & Grafik Tasarım",
+      "Fotoğrafçılık & Videografi",
+      "Kültür-Sanat Atölyeleri",
+      "Sergi & Disiplinlerarası Etkinlikler",
+    ],
+    whatWeDo: [
+      "Topluluk yayınları, sosyal medya ve projeler için özgün görsel tasarımlar hazırlıyoruz.",
+      "Tematik sanat atölyeleri, çizim ve yaratıcılık buluşmaları düzenliyoruz.",
+      "Genç sanatçıların eserlerini sergileyebileceği dijital ve fiziki sergiler organize ediyoruz.",
+      "Kültür ve sanat odaklı disiplinlerarası ortak projelere imza atıyoruz.",
+    ],
+    structure:
+      "Grafik Tasarım, Görsel Sanatlar, Fotoğraf/Video ve Etkinlik Tasarımı çalışma masalarından oluşan ekibimiz, proje bazlı üretim modeliyle çalışmaktadır.",
+    galleryTitle: "Sanatla Üretiyoruz",
+    gallery: [
+      { src: "/images/sanat-kolaj.jpg", alt: "Sanat Ekibi Eser Kolajı", isFeatured: true },
+      { src: "/images/sanat-yuz-soyut.png", alt: "Soyut Yüz & Doğa Sanat Çalışması" },
+      { src: "/images/sanat-cicek-vazo.png", alt: "Çiçek ve Vazo Çizimi" },
+      { src: "/images/sanat-mavi-formlar.png", alt: "Mavi Organik Formlar Çalışması" },
+      { src: "/images/sanat-spiral-vazo.png", alt: "Bitki, Vazo ve Spiral Form Sanat İlhamı" },
+      { src: "/images/sanat-palmiye.png", alt: "Palmiye ve Soyut Sahne Çizimi" },
+    ],
+    displayOrder: 2,
+  },
+  {
+    externalId: "cevre-saglik",
+    slug: "cevre-saglik",
+    title: "Çevre ve Sağlık Ekibi",
+    iconName: "heart-pulse",
+    bgImage: "/images/pngtree-vibrant-earth-planet-surrounded-by-fresh-green-leaves-eco-friendly-concept-image_21673995.webp",
+    featuredSectionImage: "/images/cevre-ve-saglik.png",
+    shortDescription:
+      "Sürdürülebilirlik, çevre bilinci, sağlıklı yaşam ve toplumsal fayda odaklı sosyal sorumluluk projeleri gerçekleştirir.",
+    about:
+      "Çevre ve Sağlık Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında gençlerde sürdürülebilir alışkanlıklar ve sorumluluk duygusu geliştirmeyi hedefler.",
+    focusAreas: [
+      "Ekolojik Farkındalık & İklim Eylemi",
+      "Sıfır Atık & Sürdürülebilirlik",
+      "Ruh Sağlığı & Sağlıklı Yaşam Bilinci",
+      "Saha Etkinlikleri & Doğa Buluşmaları",
+      "Toplumsal Fayda Projeleri",
+    ],
+    whatWeDo: [
+      "Doğa dostu yaşam ve sürdürülebilirlik odaklı farkındalık projeleri yürütüyoruz.",
+      "Gençlerin bütünsel esenliğini ve ruh sağlığını destekleyen söyleşiler düzenliyoruz.",
+      "Doğa yürüyüşleri, çevre temizliği ve ekolojik atölyeler kurguluyoruz.",
+      "Sürdürülebilirlik rehberleri ve bilgi içerikleri hazırlayarak toplumu bilinçlendiriyoruz.",
+    ],
+    structure:
+      "Çevre & Ekoloji Masası ve Sağlık & Esenlik Masası olmak üzere iki ana kolda faaliyet gösterir. Gönüllü katılım ve proje odaklı çalışma prensibi benimsenir.",
+    displayOrder: 3,
+  },
+  {
+    externalId: "programlar",
+    slug: "programlar",
+    title: "Programlar Ekibi",
+    iconName: "book-open",
+    bgImage: "/images/krm.png",
+    shortDescription:
+      "Gençlerin kişisel, akademik ve mesleki gelişim yolculuklarına katkı sağlayan kapsayıcı eğitim ve gelişim programları kurgular.",
+    about:
+      "Programlar Ekibimiz, gençlerin geleceğe yetkin bir şekilde hazırlanması için mentörlük süreçleri, bootcamp'ler, akademi serileri ve kişisel gelişim içerikleri kurgular. Kapsayıcı ve erişilebilir öğrenme ortamları sunar.",
+    focusAreas: [
+      "Eğitim Müfredatı & Müfredat Tasarımı",
+      "Mentörlük & Koçluk Programları",
+      "Akademi & Atölye Serileri",
+      "Kariyer & Becerileri Geliştirme",
+      "Gençlik Buluşmaları & Kamplar",
+    ],
+    whatWeDo: [
+      "Dönemsel beceri geliştirme akademileri ve sertifika programları tasarlıyoruz.",
+      "Alanında uzman isimlerle webinarlar, paneller ve söyleşiler gerçekleştiriyoruz.",
+      "Gençlerin kariyer adımlarına destek verecek mentörlük ağları kurguluyoruz.",
+      "Eğitim rehberleri ve öğrenme haritaları hazırlıyoruz.",
+    ],
+    structure:
+      "Program Tasarımı, Eğitim Koordinasyonu ve Katılımcı İlişkileri masalarından oluşur. Dönemsel takvim ve modüler eğitim planları ile ilerler.",
+    displayOrder: 4,
+  },
+  {
+    externalId: "kurumsal-iletisim",
+    slug: "kurumsal-iletisim",
+    title: "Kurumsal İletişim Ekibi",
+    iconName: "share-2",
+    bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
+    shortDescription:
+      "Topluluğun kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
+    about:
+      "Kurumsal İletişim Ekibimiz, N'apsak? Gençlik Topluluğu'nun vizyonunu ve ürettiği değeri kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi, stratejik iletişim, basın ilişkileri ve kurumlar arası iş birliği süreçlerini yönetir.",
+    focusAreas: [
+      "Sosyal Medya Yönetimi & Stratejisi",
+      "Marka Yönetimi & Kurumsal Kimlik",
+      "Paydaş İlişkileri & İş Birlikleri",
+      "Metin Yazarlığı & İçerik Pazarlaması",
+      "Medya İlişkileri & Duyurular",
+    ],
+    whatWeDo: [
+      "Topluluğumuzun tüm sosyal medya hesaplarını ve dijital iletişim kanallarını aktif şekilde yönetiyoruz.",
+      "Stratejik iletişim planları kurgulayarak topluluk duyurularını ve projelerini yayınlıyoruz.",
+      "Sivil toplum, akademi ve özel sektör paydaşlarıyla sürdürülebilir iş birliği süreçleri yürütüyoruz.",
+      "Bültenler, basın açıklamaları ve kurumsal tanıtım materyalleri hazırlıyoruz.",
+    ],
+    structure:
+      "Sosyal Medya, Metin & İletişim ve Dış İlişkiler masalarından oluşur. Haftalık içerik planlamaları ve kampanya yönetimi ile aktif iletişim yürütülür.",
+    displayOrder: 5,
+  },
+];
+
+// STATİK MEMBERS VERİSİ
+const PUBLIC_MEMBERS = [
+  // TOPLULUK EŞ BAŞKANLARI
+  { id: "m-kadir-colmekci", name: "Kadir Çölmekci", initials: "KÇ", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }] },
+  { id: "m-humeyra-erdonmez", name: "Hümeyra Erdönmez", initials: "HE", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }] },
+
+  // 1. SANAT ÇALIŞMA GRUBU
+  { id: "m-zeynep-sude-bulbul", name: "Zeynep Sude Bülbül", initials: "ZB", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Başkan", memberships: [{ team: "Sanat Çalışma Grubu", role: "Başkan" }] },
+  { id: "m-eylul-deniz-yalcin", name: "Eylül Deniz Yalçın", initials: "EDY", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Başkan Yardımcısı", memberships: [{ team: "Sanat Çalışma Grubu", role: "Başkan Yardımcısı" }, { team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-ayse-aksoy-dikici", name: "Ayşe Aksoy Dikici", initials: "AAD", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-ebrar-akkaya", name: "Ebrar Akkaya", initials: "EA", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-beren-kar", name: "Beren Kar", initials: "BK", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-beyza-ekinci", name: "Beyza Ekinci", initials: "BE", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-ebrar-gonul-kurt", name: "Ebrar Gönül Kurt", initials: "EGK", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-merve-civan", name: "Merve Civan", initials: "MC", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-meryem-bozkurt", name: "Meryem Bozkurt", initials: "MB", primaryTeam: "Teknoloji Ekibi", primaryRole: "Başkan Yardımcısı", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }, { team: "Teknoloji Ekibi", role: "Başkan Yardımcısı" }] },
+  { id: "m-meryem-rana-aslan", name: "Meryem Rana Aslan", initials: "MRA", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-kevser-sagir", name: "Kevser Sağır", initials: "KS", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-ecenaz-yilmaz", name: "Ecenaz Yılmaz", initials: "EY", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-yagmur-cetin", name: "Yağmur Çetin", initials: "YÇ", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman" }, { team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }, { team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-pinar-cicek", name: "Pınar Çiçek", initials: "PÇ", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Uzman-Raportör", memberships: [{ team: "Sanat Çalışma Grubu", role: "Uzman-Raportör" }, { team: "Kurumsal İletişim Departmanı", role: "SM Uzman" }, { team: "Kurumsal İletişim Departmanı", role: "SDM Uzman" }] },
+  { id: "m-eylul-burcu-kara", name: "Eylül Burcu Kara", initials: "EBK", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Tiyatro Koordinatörü", memberships: [{ team: "Sanat Çalışma Grubu", role: "Tiyatro Koordinatörü" }, { team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+
+  // 2. KURUMSAL İLETİŞİM DEPARTMANI
+  { id: "m-zehranur-vardar", name: "Zehranur Vardar", initials: "ZV", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Başkan", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Başkan" }] },
+  { id: "m-feyza-soyturk", name: "Feyza Soytürk", initials: "FS", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Başkan Yardımcısı", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Başkan Yardımcısı" }] },
+  { id: "m-aysegul-tugce-kartal", name: "Ayşegül Tuğçe Kartal", initials: "ATK", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+  { id: "m-deniz-ayse-brijavi", name: "Deniz Ayşe Brıjavı", initials: "DAB", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }, { team: "Sağlık ve Çevre Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-erdeniz-erdaloglu", name: "Erdeniz Erdaloğlu", initials: "EE", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+  { id: "m-feyza-dinc", name: "Feyza Dinç", initials: "FD", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+  { id: "m-melike-saglik", name: "Melike Sağlık", initials: "MS", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+  { id: "m-rumeysa-aki", name: "Rümeysa Akı", initials: "RA", primaryTeam: "Sağlık ve Çevre Çalışma Grubu", primaryRole: "Başkan Yardımcısı", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }, { team: "Sağlık ve Çevre Çalışma Grubu", role: "Başkan Yardımcısı" }] },
+  { id: "m-ekin-ozbay", name: "Ekin Özbay", initials: "EÖ", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Kİ Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Kİ Uzman" }] },
+  { id: "m-aybike-gurbuzce", name: "Aybike Gürbüzce", initials: "AG", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SM Uzman" }, { team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-gulsah-sena-kilic", name: "Gülşah Sena Kılıç", initials: "GSK", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SM Uzman" }] },
+  { id: "m-sila-gulagaoglu", name: "Sıla Gülağaoğlu", initials: "SG", primaryTeam: "Programlar Çalışma Grubu", primaryRole: "Başkan Yardımcısı", memberships: [{ team: "Programlar Çalışma Grubu", role: "Başkan Yardımcısı" }, { team: "Kurumsal İletişim Departmanı", role: "SM Uzman" }, { team: "Sağlık ve Çevre Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-melis-ada-yazar", name: "Melis Ada Yazar", initials: "MAY", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SM Uzman" }] },
+  { id: "m-batuhan-orak", name: "Batuhan Orak", initials: "BO", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "Sohbet Düzeni ve Moderasyon Koordinatörü", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "Sohbet Düzeni ve Moderasyon Koordinatörü" }] },
+  { id: "m-alime-cam", name: "Alime Çam", initials: "AÇ", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SDM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SDM Uzman" }] },
+  { id: "m-elif-tuana-akpinar", name: "Elif Tuana Akpınar", initials: "ETA", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SDM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SDM Uzman" }, { team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-bilal-cevik", name: "Bilal Çevik", initials: "BÇ", primaryTeam: "Kurumsal İletişim Departmanı", primaryRole: "SDM Uzman", memberships: [{ team: "Kurumsal İletişim Departmanı", role: "SDM Uzman" }] },
+
+  // 3. PROGRAMLAR ÇALIŞMA GRUBU
+  { id: "m-aysegul-kartal", name: "Ayşegül Kartal", initials: "AK", primaryTeam: "Programlar Çalışma Grubu", primaryRole: "Başkan", memberships: [{ team: "Programlar Çalışma Grubu", role: "Başkan" }] },
+  { id: "m-buglem-yavuz", name: "Buğlem Yavuz", initials: "BY", primaryTeam: "Programlar Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-emine-savci", name: "Emine Savcı", initials: "ES", primaryTeam: "Programlar Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Programlar Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-abdullah-nazim-karanfil", name: "Abdullah Nazım Karanfil", initials: "ANK", primaryTeam: "Programlar Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Programlar Çalışma Grubu", role: "Uzman" }, { team: "Teknoloji Ekibi", role: "Uzman" }] },
+
+  // 4. SAĞLIK VE ÇEVRE ÇALIŞMA GRUBU
+  { id: "m-sude-erol", name: "Sude Erol", initials: "SE", primaryTeam: "Sağlık ve Çevre Çalışma Grubu", primaryRole: "Başkan", memberships: [{ team: "Sağlık ve Çevre Çalışma Grubu", role: "Başkan" }] },
+  { id: "m-ayse-ilayda-eracar", name: "Ayşe İlayda Eracar", initials: "AİE", primaryTeam: "Sağlık ve Çevre Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sağlık ve Çevre Çalışma Grubu", role: "Uzman" }] },
+  { id: "m-sedanur-balta", name: "Sedanur Balta", initials: "SB", primaryTeam: "Sağlık ve Çevre Çalışma Grubu", primaryRole: "Uzman", memberships: [{ team: "Sağlık ve Çevre Çalışma Grubu", role: "Uzman" }] },
+
+  // 5. TEKNOLOJİ EKİBİ
+  { id: "m-ege-berk-oter", name: "Ege Berk Oter", initials: "EBO", primaryTeam: "Teknoloji Ekibi", primaryRole: "Başkan", memberships: [{ team: "Teknoloji Ekibi", role: "Başkan" }] },
+  { id: "m-azra-fatma-kalayci", name: "Azra Fatma Kalaycı", initials: "AFK", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman" }] },
+  { id: "m-iskender-aras-ocak", name: "İskender Aras Ocak", initials: "İAO", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman" }] },
+  { id: "m-helin-akalin", name: "Helin Akalın", initials: "HA", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman" }] },
+  { id: "m-elif-yaldiz", name: "Elif Yaldız", initials: "EY", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Ekibi" }, { team: "Web Sitesi", role: "Web Sitesi Ekibi" }] },
+  { id: "m-dilara-ozocak", name: "Dilara Özocak", initials: "DÖ", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman" }] },
+  { id: "m-yusuf-barut", name: "Yusuf Barut", initials: "YB", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Sorumlusu" }, { team: "Web Sitesi", role: "Web Sitesi Sorumlusu" }] },
+  { id: "m-feyzanur-olcay", name: "Feyzanur Olçay", initials: "FO", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman", subRole: "Web Sitesi Ekibi" }, { team: "Web Sitesi", role: "Web Sitesi Ekibi" }] },
+  { id: "m-ayoub-rebhi", name: "Ayoub Rebhi", initials: "AR", primaryTeam: "Teknoloji Ekibi", primaryRole: "Uzman", memberships: [{ team: "Teknoloji Ekibi", role: "Uzman" }] },
+];
+
+function getTeamSlugByName(teamName: string): string | null {
+  const t = teamName.toLowerCase().trim();
+  if (t.includes("teknoloji")) return "teknoloji";
+  if (t.includes("sanat")) return "sanat";
+  if (t.includes("sağlık") || t.includes("çevre")) return "cevre-saglik";
+  if (t.includes("program")) return "programlar";
+  if (t.includes("kurumsal") || t.includes("iletişim")) return "kurumsal-iletisim";
+  return null;
+}
+
 async function main() {
-  console.log("🔥 Veritabanı Seed işlemi başladı...");
+  console.log("🌱 SEED İŞLEMİ BAŞLIYOR...");
 
-  // 1. Şifreler
-  const adminPassword = await bcrypt.hash("Admin123!", 10);
-  const userPassword = await bcrypt.hash("User123!", 10);
-
-  // 2. Kullanıcılar
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@napsak.com" },
-    update: {},
-    create: {
-      name: "N'apsak Admin",
-      email: "admin@napsak.com",
-      passwordHash: adminPassword,
-      role: "ADMIN",
-    },
-  });
-
-  const user1 = await prisma.user.upsert({
-    where: { email: "zeynep.yilmaz@gmail.com" },
-    update: {},
-    create: {
-      name: "Zeynep Yılmaz",
-      email: "zeynep.yilmaz@gmail.com",
-      passwordHash: userPassword,
-      role: "USER",
-    },
-  });
-
-  const user2 = await prisma.user.upsert({
-    where: { email: "mehmet.demir@hotmail.com" },
-    update: {},
-    create: {
-      name: "Mehmet Demir",
-      email: "mehmet.demir@hotmail.com",
-      passwordHash: userPassword,
-      role: "USER",
-    },
-  });
-
-  // 3. Üyelik Başvuruları
-  await prisma.application.createMany({
-    data: [
-      {
-        userId: user1.id,
-        program: "Yazılım & Tasarım Ekibi",
-        status: "PENDING",
+  // 1. Ekipleri veritabanına ekle/güncelle
+  const createdTeamsMap = new Map<string, any>();
+  for (const t of TEAMS_DATA) {
+    const teamRecord = await prisma.team.upsert({
+      where: { externalId: t.externalId },
+      update: {
+        slug: t.slug,
+        title: t.title,
+        shortDescription: t.shortDescription,
+        iconName: t.iconName,
+        bgImage: t.bgImage,
+        about: t.about,
+        focusAreas: t.focusAreas,
+        whatWeDo: t.whatWeDo,
+        structure: t.structure,
+        featuredSectionImage: t.featuredSectionImage || null,
+        galleryTitle: t.galleryTitle || null,
+        gallery: (t.gallery as any) || undefined,
+        displayOrder: t.displayOrder,
+        isActive: true,
       },
-      {
-        userId: user2.id,
-        program: "Sosyal Medya & İçerik Ekibi",
-        status: "APPROVED",
+      create: {
+        externalId: t.externalId,
+        slug: t.slug,
+        title: t.title,
+        shortDescription: t.shortDescription,
+        iconName: t.iconName,
+        bgImage: t.bgImage,
+        about: t.about,
+        focusAreas: t.focusAreas,
+        whatWeDo: t.whatWeDo,
+        structure: t.structure,
+        featuredSectionImage: t.featuredSectionImage || null,
+        galleryTitle: t.galleryTitle || null,
+        gallery: (t.gallery as any) || undefined,
+        displayOrder: t.displayOrder,
+        isActive: true,
       },
-    ],
-  });
+    });
+    createdTeamsMap.set(t.slug, teamRecord);
+    console.log(`✅ Ekip DB'ye yazıldı: ${teamRecord.title} (ID: ${teamRecord.id})`);
+  }
 
-  // 4. Etkinlikler
-  const event1 = await prisma.event.create({
-    data: {
-      title: "1923 Gençlik Topluluğu İş Birliği & Tanışma Zirvesi",
-      description: "Gençlik ekosistemi ve projelerin ele alınacağı büyük tanışma etkinliği.",
-      category: "Programlar & Sosyal",
-      location: "Beylikdüzü Smart-B Kültür Merkezi",
-      status: "Yaklaşan",
-      capacity: 120,
-      targetAudience: "Üniversite Öğrencileri",
-      startDate: new Date("2026-09-15T14:00:00"),
-      endDate: new Date("2026-09-15T18:00:00"),
-    },
-  });
+  // 2. Üyeleri ve Üyelik İlişkilerini veritabanına ekle
+  for (const m of PUBLIC_MEMBERS) {
+    const profile = await prisma.memberProfile.upsert({
+      where: { externalId: m.id },
+      update: {
+        name: m.name,
+        initials: m.initials,
+        primaryTeam: m.primaryTeam,
+        primaryRole: m.primaryRole,
+        isPresident: m.isPresident || false,
+      },
+      create: {
+        externalId: m.id,
+        name: m.name,
+        initials: m.initials,
+        primaryTeam: m.primaryTeam,
+        primaryRole: m.primaryRole,
+        isPresident: m.isPresident || false,
+      },
+    });
 
-  const event2 = await prisma.event.create({
-    data: {
-      title: "Kil Atölyesi: Çamurdan Hayallere",
-      description: "Doğal kil ile sanatsal biçimlendirme ve el becerisi atölyesi.",
-      category: "Sanat & Atölye",
-      location: "Kültür Atölyesi",
-      status: "Tamamlanan",
-      capacity: 40,
-      targetAudience: "Genç Sanatseverler",
-      startDate: new Date("2026-08-01T10:00:00"),
-      endDate: new Date("2026-08-01T13:00:00"),
-    },
-  });
+    // Üyeliklerini (TeamMembership) bağla
+    for (const mem of m.memberships) {
+      const teamSlug = getTeamSlugByName(mem.team);
+      if (!teamSlug) continue;
 
-  // 5. Etkinlik Başvuruları
-  await prisma.eventApplication.createMany({
-    data: [
-      {
-        eventId: event1.id,
-        fullName: "Elif Kaya",
-        email: "elif.kaya@outlook.com",
-        phone: "0544 777 88 99",
-        city: "İstanbul",
-        school: "Ege Üniversitesi",
-        department: "Psikoloji",
-        grade: "4. Sınıf",
-        note: "Etkinlikte organizasyon ekibinde destek olmak istiyorum.",
-        status: "Onaylandı",
-      },
-      {
-        eventId: event1.id,
-        fullName: "Caner Arslan",
-        email: "caner.arslan@gmail.com",
-        phone: "0505 123 45 67",
-        city: "Bursa",
-        school: "Uludağ Üniversitesi",
-        department: "İşletme",
-        grade: "Mezun",
-        note: "Zirveye katılım sağlamak istiyorum.",
-        status: "Beklemede",
-      },
-    ],
-  });
+      const teamObj = createdTeamsMap.get(teamSlug);
+      if (!teamObj) continue;
 
-  // 6. Faaliyetler (Activities)
-  await prisma.activity.createMany({
-    data: [
-      {
-        type: "polaroid",
-        title: "Kil Atölyesi: Çamurdan Hayallere",
-        category: "Sanat & Atölye",
-        team: "Sanat Ekibi",
-        status: "Tamamlanan",
-        date: "15 Ekim 2025",
-        location: "Kültür Atölyesi",
-        summary: "Gençlerimizin elleriyle şekil verdiği, el becerilerini ortaya çıkardığı doğal kil atölyemiz.",
-        participantCount: 35,
-        rotation: "-rotate-2",
-        pinColor: "text-[#0A5C3A]",
-      },
-      {
-        type: "polaroid",
-        title: "Anı Defteri Atölyesi",
-        category: "Tasarım & Üretim",
-        team: "Tasarım Ekibi",
-        status: "Tamamlanan",
-        date: "12 Kasım 2025",
-        location: "Gençlik Merkezi",
-        summary: "Fotoğraflar ve el yazılarıyla kişiselleştirilen özel anı defteri tasarımı.",
-        participantCount: 28,
-        rotation: "rotate-2",
-        pinColor: "text-[#0A5C3A]",
-      },
-    ],
-  });
+      const isLeader = mem.role === "Başkan";
 
-  // 7. Raporlar (Reports)
-  await prisma.report.createMany({
-    data: [
-      {
-        title: "2026 Gençlik Katılımı ve Üretim Kültürü Raporu",
-      },
-      {
-        title: "2025 Sivil Toplum & Gençlik Ekosistemi Değerlendirmesi",
-      },
-    ],
-  });
+      await prisma.teamMembership.upsert({
+        where: {
+          memberId_teamId: {
+            memberId: profile.id,
+            teamId: teamObj.id,
+          },
+        },
+        update: {
+          roleTitle: mem.role,
+          subRole: (mem as any).subRole || null,
+          isLeader: isLeader,
+        },
+        create: {
+          memberId: profile.id,
+          teamId: teamObj.id,
+          roleTitle: mem.role,
+          subRole: (mem as any).subRole || null,
+          isLeader: isLeader,
+        },
+      });
 
-  // 8. Dergiler (Magazines)
-  await prisma.magazine.createMany({
-    data: [
-      {
-        title: "N'apsak? Dergi Sayı 01 - Gençlik & Gelecek",
-      },
-      {
-        title: "N'apsak? Dergi Sayı 02 - Teknoloji & Sanat",
-      },
-    ],
-  });
+      // Eğer Ekip Başkanı ise Team.leaderId de güncellensin
+      if (isLeader) {
+        await prisma.team.update({
+          where: { id: teamObj.id },
+          data: { leaderId: profile.id },
+        });
+        console.log(`👑 ${teamObj.title} Başkanı olarak atandı: ${profile.name}`);
+      }
+    }
+  }
 
-  // 9. Mesajlar (Messages)
-  await prisma.message.createMany({
-    data: [
-      {
-        name: "Ahmet Yıldız",
-        email: "ahmet.yildiz@gmail.com",
-        phone: "0533 999 88 77",
-        subject: "Sponsorluk ve İş Birliği",
-        category: "İş Birliği",
-        content: "Topluluğunuzun önümüzdeki zirve projesinde sponsor olmak istiyoruz.",
-        isRead: false,
-      },
-      {
-        name: "Selin Şahin",
-        email: "selin.sahin@hotmail.com",
-        phone: "0542 555 11 22",
-        subject: "Gönüllü Katılımı",
-        category: "Genel",
-        content: "Gönüllü ekibinize katılmak için detaylı bilgi alabilir miyim?",
-        isRead: true,
-      },
-    ],
-  });
+  // 3. Doğrulama Sayıları
+  const teamCount = await prisma.team.count();
+  const memberCount = await prisma.memberProfile.count();
+  const membershipCount = await prisma.teamMembership.count();
 
-  console.log("✅ Veritabanı örnek verilerle (Seed) başarıyla dolduruldu!");
+  console.log("\n📊 SEED TAMAMLANDI VERİTABANI DOĞRULAMA:");
+  console.log(`- Toplam Ekip Sayısı: ${teamCount}`);
+  console.log(`- Toplam Üye Profili Sayısı: ${memberCount}`);
+  console.log(`- Toplam Üyelik İlişkisi Sayısı: ${membershipCount}`);
 }
 
 main()
-  .catch((error) => {
-    console.error("❌ Seed sırasında hata oluştu:", error);
+  .catch((e) => {
+    console.error("❌ Seed Hatası:", e);
     process.exit(1);
   })
   .finally(async () => {

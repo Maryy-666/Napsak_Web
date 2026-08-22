@@ -51,6 +51,7 @@ export interface AdminTeamMember {
   role: string;
   avatar: string;
   joinedDate: string;
+  isLeader?: boolean;
 }
 
 export interface AdminTeamItem {
@@ -274,15 +275,19 @@ type TeamFormData = z.infer<typeof teamFormSchema>;
 // ==========================================
 
 import { TeamsRepository } from "../../../lib/teamsStore";
+import { MembersRepository } from "../../../lib/membersStore";
+import { PublicMember } from "../../../data/members";
 
 export default function AdminEkiplerPage() {
   const { isDark } = useAdminTheme();
 
   // State Yönetimi (Database & Store)
   const [teams, setTeams] = useState<AdminTeamItem[]>(INITIAL_MOCK_TEAMS);
+  const [availableMembers, setAvailableMembers] = useState<PublicMember[]>([]);
 
-  useEffect(() => {
-    TeamsRepository.fetchTeamsFromDB().then((data) => {
+  const loadData = async () => {
+    try {
+      const data = await TeamsRepository.fetchTeamsFromDB();
       if (Array.isArray(data) && data.length > 0) {
         const formatted: AdminTeamItem[] = data.map((t: any, idx: number) => ({
           id: t.id || t.slug,
@@ -304,7 +309,16 @@ export default function AdminEkiplerPage() {
         }));
         setTeams(formatted);
       }
-    });
+
+      const mems = await MembersRepository.fetchMembersFromDB();
+      setAvailableMembers(mems);
+    } catch (err) {
+      console.error("Ekipler/Üyeler yüklenirken hata:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -559,12 +573,13 @@ export default function AdminEkiplerPage() {
 
     const updatedTeam: AdminTeamItem = {
       ...selectedDetailTeam,
-      memberCount: selectedDetailTeam.memberCount + 1,
+      memberCount: selectedDetailTeam.membersList ? selectedDetailTeam.membersList.length + 1 : 1,
       membersList: [...(selectedDetailTeam.membersList || []), newMember],
     };
 
     setSelectedDetailTeam(updatedTeam);
     setTeams((prev) => prev.map((t) => (t.id === updatedTeam.id ? updatedTeam : t)));
+    TeamsRepository.updateTeam(selectedDetailTeam.id, { membersList: updatedTeam.membersList as any });
 
     setNewMemberName("");
     setNewMemberRole("");
@@ -573,15 +588,16 @@ export default function AdminEkiplerPage() {
   const handleRemoveMemberPreview = (memberId: string) => {
     if (!selectedDetailTeam) return;
 
-    const updatedList = (selectedDetailTeam.membersList || []).filter((m) => m.id !== memberId);
+    const updatedList = (selectedDetailTeam.membersList || []).filter((m) => m.id !== memberId && (m as any).externalId !== memberId);
     const updatedTeam: AdminTeamItem = {
       ...selectedDetailTeam,
-      memberCount: Math.max(0, selectedDetailTeam.memberCount - 1),
+      memberCount: Math.max(0, updatedList.length),
       membersList: updatedList,
     };
 
     setSelectedDetailTeam(updatedTeam);
     setTeams((prev) => prev.map((t) => (t.id === updatedTeam.id ? updatedTeam : t)));
+    TeamsRepository.updateTeam(selectedDetailTeam.id, { membersList: updatedList as any });
   };
 
   // Auto slug generation from title
@@ -962,22 +978,27 @@ export default function AdminEkiplerPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* LİDER ADI */}
+            {/* LİDER SEÇİMİ */}
             <div>
               <label className={`block font-bold mb-1 ${isDark ? "text-slate-200" : "text-[#0F1115]"}`}>
-                Ekip Lideri Adı <span className="text-rose-500">*</span>
+                Ekip Başkanı / Lider Seçimi <span className="text-rose-500">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 value={formData.leaderName}
                 onChange={(e) => setFormData((prev) => ({ ...prev, leaderName: e.target.value }))}
-                placeholder="Örn: Ahmet Yılmaz"
-                className={`w-full h-10 px-3 rounded-xl border outline-none font-medium transition-all ${
+                className={`w-full h-10 px-3 rounded-xl border outline-none font-medium transition-all cursor-pointer ${
                   isDark
                     ? "bg-[#141C2E] border-slate-800 text-slate-100 focus:border-[#0A5C3A]"
                     : "bg-slate-50 border-slate-200 text-[#0F1115] focus:border-[#0A5C3A]"
                 }`}
-              />
+              >
+                <option value="">-- Mevcut Üyelerden Seçin --</option>
+                {availableMembers.map((m) => (
+                  <option key={m.id} value={m.name}>
+                    {m.name} ({m.primaryTeam} - {m.primaryRole})
+                  </option>
+                ))}
+              </select>
               {formErrors.leaderName && <p className="text-rose-500 font-medium text-[11px] mt-1">{formErrors.leaderName}</p>}
             </div>
 
@@ -1385,10 +1406,17 @@ export default function AdminEkiplerPage() {
                           <Image src={m.avatar} alt={m.name} fill className="object-cover" />
                         </div>
                         <div>
-                          <span className={`font-bold text-xs block ${isDark ? "text-slate-200" : "text-[#0F1115]"}`}>
-                            {m.name}
-                          </span>
-                          <span className={`text-[10px] block ${isDark ? "text-slate-400" : "text-[#5F6773]"}`}>
+                          <div className="flex items-center gap-1">
+                            <span className={`font-bold text-xs block ${isDark ? "text-slate-200" : "text-[#0F1115]"}`}>
+                              {m.name}
+                            </span>
+                            {(m.isLeader || (m.role && m.role.toLowerCase().includes("sorumlus"))) && (
+                              <span className="px-1.5 py-0.2 rounded bg-[#0A5C3A] text-white text-[9px] font-black uppercase">
+                                ★ SORUMLU
+                              </span>
+                            )}
+                          </div>
+                          <span className={`text-[10.5px] block font-semibold ${isDark ? "text-slate-400" : "text-[#0A5C3A]"}`}>
                             {m.role} • {m.joinedDate}
                           </span>
                         </div>

@@ -10,18 +10,29 @@ import {
   Pause,
   Play,
 } from "lucide-react";
-import { TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
+import { TEAMS_DATA, TEAM_ICONS, TeamData } from "../../data/teams";
+import { TeamsRepository } from "../../lib/teamsStore";
 
 export const TeamCarousel: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
+  const [teamsList, setTeamsList] = useState<TeamData[]>(TEAMS_DATA);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    TeamsRepository.fetchTeamsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setTeamsList(data.filter((t) => t.status !== "Pasif"));
+      }
+    });
+  }, []);
+
   const requestRef = useRef<number | null>(null);
-  const totalTeams = TEAMS_DATA.length;
-  const angleStep = 360 / totalTeams; // 72 degrees per card
+  const activeTeamsList = teamsList.length > 0 ? teamsList : TEAMS_DATA;
+  const totalTeams = activeTeamsList.length;
+  const angleStep = 360 / Math.max(1, totalTeams);
 
   // Check screen width for mobile fallback
   useEffect(() => {
@@ -221,8 +232,8 @@ export const TeamCarousel: React.FC = () => {
           className="relative w-full h-full flex items-center justify-center"
           style={{ transformStyle: "preserve-3d" }}
         >
-          {TEAMS_DATA.map((team, idx) => {
-            const IconComp = TEAM_ICONS[team.iconName];
+          {activeTeamsList.map((team, idx) => {
+            const IconComp = TEAM_ICONS[team.iconName] || TEAM_ICONS["cpu"];
 
             // Compute exact angle on 360-degree cylinder
             const cardAngle = (rotationAngle + idx * angleStep) % 360;

@@ -9,6 +9,8 @@ datasource db {
 
 enum Role {
   USER
+  MEMBER
+  TEAM_LEADER
   ADMIN
 }
 
@@ -27,9 +29,76 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
+  profile             MemberProfile?
   applications        Application[]
   sessions            Session[]
   passwordResetTokens PasswordResetToken[]
+}
+
+model MemberProfile {
+  id          Int      @id @default(autoincrement())
+  externalId  String   @unique @default(uuid())
+  userId      Int?     @unique
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name        String
+  initials    String
+  primaryTeam String
+  primaryRole String
+  bio         String?
+  avatar      String?
+  linkedin    String?
+  city        String?
+  school      String?
+  department  String?
+  isPresident Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships TeamMembership[]
+  ledTeams    Team[]           @relation("TeamLeader")
+}
+
+model Team {
+  id                   Int              @id @default(autoincrement())
+  externalId           String           @unique
+  slug                 String           @unique
+  title                String
+  shortDescription     String
+  about                String
+  iconName             String           @default("cpu")
+  bgImage              String
+  structure            String
+  focusAreas           String[]         @default([])
+  whatWeDo             String[]         @default([])
+  featuredSectionImage String?
+  galleryTitle         String?
+  gallery              Json?
+  displayOrder         Int              @default(0)
+  isActive             Boolean          @default(true)
+
+  leaderId             Int?
+  leader               MemberProfile?   @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+
+  memberships          TeamMembership[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+}
+
+model TeamMembership {
+  id        Int           @id @default(autoincrement())
+  memberId  Int
+  teamId    Int
+  roleTitle String
+  subRole   String?
+  isLeader  Boolean       @default(false)
+  sortOrder Int           @default(0)
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  member    MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  team      Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, teamId])
 }
 
 model Application {
@@ -56,21 +125,29 @@ model Message {
 }
 
 model Event {
-  id             Int       @id @default(autoincrement())
-  title          String
-  description    String?
-  category       String?
-  location       String?
-  status         String?   @default("Yaklaşan")
-  image          String?
-  capacity       Int?
-  targetAudience String?
-  startDate      DateTime
-  endDate        DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id                   Int                @id @default(autoincrement())
+  slug                 String?            @unique
+  title                String
+  shortDescription     String?
+  description          String?
+  content              String?
+  category             String?
+  location             String?
+  status               String?            @default("Yaklaşan")
+  publicationStatus    String             @default("PUBLISHED")
+  image                String?
+  capacity             Int?
+  targetAudience       String?
+  isFeatured           Boolean            @default(false)
+  registrationEnabled  Boolean            @default(true)
+  registrationDeadline DateTime?
+  displayOrder         Int                @default(0)
+  startDate            DateTime
+  endDate              DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
-  eventApplications EventApplication[]
+  eventApplications    EventApplication[]
 }
 
 model EventApplication {
@@ -92,11 +169,14 @@ model EventApplication {
 
 model Activity {
   id                   Int      @id @default(autoincrement())
+  slug                 String?  @unique
   type                 String   @default("polaroid")
   title                String
   category             String   @default("Genel")
   team                 String   @default("N'apsak Ekibi")
   status               String   @default("Devam Eden")
+  publicationStatus    String   @default("PUBLISHED")
+  isFeatured           Boolean  @default(false)
   date                 String?
   location             String?
   summary              String?
@@ -121,50 +201,31 @@ model Activity {
   updatedAt            DateTime @updatedAt
 }
 
-model Member {
-  id          Int      @id @default(autoincrement())
-  externalId  String   @unique
-  name        String
-  initials    String
-  primaryTeam String
-  primaryRole String
-  memberships Json
-  isPresident Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Team {
-  id                   Int      @id @default(autoincrement())
-  externalId           String   @unique
-  slug                 String   @unique
-  title                String
-  shortDescription     String
-  iconName             String   @default("cpu")
-  bgImage              String
-  about                String
-  focusAreas           String[] @default([])
-  whatWeDo             String[] @default([])
-  structure            String
-  featuredSectionImage String?
-  galleryTitle         String?
-  gallery              Json?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-}
-
 model Report {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  title         String
+  category      String?
+  summary       String?
+  fileName      String?
+  fileSize      String?
+  pdfUrl        String?
+  readCount     Int      @default(0)
+  downloadCount Int      @default(0)
+  publishDate   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Magazine {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String
+  issueNumber String?
+  pages       Int      @default(36)
+  publishDate String?
+  readCount   Int      @default(0)
+  pdfUrl      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Session {

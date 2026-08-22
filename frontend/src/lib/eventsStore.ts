@@ -2,19 +2,30 @@
 
 export interface EventItem {
   id: string;
+  slug?: string;
   title: string;
-  category: "teknoloji" | "sanat" | "cevre-saglik" | "programlar";
-  categoryLabel: string;
+  category: "teknoloji" | "sanat" | "cevre-saglik" | "programlar" | string;
+  categoryLabel?: string;
   date: string;
-  time: string;
+  time?: string;
   location: string;
-  status: "aktif" | "gecmis" | "taslak";
+  status: "aktif" | "gecmis" | "taslak" | "Yaklaşan" | "Geçmiş" | "Devam Ediyor" | string;
+  publicationStatus?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   partner?: string;
   quota?: number;
   appliedCount: number;
   description: string;
+  shortDescription?: string;
+  content?: string;
   coverImage?: string;
+  image?: string;
   badge?: string;
+  isFeatured?: boolean;
+  registrationEnabled?: boolean;
+  registrationDeadline?: string;
+  capacity?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface EventApplication {
@@ -134,24 +145,36 @@ export const EventsRepository = {
     return eventsStore;
   },
 
-  async fetchEventsFromDB(): Promise<EventItem[]> {
+  async fetchEventsFromDB(statusFilter?: string): Promise<EventItem[]> {
     try {
-      const res = await fetch("/api/events", { cache: "no-store" });
+      const url = statusFilter ? `/api/events?status=${statusFilter}` : "/api/events";
+      const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
           const dbEvents: EventItem[] = json.data.map((item: any) => ({
             id: String(item.id),
+            slug: item.slug || String(item.id),
             title: item.title,
-            category: (item.category as any) || "programlar",
+            category: item.category || "programlar",
             categoryLabel: item.category === "teknoloji" ? "Teknoloji & İnovasyon" : "Programlar & Sosyal",
             date: item.startDate ? new Date(item.startDate).toLocaleDateString("tr-TR") : "",
             time: "14:00",
             location: item.location || "Belirtilmedi",
-            status: item.status || "aktif",
+            status: item.status || "Yaklaşan",
+            publicationStatus: item.publicationStatus || "PUBLISHED",
+            shortDescription: item.shortDescription || item.description || "",
             description: item.description || "",
-            appliedCount: item.capacity || 0,
-            coverImage: item.image || undefined,
+            content: item.content || item.description || "",
+            appliedCount: item.appliedCount || 0,
+            capacity: item.capacity || 100,
+            coverImage: item.image || item.coverImage || undefined,
+            image: item.image || item.coverImage || undefined,
+            isFeatured: Boolean(item.isFeatured),
+            registrationEnabled: item.registrationEnabled !== undefined ? Boolean(item.registrationEnabled) : true,
+            registrationDeadline: item.registrationDeadline || undefined,
+            startDate: item.startDate || undefined,
+            endDate: item.endDate || undefined,
           }));
 
           eventsStore.length = 0;

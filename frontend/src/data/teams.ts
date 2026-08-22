@@ -34,6 +34,9 @@ export interface TeamData {
   featuredSectionImage?: string;
   galleryTitle?: string;
   gallery?: TeamGalleryItem[];
+  status?: "Aktif" | "Pasif";
+  displayOrder?: number;
+  membersList?: any[];
 }
 
 export const TEAM_ICONS: Record<TeamIconKey, LucideIcon> = {

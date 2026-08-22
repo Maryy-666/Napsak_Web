@@ -1,16 +1,7 @@
 import { Router } from "express";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client.js";
+import prisma from "../db.js";
 
 const router = Router();
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const prisma = new PrismaClient({
-  adapter,
-});
 
 // Tüm etkinlik başvurularını getir - HERKES / ADMIN
 router.get("/", async (req, res) => {
