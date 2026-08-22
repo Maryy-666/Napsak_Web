@@ -192,28 +192,37 @@ router.post("/upload", authenticate, requireAdmin, upload.single("file"), async 
     // Extract image dimensions
     const dimensions = getImageDimensions(file.buffer, file.mimetype);
 
-    // Save Media record in DB
-    const mediaRecord = await prisma.media.create({
-      data: {
-        filename: sanitizedName,
-        originalName: file.originalname,
-        mimeType: file.mimetype,
-        size: file.size,
-        url: uploadResult.url,
-        folder: folderInput,
-        storageKey: uploadResult.key,
-        provider: uploadResult.provider,
-        width: dimensions.width,
-        height: dimensions.height,
-        title: req.body.title || path.basename(file.originalname, ext),
-        altText: req.body.altText || null,
-      },
-    });
+    // Save Media record in DB (with orphan file cleanup if DB save fails)
+    let mediaRecord;
+    try {
+      mediaRecord = await prisma.media.create({
+        data: {
+          filename: sanitizedName,
+          originalName: file.originalname,
+          mimeType: file.mimetype,
+          size: file.size,
+          url: uploadResult.url,
+          folder: folderInput,
+          storageKey: uploadResult.key,
+          provider: uploadResult.provider,
+          width: dimensions.width,
+          height: dimensions.height,
+          title: req.body.title || path.basename(file.originalname, ext),
+          altText: req.body.altText || null,
+        },
+      });
+    } catch (dbError) {
+      if (uploadResult?.key) {
+        console.warn(`Veritabanı kaydı başarısız oldu. Yüklenen medya temizleniyor: ${uploadResult.key}`);
+        await storageProvider.delete(uploadResult.key).catch(() => null);
+      }
+      throw dbError;
+    }
 
     res.status(201).json(mediaRecord);
   } catch (error: any) {
     console.error("POST /media/upload error:", error);
-    res.status(500).json({ message: "Dosya yüklenirken bir hata oluştu." });
+    res.status(500).json({ message: error?.message || "Dosya yüklenirken bir hata oluştu." });
   }
 });
 
@@ -364,6 +373,35 @@ router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
     });
     if (magazines.length > 0) {
       usageDetails.push(`Dergiler: ${magazines.map((m) => m.title).join(", ")}`);
+    }
+
+    // 8. News
+    const newsList = await prisma.news.findMany({
+      where: {
+        OR: [
+          { coverImage: targetUrl },
+          { coverImage: { contains: filename } },
+          { content: { contains: filename } },
+        ],
+      },
+      select: { title: true },
+    });
+    if (newsList.length > 0) {
+      usageDetails.push(`Haberler: ${newsList.map((n) => n.title).join(", ")}`);
+    }
+
+    // 9. HomepageHero
+    const heroes = await prisma.homepageHero.findMany({
+      where: {
+        OR: [
+          { imageUrl: targetUrl },
+          { imageUrl: { contains: filename } },
+        ],
+      },
+      select: { title: true },
+    });
+    if (heroes.length > 0) {
+      usageDetails.push(`Ana Sayfa Hero: ${heroes.map((h) => h.title).join(", ")}`);
     }
 
     // If media is used in any content, block deletion

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import prisma from "../db.js";
-import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { authenticate, requireAdmin, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -150,7 +150,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // CREATE MEMBER
-router.post("/", async (req, res) => {
+router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const body = req.body;
     const externalId = body.id || `m-${Date.now()}`;
@@ -257,9 +257,9 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE MEMBER
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const externalId = req.params.id;
+    const externalId = String(req.params.id);
     const body = req.body;
 
     const existingMember = await prisma.memberProfile.findFirst({
@@ -360,9 +360,9 @@ router.patch("/:id", async (req, res) => {
 });
 
 // DELETE MEMBER (Deletes MemberProfile & TeamMemberships in transaction, preserves User record!)
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const externalId = req.params.id;
+    const externalId = String(req.params.id);
 
     const existingMember = await prisma.memberProfile.findFirst({
       where: {

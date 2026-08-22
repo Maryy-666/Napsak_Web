@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export interface StorageUploadResult {
   url: string;
@@ -74,14 +75,48 @@ export class LocalStorageProvider implements StorageProvider {
 }
 
 export class S3StorageProvider implements StorageProvider {
+  private client: S3Client;
   private bucket: string;
-  private region: string;
-  private publicUrl: string;
+  private publicUrl?: string;
 
   constructor() {
-    this.bucket = process.env.S3_BUCKET || "napsak-media";
-    this.region = process.env.S3_REGION || "auto";
-    this.publicUrl = process.env.S3_PUBLIC_URL || "https://media.napsak.org";
+    const accessKeyId = process.env.S3_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
+    const bucket = process.env.S3_BUCKET;
+    const region = process.env.S3_REGION || "auto";
+    const endpoint = process.env.S3_ENDPOINT;
+
+    if (!accessKeyId || !secretAccessKey || !bucket) {
+      throw new Error(
+        "S3 Configuration Error: S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, and S3_BUCKET environment variables are required when STORAGE_PROVIDER=s3."
+      );
+    }
+
+    this.bucket = bucket;
+    this.publicUrl = process.env.S3_PUBLIC_URL ? process.env.S3_PUBLIC_URL.replace(/\/+$/, "") : undefined;
+
+    this.client = new S3Client({
+      region,
+      endpoint: endpoint || undefined,
+      credentials: {
+        accessKeyId,
+        secretAccessKey,
+      },
+      forcePathStyle: Boolean(endpoint && !endpoint.includes("amazonaws.com")),
+    });
+  }
+
+  getPublicUrl(key: string): string {
+    const cleanKey = key.replace(/^\/+/, "");
+    if (this.publicUrl) {
+      return `${this.publicUrl}/${cleanKey}`;
+    }
+    const endpoint = process.env.S3_ENDPOINT;
+    if (endpoint) {
+      const cleanEndpoint = endpoint.replace(/\/+$/, "");
+      return `${cleanEndpoint}/${this.bucket}/${cleanKey}`;
+    }
+    return `https://${this.bucket}.s3.${process.env.S3_REGION || "us-east-1"}.amazonaws.com/${cleanKey}`;
   }
 
   async upload(
@@ -90,10 +125,20 @@ export class S3StorageProvider implements StorageProvider {
     mimeType: string,
     folder: string = "general"
   ): Promise<StorageUploadResult> {
-    const key = `${folder}/${filename}`;
-    // When production S3 credentials are set via env, S3 SDK calls upload here.
-    // Falls back gracefully to publicUrl constructing key.
-    const url = `${this.publicUrl}/${key}`;
+    const cleanFolder = folder.replace(/^\/+|\/+$/g, "");
+    const key = cleanFolder ? `${cleanFolder}/${filename}` : filename;
+
+    const command = new PutObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+      Body: fileBuffer,
+      ContentType: mimeType,
+      ContentLength: fileBuffer.length,
+    });
+
+    await this.client.send(command);
+
+    const url = this.getPublicUrl(key);
 
     return {
       url,
@@ -103,11 +148,18 @@ export class S3StorageProvider implements StorageProvider {
   }
 
   async delete(key: string): Promise<boolean> {
-    return true;
-  }
-
-  getPublicUrl(key: string): string {
-    return `${this.publicUrl}/${key}`;
+    try {
+      const cleanKey = key.replace(/^\/+/, "");
+      const command = new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: cleanKey,
+      });
+      await this.client.send(command);
+      return true;
+    } catch (error) {
+      console.error(`S3StorageProvider.delete error for key ${key}:`, error);
+      return false;
+    }
   }
 }
 

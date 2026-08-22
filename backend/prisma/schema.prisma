@@ -82,6 +82,9 @@ model Team {
   memberships          TeamMembership[]
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @updatedAt
+
+  @@index([leaderId])
+  @@index([displayOrder])
 }
 
 model TeamMembership {
@@ -99,6 +102,8 @@ model TeamMembership {
   team      Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@unique([memberId, teamId])
+  @@index([memberId])
+  @@index([teamId])
 }
 
 model Application {
@@ -110,6 +115,8 @@ model Application {
   updatedAt DateTime          @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Message {
@@ -148,6 +155,9 @@ model Event {
   updatedAt            DateTime           @updatedAt
 
   eventApplications    EventApplication[]
+
+  @@index([publicationStatus])
+  @@index([startDate])
 }
 
 model EventApplication {
@@ -165,6 +175,8 @@ model EventApplication {
   status     String   @default("Beklemede")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@index([eventId])
 }
 
 model Activity {
@@ -199,35 +211,53 @@ model Activity {
   outcomes             String[] @default([])
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  @@index([publicationStatus])
 }
 
 model Report {
-  id            Int      @id @default(autoincrement())
-  title         String
-  category      String?
-  summary       String?
-  fileName      String?
-  fileSize      String?
-  pdfUrl        String?
-  coverImage    String?
-  readCount     Int      @default(0)
-  downloadCount Int      @default(0)
-  publishDate   String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  slug              String?  @unique
+  title             String
+  category          String?
+  summary           String?
+  description       String?
+  fileName          String?
+  fileSize          String?
+  pdfUrl            String?
+  coverImage        String?
+  readCount         Int      @default(0)
+  downloadCount     Int      @default(0)
+  publishDate       String?
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([displayOrder])
 }
 
 model Magazine {
-  id          Int      @id @default(autoincrement())
-  title       String
-  issueNumber String?
-  pages       Int      @default(36)
-  publishDate String?
-  readCount   Int      @default(0)
-  pdfUrl      String?
-  coverImage  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  slug              String?  @unique
+  title             String
+  issueNumber       String?
+  description       String?
+  pages             Int      @default(36)
+  publishDate       String?
+  readCount         Int      @default(0)
+  pdfUrl            String?
+  coverImage        String?
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([displayOrder])
 }
 
 model Session {
@@ -238,6 +268,8 @@ model Session {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model PasswordResetToken {
@@ -249,6 +281,8 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Page {
@@ -268,6 +302,8 @@ model Page {
   updatedAt         DateTime         @updatedAt
 
   navigationItems   NavigationItem[]
+
+  @@index([publicationStatus])
 }
 
 model NavigationItem {
@@ -286,6 +322,10 @@ model NavigationItem {
   openInNewTab Boolean          @default(false)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+
+  @@index([pageId])
+  @@index([parentId])
+  @@index([location])
 }
 
 model Media {
@@ -305,4 +345,60 @@ model Media {
   deletedAt    DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  @@index([folder])
+  @@index([deletedAt])
+}
+
+model News {
+  id                Int      @id @default(autoincrement())
+  slug              String   @unique
+  title             String
+  summary           String?
+  content           String   @default("")
+  coverImage        String?
+  category          String?  @default("Duyuru")
+  publishDate       String?
+  readTime          String?  @default("3 dk")
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  quoteText         String?
+  quoteAuthor       String?
+  quoteTitle        String?
+  images            String[] @default([])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([isFeatured])
+  @@index([displayOrder])
+  @@index([createdAt])
+}
+
+model HomepageHero {
+  id               Int      @id @default(autoincrement())
+  badge            String?  @default("Gençlik Topluluğu")
+  title            String
+  highlightText    String?
+  description      String
+  primaryCtaText   String?  @default("Ekiplerimizi Keşfet")
+  primaryCtaLink   String?  @default("/ekipler")
+  secondaryCtaText String?  @default("Bize Katıl")
+  secondaryCtaLink String?  @default("/katilim")
+  imageUrl         String?
+  displayOrder     Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model HomepageConfig {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  content   Json
+  updatedAt DateTime @updatedAt
 }

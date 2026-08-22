@@ -1,18 +1,42 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Badge, PageContainer } from "../ui";
+import { HomepageRepository, HomepageHeroItem } from "../../lib/homepageStore";
 
 export const HeroSection: React.FC = () => {
+  const [heroSlide, setHeroSlide] = useState<HomepageHeroItem | null>(null);
+
+  useEffect(() => {
+    HomepageRepository.fetchHeroSlidesFromDB().then((slides) => {
+      if (Array.isArray(slides) && slides.length > 0) {
+        setHeroSlide(slides[0]);
+      }
+    });
+  }, []);
+
+  const badgeText = heroSlide?.badge || "Keşke Demek Yerine: N'apsak?";
+  const title = heroSlide?.title || "N'apsak? Gençlik Topluluğu";
+  const highlight = heroSlide?.highlightText || "Keşke.. diyenlerin değil, N'apsak? deyip harekete geçenlerin topluluğuyuz.";
+  const description =
+    heroSlide?.description ||
+    "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.";
+  const primaryCtaText = heroSlide?.primaryCtaText || "Çalışma Ekiplerimiz";
+  const primaryCtaLink = heroSlide?.primaryCtaLink || "/ekipler";
+  const secondaryCtaText = heroSlide?.secondaryCtaText || "Topluluğa Katıl";
+  const secondaryCtaLink = heroSlide?.secondaryCtaLink || "/katilim";
+  const bgImage = heroSlide?.imageUrl || "/images/forest-hero.jpg";
+
   return (
     <section className="relative w-full h-[100vh] min-h-[100vh] h-[100svh] min-h-[100svh] pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-start overflow-hidden bg-[#07452C]">
       {/* Forest Hero Background Image - Full Viewport Cover */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <img
-          src="/images/forest-hero.jpg"
-          alt="N'apsak? Orman Arka Planı"
+          src={bgImage}
+          alt={title}
           className="w-full h-full object-cover object-center"
         />
         {/* Dark/Green Overlay for text contrast */}
@@ -29,23 +53,40 @@ export const HeroSection: React.FC = () => {
         >
           {/* Badge */}
           <Badge variant="brand" size="md" className="!bg-white/15 !text-white !border-white/25 mb-4 sm:mb-5 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> 2025'ten Beri Harekete Geçenler
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {badgeText}
           </Badge>
 
           {/* Title */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-headings select-none leading-[1.15] mb-4">
-            N'apsak? Gençlik Topluluğu
+            {title}
           </h1>
 
           {/* Main Message Slogan */}
           <p className="text-base sm:text-lg lg:text-xl text-[#EEF7F3] font-semibold font-sans italic leading-relaxed mb-3 select-none">
-            “Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.
+            “{highlight}”
           </p>
 
           {/* Supporting Description Text */}
-          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none">
-            Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.
+          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none mb-6">
+            {description}
           </p>
+
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={primaryCtaLink}
+              className="px-5 py-3 rounded-full bg-[#0A5C3A] hover:bg-[#084A2F] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2"
+            >
+              <span>{primaryCtaText}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href={secondaryCtaLink}
+              className="px-5 py-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs sm:text-sm font-bold transition-all"
+            >
+              <span>{secondaryCtaText}</span>
+            </Link>
+          </div>
         </motion.div>
       </PageContainer>
     </section>

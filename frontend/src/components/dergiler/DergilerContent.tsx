@@ -16,6 +16,8 @@ import { MagazineShowcaseSlider } from "./MagazineShowcaseSlider";
 import { MagazineReaderModal } from "./MagazineReaderModal";
 import { downloadMagazinePdf } from "../../lib/pdfExporter";
 
+import { MagazinesRepository } from "../../lib/magazinesStore";
+
 export type MagazineIssue = {
   id: string;
   issueNumber: string;
@@ -27,6 +29,8 @@ export type MagazineIssue = {
   articles: string[];
   pages: number;
   fileSize: string;
+  pdfUrl?: string | null;
+  coverImage?: string | null;
   featured?: boolean;
   editorialNote: string;
   contributors: string[];
@@ -210,11 +214,47 @@ const CATEGORIES = [
 ];
 
 export default function DergilerContent() {
+  const [magazinesList, setMagazinesList] = useState<MagazineIssue[]>(MAGAZINES);
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [query, setQuery] = useState("");
   const [selectedIssue, setSelectedIssue] = useState<MagazineIssue | null>(null);
   const [readingIssue, setReadingIssue] = useState<MagazineIssue | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    MagazinesRepository.fetchMagazinesFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setMagazinesList(
+          data.map((m: any) => ({
+            id: String(m.id),
+            issueNumber: m.issueNumber || "Sayı #",
+            title: m.title,
+            category: "Genel",
+            period: m.publishDate || "2026",
+            publishDate: m.publishDate || "2026",
+            summary: m.description || m.summary || "Dergi sayısı.",
+            articles: ["Dergiden öne çıkan konular", "Yayın Kurulu Notu"],
+            pages: m.pages || 36,
+            fileSize: "5.0 MB",
+            pdfUrl: m.pdfUrl,
+            coverImage: m.coverImage,
+            editorialNote: m.description || "Dergi sayısı.",
+            contributors: ["N'apsak? Yayın Kurulu"],
+            readCount: m.readCount || 0,
+            downloadCount: 0,
+            coverStyle: {
+              bgGradient: "from-[#0A5C3A] via-[#0E7A4D] to-[#08472D]",
+              textColor: "text-white",
+              subtitleColor: "text-[#0A5C3A]",
+              badgeBg: "bg-[#0A5C3A]",
+              badgeText: "text-white",
+              borderFrame: "border-[#0A5C3A]/30",
+            },
+          }))
+        );
+      }
+    });
+  }, []);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -232,7 +272,7 @@ export default function DergilerContent() {
   const filteredMagazines = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return MAGAZINES.filter((mag) => {
+    return magazinesList.filter((mag) => {
       const matchesCategory =
         activeCategory === "Tümü" || mag.category === activeCategory;
       const matchesQuery =
@@ -243,7 +283,7 @@ export default function DergilerContent() {
 
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, magazinesList]);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -251,6 +291,11 @@ export default function DergilerContent() {
   };
 
   const handleDownloadPDF = (mag: MagazineIssue) => {
+    if (mag.pdfUrl) {
+      window.open(mag.pdfUrl, "_blank");
+      triggerToast(`"${mag.issueNumber} - ${mag.title}" PDF dergisi açılıyor...`);
+      return;
+    }
     try {
       downloadMagazinePdf({
         id: mag.id,

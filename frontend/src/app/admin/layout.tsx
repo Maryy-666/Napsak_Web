@@ -47,6 +47,8 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { title: "Genel Bakış", href: "/admin", icon: LayoutDashboard, badge: null, published: true },
       { title: "Medya Kütüphanesi", href: "/admin/medya", icon: ImageIcon, badge: "Media CMS", published: true },
+      { title: "Ana Sayfa CMS", href: "/admin/anasayfa", icon: LayoutDashboard, badge: "Hero & Stats", published: true },
+      { title: "Haber Yönetimi", href: "/admin/haberler", icon: Newspaper, badge: "News CMS", published: true },
       { title: "Sayfa Yönetimi", href: "/admin/sayfalar", icon: FileText, badge: "Page CMS", published: true },
       { title: "Menü Yönetimi", href: "/admin/menuler", icon: Menu, badge: "Nav CMS", published: true },
       { title: "Faaliyetler (Pano)", href: "/admin/faaliyetler", icon: Pin, badge: "Pano", published: true },
@@ -55,6 +57,8 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
       { title: "Etkinlik Yönetimi", href: "/admin/etkinlikler", icon: Calendar, badge: "3 Aktif", published: true },
       { title: "Etkinlik Başvuruları", href: "/admin/etkinlik-basvurulari", icon: Ticket, badge: null, published: true },
       { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: null, published: true },
+      { title: "Rapor Yönetimi", href: "/admin/raporlar", icon: Newspaper, badge: "Reports", published: true },
+      { title: "Dergi Yönetimi", href: "/admin/dergiler", icon: FileText, badge: "Magazines", published: true },
       { title: "İçerik Yönetimi", href: "/admin/icerik", icon: FileText, badge: null, published: true },
     ],
   },

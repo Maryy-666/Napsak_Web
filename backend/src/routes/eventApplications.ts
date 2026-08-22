@@ -1,10 +1,12 @@
 import { Router } from "express";
 import prisma from "../db.js";
+import { authenticate, requireAdmin, AuthRequest } from "../middleware/auth.js";
+import { formLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
 
-// Tüm etkinlik başvurularını getir - HERKES / ADMIN
-router.get("/", async (req, res) => {
+// Tüm etkinlik başvurularını getir - SADECE ADMIN
+router.get("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const applications = await prisma.eventApplication.findMany({
       include: {
@@ -36,8 +38,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Yeni etkinlik başvurusu oluştur
-router.post("/", async (req, res) => {
+// Yeni etkinlik başvurusu oluştur (PUBLIC FORM RATE LIMITED)
+router.post("/", formLimiter, async (req, res) => {
   try {
     const {
       eventId,
@@ -118,8 +120,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Etkinlik başvurusu güncelle (Örn: Durum değişikliği)
-router.patch("/:id", async (req, res) => {
+// Etkinlik başvurusu güncelle (Örn: Durum değişikliği - SADECE ADMIN)
+router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const id = Number(req.params.id);
 
@@ -166,8 +168,8 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Etkinlik başvurusu sil
-router.delete("/:id", async (req, res) => {
+// Etkinlik başvurusu sil (SADECE ADMIN)
+router.delete("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const id = Number(req.params.id);
 

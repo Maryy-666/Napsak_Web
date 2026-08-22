@@ -171,7 +171,28 @@ export function ReportsContent() {
   useEffect(() => {
     ReportsRepository.fetchReportsFromDB().then((data) => {
       if (Array.isArray(data) && data.length > 0) {
-        setReportsList(data);
+        setReportsList(
+          data.map((r: any) => ({
+            id: String(r.id),
+            title: r.title,
+            category: r.category || "Gençlik & Katılım",
+            period: r.publishDate || "2026",
+            status: (r.publicationStatus === "PUBLISHED" ? "Yayınlandı" : "Hazırlanıyor") as ReportStatus,
+            summary: r.summary || r.description || "Rapor özeti.",
+            highlights: ["Araştırma Bulguları", "Saha Gözlemi"],
+            pages: r.pages || 42,
+            fileSize: r.fileSize || "4.8 MB",
+            publishDate: r.publishDate || "2026",
+            featured: r.isFeatured,
+            readCount: r.readCount || 0,
+            downloadCount: r.downloadCount || 0,
+            keyTakeaways: r.summary ? [r.summary] : ["Rapor bulgusu."],
+            tableOfContents: ["1. Giriş ve Araştırma Amacı", "2. Bulgular"],
+            methodology: r.description || "N'apsak? Gençlik Topluluğu araştırma yöntemi.",
+            pdfUrl: r.pdfUrl,
+            coverImage: r.coverImage,
+          }))
+        );
       }
     });
   }, []);

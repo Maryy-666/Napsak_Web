@@ -10,6 +10,7 @@ export interface MediaPickerModalProps {
   onClose: () => void;
   onSelect: (mediaUrl: string, mediaItem: MediaItem) => void;
   targetFolder?: string;
+  allowedType?: "all" | "image" | "pdf";
 }
 
 export function MediaPickerModal({
@@ -17,6 +18,7 @@ export function MediaPickerModal({
   onClose,
   onSelect,
   targetFolder = "all",
+  allowedType = "all",
 }: MediaPickerModalProps) {
   const [mediaList, setMediaList] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -96,7 +98,13 @@ export function MediaPickerModal({
             className="px-4 py-2 rounded-xl text-xs font-bold bg-[#0A5C3A] text-white hover:bg-[#084A2F] disabled:opacity-50 transition-all flex items-center gap-2"
           >
             <Check className="w-4 h-4" />
-            <span>Seçilen Görseli Kullan</span>
+            <span>
+              {allowedType === "pdf"
+                ? "Seçilen PDF'i Kullan"
+                : allowedType === "image"
+                ? "Seçilen Görseli Kullan"
+                : "Seçilen Medyayı Kullan"}
+            </span>
           </button>
         </>
       }
@@ -135,7 +143,7 @@ export function MediaPickerModal({
               <input
                 type="file"
                 className="hidden"
-                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf"
+                accept={allowedType === "pdf" ? "application/pdf" : allowedType === "image" ? "image/jpeg,image/png,image/webp,image/gif" : "image/jpeg,image/png,image/webp,image/gif,application/pdf"}
                 onChange={handleFileUpload}
                 disabled={uploading}
               />
@@ -161,7 +169,13 @@ export function MediaPickerModal({
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-[360px] overflow-y-auto p-1">
-            {mediaList.map((item) => {
+            {mediaList
+              .filter((item) => {
+                if (allowedType === "image") return item.mimeType.startsWith("image/");
+                if (allowedType === "pdf") return item.mimeType === "application/pdf";
+                return true;
+              })
+              .map((item) => {
               const isSelected = selectedMedia?.id === item.id;
               const isImage = item.mimeType.startsWith("image/");
 

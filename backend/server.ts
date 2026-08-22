@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client.js";
 
@@ -20,8 +21,14 @@ import magazinesRouter from "./src/routes/magazines.js";
 import pagesRouter from "./src/routes/pages.js";
 import navigationRouter from "./src/routes/navigation.js";
 import mediaRouter from "./src/routes/media.js";
+import newsRouter from "./src/routes/news.js";
+import homepageRouter from "./src/routes/homepage.js";
+import { globalLimiter, authLimiter, formLimiter } from "./src/middleware/rateLimiter.js";
 
 const app = express();
+
+// Configure Trust Proxy for reverse proxy / Vercel / Cloudflare IP resolution
+app.set("trust proxy", Number(process.env.TRUST_PROXY) || 1);
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -31,8 +38,35 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-app.use(cors());
+// Helmet Security Headers (safe defaults, allowing cross-origin image embedding)
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
+// Restricted CORS Configuration
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
+  : ["http://localhost:3000", "http://127.0.0.1:3000"];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS ihlali: Erişim reddedildi."));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+
+// Global Rate Limiter (Production-safe, 300 requests per 15 min per IP)
+app.use(globalLimiter);
 
 // Serve uploads folder statically
 app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
@@ -84,6 +118,20 @@ app.use("/magazines", magazinesRouter);
 app.use("/pages", pagesRouter);
 app.use("/navigation", navigationRouter);
 app.use("/media", mediaRouter);
+app.use("/news", newsRouter);
+app.use("/homepage", homepageRouter);
+
+// Global Secure Error Handler (prevents stack trace leakage in production)
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("UNHANDLED SERVER ERROR:", err);
+  const isProd = process.env.NODE_ENV === "production";
+  const statusCode = typeof err.status === "number" ? err.status : 500;
+  res.status(statusCode).json({
+    success: false,
+    error: isProd ? "Sunucu tarafında bir hata oluştu." : (err.message || "Sunucu tarafında bir hata oluştu."),
+    ...(isProd ? {} : { stack: err.stack }),
+  });
+});
 
 const PORT = 3001;
 

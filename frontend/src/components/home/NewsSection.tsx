@@ -13,15 +13,35 @@ import {
   Sparkles,
 } from "lucide-react";
 import { NEWS_DATA } from "../../data/news";
+import { NewsRepository } from "../../lib/newsStore";
 import { ROUTES } from "../../constants/routes";
 import { PageContainer, Section } from "../ui";
 
 export const NewsSection: React.FC = () => {
+  const [newsList, setNewsList] = useState<any[]>(NEWS_DATA);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  const totalNews = NEWS_DATA.length;
+  useEffect(() => {
+    NewsRepository.fetchNewsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setNewsList(
+          data.map((n) => ({
+            id: String(n.id),
+            slug: n.slug,
+            title: n.title,
+            date: n.publishDate || "2026",
+            category: n.category || "Duyuru",
+            excerpt: n.summary || n.content.substring(0, 150),
+            coverImage: n.coverImage || "/images/forest-hero.jpg",
+          }))
+        );
+      }
+    });
+  }, []);
+
+  const totalNews = newsList.length;
   // Maximum slide index (showing 3 cards on desktop at once, so max index is total - 3, or looping)
   const maxIndex = totalNews - 1;
 
@@ -127,9 +147,9 @@ export const NewsSection: React.FC = () => {
               ease: [0.16, 1, 0.3, 1],
             }}
           >
-            {NEWS_DATA.map((item) => (
+            {newsList.map((item) => (
               <div
-                key={item.id}
+                key={item.id || item.slug}
                 className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 flex flex-col"
               >
                 {/* Entire Card is a Single Clickable Link */}
@@ -193,7 +213,7 @@ export const NewsSection: React.FC = () => {
 
         {/* Slide Indicator Dots */}
         <div className="flex items-center justify-center gap-2 mt-10">
-          {NEWS_DATA.map((_, idx) => (
+          {newsList.map((_, idx) => (
             <button
               key={idx}
               type="button"

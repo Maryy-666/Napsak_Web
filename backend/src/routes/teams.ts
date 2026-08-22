@@ -1,6 +1,6 @@
 import { Router } from "express";
 import prisma from "../db.js";
-import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { authenticate, requireAdmin, AuthRequest } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -113,7 +113,7 @@ router.get("/:slug", async (req, res) => {
 });
 
 // REORDER TEAMS
-router.post("/reorder", async (req, res) => {
+router.post("/reorder", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const { orders } = req.body; // Array of { id: string, displayOrder: number }
     if (!Array.isArray(orders)) {
@@ -137,7 +137,7 @@ router.post("/reorder", async (req, res) => {
 });
 
 // CREATE TEAM
-router.post("/", async (req, res) => {
+router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
     const body = req.body;
     const slug = body.slug || body.id || `team-${Date.now()}`;
@@ -308,9 +308,9 @@ router.post("/", async (req, res) => {
 });
 
 // UPDATE TEAM
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const externalId = req.params.id;
+    const externalId = String(req.params.id);
     const body = req.body;
 
     const existingTeam = await prisma.team.findFirst({
@@ -477,9 +477,9 @@ router.patch("/:id", async (req, res) => {
 });
 
 // DELETE TEAM (Safe deletion: cleans up TeamMembership inside transaction, leaves MemberProfile & User intact)
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const externalId = req.params.id;
+    const externalId = String(req.params.id);
 
     const existingTeam = await prisma.team.findFirst({
       where: { OR: [{ externalId }, { slug: externalId }] },
@@ -506,10 +506,10 @@ router.delete("/:id", async (req, res) => {
 });
 
 // REMOVE MEMBER FROM TEAM (Removes specific TeamMembership only, preserves MemberProfile & other TeamMemberships)
-router.delete("/:id/members/:memberId", async (req, res) => {
+router.delete("/:id/members/:memberId", authenticate, requireAdmin, async (req: AuthRequest, res) => {
   try {
-    const teamIdOrSlug = req.params.id;
-    const memberIdOrExternalId = req.params.memberId;
+    const teamIdOrSlug = String(req.params.id);
+    const memberIdOrExternalId = String(req.params.memberId);
 
     const team = await prisma.team.findFirst({
       where: { OR: [{ externalId: teamIdOrSlug }, { slug: teamIdOrSlug }] },
