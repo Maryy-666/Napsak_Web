@@ -46,6 +46,9 @@ export const PagesRepository = {
       const data = await res.json();
       return Array.isArray(data) ? data : [];
     } catch (err) {
+      if ((err as any)?.digest === "DYNAMIC_SERVER_USAGE") {
+        throw err;
+      }
       console.error("PagesRepository.fetchPagesFromDB hatası:", err);
       return [];
     }
@@ -70,6 +73,9 @@ export const PagesRepository = {
 
       return await res.json();
     } catch (err) {
+      if ((err as any)?.digest === "DYNAMIC_SERVER_USAGE") {
+        throw err;
+      }
       console.error(`PagesRepository.fetchPageBySlugFromDB(${slug}) hatası:`, err);
       return null;
     }

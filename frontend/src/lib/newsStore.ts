@@ -23,17 +23,21 @@ export interface NewsItem {
   updatedAt?: string;
 }
 
+const getAuthHeaders = (): HeadersInit => {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export const NewsRepository = {
   async fetchNewsFromDB(status?: string): Promise<NewsItem[]> {
     try {
-      const url = status ? `/api/news?status=${status}` : "/api/news";
-      const token = getAuthToken();
-      const headers: HeadersInit = {};
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+      const url = status ? `/api/news?status=${encodeURIComponent(status)}` : "/api/news";
 
-      const res = await fetch(url, { cache: "no-store", headers });
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: getAuthHeaders(),
+      });
+
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
@@ -48,13 +52,11 @@ export const NewsRepository = {
 
   async fetchNewsBySlug(slug: string): Promise<NewsItem | null> {
     try {
-      const token = getAuthToken();
-      const headers: HeadersInit = {};
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+      const res = await fetch(`/api/news/${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+        headers: getAuthHeaders(),
+      });
 
-      const res = await fetch(`/api/news/${slug}`, { cache: "no-store", headers });
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
@@ -68,12 +70,11 @@ export const NewsRepository = {
   },
 
   async createNews(data: Partial<NewsItem>): Promise<NewsItem> {
-    const token = getAuthToken();
     const res = await fetch("/api/news", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(data),
     });
@@ -86,12 +87,11 @@ export const NewsRepository = {
   },
 
   async updateNews(id: number, data: Partial<NewsItem>): Promise<NewsItem> {
-    const token = getAuthToken();
     const res = await fetch(`/api/news/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(data),
     });
@@ -104,12 +104,9 @@ export const NewsRepository = {
   },
 
   async deleteNews(id: number): Promise<boolean> {
-    const token = getAuthToken();
     const res = await fetch(`/api/news/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
 
     const json = await res.json();

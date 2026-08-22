@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/katilim',
     '/iletisim',
     '/kvkk',
+    '/cerez-politikasi',
     '/sss',
   ].map((route) => ({
     url: `${BASE_URL}${route}`,
