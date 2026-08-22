@@ -14,8 +14,12 @@ import eventApplicationsRouter from "./src/routes/eventApplications.js";
 import membersRouter from "./src/routes/members.js";
 import teamsRouter from "./src/routes/teams.js";
 
+import path from "path";
 import reportsRouter from "./src/routes/reports.js";
 import magazinesRouter from "./src/routes/magazines.js";
+import pagesRouter from "./src/routes/pages.js";
+import navigationRouter from "./src/routes/navigation.js";
+import mediaRouter from "./src/routes/media.js";
 
 const app = express();
 
@@ -29,6 +33,9 @@ const prisma = new PrismaClient({
 
 app.use(cors());
 app.use(express.json());
+
+// Serve uploads folder statically
+app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
 
 // Ana sayfa
 app.get("/", (req, res) => {
@@ -74,6 +81,9 @@ app.use("/members", membersRouter);
 app.use("/teams", teamsRouter);
 app.use("/reports", reportsRouter);
 app.use("/magazines", magazinesRouter);
+app.use("/pages", pagesRouter);
+app.use("/navigation", navigationRouter);
+app.use("/media", mediaRouter);
 
 const PORT = 3001;
 

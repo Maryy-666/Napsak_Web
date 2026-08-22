@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
+import { NavigationRepository } from "../../lib/navigationStore";
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
-  const quickNavLinks = [
+  const fallbackNavLinks = [
     { title: "Ana Sayfa", href: ROUTES.HOME },
     { title: "Hakkımızda", href: ROUTES.HAKKIMIZDA },
     { title: "Etkinlikler", href: ROUTES.ETKINLIKLER },
@@ -16,6 +17,23 @@ export const Footer: React.FC = () => {
     { title: "Topluluk", href: ROUTES.UYELER },
     { title: "İletişim", href: ROUTES.ILETISIM },
   ];
+
+  const [footerLinks, setFooterLinks] = useState(fallbackNavLinks);
+
+  useEffect(() => {
+    NavigationRepository.fetchNavFromDB("FOOTER", "visible").then((res) => {
+      if (res && Array.isArray(res.footer) && res.footer.length > 0) {
+        const mapped = res.footer.map((item: any) => ({
+          title: item.label,
+          href:
+            item.targetType === "PAGE" && item.page?.slug
+              ? `/sayfa/${item.page.slug}`
+              : item.href || "#",
+        }));
+        setFooterLinks(mapped);
+      }
+    });
+  }, []);
 
   return (
     <footer className="w-full bg-white border-t border-[#EEF0F2] pt-10 pb-8 px-4 sm:px-6 lg:px-8 z-10 relative select-none font-sans overflow-hidden">
@@ -45,7 +63,7 @@ export const Footer: React.FC = () => {
           {/* NAVİGASYON LİNKLERİ */}
           <nav aria-label="Footer Navigasyonu" className="w-full lg:w-auto">
             <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs sm:text-sm font-semibold">
-              {quickNavLinks.map((link) => (
+              {footerLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     href={link.href}

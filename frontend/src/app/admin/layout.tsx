@@ -9,14 +9,19 @@ import {
   ExternalLink,
   FileCheck2,
   FileText,
+  HelpCircle,
+  Home,
+  Image as ImageIcon,
+  Key,
   LayoutDashboard,
   Lock,
   LogOut,
   MailCheck,
   Menu,
   Moon,
+  Newspaper,
   Pin,
-  ShieldCheck,
+  Shield,
   Sparkles,
   Sun,
   Ticket,
@@ -41,6 +46,9 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
     title: "YÖNETİM & TOPLULUK",
     items: [
       { title: "Genel Bakış", href: "/admin", icon: LayoutDashboard, badge: null, published: true },
+      { title: "Medya Kütüphanesi", href: "/admin/medya", icon: ImageIcon, badge: "Media CMS", published: true },
+      { title: "Sayfa Yönetimi", href: "/admin/sayfalar", icon: FileText, badge: "Page CMS", published: true },
+      { title: "Menü Yönetimi", href: "/admin/menuler", icon: Menu, badge: "Nav CMS", published: true },
       { title: "Faaliyetler (Pano)", href: "/admin/faaliyetler", icon: Pin, badge: "Pano", published: true },
       { title: "Çalışma Ekipleri", href: "/admin/ekipler", icon: Users, badge: "5 Ekip", published: true },
       { title: "Üye Yönetimi", href: "/admin/uyeler", icon: UserCheck, badge: "50 Üye", published: true },
@@ -252,7 +260,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             <div className={`flex items-center gap-2 text-xs font-bold px-3.5 py-1.5 rounded-xl border ${
               isDark ? "bg-[#141C2E] border-slate-800 text-slate-200" : "bg-slate-100 border-slate-200 text-slate-800"
             }`}>
-              <ShieldCheck className="w-4.5 h-4.5 text-emerald-500 stroke-[2]" />
+              <Shield className="w-4.5 h-4.5 text-emerald-500 stroke-[2]" />
               <span>Yönetici Paneli</span>
             </div>
             <Link

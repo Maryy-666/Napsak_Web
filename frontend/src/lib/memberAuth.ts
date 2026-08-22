@@ -69,6 +69,18 @@ export function clearCurrentUser() {
   window.localStorage.removeItem(SESSION_KEY);
 }
 
+export function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed.token || parsed.id || null;
+  } catch {
+    return null;
+  }
+}
+
 export function getMemberProfile(user: AuthUser): MemberProfile {
   const fallback: MemberProfile = {
     fullName: user.name || "",

@@ -10,6 +10,7 @@ import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
 import { AuthUser, MemberProfile, getCurrentUser, getMemberProfile, clearCurrentUser } from "../../lib/memberAuth";
+import { NavigationRepository } from "../../lib/navigationStore";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -26,9 +27,44 @@ export const Navbar: React.FC = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [userProfile, setUserProfile] = useState<MemberProfile | null>(null);
+  const [navItemsList, setNavItemsList] = useState<any[]>(SITE_CONFIG.mainNav as any[]);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch live navigation items from DB API
+  useEffect(() => {
+    NavigationRepository.fetchNavFromDB("NAVBAR", "visible").then((res) => {
+      if (res && Array.isArray(res.navbar) && res.navbar.length > 0) {
+        const mapped = res.navbar.map((item: any) => {
+          const href =
+            item.targetType === "PAGE" && item.page?.slug
+              ? `/sayfa/${item.page.slug}`
+              : item.href || "#";
+
+          const children =
+            item.children && item.children.length > 0
+              ? item.children.map((child: any) => ({
+                  title: child.label,
+                  href:
+                    child.targetType === "PAGE" && child.page?.slug
+                      ? `/sayfa/${child.page.slug}`
+                      : child.href || "#",
+                  status: "active",
+                }))
+              : undefined;
+
+          return {
+            title: item.label,
+            href,
+            status: "active",
+            items: children,
+          };
+        });
+        setNavItemsList(mapped);
+      }
+    });
+  }, []);
 
   // Monitor scroll state using a passive scroll listener
   useEffect(() => {
@@ -155,7 +191,7 @@ export const Navbar: React.FC = () => {
 
         {/* Center Navigation Links */}
         <nav className="hidden lg:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
-          {SITE_CONFIG.mainNav.map((item) => {
+          {navItemsList.map((item: any) => {
             const hasSubItems = Boolean(item.items && item.items.length > 0);
             const isPassive = item.status === "coming-soon";
             const active = isLinkActive(item.href);
@@ -163,7 +199,7 @@ export const Navbar: React.FC = () => {
             // Dropdown Item (Çalışmalar, Topluluk etc.)
             if (hasSubItems) {
               const isOpen = activeDropdown === item.title;
-              const hasActiveChild = item.items?.some((child) => isLinkActive(child.href));
+              const hasActiveChild = item.items?.some((child: any) => isLinkActive(child.href));
 
               return (
                 <div
@@ -205,7 +241,7 @@ export const Navbar: React.FC = () => {
                         transition={{ duration: 0.18, ease: "easeOut" }}
                         className="absolute top-full left-0 mt-1 min-w-[210px] bg-[#07452C]/95 border border-white/15 shadow-[0_16px_36px_rgba(0,0,0,0.4)] backdrop-blur-xl rounded-xl p-1.5 z-50 flex flex-col gap-0.5"
                       >
-                        {item.items?.map((subItem) => {
+                        {item.items?.map((subItem: any) => {
                           const isSubPassive = subItem.status === "coming-soon";
 
                           if (isSubPassive) {
@@ -411,7 +447,7 @@ export const Navbar: React.FC = () => {
           >
             <div className="px-4 pt-4 pb-6 space-y-3 bg-black/20">
               <nav className="flex flex-col gap-2" aria-label="Mobil Navigasyon">
-                {SITE_CONFIG.mainNav.map((item) => {
+                {navItemsList.map((item: any) => {
                   const hasSubItems = Boolean(item.items && item.items.length > 0);
                   const isPassive = item.status === "coming-soon";
                   const active = isLinkActive(item.href);
@@ -429,7 +465,7 @@ export const Navbar: React.FC = () => {
                           )}
                         </div>
                         <div className="pl-3 border-l-2 border-white/15 flex flex-col gap-1">
-                          {item.items?.map((sub) => {
+                          {item.items?.map((sub: any) => {
                             const isSubPassive = sub.status === "coming-soon";
 
                             if (isSubPassive) {

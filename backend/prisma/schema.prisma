@@ -209,6 +209,7 @@ model Report {
   fileName      String?
   fileSize      String?
   pdfUrl        String?
+  coverImage    String?
   readCount     Int      @default(0)
   downloadCount Int      @default(0)
   publishDate   String?
@@ -224,6 +225,7 @@ model Magazine {
   publishDate String?
   readCount   Int      @default(0)
   pdfUrl      String?
+  coverImage  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -247,4 +249,60 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Page {
+  id                Int              @id @default(autoincrement())
+  slug              String           @unique
+  title             String
+  shortDescription  String?
+  content           String           @default("")
+  publicationStatus String           @default("PUBLISHED")
+  isFeatured        Boolean          @default(false)
+  showInMenu        Boolean          @default(false)
+  displayOrder      Int              @default(0)
+  featuredImage     String?
+  metaTitle         String?
+  metaDescription   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  navigationItems   NavigationItem[]
+}
+
+model NavigationItem {
+  id           Int              @id @default(autoincrement())
+  label        String
+  targetType   String           @default("PAGE")
+  href         String?
+  pageId       Int?
+  page         Page?            @relation(fields: [pageId], references: [id], onDelete: SetNull)
+  parentId     Int?
+  parent       NavigationItem?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     NavigationItem[] @relation("MenuHierarchy")
+  location     String           @default("NAVBAR")
+  displayOrder Int              @default(0)
+  isVisible    Boolean          @default(true)
+  openInNewTab Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model Media {
+  id           Int       @id @default(autoincrement())
+  filename     String    @unique
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  altText      String?
+  title        String?
+  width        Int?
+  height       Int?
+  folder       String    @default("general")
+  storageKey   String?
+  provider     String    @default("local")
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

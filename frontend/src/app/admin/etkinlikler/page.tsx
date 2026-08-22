@@ -21,7 +21,9 @@ import {
   Sparkles,
   Lock,
   Layers,
+  Image as ImageIcon,
 } from "lucide-react";
+import { MediaPickerModal } from "../../../components/admin/media/MediaPickerModal";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 import {
   AdminPageHeader,
@@ -104,6 +106,7 @@ export default function AdminEtkinliklerPage() {
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
 
   // Veri Yükleme
   const loadData = async () => {
@@ -761,17 +764,34 @@ export default function AdminEtkinliklerPage() {
 
           {/* Kapak Görsel URL */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Kapak Görseli URL
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                Kapak Görseli URL
+              </label>
+              <button
+                type="button"
+                onClick={() => setIsMediaPickerOpen(true)}
+                className="text-xs text-[#0A5C3A] font-bold hover:underline flex items-center gap-1"
+              >
+                <ImageIcon className="w-3.5 h-3.5" />
+                <span>Medya Kütüphanesinden Seç</span>
+              </button>
+            </div>
             <input
               type="text"
               value={formData.image}
               onChange={(e) => setFormData((p) => ({ ...p, image: e.target.value }))}
-              placeholder="/images/news-ani-cover.jpg veya https://..."
+              placeholder="/images/... veya /uploads/events/..."
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
             />
           </div>
+
+          <MediaPickerModal
+            isOpen={isMediaPickerOpen}
+            onClose={() => setIsMediaPickerOpen(false)}
+            targetFolder="events"
+            onSelect={(url) => setFormData((p) => ({ ...p, image: url }))}
+          />
 
           {/* CMS Yayın ve Bayrak Ayarları */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-4">
