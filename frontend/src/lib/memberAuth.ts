@@ -66,7 +66,11 @@ export function saveCurrentUser(user: AuthUser) {
 }
 
 export function clearCurrentUser() {
-  window.localStorage.removeItem(SESSION_KEY);
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(SESSION_KEY);
+    document.cookie = "session_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
 }
 
 export function getAuthToken(): string | null {

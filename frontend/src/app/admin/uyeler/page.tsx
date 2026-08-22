@@ -407,7 +407,7 @@ export default function AdminUyelerPage() {
       header: "ANA EKİP & GÖREV",
       accessor: (m: PublicMember) => (
         <div className="flex flex-col text-left">
-          <span className="font-semibold text-sm text-[#0F1115]">{m.primaryTeam}</span>
+          <span className="font-semibold text-sm text-[#0F1115] dark:text-slate-100">{m.primaryTeam}</span>
           <span className="text-xs text-[#0A5C3A] font-medium">{m.primaryRole}</span>
         </div>
       ),
@@ -425,8 +425,8 @@ export default function AdminUyelerPage() {
                   key={idx}
                   className={`px-2 py-0.5 rounded-md text-[11px] font-medium flex items-center gap-1 border ${
                     isLd
-                      ? "bg-emerald-50 border-emerald-300 text-emerald-900 font-bold"
-                      : "bg-[#F8F9FA] border-[#EEF0F2] text-[#0F1115]"
+                      ? "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 font-bold"
+                      : "bg-[#F8F9FA] dark:bg-slate-800/70 border-[#EEF0F2] dark:border-slate-700 text-[#0F1115] dark:text-slate-200"
                   }`}
                 >
                   <span>{mem.team}</span>

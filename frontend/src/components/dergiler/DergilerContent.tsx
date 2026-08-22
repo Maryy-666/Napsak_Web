@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -394,9 +395,11 @@ export default function DergilerContent() {
       </Section>
 
       {/* Level 2: Magazine Detail Modal (Strict Viewport Height Bounds max-h-[calc(100vh-50px)]) */}
+      {typeof document !== "undefined" &&
+        createPortal(
       <AnimatePresence>
         {selectedIssue && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-5 overflow-hidden">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 overflow-hidden">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -545,7 +548,9 @@ export default function DergilerContent() {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+          document.body
+        )}
 
       {/* Level 3: 3D FlipBook Reader Modal */}
       <MagazineReaderModal

@@ -28,6 +28,7 @@ export const Navbar: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [userProfile, setUserProfile] = useState<MemberProfile | null>(null);
   const [navItemsList, setNavItemsList] = useState<any[]>(SITE_CONFIG.mainNav as any[]);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -157,7 +158,13 @@ export const Navbar: React.FC = () => {
   const handleLogout = () => {
     clearCurrentUser();
     setCurrentUser(null);
+    setLogoutConfirmOpen(false);
     router.push(ROUTES.HOME);
+  };
+
+  const requestLogout = () => {
+    setIsMobileMenuOpen(false);
+    setLogoutConfirmOpen(true);
   };
 
   return (
@@ -342,7 +349,7 @@ export const Navbar: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={handleLogout}
+                  onClick={requestLogout}
                   className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 text-white text-xs sm:text-sm font-semibold hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
                   title="Çıkış Yap"
                 >
@@ -367,7 +374,7 @@ export const Navbar: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={handleLogout}
+                  onClick={requestLogout}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 text-white text-xs font-medium hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer"
                   title="Çıkış Yap"
                 >
@@ -560,7 +567,7 @@ export const Navbar: React.FC = () => {
                         fullWidth
                         onClick={() => {
                           setIsMobileMenuOpen(false);
-                          handleLogout();
+                          requestLogout();
                         }}
                         leftIcon={<LogOut className="h-4 w-4" />}
                         className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm"
@@ -592,7 +599,7 @@ export const Navbar: React.FC = () => {
                         size="lg"
                         onClick={() => {
                           setIsMobileMenuOpen(false);
-                          handleLogout();
+                          requestLogout();
                         }}
                         className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm px-3.5"
                         title="Çıkış Yap"
@@ -643,6 +650,59 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {logoutConfirmOpen && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-confirm-title"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.96 }}
+              transition={transitionConfig}
+              className="w-full max-w-sm rounded-2xl border border-white/15 bg-white p-5 text-[#0F1115] shadow-2xl"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[#0A5C3A]">
+                  <LogOut className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 id="logout-confirm-title" className="text-lg font-extrabold">
+                    Çıkış Yap
+                  </h2>
+                  <p className="mt-1 text-sm font-medium leading-relaxed text-[#5F6773]">
+                    Çıkış yapmak istediğinizden emin misiniz?
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLogoutConfirmOpen(false)}
+                  className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
+                >
+                  Vazgeç
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#0A5C3A]/20 transition-colors"
+                >
+                  Evet, Çıkış Yap
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

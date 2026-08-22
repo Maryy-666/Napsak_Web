@@ -184,25 +184,26 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
-          href="/admin/icerik"
+          href="/admin/uyeler"
           className={`p-6 rounded-2xl border transition-all group shadow-xs hover:shadow-md ${
             isDark
-              ? "bg-[#0F1623] border-slate-800 hover:border-amber-500/50"
-              : "bg-amber-500/5 border-amber-500/20 hover:border-amber-500/50"
+              ? "bg-[#0F1623] border-slate-800 hover:border-teal-500/50"
+              : "bg-teal-500/5 border-teal-500/20 hover:border-teal-500/50"
           }`}
         >
-          <FileText className="w-8 h-8 text-amber-600 mb-4 stroke-[2]" />
-          <h3 className="text-lg font-bold font-headings group-hover:text-amber-600 transition-colors">
-            İçerik Yönetimi
+          <Users className="w-8 h-8 text-teal-500 mb-4 stroke-[2]" />
+          <h3 className="text-lg font-bold font-headings group-hover:text-teal-500 transition-colors">
+            Ekip Üyeleri Düzenleme
           </h3>
           <p className={`text-xs mt-2 mb-4 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-            PDF raporları, dergiler ve öne çıkan içeriklerin yayın durumlarını yönetin.
+            Üye profillerini, ekip atamalarını ve görev bilgilerini düzenleyin.
           </p>
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-600">
-            <span>İçeriklere Git</span>
+          <div className="flex items-center gap-2 text-xs font-bold text-teal-500">
+            <span>Üyelere Git</span>
             <ArrowRight className="w-4 h-4" />
           </div>
         </Link>
+
       </div>
     </div>
   );

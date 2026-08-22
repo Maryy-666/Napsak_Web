@@ -26,6 +26,10 @@ export function AdminThemeProvider({ children }: { children: React.ReactNode }) 
     }
   }, []);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
   const toggleTheme = () => {
     setTheme((prev) => {
       const next = prev === "dark" ? "light" : "dark";

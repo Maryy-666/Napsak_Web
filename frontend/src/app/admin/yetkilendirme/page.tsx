@@ -123,22 +123,22 @@ export default function YetkilendirmePage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F1623] shadow-xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="font-bold font-headings">Kullanıcı Yetkileri</h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Kullanıcıların rollerini buradan değiştirebilirsiniz.
           </p>
         </div>
 
         {loading ? (
-          <div className="p-10 text-center text-sm text-slate-500">
+          <div className="p-10 text-center text-sm text-slate-500 dark:text-slate-400">
             Kullanıcılar yükleniyor...
           </div>
         ) : users.length === 0 ? (
           <div className="p-10 text-center">
             <UserCog className="w-10 h-10 mx-auto text-slate-300 mb-3" />
-            <h3 className="font-bold text-slate-600">
+            <h3 className="font-bold text-slate-600 dark:text-slate-300">
               Kullanıcı bulunamadı
             </h3>
           </div>
@@ -146,7 +146,7 @@ export default function YetkilendirmePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E]">
                   <th className="text-left px-5 py-3 text-xs font-bold text-slate-500">
                     Kullanıcı
                   </th>
@@ -166,10 +166,10 @@ export default function YetkilendirmePage() {
                 {users.map((user) => (
                   <tr
                     key={user.id}
-                    className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors"
+                    className="border-b border-slate-100 dark:border-slate-800/60 last:border-0 hover:bg-slate-50 dark:hover:bg-[#141C2E]/60 transition-colors"
                   >
                     <td className="px-5 py-4">
-                      <div className="font-semibold text-[#0F1115]">
+                      <div className="font-semibold text-[#0F1115] dark:text-slate-100">
                         {user.name || "İsimsiz Kullanıcı"}
                       </div>
                       <div className="text-[11px] text-slate-400 mt-0.5">
@@ -177,7 +177,7 @@ export default function YetkilendirmePage() {
                       </div>
                     </td>
 
-                    <td className="px-5 py-4 text-slate-600">
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">
                       {user.email}
                     </td>
 
@@ -203,7 +203,7 @@ export default function YetkilendirmePage() {
                             e.target.value as "USER" | "ADMIN"
                           )
                         }
-                        className="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold outline-none focus:border-[#0A5C3A] disabled:opacity-50"
+                        className="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] text-xs text-[#0F1115] dark:text-slate-100 font-semibold outline-none focus:border-[#0A5C3A] disabled:opacity-50"
                       >
                         <option value="USER">Kullanıcı</option>
                         <option value="ADMIN">Yönetici</option>

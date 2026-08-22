@@ -110,7 +110,7 @@ export default function KullanicilarPage() {
       </div>
 
       {/* SEARCH */}
-      <div className="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs">
+      <div className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F1623] shadow-xs">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -118,7 +118,7 @@ export default function KullanicilarPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="İsim, e-posta veya rol ile ara..."
-            className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 bg-slate-50 text-sm outline-none focus:border-[#0A5C3A]"
+            className="w-full h-10 pl-10 pr-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] text-sm text-[#0F1115] dark:text-slate-100 outline-none focus:border-[#0A5C3A]"
           />
         </div>
       </div>
@@ -131,24 +131,24 @@ export default function KullanicilarPage() {
       )}
 
       {/* TABLE */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F1623] shadow-xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div>
             <h2 className="font-bold font-headings">Kullanıcılar</h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               {filteredUsers.length} kullanıcı gösteriliyor
             </p>
           </div>
         </div>
 
         {loading ? (
-          <div className="p-10 text-center text-sm text-slate-500">
+          <div className="p-10 text-center text-sm text-slate-500 dark:text-slate-400">
             Kullanıcılar yükleniyor...
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="p-10 text-center">
             <Users className="w-10 h-10 mx-auto text-slate-300 mb-3" />
-            <h3 className="font-bold text-slate-600">Kullanıcı bulunamadı</h3>
+            <h3 className="font-bold text-slate-600 dark:text-slate-300">Kullanıcı bulunamadı</h3>
             <p className="text-xs text-slate-400 mt-1">
               Arama kriterlerinizi değiştirmeyi deneyin.
             </p>
@@ -157,7 +157,7 @@ export default function KullanicilarPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E]">
                   <th className="text-left px-5 py-3 text-xs font-bold text-slate-500">Kullanıcı</th>
                   <th className="text-left px-5 py-3 text-xs font-bold text-slate-500">E-posta</th>
                   <th className="text-left px-5 py-3 text-xs font-bold text-slate-500">Rol</th>
@@ -167,20 +167,20 @@ export default function KullanicilarPage() {
               </thead>
               <tbody>
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                  <tr key={user.id} className="border-b border-slate-100 dark:border-slate-800/60 last:border-0 hover:bg-slate-50 dark:hover:bg-[#141C2E]/60 transition-colors">
                     <td className="px-5 py-4">
-                      <div className="font-semibold text-[#0F1115]">{user.name || "İsimsiz Kullanıcı"}</div>
+                      <div className="font-semibold text-[#0F1115] dark:text-slate-100">{user.name || "İsimsiz Kullanıcı"}</div>
                       <div className="text-[11px] text-slate-400 mt-0.5">ID: {user.id}</div>
                     </td>
-                    <td className="px-5 py-4 text-slate-600">{user.email}</td>
+                    <td className="px-5 py-4 text-slate-600 dark:text-slate-300">{user.email}</td>
                     <td className="px-5 py-4">
                       <span className={`inline-flex px-2.5 py-1 rounded-lg text-[11px] font-bold ${
-                        user.role === "ADMIN" ? "bg-[#0A5C3A]/10 text-[#0A5C3A]" : "bg-slate-100 text-slate-600"
+                        user.role === "ADMIN" ? "bg-[#0A5C3A]/10 text-[#0A5C3A] dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                       }`}>
                         {user.role === "ADMIN" ? "Yönetici" : "Kullanıcı"}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-slate-500 text-xs">
+                    <td className="px-5 py-4 text-slate-500 dark:text-slate-400 text-xs">
                       {new Date(user.createdAt).toLocaleDateString("tr-TR")}
                     </td>
                     <td className="px-5 py-4 text-right">

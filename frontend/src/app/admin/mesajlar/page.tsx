@@ -129,10 +129,10 @@ export default function MesajlarPage() {
         </div>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F1623] shadow-xs overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-800">
           <h2 className="font-bold font-headings">Gelen Mesajlar</h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             {messages.length} mesaj
           </p>
         </div>
@@ -152,18 +152,18 @@ export default function MesajlarPage() {
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`p-5 transition-colors ${
-                  message.isRead ? "bg-white" : "bg-emerald-50/40"
+                  message.isRead ? "bg-white dark:bg-[#0F1623]" : "bg-emerald-50/40 dark:bg-emerald-950/20"
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-[#0F1115]">
+                      <h3 className="font-bold text-[#0F1115] dark:text-slate-100">
                         {message.subject || "Konu belirtilmemiş"}
                       </h3>
 
@@ -174,11 +174,11 @@ export default function MesajlarPage() {
                       )}
                     </div>
 
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {message.name} · {message.email}
                     </p>
 
-                    <p className="text-sm text-slate-700 mt-4 whitespace-pre-wrap">
+                    <p className="text-sm text-slate-700 dark:text-slate-300 mt-4 whitespace-pre-wrap">
                       {message.content}
                     </p>
 

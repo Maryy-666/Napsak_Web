@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlertTriangle, Info, CheckCircle2, ShieldAlert, Loader2, LucideIcon } from "lucide-react";
+import { AlertTriangle, Info, CheckCircle2, ShieldAlert, Loader2, LogOut, LucideIcon } from "lucide-react";
 import { AdminModal } from "./AdminModal";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 
-export type AdminConfirmVariant = "danger" | "warning" | "info" | "success";
+export type AdminConfirmVariant = "danger" | "warning" | "info" | "success" | "brand";
 
 export interface AdminConfirmDialogProps {
   isOpen: boolean;
@@ -48,6 +48,15 @@ export function AdminConfirmDialog({
 
   const getVariantDetails = () => {
     switch (variant) {
+      case "brand":
+        return {
+          icon: CustomIcon || LogOut,
+          iconBg: isDark
+            ? "bg-[#0A5C3A]/25 text-emerald-400 border border-[#0A5C3A]/40"
+            : "bg-emerald-50 text-[#0A5C3A] border border-emerald-200",
+          buttonBg: "bg-[#0A5C3A] hover:bg-[#084A2F] text-white shadow-md shadow-[#0A5C3A]/20",
+          defaultConfirmText: "Evet, Onayla",
+        };
       case "danger":
         return {
           icon: CustomIcon || ShieldAlert,
@@ -58,8 +67,8 @@ export function AdminConfirmDialog({
       case "warning":
         return {
           icon: CustomIcon || AlertTriangle,
-          iconBg: isDark ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-amber-50 text-amber-600 border border-amber-200",
-          buttonBg: "bg-amber-600 hover:bg-amber-700 text-white shadow-amber-600/20",
+          iconBg: isDark ? "bg-[#0A5C3A]/25 text-emerald-400 border border-[#0A5C3A]/40" : "bg-emerald-50 text-[#0A5C3A] border border-emerald-200",
+          buttonBg: "bg-[#0A5C3A] hover:bg-[#084A2F] text-white shadow-[#0A5C3A]/20",
           defaultConfirmText: "Evet, Onayla",
         };
       case "success":

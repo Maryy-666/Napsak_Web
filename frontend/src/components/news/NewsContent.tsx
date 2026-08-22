@@ -1,64 +1,76 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Calendar, ArrowRight, Newspaper, Sparkles, Search } from "lucide-react";
-import { NEWS_DATA, NewsItem as StaticNewsItem } from "../../data/news";
-import { NewsRepository, NewsItem } from "../../lib/newsStore";
-import { PageContainer, Section, Badge } from "../ui";
+import Link from "next/link";
+import { ArrowRight, Calendar, Newspaper, Search, Sparkles } from "lucide-react";
+import { NewsRepository } from "../../lib/newsStore";
+import { Badge, PageContainer, Section } from "../ui";
+
+type NewsCard = {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  coverImage: string;
+  content: string;
+};
+
+const mapNewsItem = (item: any): NewsCard => ({
+  id: String(item.id),
+  slug: item.slug,
+  title: item.title,
+  date: item.publishDate || "2026",
+  category: item.category || "Duyuru",
+  excerpt: item.summary || item.content?.substring(0, 150) || "",
+  coverImage: item.coverImage || "/images/forest-hero.jpg",
+  content: item.content || "",
+});
 
 export function NewsContent() {
-  const [newsItems, setNewsItems] = useState<any[]>(NEWS_DATA);
+  const [newsItems, setNewsItems] = useState<NewsCard[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
-    NewsRepository.fetchNewsFromDB().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        const mapped = data.map((n) => ({
-          id: String(n.id),
-          slug: n.slug,
-          title: n.title,
-          date: n.publishDate || "2026",
-          category: n.category || "Duyuru",
-          excerpt: n.summary || n.content.substring(0, 150),
-          coverImage: n.coverImage || "/images/forest-hero.jpg",
-          content: n.content,
-        }));
-        setNewsItems(mapped);
-      }
-    });
+    NewsRepository.fetchNewsFromDB()
+      .then((data) => setNewsItems(data.map(mapNewsItem)))
+      .finally(() => setLoading(false));
   }, []);
 
-  const categories = Array.from(new Set(newsItems.map((n) => n.category || "Duyuru")));
+  const categories = Array.from(new Set(newsItems.map((item) => item.category || "Duyuru")));
 
   const filteredNews = newsItems.filter((item) => {
+    const query = searchQuery.toLowerCase();
     const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || item.category === selectedCategory;
+      item.title.toLowerCase().includes(query) || item.excerpt.toLowerCase().includes(query);
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   return (
     <Section padding="lg" background="subtle" className="py-12 sm:py-16">
       <PageContainer className="max-w-6xl">
-        {/* Header */}
         <div className="space-y-4 mb-10 text-center sm:text-left">
-          <Badge variant="brand" size="md" className="!bg-[#0A5C3A]/10 !text-[#0A5C3A] !border-[#0A5C3A]/20">
+          <Badge
+            variant="brand"
+            size="md"
+            className="!bg-[#0A5C3A]/10 !text-[#0A5C3A] !border-[#0A5C3A]/20"
+          >
             <Sparkles className="w-3.5 h-3.5 mr-1.5" /> N'apsak? Naptık!
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight">
             Haberler & Duyurular
           </h1>
           <p className="text-base sm:text-lg font-sans text-[#5F6773] max-w-2xl">
-            Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan hikayeleri.
+            Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan
+            hikayeleri.
           </p>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
           <div className="relative w-full sm:w-80">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -73,6 +85,7 @@ export function NewsContent() {
 
           <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
             <button
+              type="button"
               onClick={() => setSelectedCategory("all")}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
                 selectedCategory === "all"
@@ -82,26 +95,30 @@ export function NewsContent() {
             >
               Tümü
             </button>
-            {categories.map((cat) => (
+            {categories.map((category) => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  selectedCategory === cat
+                  selectedCategory === category
                     ? "bg-[#0A5C3A] text-white shadow-sm"
                     : "bg-white border border-[#EEF0F2] text-[#5F6773] hover:bg-slate-50"
                 }`}
               >
-                {cat}
+                {category}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Grid */}
-        {filteredNews.length === 0 ? (
+        {loading ? (
           <div className="py-16 text-center text-slate-500 text-sm font-medium">
-            Aradığınız kriterlere uygun haber bulunamadı.
+            Haberler yükleniyor...
+          </div>
+        ) : filteredNews.length === 0 ? (
+          <div className="py-16 text-center text-slate-500 text-sm font-medium">
+            Yayında haber bulunmuyor.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

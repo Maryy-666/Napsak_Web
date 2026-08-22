@@ -377,7 +377,7 @@ export default function AdminEtkinliklerPage() {
               )}
             </div>
             <div className="flex flex-col text-left">
-              <div className="flex items-center gap-1.5 font-bold text-sm">
+              <div className="flex items-center gap-1.5 font-bold text-sm text-[#0F1115] dark:text-slate-100">
                 <span>{evt.title}</span>
                 {isF && (
                   <span title="Öne Çıkan Etkinlik">
@@ -385,13 +385,13 @@ export default function AdminEtkinliklerPage() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-[#5F6773] mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-[#5F6773] dark:text-slate-400 mt-0.5">
                 <span className="flex items-center gap-1">
                   <MapPin className="w-3 h-3 text-[#0A5C3A]" />
                   <span>{evt.location}</span>
                 </span>
                 <span>•</span>
-                <span className="font-mono text-[11px] text-slate-500">
+                <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
                   /etkinlikler/{(evt as any).slug || evt.id}
                 </span>
               </div>
@@ -424,7 +424,7 @@ export default function AdminEtkinliklerPage() {
                 <span>ARCHIVED (Arşiv)</span>
               </span>
             )}
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400">
               Süreç: {evt.status || "Yaklaşan"}
             </span>
           </div>
@@ -436,7 +436,7 @@ export default function AdminEtkinliklerPage() {
       header: "TARİH & KONTENJAN",
       accessor: (evt: EventItem) => (
         <div className="flex flex-col text-left">
-          <span className="font-semibold text-xs text-[#0F1115]">{evt.date || "Tarih Belirtilmedi"}</span>
+          <span className="font-semibold text-xs text-[#0F1115] dark:text-slate-200">{evt.date || "Tarih Belirtilmedi"}</span>
           <span className="text-[11px] text-[#0A5C3A] font-medium">
             Kontenjan: {evt.appliedCount || (evt as any).capacity || 100} Kişi
           </span>

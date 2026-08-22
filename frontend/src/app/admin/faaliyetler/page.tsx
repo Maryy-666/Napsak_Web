@@ -226,8 +226,8 @@ export default function AdminFaaliyetlerPage() {
         const pub = (item as any).publicationStatus || "PUBLISHED";
         return (
           <div className="flex flex-col text-left">
-            <span className="font-bold text-sm text-[#0F1115]">{item.title}</span>
-            <div className="flex items-center gap-2 text-xs text-[#5F6773] mt-0.5">
+            <span className="font-bold text-sm text-[#0F1115] dark:text-slate-100">{item.title}</span>
+            <div className="flex items-center gap-2 text-xs text-[#5F6773] dark:text-slate-400 mt-0.5">
               <span>{item.category}</span>
               <span>•</span>
               <span>{item.team}</span>
@@ -268,7 +268,7 @@ export default function AdminFaaliyetlerPage() {
       header: "TARİH & KATILIM",
       accessor: (item: FaaliyetItem) => (
         <div className="flex flex-col text-left">
-          <span className="text-xs font-semibold text-slate-800">{item.date || "Tarih Yok"}</span>
+          <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{item.date || "Tarih Yok"}</span>
           <span className="text-[11px] text-[#0A5C3A] font-medium">
             {item.participantCount || 0} Katılımcı
           </span>
@@ -282,7 +282,7 @@ export default function AdminFaaliyetlerPage() {
         <div className="flex items-center justify-end gap-1.5">
           <button
             onClick={() => handleOpenEditModal(item)}
-            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
             title="Faaliyeti Düzenle"
           >
             <Edit3 className="w-4 h-4" />

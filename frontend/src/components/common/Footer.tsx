@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "../../constants/routes";
-import { Logo } from "./Logo";
 import { NavigationRepository } from "../../lib/navigationStore";
+import { Logo } from "./Logo";
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -38,10 +38,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-white border-t border-[#EEF0F2] pt-10 pb-8 px-4 sm:px-6 lg:px-8 z-10 relative select-none font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-8 w-full">
-        {/* MAIN FOOTER ROW */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 w-full">
-          
-          {/* MARKA & AÇIKLAMA */}
           <div className="flex flex-col items-start space-y-3 max-w-xl min-w-0">
             <Link
               href={ROUTES.HOME}
@@ -50,9 +47,11 @@ export const Footer: React.FC = () => {
             >
               <Logo variant="default" size={84} priority />
             </Link>
-            
+
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-medium break-words">
-              N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik topluluğudur.
+              N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları
+              geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı
+              amaçlayan bir gençlik topluluğudur.
             </p>
 
             <p className="text-xs sm:text-sm font-bold text-[#0A5C3A] italic font-headings tracking-tight">
@@ -60,7 +59,6 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* NAVİGASYON LİNKLERİ */}
           <nav aria-label="Footer Navigasyonu" className="w-full lg:w-auto">
             <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs sm:text-sm font-semibold">
               {footerLinks.map((link) => (
@@ -75,14 +73,14 @@ export const Footer: React.FC = () => {
               ))}
             </ul>
           </nav>
-
         </div>
 
-        {/* FOOTER ALT BÖLÜMÜ - DIVIDER & COPYRIGHT */}
         <div className="w-full h-px bg-[#EEF0F2]" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6773] font-medium text-center sm:text-left w-full">
-          <p className="break-words">© {currentYear} N'apsak? Gençlik Topluluğu. Tüm hakları saklıdır.</p>
+          <p className="break-words">
+            © {currentYear} N'apsak? Gençlik Topluluğu. Tüm hakları saklıdır.
+          </p>
 
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4">
             <Link
@@ -92,7 +90,16 @@ export const Footer: React.FC = () => {
               KVKK Aydınlatma Metni
             </Link>
             <span className="hidden sm:inline">•</span>
-            <p className="text-[#0A5C3A] font-semibold whitespace-nowrap">Gençlerle birlikte, geleceğe.</p>
+            <Link
+              href={ROUTES.CEREZ_POLITIKASI}
+              className="hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-sm whitespace-nowrap"
+            >
+              Çerez Politikası
+            </Link>
+            <span className="hidden sm:inline">•</span>
+            <p className="text-[#0A5C3A] font-semibold whitespace-nowrap">
+              Gençlerle birlikte, geleceğe.
+            </p>
           </div>
         </div>
       </div>

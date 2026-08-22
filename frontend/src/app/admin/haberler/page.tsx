@@ -1,101 +1,92 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Newspaper,
-  Plus,
   Edit2,
-  Trash2,
   ExternalLink,
   ImageIcon,
+  Newspaper,
+  Plus,
   Star,
+  Trash2,
 } from "lucide-react";
 import {
+  AdminBadge,
+  AdminConfirmDialog,
+  AdminEmptyState,
+  AdminFilter,
+  AdminLoadingState,
+  AdminModal,
   AdminPageHeader,
+  AdminSearch,
   AdminTable,
   Column,
-  AdminSearch,
-  AdminFilter,
-  AdminModal,
-  AdminConfirmDialog,
-  AdminBadge,
-  AdminLoadingState,
-  AdminEmptyState,
 } from "@/components/admin/ui";
 import { MediaPickerModal } from "@/components/admin/media/MediaPickerModal";
-import { NewsRepository, NewsItem } from "@/lib/newsStore";
+import { NewsItem, NewsRepository } from "@/lib/newsStore";
+
+const emptyFormData: Partial<NewsItem> = {
+  title: "",
+  slug: "",
+  category: "Duyuru",
+  summary: "",
+  content: "",
+  coverImage: "",
+  publishDate: "",
+  readTime: "3 dk",
+  publicationStatus: "PUBLISHED",
+  isFeatured: false,
+  displayOrder: 0,
+  quoteText: "",
+  quoteAuthor: "",
+  quoteTitle: "",
+  images: [],
+};
 
 export default function AdminHaberlerPage() {
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pageError, setPageError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [saving, setSaving] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
+  const [formError, setFormError] = useState("");
+  const [formData, setFormData] = useState<Partial<NewsItem>>(emptyFormData);
 
-  // Form Fields
-  const [formData, setFormData] = useState<Partial<NewsItem>>({
-    title: "",
-    slug: "",
-    category: "Duyuru",
-    summary: "",
-    content: "",
-    coverImage: "",
-    publishDate: "",
-    readTime: "3 dk",
-    publicationStatus: "PUBLISHED",
-    isFeatured: false,
-    displayOrder: 0,
-    quoteText: "",
-    quoteAuthor: "",
-    quoteTitle: "",
-  });
-
-  // Media Picker State
   const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-
-  // Confirm Delete
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    loadNews();
-  }, []);
-
   const loadNews = async () => {
     setLoading(true);
+    setPageError("");
+
     try {
       const data = await NewsRepository.fetchNewsFromDB("all");
       setNewsList(data);
+    } catch (err: any) {
+      setPageError(err?.message || "Haberler yüklenirken bir hata oluştu.");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    loadNews();
+  }, []);
+
   const handleOpenCreateModal = () => {
     setEditingNews(null);
     setFormData({
-      title: "",
-      slug: "",
-      category: "Duyuru",
-      summary: "",
-      content: "",
-      coverImage: "",
+      ...emptyFormData,
       publishDate: new Date().toLocaleDateString("tr-TR"),
-      readTime: "3 dk",
-      publicationStatus: "PUBLISHED",
-      isFeatured: false,
       displayOrder: newsList.length,
-      quoteText: "",
-      quoteAuthor: "",
-      quoteTitle: "",
     });
-    setFormError(null);
+    setFormError("");
     setModalOpen(true);
   };
 
@@ -111,36 +102,40 @@ export default function AdminHaberlerPage() {
       publishDate: news.publishDate || "",
       readTime: news.readTime || "3 dk",
       publicationStatus: news.publicationStatus || "PUBLISHED",
-      isFeatured: news.isFeatured || false,
+      isFeatured: Boolean(news.isFeatured),
       displayOrder: news.displayOrder || 0,
       quoteText: news.quoteText || "",
       quoteAuthor: news.quoteAuthor || "",
       quoteTitle: news.quoteTitle || "",
+      images: news.images || [],
     });
-    setFormError(null);
+    setFormError("");
     setModalOpen(true);
   };
 
   const handleSaveNews = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!formData.title?.trim()) {
       setFormError("Haber başlığı zorunludur.");
       return;
     }
 
     setSaving(true);
-    setFormError(null);
+    setFormError("");
+
     try {
       if (editingNews) {
         const updated = await NewsRepository.updateNews(editingNews.id, formData);
-        setNewsList((prev) => prev.map((n) => (n.id === updated.id ? updated : n)));
+        setNewsList((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
       } else {
         const created = await NewsRepository.createNews(formData);
         setNewsList((prev) => [created, ...prev]);
       }
+
       setModalOpen(false);
     } catch (err: any) {
-      setFormError(err.message || "Haber kaydedilirken bir hata oluştu.");
+      setFormError(err?.message || "Haber kaydedilirken bir hata oluştu.");
     } finally {
       setSaving(false);
     }
@@ -148,27 +143,28 @@ export default function AdminHaberlerPage() {
 
   const handleDeleteNews = async () => {
     if (!deletingId) return;
+
     setDeleting(true);
     try {
       await NewsRepository.deleteNews(deletingId);
-      setNewsList((prev) => prev.filter((n) => n.id !== deletingId));
+      setNewsList((prev) => prev.filter((item) => item.id !== deletingId));
       setDeleteConfirmOpen(false);
     } catch (err: any) {
-      alert(err.message || "Haber silinemedi.");
+      setPageError(err?.message || "Haber silinemedi.");
     } finally {
       setDeleting(false);
       setDeletingId(null);
     }
   };
 
-  const filteredNews = newsList.filter((n) => {
+  const filteredNews = newsList.filter((news) => {
+    const query = searchQuery.toLowerCase();
     const matchesSearch =
-      n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (n.category && n.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      news.title.toLowerCase().includes(query) ||
+      (news.category || "").toLowerCase().includes(query) ||
+      (news.slug || "").toLowerCase().includes(query);
 
-    const matchesStatus =
-      statusFilter === "all" || n.publicationStatus === statusFilter;
-
+    const matchesStatus = statusFilter === "all" || news.publicationStatus === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -206,15 +202,14 @@ export default function AdminHaberlerPage() {
     {
       key: "publicationStatus",
       header: "Yayın Durumu",
-      accessor: (news) => (
+      accessor: (news) =>
         news.publicationStatus === "PUBLISHED" ? (
           <AdminBadge variant="published">Yayınlandı</AdminBadge>
         ) : news.publicationStatus === "DRAFT" ? (
           <AdminBadge variant="draft">Taslak</AdminBadge>
         ) : (
           <AdminBadge variant="passive">Arşivlendi</AdminBadge>
-        )
-      ),
+        ),
     },
     {
       key: "isFeatured",
@@ -243,6 +238,7 @@ export default function AdminHaberlerPage() {
       accessor: (news) => (
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => handleOpenEditModal(news)}
             className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-500/10 transition-all"
             title="Düzenle"
@@ -250,6 +246,7 @@ export default function AdminHaberlerPage() {
             <Edit2 className="w-4 h-4" />
           </button>
           <button
+            type="button"
             onClick={() => {
               setDeletingId(news.id);
               setDeleteConfirmOpen(true);
@@ -276,24 +273,32 @@ export default function AdminHaberlerPage() {
     },
   ];
 
+  const createButton = (
+    <button
+      type="button"
+      onClick={handleOpenCreateModal}
+      className="px-4 py-2.5 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-all shadow-md inline-flex items-center gap-2"
+    >
+      <Plus className="w-4 h-4" />
+      <span>Yeni Haber Ekle</span>
+    </button>
+  );
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title="Haber & Duyuru Yönetimi"
         subtitle="Topluluk haberlerini, basın duyurularını ve içeriklerini oluşturun ve yayınlayın."
         icon={Newspaper}
-        action={
-          <button
-            onClick={handleOpenCreateModal}
-            className="px-4 py-2.5 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-all shadow-md flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Yeni Haber Ekle</span>
-          </button>
-        }
+        action={createButton}
       />
 
-      {/* Filters & Search */}
+      {pageError && (
+        <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs font-semibold text-rose-600">
+          {pageError}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="w-full sm:w-80">
           <AdminSearch
@@ -315,23 +320,19 @@ export default function AdminHaberlerPage() {
         />
       </div>
 
-      {/* Content Table */}
       {loading ? (
         <AdminLoadingState />
       ) : filteredNews.length === 0 ? (
         <AdminEmptyState
+          icon={Newspaper}
           title="Haber Bulunamadı"
-          description="Aradığınız kriterlere uygun haber bulunmuyor. Yeni bir haber ekleyebilirsiniz."
+          description="Henüz haber kaydı yok veya aradığınız kriterlere uygun haber bulunmuyor."
+          action={createButton}
         />
       ) : (
-        <AdminTable
-          columns={columns}
-          data={filteredNews}
-          keyExtractor={(row) => row.id}
-        />
+        <AdminTable columns={columns} data={filteredNews} keyExtractor={(row) => row.id} />
       )}
 
-      {/* Create / Edit Modal */}
       <AdminModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -389,7 +390,7 @@ export default function AdminHaberlerPage() {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Özet (Short Summary)
+              Özet
             </label>
             <textarea
               rows={2}
@@ -402,7 +403,7 @@ export default function AdminHaberlerPage() {
 
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Detaylı Haber İçeriği (Markdown / Metin)
+              Detaylı Haber İçeriği
             </label>
             <textarea
               rows={5}
@@ -450,9 +451,9 @@ export default function AdminHaberlerPage() {
                 }
                 className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] font-medium outline-none"
               >
-                <option value="PUBLISHED">Yayınlandı (Public)</option>
-                <option value="DRAFT">Taslak (Draft)</option>
-                <option value="ARCHIVED">Arşivlendi (Archived)</option>
+                <option value="PUBLISHED">Yayınlandı</option>
+                <option value="DRAFT">Taslak</option>
+                <option value="ARCHIVED">Arşivlendi</option>
               </select>
             </div>
 
@@ -471,7 +472,7 @@ export default function AdminHaberlerPage() {
 
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Sıralama (Order)
+                Sıralama
               </label>
               <input
                 type="number"
@@ -486,12 +487,15 @@ export default function AdminHaberlerPage() {
             <input
               type="checkbox"
               id="isFeaturedNews"
-              checked={formData.isFeatured || false}
+              checked={Boolean(formData.isFeatured)}
               onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
               className="w-4 h-4 rounded text-[#0A5C3A] focus:ring-[#0A5C3A]"
             />
-            <label htmlFor="isFeaturedNews" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-              Öne Çıkarılan Haber (Featured)
+            <label
+              htmlFor="isFeaturedNews"
+              className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer"
+            >
+              Öne Çıkarılan Haber
             </label>
           </div>
 
@@ -514,7 +518,6 @@ export default function AdminHaberlerPage() {
         </form>
       </AdminModal>
 
-      {/* Media Picker */}
       <MediaPickerModal
         isOpen={mediaPickerOpen}
         onClose={() => setMediaPickerOpen(false)}
@@ -522,7 +525,6 @@ export default function AdminHaberlerPage() {
         allowedType="image"
       />
 
-      {/* Confirm Delete */}
       <AdminConfirmDialog
         isOpen={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}

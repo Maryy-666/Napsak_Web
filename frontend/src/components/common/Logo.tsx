@@ -56,6 +56,8 @@ export const Logo: React.FC<LogoProps> = ({
 
   // Compile inline styles for purely dynamic transform and opacity values
   const dynamicStyles: React.CSSProperties = {
+    width: imageWidth,
+    height: imageHeight,
     opacity: resolvedOpacity,
     transform: rotation ? `rotate(${rotation}deg)` : undefined,
   };
@@ -80,7 +82,7 @@ export const Logo: React.FC<LogoProps> = ({
         height={imageHeight}
         alt={isDecorative ? "" : alt || "N'apsak? Gençlik Topluluğu"}
         priority={priority}
-        className="h-auto w-auto max-h-full max-w-full object-contain"
+        className="h-full w-full object-contain"
         draggable={!isDecorative}
       />
     </div>
