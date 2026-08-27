@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -14,6 +15,9 @@ import { Button, PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { MagazineShowcaseSlider } from "./MagazineShowcaseSlider";
 import { MagazineReaderModal } from "./MagazineReaderModal";
+import { downloadMagazinePdf } from "../../lib/pdfExporter";
+
+import { MagazinesRepository } from "../../lib/magazinesStore";
 
 export type MagazineIssue = {
   id: string;
@@ -26,6 +30,8 @@ export type MagazineIssue = {
   articles: string[];
   pages: number;
   fileSize: string;
+  pdfUrl?: string | null;
+  coverImage?: string | null;
   featured?: boolean;
   editorialNote: string;
   contributors: string[];
@@ -209,11 +215,47 @@ const CATEGORIES = [
 ];
 
 export default function DergilerContent() {
+  const [magazinesList, setMagazinesList] = useState<MagazineIssue[]>(MAGAZINES);
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [query, setQuery] = useState("");
   const [selectedIssue, setSelectedIssue] = useState<MagazineIssue | null>(null);
   const [readingIssue, setReadingIssue] = useState<MagazineIssue | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    MagazinesRepository.fetchMagazinesFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setMagazinesList(
+          data.map((m: any) => ({
+            id: String(m.id),
+            issueNumber: m.issueNumber || "Sayı #",
+            title: m.title,
+            category: "Genel",
+            period: m.publishDate || "2026",
+            publishDate: m.publishDate || "2026",
+            summary: m.description || m.summary || "Dergi sayısı.",
+            articles: ["Dergiden öne çıkan konular", "Yayın Kurulu Notu"],
+            pages: m.pages || 36,
+            fileSize: "5.0 MB",
+            pdfUrl: m.pdfUrl,
+            coverImage: m.coverImage,
+            editorialNote: m.description || "Dergi sayısı.",
+            contributors: ["N'apsak? Yayın Kurulu"],
+            readCount: m.readCount || 0,
+            downloadCount: 0,
+            coverStyle: {
+              bgGradient: "from-[#0A5C3A] via-[#0E7A4D] to-[#08472D]",
+              textColor: "text-white",
+              subtitleColor: "text-[#0A5C3A]",
+              badgeBg: "bg-[#0A5C3A]",
+              badgeText: "text-white",
+              borderFrame: "border-[#0A5C3A]/30",
+            },
+          }))
+        );
+      }
+    });
+  }, []);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -231,7 +273,7 @@ export default function DergilerContent() {
   const filteredMagazines = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return MAGAZINES.filter((mag) => {
+    return magazinesList.filter((mag) => {
       const matchesCategory =
         activeCategory === "Tümü" || mag.category === activeCategory;
       const matchesQuery =
@@ -242,7 +284,7 @@ export default function DergilerContent() {
 
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, magazinesList]);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
@@ -250,48 +292,30 @@ export default function DergilerContent() {
   };
 
   const handleDownloadPDF = (mag: MagazineIssue) => {
-    const content = `
-============================================================
-N'APSAK? GENÇLİK TOPLULUĞU - DİJİTAL DERGİ KÜNYESİ & ÖZETİ
-============================================================
+    if (mag.pdfUrl) {
+      window.open(mag.pdfUrl, "_blank");
+      triggerToast(`"${mag.issueNumber} - ${mag.title}" PDF dergisi açılıyor...`);
+      return;
+    }
+    try {
+      downloadMagazinePdf({
+        id: mag.id,
+        issueNumber: mag.issueNumber,
+        title: mag.title,
+        category: mag.category,
+        publishDate: mag.publishDate,
+        period: mag.period,
+        pages: mag.pages,
+        editorialNote: mag.editorialNote,
+        articles: mag.articles,
+        contributors: mag.contributors,
+      });
 
-Dergi Sayısı: ${mag.issueNumber}
-Başlık: ${mag.title}
-Kategori: ${mag.category}
-Yayın Tarihi: ${mag.publishDate} (${mag.period})
-Sayfa Sayısı: ${mag.pages} Sayfa
-
-------------------------------------------------------------
-EDİTÖRDEN NOT:
-------------------------------------------------------------
-${mag.editorialNote}
-
-------------------------------------------------------------
-ÖNE ÇIKAN MAKALELER & İÇİNDEKİLER:
-------------------------------------------------------------
-${mag.articles.map((art, idx) => `${idx + 1}. ${art}`).join("\n")}
-
-------------------------------------------------------------
-YAZARLAR VE KATKIDA BULUNANLAR:
-------------------------------------------------------------
-${mag.contributors.join(", ")}
-
-============================================================
-N'apsak? Gençlik Topluluğu | www.napsak.org
-============================================================
-    `.trim();
-
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${mag.id}-napsak-dergisi.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    triggerToast(`"${mag.issueNumber} - ${mag.title}" özeti indirildi!`);
+      triggerToast(`"${mag.issueNumber} - ${mag.title}" PDF dergisi başarıyla indirildi!`);
+    } catch (error) {
+      console.error("Dergi PDF indirme hatası:", error);
+      triggerToast("Dergi PDF dosyası oluşturulurken bir hata oluştu.");
+    }
   };
 
   return (
@@ -371,9 +395,11 @@ N'apsak? Gençlik Topluluğu | www.napsak.org
       </Section>
 
       {/* Level 2: Magazine Detail Modal (Strict Viewport Height Bounds max-h-[calc(100vh-50px)]) */}
+      {typeof document !== "undefined" &&
+        createPortal(
       <AnimatePresence>
         {selectedIssue && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center p-3 sm:p-5 overflow-hidden">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 overflow-hidden">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -522,7 +548,9 @@ N'apsak? Gençlik Topluluğu | www.napsak.org
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+          document.body
+        )}
 
       {/* Level 3: 3D FlipBook Reader Modal */}
       <MagazineReaderModal

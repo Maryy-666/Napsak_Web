@@ -46,9 +46,15 @@ export const FAQS = [
 export interface FAQSectionProps {
   showHeader?: boolean;
   background?: "transparent" | "white" | "subtle";
+  customFaqs?: Array<{ question: string; answer: string }>;
 }
 
-export function FAQSection({ showHeader = true, background = "transparent" }: FAQSectionProps) {
+export function FAQSection({
+  showHeader = true,
+  background = "transparent",
+  customFaqs,
+}: FAQSectionProps) {
+  const faqList = customFaqs && customFaqs.length > 0 ? customFaqs : FAQS;
   const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
 
   // References for focus management & accessibility
@@ -127,7 +133,7 @@ export function FAQSection({ showHeader = true, background = "transparent" }: FA
 
           {/* SORULAR */}
           <div className="max-w-3xl mx-auto flex flex-col gap-3">
-            {FAQS.map((faq, index) => (
+            {faqList.map((faq, index) => (
               <Card
                 key={index}
                 variant="outlined"
@@ -159,7 +165,7 @@ export function FAQSection({ showHeader = true, background = "transparent" }: FA
 
       {/* MODAL */}
       <AnimatePresence>
-        {selectedQuestion !== null && (
+        {selectedQuestion !== null && faqList[selectedQuestion] && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#03261A]/75 backdrop-blur-md"
             initial={{ opacity: 0 }}
@@ -193,7 +199,7 @@ export function FAQSection({ showHeader = true, background = "transparent" }: FA
                     id={`faq-modal-title-${selectedQuestion}`}
                     className="text-xl sm:text-2xl font-bold text-white font-headings"
                   >
-                    {FAQS[selectedQuestion].question}
+                    {faqList[selectedQuestion].question}
                   </h3>
 
                   {/* Kapat */}
@@ -211,7 +217,7 @@ export function FAQSection({ showHeader = true, background = "transparent" }: FA
 
                 {/* Cevap */}
                 <p className="text-base text-[#E8F5EE] leading-relaxed">
-                  {FAQS[selectedQuestion].answer}
+                  {faqList[selectedQuestion].answer}
                 </p>
 
               </Card>

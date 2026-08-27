@@ -15,6 +15,8 @@ import {
 import { Button, PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { ReportCoverPreview } from "./ReportCoverPreview";
+import { downloadReportPdf } from "../../lib/pdfExporter";
+import { ReportsRepository } from "../../lib/reportsStore";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 14 },
@@ -160,10 +162,40 @@ const CATEGORIES = [
   "Saha Araştırmaları",
 ];
 
-export default function ReportsContent() {
-  const [activeCategory, setActiveCategory] = useState("Tümü");
-  const [query, setQuery] = useState("");
+export function ReportsContent() {
+  const [reportsList, setReportsList] = useState<Report[]>(REPORTS);
+  const [activeCategory, setActiveCategory] = useState<string>("Tümü");
+  const [query, setQuery] = useState<string>("");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+
+  useEffect(() => {
+    ReportsRepository.fetchReportsFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setReportsList(
+          data.map((r: any) => ({
+            id: String(r.id),
+            title: r.title,
+            category: r.category || "Gençlik & Katılım",
+            period: r.publishDate || "2026",
+            status: (r.publicationStatus === "PUBLISHED" ? "Yayınlandı" : "Hazırlanıyor") as ReportStatus,
+            summary: r.summary || r.description || "Rapor özeti.",
+            highlights: ["Araştırma Bulguları", "Saha Gözlemi"],
+            pages: r.pages || 42,
+            fileSize: r.fileSize || "4.8 MB",
+            publishDate: r.publishDate || "2026",
+            featured: r.isFeatured,
+            readCount: r.readCount || 0,
+            downloadCount: r.downloadCount || 0,
+            keyTakeaways: r.summary ? [r.summary] : ["Rapor bulgusu."],
+            tableOfContents: ["1. Giriş ve Araştırma Amacı", "2. Bulgular"],
+            methodology: r.description || "N'apsak? Gençlik Topluluğu araştırma yöntemi.",
+            pdfUrl: r.pdfUrl,
+            coverImage: r.coverImage,
+          }))
+        );
+      }
+    });
+  }, []);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Lock body scroll when modal is open
@@ -186,7 +218,7 @@ export default function ReportsContent() {
   const filteredReports = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return REPORTS.filter((report) => {
+    return reportsList.filter((report) => {
       const matchesCategory =
         activeCategory === "Tümü" || report.category === activeCategory;
       const matchesQuery =
@@ -197,7 +229,7 @@ export default function ReportsContent() {
 
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, query, reportsList]);
 
   const handleDownloadPDF = (report: Report) => {
     if (report.status !== "Yayınlandı") {
@@ -205,48 +237,23 @@ export default function ReportsContent() {
       return;
     }
 
-    const reportContent = `
-============================================================
-N'APSAK? GENÇLİK TOPLULUĞU - RESMİ RAPOR ÖZETİ
-============================================================
+    try {
+      downloadReportPdf({
+        id: report.id,
+        title: report.title,
+        category: report.category,
+        date: report.publishDate,
+        pages: report.pages,
+        summary: report.summary,
+        keyTakeaways: report.keyTakeaways,
+        methodology: report.methodology,
+      });
 
-Rapor Başlığı: ${report.title}
-Kategori: ${report.category}
-Yayın Tarihi: ${report.publishDate}
-Dönem: ${report.period}
-Sayfa Sayısı: ${report.pages} Sayfa
-
-------------------------------------------------------------
-YÖNETİCİ ÖZETİ:
-------------------------------------------------------------
-${report.summary}
-
-------------------------------------------------------------
-ÖNE ÇIKAN BULGULAR & SONUÇLAR:
-------------------------------------------------------------
-${report.keyTakeaways.map((item, idx) => `${idx + 1}. ${item}`).join("\n")}
-
-------------------------------------------------------------
-METODOLOJİ:
-------------------------------------------------------------
-${report.methodology}
-
-============================================================
-N'apsak? Gençlik Topluluğu | www.napsak.org
-============================================================
-    `.trim();
-
-    const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${report.id}-napsak-raporu.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    triggerToast(`"${report.title}" özeti indirildi!`);
+      triggerToast(`"${report.title}" PDF raporu başarıyla indirildi!`);
+    } catch (error) {
+      console.error("PDF indirme hatası:", error);
+      triggerToast("PDF raporu oluşturulurken bir hata oluştu.");
+    }
   };
 
   return (
@@ -572,3 +579,5 @@ N'apsak? Gençlik Topluluğu | www.napsak.org
     </PageBackground>
   );
 }
+
+export default ReportsContent;

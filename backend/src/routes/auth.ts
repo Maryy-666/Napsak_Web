@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client.js";
 import { Resend } from "resend";
+import { authLimiter } from "../middleware/rateLimiter.js";
 
 console.log("🔥🔥🔥 AUTH.TS YÜKLENDİ 🔥🔥🔥");
 
@@ -31,9 +32,9 @@ const PASSWORD_RESET_DURATION = 15 * 60 * 1000;
 
 /* =====================================================
    REGISTER
-===================================================== */
+==================================================== */
 
-router.post("/register", async (req, res) => {
+router.post("/register", authLimiter, async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -90,7 +91,7 @@ router.post("/register", async (req, res) => {
    LOGIN
 ===================================================== */
 
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -265,7 +266,7 @@ router.post("/logout", async (req, res) => {
    FORGOT PASSWORD
 ===================================================== */
 console.log("🔥 FORGOT PASSWORD ROUTE TANIMLANIYOR");
-router.post("/forgot-password", async (req, res) => {
+router.post("/forgot-password", authLimiter, async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -539,7 +540,7 @@ router.get("/reset-password", async (req, res) => {
    RESET PASSWORD - POST
 ===================================================== */
 
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", authLimiter, async (req, res) => {
   console.log("🔥 FORGOT PASSWORD BACKEND'E GELDİ");
 
   try {

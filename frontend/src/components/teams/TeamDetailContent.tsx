@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -15,8 +15,10 @@ import {
   Target,
   Palette,
   Leaf,
+  ShieldCheck,
 } from "lucide-react";
 import { TeamData, TEAMS_DATA, TEAM_ICONS } from "../../data/teams";
+import { TeamsRepository } from "../../lib/teamsStore";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
 import { ROUTES } from "../../constants/routes";
@@ -25,8 +27,26 @@ interface TeamDetailContentProps {
   team: TeamData;
 }
 
-export function TeamDetailContent({ team }: TeamDetailContentProps) {
-  const IconComp = TEAM_ICONS[team.iconName];
+export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps) {
+  const [currentTeam, setCurrentTeam] = useState<TeamData>(initialTeam);
+  const [allTeams, setAllTeams] = useState<TeamData[]>(TEAMS_DATA);
+
+  useEffect(() => {
+    TeamsRepository.fetchTeamsFromDB().then((teams) => {
+      if (Array.isArray(teams) && teams.length > 0) {
+        setAllTeams(teams);
+        const matched = teams.find(
+          (t) => t.slug === initialTeam.slug || t.id === initialTeam.id || t.slug === initialTeam.id
+        );
+        if (matched) {
+          setCurrentTeam(matched);
+        }
+      }
+    });
+  }, [initialTeam]);
+
+  const team = currentTeam;
+  const IconComp = TEAM_ICONS[team.iconName] || TEAM_ICONS["cpu"];
   const featuredArt = team.gallery?.find((item) => item.isFeatured);
   const gridArtItems = team.gallery?.filter((item) => !item.isFeatured) || [];
 
@@ -103,7 +123,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             >
               <div className="relative rounded-[28px] overflow-hidden border-2 border-[#EEF0F2] shadow-xl group aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3]">
                 <Image
-                  src={team.bgImage}
+                  src={team.bgImage || "/images/istockphoto-1173149385-612x612.jpg"}
                   alt={team.title}
                   fill
                   priority
@@ -241,7 +261,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             </motion.div>
           </div>
 
-          {/* Sanat Ekibi Özel Görsel Galerisi: "Sanatla Üretiyoruz" */}
+          {/* Sanat Ekibi Özel Görsel Galerisi */}
           {team.gallery && team.gallery.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -265,7 +285,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                 </p>
               </div>
 
-              {/* 1. Featured Banner Collage (1.jpeg) */}
+              {/* 1. Featured Banner Collage */}
               {featuredArt && (
                 <div className="relative rounded-[24px] overflow-hidden border border-[#EEF0F2] shadow-md group aspect-[16/9] sm:aspect-[21/9] bg-[#FAFBFB]">
                   <Image
@@ -320,6 +340,100 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             </p>
           </motion.div>
 
+          {/* 6.5. Ekip Kadrosu & Sorumlular */}
+          {team.membersList && team.membersList.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white/90 backdrop-blur-sm rounded-[28px] border border-[#EEF0F2] p-7 sm:p-10 text-left space-y-8 shadow-sm"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EEF0F2] pb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-5.5 h-5.5 stroke-[2]" />
+                  </div>
+                  <div>
+                    <span className="text-[#0A5C3A] text-xs font-bold uppercase tracking-wider">
+                      EKİP KADROSU & ÜYELER
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-bold font-headings text-[#0F1115]">
+                      Ekip Sorumluları ve Üyeleri
+                    </h2>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-[#0A5C3A] bg-[#0A5C3A]/10 px-3 py-1.5 rounded-full w-fit">
+                  Toplam {team.membersList.length} Üye
+                </span>
+              </div>
+
+              {/* Ekip Sorumluları / Başkanları */}
+              {team.membersList.filter((m) => m.isLeader || m.role.toLowerCase().includes("sorumlus") || m.role.toLowerCase().includes("başkan")).length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#0A5C3A] flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-500" /> Ekip Sorumlusu / Başkan
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {team.membersList
+                      .filter((m) => m.isLeader || m.role.toLowerCase().includes("sorumlus") || m.role.toLowerCase().includes("başkan"))
+                      .map((leader, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-4 bg-gradient-to-br from-emerald-50/80 to-white border-2 border-[#0A5C3A]/40 rounded-2xl p-4 shadow-sm relative overflow-hidden"
+                        >
+                          <div className="w-14 h-14 rounded-full bg-[#0A5C3A] text-white flex items-center justify-center font-headings font-bold text-lg border-2 border-white shadow-sm shrink-0">
+                            {leader.name.split(" ").map((n: string) => n[0]).join("")}
+                          </div>
+                          <div className="space-y-0.5 min-w-0 flex-1">
+                            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0A5C3A] text-white text-[10px] font-black uppercase tracking-wider mb-1">
+                              ★ EKİP SORUMLUSU
+                            </div>
+                            <h4 className="text-base font-extrabold font-headings text-[#0F1115] truncate">
+                              {leader.name}
+                            </h4>
+                            <p className="text-xs font-semibold text-[#0A5C3A] truncate">
+                              {leader.role}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Ekip Üyeleri */}
+              {team.membersList.filter((m) => !m.isLeader && !m.role.toLowerCase().includes("sorumlus") && !m.role.toLowerCase().includes("başkan")).length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#5F6773] flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-[#0A5C3A]" /> Ekip Üyeleri
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {team.membersList
+                      .filter((m) => !m.isLeader && !m.role.toLowerCase().includes("sorumlus") && !m.role.toLowerCase().includes("başkan"))
+                      .map((member, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-3.5 bg-white border border-[#EEF0F2] rounded-2xl p-3.5 shadow-xs hover:border-[#0A5C3A]/30 transition-all"
+                        >
+                          <div className="w-12 h-12 rounded-full bg-[#07452C] text-white flex items-center justify-center font-headings font-bold text-xs border-2 border-white shadow-xs shrink-0">
+                            {member.name.split(" ").map((n: string) => n[0]).join("")}
+                          </div>
+                          <div className="space-y-0.5 min-w-0 flex-1">
+                            <h4 className="text-sm font-bold font-headings text-[#0F1115] truncate">
+                              {member.name}
+                            </h4>
+                            <p className="text-xs font-medium text-[#5F6773] truncate">
+                              {member.role || "Ekip Üyesi"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+
           {/* 7. "Ekibe Katıl" CTA Banner */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
@@ -370,9 +484,9 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
-              {TEAMS_DATA.map((item) => {
-                const ItemIconComp = TEAM_ICONS[item.iconName];
-                const isCurrent = item.slug === team.slug;
+              {allTeams.map((item) => {
+                const ItemIconComp = TEAM_ICONS[item.iconName] || TEAM_ICONS["cpu"];
+                const isCurrent = item.slug === team.slug || item.id === team.id;
 
                 if (isCurrent) {
                   return (
@@ -410,7 +524,7 @@ export function TeamDetailContent({ team }: TeamDetailContentProps) {
                       <div className="w-10 h-10 rounded-xl bg-[#0A5C3A]/8 text-[#0A5C3A] group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors duration-300 flex items-center justify-center shrink-0">
                         <ItemIconComp className="w-5 h-5 stroke-[2]" />
                       </div>
-                      <div className="w-[#0A5C3A] w-6 h-6 rounded-full bg-[#F8F9FA] text-[#0A5C3A] group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors flex items-center justify-center text-xs font-bold">
+                      <div className="w-6 h-6 rounded-full bg-[#F8F9FA] text-[#0A5C3A] group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors flex items-center justify-center text-xs font-bold">
                         →
                       </div>
                     </div>

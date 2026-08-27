@@ -141,40 +141,66 @@ export default function RegisterContent() {
 
     setIsSubmitting(true);
 
-    const user: AuthUser = {
-      id: `local-${Date.now()}`,
-      email: form.email.trim().toLowerCase(),
-      name: fullName,
-      role: "member",
-    };
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+        }),
+      });
 
-    const profile: MemberProfile = {
-      fullName,
-      email: user.email,
-      phone: form.phone,
-      birthDate: form.birthDate,
-      linkedin: form.linkedin.trim(),
-      city: "",
-      university: form.university.trim(),
-      universityType: form.universityType,
-      school: form.university.trim(),
-      department: form.department.trim(),
-      grade: form.grade,
-      startDate: form.startDate,
-      graduationDate: form.graduationDate,
-      gpa: form.gpa,
-      experience: form.experience.trim(),
-      interests: form.interests,
-      careerPreferences: form.careerPreferences,
-      skills: form.skills.trim(),
-      bio: form.bio.trim(),
-    };
+      const responseData = await response.json().catch(() => ({}));
 
-    saveCurrentUser(user);
-    saveMemberProfile(user, profile);
-    toast.success("Kaydın oluşturuldu. Profilin hazır.");
-    setIsSubmitting(false);
-    router.replace(ROUTES.PROFIL);
+      if (!response.ok || !responseData.success) {
+        toast.error(responseData.error || "Kayıt oluşturulamadı.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const returnedUser = responseData.user;
+      const user: AuthUser = {
+        id: String(returnedUser?.id || `user-${Date.now()}`),
+        email: (returnedUser?.email || form.email).trim().toLowerCase(),
+        name: returnedUser?.name || fullName,
+        role: returnedUser?.role === "ADMIN" ? "admin" : "member",
+      };
+
+      const profile: MemberProfile = {
+        fullName,
+        email: user.email,
+        phone: form.phone,
+        birthDate: form.birthDate,
+        linkedin: form.linkedin.trim(),
+        city: "",
+        university: form.university.trim(),
+        universityType: form.universityType,
+        school: form.university.trim(),
+        department: form.department.trim(),
+        grade: form.grade,
+        startDate: form.startDate,
+        graduationDate: form.graduationDate,
+        gpa: form.gpa,
+        experience: form.experience.trim(),
+        interests: form.interests,
+        careerPreferences: form.careerPreferences,
+        skills: form.skills.trim(),
+        bio: form.bio.trim(),
+      };
+
+      saveCurrentUser(user);
+      saveMemberProfile(user, profile);
+      toast.success(responseData.message || "Kaydın oluşturuldu. Profilin hazır.");
+      setIsSubmitting(false);
+      router.replace(ROUTES.PROFIL);
+    } catch (error: any) {
+      toast.error(error.message || "Kayıt işlemi sırasında bir hata oluştu.");
+      setIsSubmitting(false);
+    }
   };
 
   return (

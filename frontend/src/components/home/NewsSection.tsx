@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
@@ -12,21 +12,47 @@ import {
   Newspaper,
   Sparkles,
 } from "lucide-react";
-import { NEWS_DATA } from "../../data/news";
 import { ROUTES } from "../../constants/routes";
+import { NewsRepository } from "../../lib/newsStore";
 import { PageContainer, Section } from "../ui";
 
+type NewsCard = {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  coverImage: string;
+};
+
+const mapNewsItem = (item: any): NewsCard => ({
+  id: String(item.id),
+  slug: item.slug,
+  title: item.title,
+  date: item.publishDate || "2026",
+  category: item.category || "Duyuru",
+  excerpt: item.summary || item.content?.substring(0, 150) || "",
+  coverImage: item.coverImage || "/images/forest-hero.jpg",
+});
+
 export const NewsSection: React.FC = () => {
+  const [newsList, setNewsList] = useState<NewsCard[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
-  const totalNews = NEWS_DATA.length;
-  // Maximum slide index (showing 3 cards on desktop at once, so max index is total - 3, or looping)
-  const maxIndex = totalNews - 1;
+  useEffect(() => {
+    NewsRepository.fetchNewsFromDB()
+      .then((data) => setNewsList(data.map(mapNewsItem)))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const totalNews = newsList.length;
 
   useEffect(() => {
-    if (shouldReduceMotion || isPaused) return;
+    if (shouldReduceMotion || isPaused || totalNews === 0) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % totalNews);
@@ -35,21 +61,31 @@ export const NewsSection: React.FC = () => {
     return () => clearInterval(timer);
   }, [totalNews, isPaused, shouldReduceMotion]);
 
+  useEffect(() => {
+    if (currentIndex >= totalNews && totalNews > 0) {
+      setCurrentIndex(0);
+    }
+  }, [currentIndex, totalNews]);
+
   const handlePrev = () => {
+    if (totalNews === 0) return;
     setCurrentIndex((prev) => (prev === 0 ? totalNews - 1 : prev - 1));
   };
 
   const handleNext = () => {
+    if (totalNews === 0) return;
     setCurrentIndex((prev) => (prev + 1) % totalNews);
   };
+
+  if (!loading && totalNews === 0) {
+    return null;
+  }
 
   return (
     <Section padding="lg" background="subtle" className="relative py-20 overflow-hidden border-t border-[#EEF0F2]">
       <PageContainer className="max-w-6xl">
-        {/* Section Header with Navigation Arrows */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12 text-left">
           <div className="space-y-3 max-w-2xl text-center md:text-left">
-            {/* Youthful Slogan Badge */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -60,7 +96,6 @@ export const NewsSection: React.FC = () => {
               <span>N'apsak? Naptık!</span>
             </motion.div>
 
-            {/* Main Section Title */}
             <motion.h2
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -71,7 +106,6 @@ export const NewsSection: React.FC = () => {
               Bizden Haberler
             </motion.h2>
 
-            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -79,23 +113,24 @@ export const NewsSection: React.FC = () => {
               transition={{ delay: 0.2 }}
               className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed"
             >
-              Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan renkli hikayeleri.
+              Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan
+              renkli hikayeleri.
             </motion.p>
           </div>
 
-          {/* Navigation Controls (Arrows) & All Events Button */}
           <div className="flex items-center gap-3 shrink-0">
             <Link
-              href={ROUTES.ETKINLIKLER}
+              href={ROUTES.HABERLER}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0A5C3A] text-white text-xs font-bold shadow-md hover:bg-[#084A2F] transition-all"
             >
-              <span>Tüm Etkinlikler</span>
+              <span>Tüm Haberler</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
               type="button"
               onClick={handlePrev}
-              className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
+              disabled={totalNews <= 1}
+              className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
               aria-label="Önceki Haber"
             >
               <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
@@ -103,7 +138,8 @@ export const NewsSection: React.FC = () => {
             <button
               type="button"
               onClick={handleNext}
-              className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
+              disabled={totalNews <= 1}
+              className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
               aria-label="Sonraki Haber"
             >
               <ChevronRight className="w-6 h-6 stroke-[2.5]" />
@@ -111,102 +147,106 @@ export const NewsSection: React.FC = () => {
           </div>
         </div>
 
-        {/* News Rotating Carousel Track */}
-        <div
-          className="relative w-full overflow-hidden"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <motion.div
-            className="flex gap-6 text-left"
-            animate={{
-              x: `-${currentIndex * (100 / (typeof window !== 'undefined' && window.innerWidth < 640 ? 1 : typeof window !== 'undefined' && window.innerWidth < 1024 ? 2 : 3))}%`,
-            }}
-            transition={{
-              duration: 0.6,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          >
-            {NEWS_DATA.map((item) => (
-              <div
-                key={item.id}
-                className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 flex flex-col"
+        {loading ? (
+          <div className="py-10 text-center text-sm font-medium text-[#5F6773]">Haberler yükleniyor...</div>
+        ) : (
+          <>
+            <div
+              className="relative w-full overflow-hidden"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              <motion.div
+                className="flex gap-6 text-left"
+                animate={{
+                  x: `-${
+                    currentIndex *
+                    (100 /
+                      (typeof window !== "undefined" && window.innerWidth < 640
+                        ? 1
+                        : typeof window !== "undefined" && window.innerWidth < 1024
+                          ? 2
+                          : 3))
+                  }%`,
+                }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
               >
-                {/* Entire Card is a Single Clickable Link */}
-                <Link
-                  href={`/haberler/${item.slug}`}
-                  className="flex flex-col h-full bg-white rounded-[24px] border border-[#EEF0F2] overflow-hidden shadow-[0_8px_30px_rgba(15,17,21,0.04)] hover:shadow-[0_16px_40px_rgba(10,92,58,0.14)] hover:border-[#0A5C3A]/50 transition-all duration-300 cursor-pointer group"
-                >
-                  {/* Card Cover Image */}
-                  <div className="relative block aspect-[16/10] overflow-hidden bg-[#FAFBFB] p-2">
-                    <Image
-                      src={item.coverImage}
-                      alt={item.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                {newsList.map((item) => (
+                  <div
+                    key={item.id || item.slug}
+                    className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 flex flex-col"
+                  >
+                    <Link
+                      href={`/haberler/${item.slug}`}
+                      className="flex flex-col h-full bg-white rounded-[24px] border border-[#EEF0F2] overflow-hidden shadow-[0_8px_30px_rgba(15,17,21,0.04)] hover:shadow-[0_16px_40px_rgba(10,92,58,0.14)] hover:border-[#0A5C3A]/50 transition-all duration-300 cursor-pointer group"
+                    >
+                      <div className="relative block aspect-[16/10] overflow-hidden bg-[#FAFBFB] p-2">
+                        <Image
+                          src={item.coverImage}
+                          alt={item.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#0A5C3A] text-white text-xs font-bold font-sans tracking-wide shadow-md">
-                      {item.category}
-                    </div>
-                  </div>
-
-                  {/* Card Body Content */}
-                  <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4">
-                    <div className="space-y-3">
-                      {/* Date */}
-                      <div className="flex items-center gap-2 text-xs font-medium text-[#5F6773]">
-                        <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
-                        <span>{item.date}</span>
+                        <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#0A5C3A] text-white text-xs font-bold font-sans tracking-wide shadow-md">
+                          {item.category}
+                        </div>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="text-xl font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2">
-                        {item.title}
-                      </h3>
+                      <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-xs font-medium text-[#5F6773]">
+                            <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
+                            <span>{item.date}</span>
+                          </div>
 
-                      {/* Excerpt */}
-                      <p className="text-sm font-sans text-[#5F6773] leading-relaxed line-clamp-3">
-                        {item.excerpt}
-                      </p>
-                    </div>
+                          <h3 className="text-xl font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2">
+                            {item.title}
+                          </h3>
 
-                    {/* Card Action Link */}
-                    <div className="pt-3 border-t border-[#EEF0F2] flex items-center justify-between">
-                      <div className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0A5C3A] group-hover:text-[#084A2F] transition-colors">
-                        <span>Detayları Gör</span>
-                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
+                          <p className="text-sm font-sans text-[#5F6773] leading-relaxed line-clamp-3">
+                            {item.excerpt}
+                          </p>
+                        </div>
+
+                        <div className="pt-3 border-t border-[#EEF0F2] flex items-center justify-between">
+                          <div className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0A5C3A] group-hover:text-[#084A2F] transition-colors">
+                            <span>Detayları Gör</span>
+                            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
+                          </div>
+                          <span className="w-8 h-8 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors">
+                            <Newspaper className="w-4 h-4" />
+                          </span>
+                        </div>
                       </div>
-                      <span className="w-8 h-8 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors">
-                        <Newspaper className="w-4 h-4" />
-                      </span>
-                    </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-            ))}
-          </motion.div>
-        </div>
+                ))}
+              </motion.div>
+            </div>
 
-        {/* Slide Indicator Dots */}
-        <div className="flex items-center justify-center gap-2 mt-10">
-          {NEWS_DATA.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setCurrentIndex(idx)}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                idx === currentIndex
-                  ? "w-8 bg-[#0A5C3A]"
-                  : "w-2.5 bg-[#CDD1D5] hover:bg-[#0A5C3A]/40"
-              }`}
-              aria-label={`Haber ${idx + 1}`}
-            />
-          ))}
-        </div>
+            <div className="flex items-center justify-center gap-2 mt-10">
+              {newsList.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    idx === currentIndex
+                      ? "w-8 bg-[#0A5C3A]"
+                      : "w-2.5 bg-[#CDD1D5] hover:bg-[#0A5C3A]/40"
+                  }`}
+                  aria-label={`Haber ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </PageContainer>
     </Section>
   );

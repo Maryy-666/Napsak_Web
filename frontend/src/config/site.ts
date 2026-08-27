@@ -65,7 +65,7 @@ export const SITE_CONFIG = {
     {
       title: "Topluluk",
       href: "#topluluk",
-      status: "coming-soon",
+      status: "active",
       items: [
         {
           title: "Çalışma Ekiplerimiz",
@@ -73,14 +73,14 @@ export const SITE_CONFIG = {
           status: "active",
         },
         {
-          title: "Üyelerimiz",
+          title: "Ekibimiz",
           href: ROUTES.UYELER,
           status: "active",
         },
         {
           title: "Etkileşim / Katılım",
           href: ROUTES.KATILIM,
-          status: "coming-soon",
+          status: "active",
         },
         {
           title: "SSS",

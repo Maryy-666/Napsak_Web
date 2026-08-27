@@ -26,8 +26,8 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://gist.githubusercontent.com",
+      "img-src 'self' data: blob: https: http://localhost:3001",
+      "connect-src 'self' http://localhost:3001 http://127.0.0.1:3001 https://gist.githubusercontent.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self' https://docs.google.com https://*.google.com",
@@ -45,10 +45,23 @@ if (isProd) {
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },

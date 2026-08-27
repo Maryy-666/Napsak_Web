@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown, UserRound } from "lucide-react";
-import { SITE_CONFIG, NavItem } from "../../config/site";
+import { Menu, X, ArrowRight, ChevronDown, UserRound, LogOut, ShieldCheck } from "lucide-react";
+import { SITE_CONFIG } from "../../config/site";
 import { ROUTES } from "../../constants/routes";
 import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
-import { AuthUser, getCurrentUser } from "../../lib/memberAuth";
+import { AuthUser, MemberProfile, getCurrentUser, getMemberProfile, clearCurrentUser } from "../../lib/memberAuth";
+import { NavigationRepository } from "../../lib/navigationStore";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -17,6 +18,7 @@ function cn(...classes: (string | undefined | null | false)[]) {
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
 
   // Scroll, mobile menu, and desktop dropdown states
@@ -24,9 +26,55 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [userProfile, setUserProfile] = useState<MemberProfile | null>(null);
+  const [navItemsList, setNavItemsList] = useState<any[]>(SITE_CONFIG.mainNav as any[]);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch live navigation items from DB API and merge with default config
+  useEffect(() => {
+    NavigationRepository.fetchNavFromDB("NAVBAR", "visible").then((res) => {
+      if (res && Array.isArray(res.navbar) && res.navbar.length > 0) {
+        const dbMapped = res.navbar.map((item: any) => {
+          const href =
+            item.targetType === "PAGE" && item.page?.slug
+              ? `/sayfa/${item.page.slug}`
+              : item.href || "#";
+
+          const children =
+            item.children && item.children.length > 0
+              ? item.children.map((child: any) => ({
+                  title: child.label,
+                  href:
+                    child.targetType === "PAGE" && child.page?.slug
+                      ? `/sayfa/${child.page.slug}`
+                      : child.href || "#",
+                  status: "active",
+                }))
+              : undefined;
+
+          return {
+            title: item.label,
+            href,
+            status: "active",
+            items: children,
+          };
+        });
+
+        // 🟢 Harmanlama Mantığı: Statik menüleri koru, çakışmayan DB menülerini yanına ekle
+        const staticNav = (SITE_CONFIG.mainNav || []) as any[];
+        const dbTitles = dbMapped.map((d: any) => d.title.toLowerCase());
+        
+        const filteredStatic = staticNav.filter(
+          (s: any) => !dbTitles.includes(s.title.toLowerCase())
+        );
+
+        setNavItemsList([...filteredStatic, ...dbMapped]);
+      }
+    });
+  }, []);
 
   // Monitor scroll state using a passive scroll listener
   useEffect(() => {
@@ -43,15 +91,21 @@ export const Navbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const syncUser = () => setCurrentUser(getCurrentUser());
+    const syncUser = () => {
+      const user = getCurrentUser();
+      setCurrentUser(user);
+      setUserProfile(user ? getMemberProfile(user) : null);
+    };
 
     syncUser();
     window.addEventListener("storage", syncUser);
     window.addEventListener("focus", syncUser);
+    window.addEventListener("profile-updated", syncUser);
 
     return () => {
       window.removeEventListener("storage", syncUser);
       window.removeEventListener("focus", syncUser);
+      window.removeEventListener("profile-updated", syncUser);
     };
   }, [pathname]);
 
@@ -102,6 +156,26 @@ export const Navbar: React.FC = () => {
     return href !== "#" && pathname.startsWith(href);
   };
 
+  const isAdmin = Boolean(
+    currentUser && (
+      currentUser.role === "admin" ||
+      (currentUser.role as string) === "ADMIN" ||
+      currentUser.email?.toLowerCase() === "admin@napsak.com"
+    )
+  );
+
+  const handleLogout = () => {
+    clearCurrentUser();
+    setCurrentUser(null);
+    setLogoutConfirmOpen(false);
+    router.push(ROUTES.HOME);
+  };
+
+  const requestLogout = () => {
+    setIsMobileMenuOpen(false);
+    setLogoutConfirmOpen(true);
+  };
+
   return (
     <motion.header
       initial="hidden"
@@ -109,10 +183,10 @@ export const Navbar: React.FC = () => {
       variants={navbarVariants}
       transition={transitionConfig}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out border-b",
+        "fixed top-0 left-0 right-0 z-50 w-full h-[88px] transition-all duration-300 ease-in-out border-b",
         isScrolled
-          ? "h-16 bg-[#07452C]/95 border-white/15 shadow-[0_4px_24px_rgba(0,0,0,0.25)] backdrop-blur-md"
-          : "h-20 bg-black/40 border-white/10 backdrop-blur-md"
+          ? "bg-[#07452C]/95 border-white/15 shadow-[0_4px_24px_rgba(0,0,0,0.25)] backdrop-blur-md"
+          : "bg-black/40 border-white/10 backdrop-blur-md"
       )}
     >
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -125,15 +199,15 @@ export const Navbar: React.FC = () => {
         >
           <Logo
             variant="default"
-            size={isScrolled ? 44 : 54}
+            size={72}
             priority
-            className="transition-all duration-300 ease-in-out filter brightness-110 flex items-center justify-center"
+            className="transition-all duration-300 ease-in-out filter brightness-110 flex items-center justify-center shrink-0"
           />
         </Link>
 
         {/* Center Navigation Links */}
-        <nav className="hidden md:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
-          {SITE_CONFIG.mainNav.map((item) => {
+        <nav className="hidden lg:flex items-center gap-2 lg:gap-5" aria-label="Ana Navigasyon">
+          {navItemsList.map((item: any) => {
             const hasSubItems = Boolean(item.items && item.items.length > 0);
             const isPassive = item.status === "coming-soon";
             const active = isLinkActive(item.href);
@@ -141,7 +215,7 @@ export const Navbar: React.FC = () => {
             // Dropdown Item (Çalışmalar, Topluluk etc.)
             if (hasSubItems) {
               const isOpen = activeDropdown === item.title;
-              const hasActiveChild = item.items?.some((child) => isLinkActive(child.href));
+              const hasActiveChild = item.items?.some((child: any) => isLinkActive(child.href));
 
               return (
                 <div
@@ -154,7 +228,7 @@ export const Navbar: React.FC = () => {
                     type="button"
                     onClick={() => setActiveDropdown(isOpen ? null : item.title)}
                     className={cn(
-                      "flex items-center gap-1.5 text-sm font-medium transition-colors py-1 px-2.5 rounded-md outline-none select-none focus-visible:ring-4 focus-visible:ring-white/20",
+                      "flex items-center gap-1.5 text-sm font-medium transition-colors py-1 px-2.5 rounded-md outline-none select-none focus-visible:ring-4 focus-visible:ring-white/20 cursor-pointer",
                       hasActiveChild
                         ? "text-white font-semibold"
                         : isPassive
@@ -183,7 +257,7 @@ export const Navbar: React.FC = () => {
                         transition={{ duration: 0.18, ease: "easeOut" }}
                         className="absolute top-full left-0 mt-1 min-w-[210px] bg-[#07452C]/95 border border-white/15 shadow-[0_16px_36px_rgba(0,0,0,0.4)] backdrop-blur-xl rounded-xl p-1.5 z-50 flex flex-col gap-0.5"
                       >
-                        {item.items?.map((subItem) => {
+                        {item.items?.map((subItem: any) => {
                           const isSubPassive = subItem.status === "coming-soon";
 
                           if (isSubPassive) {
@@ -225,7 +299,7 @@ export const Navbar: React.FC = () => {
               );
             }
 
-            // Single Passive Item (Hakkımızda, Etkinlikler etc.)
+            // Single Passive Item
             if (isPassive) {
               return (
                 <span
@@ -242,7 +316,7 @@ export const Navbar: React.FC = () => {
               );
             }
 
-            // Single Active Item (Ana Sayfa, İletişim etc.)
+            // Single Active Item
             return (
               <Link
                 key={item.title}
@@ -269,51 +343,90 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
-        <div className="hidden md:flex items-center gap-2 lg:gap-3">
+        <div className="hidden lg:flex items-center gap-2 lg:gap-3">
           {currentUser ? (
-            <Link
-              href={ROUTES.PROFIL}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
-              aria-label="Profilim"
-              title="Profilim"
-            >
-              <UserRound className="h-5 w-5" />
-            </Link>
+            isAdmin ? (
+              <div className="flex items-center gap-2.5 shrink-0">
+                <Link
+                  href={ROUTES.ADMIN}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-emerald-400/40 bg-[#0A5C3A] text-white text-xs sm:text-sm font-semibold hover:bg-[#128C59] transition-all shadow-xs whitespace-nowrap shrink-0"
+                  title="Admin Paneli"
+                >
+                  <ShieldCheck className="w-4 h-4 stroke-[2]" />
+                  <span>Admin Panel</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={requestLogout}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 text-white text-xs sm:text-sm font-semibold hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
+                  title="Çıkış Yap"
+                >
+                  <LogOut className="w-4 h-4 stroke-[2]" />
+                  <span>Çıkış Yap</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={ROUTES.PROFIL}
+                  className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white overflow-hidden transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
+                  aria-label="Profilim"
+                  title="Profilim"
+                >
+                  {userProfile?.avatar ? (
+                    <img src={userProfile.avatar} alt="Profilim" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <UserRound className="h-4.5 w-4.5" />
+                  )}
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={requestLogout}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 text-white text-xs font-medium hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer"
+                  title="Çıkış Yap"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Çıkış</span>
+                </button>
+              </div>
+            )
           ) : (
             <>
-          <Button
-            href={ROUTES.LOGIN}
-            variant="secondary"
-            size="sm"
-            className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
-          >
-            Giriş Yap
-          </Button>
+              <Button
+                href={ROUTES.LOGIN}
+                variant="secondary"
+                size="sm"
+                className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
+              >
+                Giriş Yap
+              </Button>
 
-          <Button
-            href={ROUTES.KAYIT}
-            variant="secondary"
-            size="sm"
-            className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
-          >
-            Kayıt Ol
-          </Button>
+              <Button
+                href={ROUTES.KAYIT}
+                variant="secondary"
+                size="sm"
+                className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
+              >
+                Kayıt Ol
+              </Button>
 
-          <Button
-            href={ROUTES.BASVURU}
-            variant="primary"
-            size="sm"
-            rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
-            className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
-          >
-            Topluluğa Katıl
-          </Button>
+              <Button
+                href={ROUTES.BASVURU}
+                variant="primary"
+                size="sm"
+                rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
+                className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
+              >
+                Topluluğa Katıl
+              </Button>
             </>
           )}
         </div>
 
         {/* Mobile Hamburger Toggle Button */}
-        <div className="flex items-center md:hidden">
+        <div className="flex items-center lg:hidden">
           <button
             ref={menuButtonRef}
             type="button"
@@ -343,30 +456,31 @@ export const Navbar: React.FC = () => {
             exit="closed"
             variants={drawerVariants}
             transition={transitionConfig}
-            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl md:hidden max-h-[calc(100vh-80px)] overflow-y-auto"
+            className="absolute top-full left-0 right-0 z-40 w-full bg-[#07452C] border-b border-white/15 shadow-2xl lg:hidden max-h-[calc(100vh-80px)] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label="Mobil Menü"
           >
             <div className="px-4 pt-4 pb-6 space-y-3 bg-black/20">
               <nav className="flex flex-col gap-2" aria-label="Mobil Navigasyon">
-                {SITE_CONFIG.mainNav.map((item) => {
+                {navItemsList.map((item: any) => {
                   const hasSubItems = Boolean(item.items && item.items.length > 0);
                   const isPassive = item.status === "coming-soon";
                   const active = isLinkActive(item.href);
 
-                  // Mobile Group with SubItems
                   if (hasSubItems) {
                     return (
                       <div key={item.title} className="flex flex-col gap-1 py-1">
                         <div className="flex items-center justify-between px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
                           <span>{item.title}</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
-                            Yakında
-                          </span>
+                          {isPassive && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
+                              Yakında
+                            </span>
+                          )}
                         </div>
                         <div className="pl-3 border-l-2 border-white/15 flex flex-col gap-1">
-                          {item.items?.map((sub) => {
+                          {item.items?.map((sub: any) => {
                             const isSubPassive = sub.status === "coming-soon";
 
                             if (isSubPassive) {
@@ -405,7 +519,6 @@ export const Navbar: React.FC = () => {
                     );
                   }
 
-                  // Mobile Single Passive Item
                   if (isPassive) {
                     return (
                       <div
@@ -420,7 +533,6 @@ export const Navbar: React.FC = () => {
                     );
                   }
 
-                  // Mobile Single Active Item
                   return (
                     <Link
                       key={item.title}
@@ -442,55 +554,161 @@ export const Navbar: React.FC = () => {
 
               <div className="pt-4 border-t border-white/15 flex flex-col gap-2.5">
                 {currentUser && (
-                  <Button
-                    href={ROUTES.PROFIL}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    leftIcon={<UserRound className="h-4 w-4" />}
-                    className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm"
-                  >
-                    Profilim
-                  </Button>
+                  isAdmin ? (
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        href={ROUTES.ADMIN}
+                        variant="primary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        leftIcon={<ShieldCheck className="h-4 w-4" />}
+                        className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-sm"
+                      >
+                        Admin Panel
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          requestLogout();
+                        }}
+                        leftIcon={<LogOut className="h-4 w-4" />}
+                        className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm"
+                      >
+                        Çıkış Yap
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        href={ROUTES.PROFIL}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        leftIcon={
+                          userProfile?.avatar ? (
+                            <img src={userProfile.avatar} alt="Profilim" className="h-5 w-5 rounded-full object-cover shrink-0" />
+                          ) : (
+                            <UserRound className="h-4 w-4" />
+                          )
+                        }
+                        className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm flex-1"
+                      >
+                        Profilim
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          requestLogout();
+                        }}
+                        className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm px-3.5"
+                        title="Çıkış Yap"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )
                 )}
 
-                <div className={cn("grid grid-cols-2 gap-2", currentUser && "hidden")}>
-                  <Button
-                    href={ROUTES.LOGIN}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
-                  >
-                    Giriş Yap
-                  </Button>
+                {!currentUser && (
+                  <>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        href={ROUTES.LOGIN}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
+                      >
+                        Giriş Yap
+                      </Button>
 
-                  <Button
-                    href={ROUTES.KAYIT}
-                    variant="secondary"
-                    size="lg"
-                    fullWidth
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
-                  >
-                    Kayıt Ol
-                  </Button>
-                </div>
+                      <Button
+                        href={ROUTES.KAYIT}
+                        variant="secondary"
+                        size="lg"
+                        fullWidth
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
+                      >
+                        Kayıt Ol
+                      </Button>
+                    </div>
 
-                <Button
-                  href={ROUTES.BASVURU}
-                  variant="primary"
-                  size="lg"
-                  fullWidth
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
-                >
-                  Topluluğa Katıl
-                </Button>
+                    <Button
+                      href={ROUTES.BASVURU}
+                      variant="primary"
+                      size="lg"
+                      fullWidth
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
+                    >
+                      Topluluğa Katıl
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {logoutConfirmOpen && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-confirm-title"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.96 }}
+              transition={transitionConfig}
+              className="w-full max-w-sm rounded-2xl border border-white/15 bg-white p-5 text-[#0F1115] shadow-2xl"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[#0A5C3A]">
+                  <LogOut className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 id="logout-confirm-title" className="text-lg font-extrabold">
+                    Çıkış Yap
+                  </h2>
+                  <p className="mt-1 text-sm font-medium leading-relaxed text-[#5F6773]">
+                    Çıkış yapmak istediğinizden emin misiniz?
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLogoutConfirmOpen(false)}
+                  className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
+                >
+                  Vazgeç
+                </button>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#0A5C3A]/20 transition-colors"
+                >
+                  Evet, Çıkış Yap
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -499,4 +717,3 @@ export const Navbar: React.FC = () => {
 };
 
 Navbar.displayName = "Navbar";
-

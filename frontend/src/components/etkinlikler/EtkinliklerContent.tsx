@@ -14,6 +14,7 @@ import {
   Users,
   X,
   Zap,
+  Clock,
 } from "lucide-react";
 import { Badge, Button, PageContainer, Section } from "../ui";
 import { EventItem, EventsRepository } from "../../lib/eventsStore";
@@ -21,14 +22,25 @@ import { getCurrentUser, getMemberProfile } from "../../lib/memberAuth";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
 
+// Framer Motion animasyon varyantı
 const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay, ease: "easeOut" },
+    transition: { duration: 0.4, delay, ease: "easeOut" },
   }),
 };
+
+// Tarih Bloğu İçin Ay Ayrıştırma Yardımcısı (Örn: "26 Eylül 2025" -> { day: "26", month: "EYL" })
+function parseDateBlock(dateStr: string) {
+  if (!dateStr) return { day: "--", month: "ETK" };
+  const parts = dateStr.trim().split(" ");
+  const day = parts[0] || "--";
+  const rawMonth = (parts[1] || "").toUpperCase();
+  const month = rawMonth.slice(0, 3) || "ETK";
+  return { day, month };
+}
 
 export default function EtkinliklerContent() {
   const router = useRouter();
@@ -52,16 +64,47 @@ export default function EtkinliklerContent() {
 
   useEffect(() => {
     setEvents(EventsRepository.getAllEvents());
+    EventsRepository.fetchEventsFromDB().then((data) => {
+      if (Array.isArray(data)) {
+        setEvents(data);
+      }
+    });
   }, []);
 
+  // Modal açıkken arka plan sayfasının kaymasını engelle
+  useEffect(() => {
+    if (applyingEvent || detailEvent) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [applyingEvent, detailEvent]);
+
   const filteredEvents = events.filter((event) => {
-    const matchesTab = activeTab === "aktif" ? event.status === "aktif" : event.status === "gecmis";
+    const pubStatus = (event as any).publicationStatus;
+    if (pubStatus && pubStatus !== "PUBLISHED") return false; // Strictly hide DRAFT or ARCHIVED events
+
+    const isUpcoming = event.status === "aktif" || event.status === "Yaklaşan" || event.status === "Devam Ediyor";
+    const isPast = event.status === "gecmis" || event.status === "Geçmiş";
+    const matchesTab = activeTab === "aktif" ? isUpcoming : isPast;
     const matchesCategory = selectedCategory === "all" || event.category === selectedCategory;
     return matchesTab && matchesCategory;
   });
 
-  const activeCount = events.filter((event) => event.status === "aktif").length;
-  const pastCount = events.filter((event) => event.status === "gecmis").length;
+  const activeCount = events.filter((event) => {
+    const pub = (event as any).publicationStatus;
+    if (pub && pub !== "PUBLISHED") return false;
+    return event.status === "aktif" || event.status === "Yaklaşan" || event.status === "Devam Ediyor";
+  }).length;
+
+  const pastCount = events.filter((event) => {
+    const pub = (event as any).publicationStatus;
+    if (pub && pub !== "PUBLISHED") return false;
+    return event.status === "gecmis" || event.status === "Geçmiş";
+  }).length;
 
   const openApplication = (event: EventItem) => {
     const currentUser = getCurrentUser();
@@ -131,14 +174,18 @@ export default function EtkinliklerContent() {
   };
 
   return (
-    <PageBackground id="etkinlikler-root" className="px-0 py-0">
-      <Section padding="none" background="transparent" className="pt-16 sm:pt-22 pb-9 sm:pb-12 border-b border-[#EEF0F2] relative">
+    <PageBackground id="etkinlikler-root" className="select-none px-0 py-0 overflow-hidden">
+      
+      {/* ------------------------------------------------------------- */}
+      {/* 1. ÜST ALAN (HERO - Önceki Zengin Başlık)                     */}
+      {/* ------------------------------------------------------------- */}
+      <Section padding="none" background="transparent" className="pt-14 sm:pt-18 pb-8 sm:pb-10 border-b border-slate-100 relative">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center max-w-4xl mx-auto select-none space-y-5"
+            className="text-center max-w-4xl mx-auto select-none space-y-4"
           >
             <Badge variant="brand" size="md" className="mb-2">
               Etkinlik Takvimi
@@ -157,21 +204,27 @@ export default function EtkinliklerContent() {
         </PageContainer>
       </Section>
 
-      <Section padding="none" background="transparent" className="pt-4 sm:pt-6 pb-10 sm:pb-14 border-b border-[#EEF0F2]">
-        <PageContainer className="max-w-6xl sm:max-w-7xl">
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 select-none mb-8 rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-4 shadow-[0_10px_28px_rgba(15,17,21,0.045)]">
-            <div className="flex items-center gap-2 w-full lg:w-auto">
+      {/* ------------------------------------------------------------- */}
+      {/* 2. FİLTRE ALANI (Tek Satır, Sade Chip & Tab Tasarımı)         */}
+      {/* ------------------------------------------------------------- */}
+      <Section padding="none" background="transparent" className="py-8 sm:py-12 border-b border-slate-100">
+        <PageContainer className="max-w-6xl">
+          {/* Tek Temiz Filtre Çubuğu */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8 bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+            {/* Sol: Durum Sekmeleri (Aktif & Geçmiş) */}
+            <div className="flex items-center gap-1.5">
               <button
+                type="button"
                 onClick={() => setActiveTab("aktif")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-headings transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === "aktif"
-                    ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
-                    : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
+                    ? "bg-[#0A5C3A] text-white shadow-2xs"
+                    : "bg-slate-50 text-slate-600 hover:text-[#0A5C3A] hover:bg-slate-100"
                 }`}
               >
                 <Zap className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Yaklaşan & Aktif Etkinlikler</span>
-                <span className={`text-[10px] px-1.5 rounded-md font-sans ${
+                <span>Yaklaşan & Aktif</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-sans ${
                   activeTab === "aktif" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
                   {activeCount}
@@ -179,16 +232,17 @@ export default function EtkinliklerContent() {
               </button>
 
               <button
+                type="button"
                 onClick={() => setActiveTab("gecmis")}
-                className={`flex-1 lg:flex-none px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-headings transition-all duration-200 flex items-center justify-center gap-2 border ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-headings transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === "gecmis"
-                    ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-[0_8px_20px_rgba(10,92,58,0.18)]"
-                    : "bg-[#F8FAFC] text-[#5F6773] border-[#E5E7EB] hover:text-[#0A5C3A] hover:border-[#C9D8D0] hover:bg-white"
+                    ? "bg-[#0A5C3A] text-white shadow-2xs"
+                    : "bg-slate-50 text-slate-600 hover:text-[#0A5C3A] hover:bg-slate-100"
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Geçmiş Etkinlikler</span>
-                <span className={`text-[10px] px-1.5 rounded-md font-sans ${
+                <span>Geçmiş</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-sans ${
                   activeTab === "gecmis" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
                   {pastCount}
@@ -196,42 +250,50 @@ export default function EtkinliklerContent() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0 scrollbar-none">
+            {/* Sağ: Kategori Pill Butonları */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {[
                 { id: "all", label: "Tümü" },
                 { id: "teknoloji", label: "Teknoloji" },
                 { id: "sanat", label: "Sanat" },
                 { id: "cevre-saglik", label: "Çevre & Sağlık" },
                 { id: "programlar", label: "Programlar" },
-              ].map((category) => (
+              ].map((cat) => (
                 <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold font-sans shrink-0 transition-all ${
-                    selectedCategory === category.id
-                      ? "bg-[#0A5C3A] text-white font-semibold shadow-sm"
-                      : "bg-[#F8FAFC] text-[#4B5563] border border-[#E5E7EB] hover:bg-white hover:border-[#0A5C3A]/35 hover:text-[#0F1115]"
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold font-sans shrink-0 transition-all cursor-pointer ${
+                    selectedCategory === cat.id
+                      ? "bg-[#0A5C3A] text-white shadow-2xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
                   }`}
                 >
-                  {category.label}
+                  {cat.label}
                 </button>
               ))}
             </div>
           </div>
 
+          {/* ------------------------------------------------------------- */}
+          {/* 3. ETKİNLİK KARTLARI (Responsive Kompakt Grid)                */}
+          {/* ------------------------------------------------------------- */}
           {filteredEvents.length === 0 ? (
-            <div className="text-center py-14 bg-white rounded-[20px] border border-[#EEF0F2] p-8">
-              <Calendar className="w-10 h-10 text-[#5F6773] mx-auto mb-3 opacity-40 stroke-[1.5]" />
-              <h3 className="text-base font-bold text-[#0F1115] font-headings mb-1">
-                Bu kategoride henüz etkinlik bulunmuyor
+            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8 max-w-md mx-auto">
+              <Calendar className="w-10 h-10 text-slate-400 mx-auto mb-3 stroke-[1.5]" />
+              <h3 className="text-base font-bold text-slate-900 font-headings mb-1">
+                Bu kategoride etkinlik bulunmuyor
               </h3>
-              <p className="text-xs text-[#5F6773] font-sans">
-                Farklı bir kategori seçerek etkinliklerimizi listeleyebilirsiniz.
+              <p className="text-xs text-slate-500 font-sans">
+                Farklı bir kategori seçerek diğer etkinlikleri listeleyebilirsiniz.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 select-none">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
               {filteredEvents.map((event, index) => {
+                const dateInfo = parseDateBlock(event.date);
+                const isFull = event.quota && event.appliedCount >= event.quota;
+
                 return (
                   <motion.div
                     key={event.id}
@@ -240,53 +302,74 @@ export default function EtkinliklerContent() {
                     viewport={{ once: true, amount: 0.1 }}
                     custom={index * 0.05}
                     variants={fadeInUp}
-                    className="h-full"
+                    className="flex"
                   >
-                    <div className="h-full rounded-[24px] border border-[#E5E7EB] hover:border-[#B8C7BF] transition-all duration-300 bg-white group shadow-[0_12px_28px_rgba(15,17,21,0.05)] hover:shadow-[0_18px_42px_rgba(15,17,21,0.09)] flex flex-col overflow-hidden">
-                      <div className="h-1 w-full bg-[#0A5C3A]" />
-                      <div className="p-5 sm:p-6 flex flex-col justify-between flex-1">
-                        <div>
-                          <h3 className="text-lg sm:text-xl font-semibold font-headings text-[#0F1115] mb-4 group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2 min-h-[56px]">
-                            {event.title}
-                          </h3>
-
-                          <div className="grid gap-2 mb-4 text-xs font-semibold text-[#0F1115] font-sans">
-                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5">
-                              <Calendar className="w-4 h-4 text-[#0A5C3A] shrink-0 stroke-[2]" />
-                              <span>{event.date} - {event.time}</span>
-                            </div>
-                            <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#FAFAFA] px-3 py-2.5">
-                              <MapPin className="w-4 h-4 text-[#0A5C3A] shrink-0 stroke-[2]" />
-                              <span className="truncate">{event.location}</span>
-                            </div>
+                    <div className="w-full bg-white rounded-3xl border border-slate-200/80 p-5 sm:p-6 shadow-2xs hover:-translate-y-1 hover:shadow-md transition-all duration-200 flex flex-col justify-between group">
+                      <div>
+                        {/* Üst Alan: Soft Tarih Bloğu & Kategori Etiketi */}
+                        <div className="flex items-center justify-between gap-3 mb-4">
+                          <div className="flex items-center justify-center flex-col px-3 py-1.5 rounded-xl bg-[#EAF5EF] border border-[#0A5C3A]/20 text-[#0A5C3A] font-bold shrink-0">
+                            <span className="text-sm leading-none font-headings font-extrabold">{dateInfo.day}</span>
+                            <span className="text-[10px] leading-none uppercase tracking-wider font-sans font-bold mt-0.5">{dateInfo.month}</span>
                           </div>
 
-                          <p className="text-sm text-[#4B5563] font-sans leading-relaxed mb-5 line-clamp-3">
-                            {event.description}
-                          </p>
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200/60 truncate">
+                            {event.categoryLabel}
+                          </span>
                         </div>
 
-                        <div className="pt-4 border-t border-[#EEF0F2] mt-auto">
-                          {event.status === "aktif" ? (
+                        {/* Etkinlik Başlığı */}
+                        <h3 className="text-base sm:text-lg font-bold font-headings text-slate-900 leading-snug line-clamp-2 group-hover:text-[#0A5C3A] transition-colors mb-3 min-h-[48px]">
+                          {event.title}
+                        </h3>
+
+                        {/* Sade İkonlu Bilgi Satırları (Box/Border YOK!) */}
+                        <div className="space-y-1.5 mb-3 text-xs font-medium text-slate-700 font-sans">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-3.5 h-3.5 text-[#0A5C3A] shrink-0" />
+                            <span>{event.date} · {event.time}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-slate-600">
+                            <MapPin className="w-3.5 h-3.5 text-[#0A5C3A] shrink-0" />
+                            <span className="truncate">{event.location}</span>
+                          </div>
+                        </div>
+
+                        {/* Maksimum 2 Satır Açıklama */}
+                        <p className="text-xs sm:text-sm text-slate-600 font-sans font-normal leading-relaxed line-clamp-2 mb-5">
+                          {event.description}
+                        </p>
+                      </div>
+
+                      {/* Alt CTA Butonu */}
+                      <div className="pt-3 border-t border-slate-100">
+                        {event.status === "aktif" ? (
+                          isFull ? (
                             <button
-                              onClick={() => {
-                                openApplication(event);
-                              }}
-                              className="w-full h-10 rounded-xl bg-gradient-to-r from-[#0A5C3A] to-[#128C59] hover:from-[#08472D] hover:to-[#0A5C3A] text-white font-bold text-xs transition-all shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 flex items-center justify-center gap-2 tracking-wide"
+                              disabled
+                              className="w-full h-10 rounded-full text-xs font-semibold bg-slate-100 text-slate-400 cursor-not-allowed text-center"
                             >
-                              <Ticket className="w-4 h-4 stroke-[2]" />
-                              <span>Başvuru Yap</span>
-                              <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                              Kontenjan Doldu
                             </button>
                           ) : (
                             <button
-                              onClick={() => setDetailEvent(event)}
-                              className="w-full h-10 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-center"
+                              type="button"
+                              onClick={() => openApplication(event)}
+                              className="w-full h-10 rounded-full bg-[#0A5C3A] hover:bg-[#128C59] text-white font-bold text-xs transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
                             >
-                              Detayları İncele
+                              <span>Başvuru Yap</span>
+                              <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                             </button>
-                          )}
-                        </div>
+                          )
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setDetailEvent(event)}
+                            className="w-full h-10 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-center cursor-pointer"
+                          >
+                            Detayları Gör
+                          </button>
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -297,6 +380,7 @@ export default function EtkinliklerContent() {
         </PageContainer>
       </Section>
 
+      {/* Başvuru & Detay Modalları */}
       <ApplyModal
         event={applyingEvent}
         isSubmitted={isSubmitted}
@@ -357,122 +441,130 @@ function ApplyModal({
   return (
     <AnimatePresence>
       {event && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto select-none">
+          {/* Siyah Yarı-Şeffaf Arka Plan Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.25 }}
-            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-7 z-10 max-h-[90vh] overflow-y-auto"
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] hover:bg-[#EEF0F2] flex items-center justify-center transition-colors"
+
+          {/* Hizalama Konteynırı */}
+          <div className="min-h-full flex items-center justify-center p-4 sm:p-6 text-center relative z-10 pointer-events-none">
+            {/* Açılan Kart Penceremiz (Kaydırılabilir Alan) */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-7 text-left my-8 max-h-[85vh] overflow-y-auto pointer-events-auto"
             >
-              <X className="w-4 h-4 stroke-[2]" />
-            </button>
+              <button
+                onClick={onClose}
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4 stroke-[2]" />
+              </button>
 
-            {!isSubmitted ? (
-              <form onSubmit={onSubmit} className="space-y-5">
-                <div className="space-y-2 mb-5 pb-3.5 border-b border-[#EEF0F2]">
-                  <span className="inline-flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-wider text-[#0A5C3A] bg-[#0A5C3A]/10 px-3 py-1 rounded-lg border border-[#0A5C3A]/20">
-                    <Ticket className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Etkinlik Kayıt Formu</span>
-                  </span>
-                  <h2 className="text-xl sm:text-2xl font-extrabold font-headings text-[#0F1115] leading-snug pt-1">
-                    {event.title}
-                  </h2>
-                  <p className="text-xs text-[#5F6773] font-sans font-medium pt-1 flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
-                    <span>{event.date} - {event.location}</span>
-                  </p>
-                </div>
-
-                {formError && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
-                    {formError}
+              {!isSubmitted ? (
+                <form onSubmit={onSubmit} className="space-y-5">
+                  <div className="space-y-2 mb-5 pb-3.5 border-b border-slate-100">
+                    <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-[#0A5C3A] bg-[#EAF5EF] px-3 py-1 rounded-full border border-[#0A5C3A]/20">
+                      <Ticket className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Etkinlik Kayıt Formu</span>
+                    </span>
+                    <h2 className="text-xl font-extrabold font-headings text-slate-900 leading-snug pt-1">
+                      {event.title}
+                    </h2>
+                    <p className="text-xs text-slate-500 font-sans font-medium pt-1 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
+                      <span>{event.date} · {event.location}</span>
+                    </p>
                   </div>
-                )}
 
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <div>
-                      <h3 className="text-sm font-semibold text-[#0F1115]">Başvuru bilgilerin</h3>
-                      <p className="mt-1 text-xs font-normal text-[#5F6773]">Profilindeki bilgilerle başvuru yapılacak.</p>
+                  {formError && (
+                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                      {formError}
                     </div>
-                    <Button
-                      href={ROUTES.PROFIL}
-                      variant="secondary"
-                      size="sm"
-                      className="h-8 rounded-lg text-xs font-semibold"
+                  )}
+
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div>
+                        <h3 className="text-xs font-bold text-slate-900 font-headings">Başvuru Bilgilerin</h3>
+                        <p className="mt-0.5 text-[11px] font-normal text-slate-500">Profilindeki bilgilerle başvuru yapılacak.</p>
+                      </div>
+                      <Button
+                        href={ROUTES.PROFIL}
+                        variant="secondary"
+                        size="sm"
+                        className="h-8 rounded-lg text-xs font-semibold"
+                      >
+                        Güncelle
+                      </Button>
+                    </div>
+
+                    <div className="grid gap-2 text-xs sm:grid-cols-2">
+                      <SummaryItem label="Ad Soyad" value={values.fullName || "Profilde yok"} />
+                      <SummaryItem label="E-posta" value={values.email || "Profilde yok"} />
+                      <SummaryItem label="Telefon" value={values.phone || "Profilde yok"} />
+                      <SummaryItem label="Okul / Bölüm" value={[values.school, values.department].filter(Boolean).join(" / ") || "Profilde yok"} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-1">
+                    <div>
+                      <label className="text-xs font-bold text-slate-900 font-headings mb-1.5 block">
+                        Bu etkinlikten beklentin nedir? <span className="text-rose-500">*</span>
+                      </label>
+                      <textarea
+                        rows={3}
+                        required
+                        placeholder="Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
+                        value={values.note}
+                        onChange={(event) => setters.setNote(event.target.value)}
+                        className="w-full p-3 rounded-xl border border-slate-200 text-xs font-sans font-normal text-slate-900 leading-relaxed focus:outline-none focus:border-[#0A5C3A]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-[#0A5C3A] hover:bg-[#128C59] text-white font-bold text-xs h-11 rounded-full flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                     >
-                      Güncelle
-                    </Button>
+                      <Send className="w-4 h-4 stroke-[2]" />
+                      <span>{isSubmitting ? "Başvuru Gönderiliyor..." : "Başvuruyu Tamamla"}</span>
+                    </button>
                   </div>
-
-                  <div className="grid gap-2 text-xs sm:grid-cols-2">
-                    <SummaryItem label="Ad Soyad" value={values.fullName || "Profilde yok"} />
-                    <SummaryItem label="E-posta" value={values.email || "Profilde yok"} />
-                    <SummaryItem label="Telefon" value={values.phone || "Profilde yok"} />
-                    <SummaryItem label="Okul / Bölüm" value={[values.school, values.department].filter(Boolean).join(" / ") || "Profilde yok"} />
+                </form>
+              ) : (
+                <div className="text-center py-3 sm:py-4 space-y-4">
+                  <div className="w-12 h-12 rounded-full bg-[#EAF5EF] text-[#0A5C3A] flex items-center justify-center mx-auto border border-[#0A5C3A]/20">
+                    <Check className="w-6 h-6 stroke-[2.5]" />
                   </div>
-                </div>
-
-                <div className="space-y-3 pt-1">
                   <div>
-                    <label className="text-sm font-semibold text-[#0F1115] font-headings mb-2 block">
-                      Bu etkinlikten beklentin nedir? <span className="text-rose-500">*</span>
-                    </label>
-                    <textarea
-                      rows={4}
-                      required
-                      placeholder="Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
-                      value={values.note}
-                      onChange={(event) => setters.setNote(event.target.value)}
-                      className="w-full p-3.5 rounded-xl border border-[#E5E7EB] text-sm font-sans font-normal text-[#0F1115] leading-relaxed focus:outline-none focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
-                    />
+                    <h3 className="text-lg font-bold text-slate-900 font-headings mb-1">
+                      Başvurunuz alındı
+                    </h3>
+                    <p className="text-xs text-slate-500 font-sans font-normal max-w-sm mx-auto leading-relaxed">
+                      "{event.title}" için başvurun kaydedildi.
+                    </p>
                   </div>
-                </div>
-
-                <div className="pt-3">
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    variant="primary"
-                    size="lg"
-                    rightIcon={<Send className="w-4 h-4 stroke-[2]" />}
-                    className="w-full justify-center font-bold text-sm h-12 rounded-xl"
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full bg-[#0A5C3A] text-white font-semibold text-xs h-10 rounded-full cursor-pointer"
                   >
-                    {isSubmitting ? "Başvuru Gönderiliyor..." : "Başvuruyu Tamamla"}
-                  </Button>
+                    Tamam
+                  </button>
                 </div>
-              </form>
-            ) : (
-              <div className="text-center py-3 sm:py-4 space-y-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#EEF7F3] text-[#0A5C3A] flex items-center justify-center mx-auto border border-[#C9D8D0]">
-                  <Check className="w-7 h-7 stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-semibold text-[#0F1115] font-headings mb-2">
-                    Başvurunuz alındı
-                  </h3>
-                  <p className="text-sm text-[#5F6773] font-sans font-normal max-w-sm mx-auto leading-relaxed">
-                    {event.title} için başvurun kaydedildi.
-                  </p>
-                </div>
-                <Button onClick={onClose} variant="primary" size="md" className="w-full justify-center font-semibold text-sm h-11 rounded-xl mt-1">
-                  Tamam
-                </Button>
-              </div>
-            )}
-          </motion.div>
+              )}
+            </motion.div>
+          </div>
         </div>
       )}
     </AnimatePresence>
@@ -481,9 +573,9 @@ function ApplyModal({
 
 function SummaryItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5">
-      <p className="text-[10.5px] font-semibold uppercase tracking-wide text-[#5F6773]">{label}</p>
-      <p className="mt-1 truncate text-xs font-medium text-[#0F1115]">{value}</p>
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="mt-0.5 truncate text-xs font-medium text-slate-900">{value}</p>
     </div>
   );
 }
@@ -492,55 +584,62 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
   return (
     <AnimatePresence>
       {event && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 select-none">
+        <div className="fixed inset-0 z-[9999] overflow-y-auto select-none">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="relative w-full max-w-lg bg-white rounded-[24px] border border-[#EEF0F2] shadow-2xl p-6 sm:p-7 z-10"
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#F8F9FA] text-[#5F6773] hover:text-[#0F1115] flex items-center justify-center"
+
+          <div className="min-h-full flex items-center justify-center p-4 sm:p-6 text-center relative z-10 pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-7 text-left my-8 max-h-[85vh] overflow-y-auto pointer-events-auto"
             >
-              <X className="w-4 h-4 stroke-[2]" />
-            </button>
-            <div className="space-y-4">
-              <span className="text-[10.5px] font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-md inline-block font-sans">
-                Tamamlanan Etkinlik
-              </span>
-              <h3 className="text-xl font-bold font-headings text-[#0F1115]">{event.title}</h3>
-              <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-[#EEF0F2] text-xs font-medium space-y-2 text-[#5F6773]">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Tarih: {event.date} ({event.time})</span>
+              <button
+                onClick={onClose}
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-4 h-4 stroke-[2]" />
+              </button>
+              <div className="space-y-4">
+                <span className="text-[10.5px] font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full inline-block font-sans">
+                  Tamamlanan Etkinlik
+                </span>
+                <h3 className="text-lg font-bold font-headings text-slate-900">{event.title}</h3>
+                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-medium space-y-2 text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-[#0A5C3A]" />
+                    <span>Tarih: {event.date} ({event.time})</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#0A5C3A]" />
+                    <span>Konum: {event.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-[#0A5C3A]" />
+                    <span>Katılımcı Sayısı: {event.appliedCount} Kişi</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Konum: {event.location}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#0A5C3A]" />
-                  <span>Katılımcı Sayısı: {event.appliedCount} Kişi</span>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans font-normal">
+                  {event.description}
+                </p>
+                <div className="pt-2 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-5 h-10 rounded-full cursor-pointer"
+                  >
+                    Kapat
+                  </button>
                 </div>
               </div>
-              <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-normal">
-                {event.description}
-              </p>
-              <div className="pt-2 flex justify-end">
-                <Button onClick={onClose} variant="outline" size="md" className="font-bold text-xs px-5 h-10 rounded-xl">
-                  Kapat
-                </Button>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       )}
     </AnimatePresence>

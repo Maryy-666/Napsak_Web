@@ -9,6 +9,8 @@ datasource db {
 
 enum Role {
   USER
+  MEMBER
+  TEAM_LEADER
   ADMIN
 }
 
@@ -27,9 +29,81 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
-  applications       Application[]
-  sessions           Session[]
+  profile             MemberProfile?
+  applications        Application[]
+  sessions            Session[]
   passwordResetTokens PasswordResetToken[]
+}
+
+model MemberProfile {
+  id          Int      @id @default(autoincrement())
+  externalId  String   @unique @default(uuid())
+  userId      Int?     @unique
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name        String
+  initials    String
+  primaryTeam String
+  primaryRole String
+  bio         String?
+  avatar      String?
+  linkedin    String?
+  city        String?
+  school      String?
+  department  String?
+  isPresident Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  memberships TeamMembership[]
+  ledTeams    Team[]           @relation("TeamLeader")
+}
+
+model Team {
+  id                   Int              @id @default(autoincrement())
+  externalId           String           @unique
+  slug                 String           @unique
+  title                String
+  shortDescription     String
+  about                String
+  iconName             String           @default("cpu")
+  bgImage              String
+  structure            String
+  focusAreas           String[]         @default([])
+  whatWeDo             String[]         @default([])
+  featuredSectionImage String?
+  galleryTitle         String?
+  gallery              Json?
+  displayOrder         Int              @default(0)
+  isActive             Boolean          @default(true)
+
+  leaderId             Int?
+  leader               MemberProfile?   @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+
+  memberships          TeamMembership[]
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  @@index([leaderId])
+  @@index([displayOrder])
+}
+
+model TeamMembership {
+  id        Int           @id @default(autoincrement())
+  memberId  Int
+  teamId    Int
+  roleTitle String
+  subRole   String?
+  isLeader  Boolean       @default(false)
+  sortOrder Int           @default(0)
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+
+  member    MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  team      Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, teamId])
+  @@index([memberId])
+  @@index([teamId])
 }
 
 model Application {
@@ -41,48 +115,149 @@ model Application {
   updatedAt DateTime          @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Message {
   id        Int      @id @default(autoincrement())
   name      String
   email     String
-  subject    String?
+  phone     String?
+  subject   String?
+  category  String?
   content   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model Event {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  location    String?
-  startDate   DateTime
-  endDate     DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                   Int                @id @default(autoincrement())
+  slug                 String?            @unique
+  title                String
+  shortDescription     String?
+  description          String?
+  content              String?
+  category             String?
+  location             String?
+  status               String?            @default("Yaklaşan")
+  publicationStatus    String             @default("PUBLISHED")
+  image                String?
+  capacity             Int?
+  targetAudience       String?
+  isFeatured           Boolean            @default(false)
+  registrationEnabled  Boolean            @default(true)
+  registrationDeadline DateTime?
+  displayOrder         Int                @default(0)
+  startDate            DateTime
+  endDate              DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  eventApplications    EventApplication[]
+
+  @@index([publicationStatus])
+  @@index([startDate])
+}
+
+model EventApplication {
+  id         Int      @id @default(autoincrement())
+  eventId    Int
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  fullName   String
+  email      String
+  phone      String?
+  city       String?
+  school     String?
+  department String?
+  grade      String?
+  note       String?
+  status     String   @default("Beklemede")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([eventId])
 }
 
 model Activity {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  slug                 String?  @unique
+  type                 String   @default("polaroid")
+  title                String
+  category             String   @default("Genel")
+  team                 String   @default("N'apsak Ekibi")
+  status               String   @default("Devam Eden")
+  publicationStatus    String   @default("PUBLISHED")
+  isFeatured           Boolean  @default(false)
+  date                 String?
+  location             String?
+  summary              String?
+  participantCount     Int      @default(0)
+  image                String?
+  rotation             String?  @default("-rotate-1")
+  pinColor             String?  @default("text-[#0A5C3A]")
+  noteBg               String?  @default("bg-white")
+  borderColor          String?  @default("border-[#DDE7E1]")
+  badgeBg              String?  @default("bg-[#0A5C3A]")
+  badgeText            String?  @default("text-white")
+  mottoText            String?
+  tagText              String?
+  tapeColor            String?
+  tapeRotation         String?
+  youthStickerIconName String?
+  stickerBadgeBg       String?
+  objectives           String[] @default([])
+  impactMetrics        String?
+  outcomes             String[] @default([])
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([publicationStatus])
 }
 
 model Report {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  slug              String?  @unique
+  title             String
+  category          String?
+  summary           String?
+  description       String?
+  fileName          String?
+  fileSize          String?
+  pdfUrl            String?
+  coverImage        String?
+  readCount         Int      @default(0)
+  downloadCount     Int      @default(0)
+  publishDate       String?
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([displayOrder])
 }
 
 model Magazine {
-  id        Int      @id @default(autoincrement())
-  title     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  slug              String?  @unique
+  title             String
+  issueNumber       String?
+  description       String?
+  pages             Int      @default(36)
+  publishDate       String?
+  readCount         Int      @default(0)
+  pdfUrl            String?
+  coverImage        String?
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([displayOrder])
 }
 
 model Session {
@@ -93,6 +268,8 @@ model Session {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model PasswordResetToken {
@@ -104,4 +281,124 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Page {
+  id                Int              @id @default(autoincrement())
+  slug              String           @unique
+  title             String
+  shortDescription  String?
+  content           String           @default("")
+  publicationStatus String           @default("PUBLISHED")
+  isFeatured        Boolean          @default(false)
+  showInMenu        Boolean          @default(false)
+  displayOrder      Int              @default(0)
+  featuredImage     String?
+  metaTitle         String?
+  metaDescription   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  navigationItems   NavigationItem[]
+
+  @@index([publicationStatus])
+}
+
+model NavigationItem {
+  id           Int              @id @default(autoincrement())
+  label        String
+  targetType   String           @default("PAGE")
+  href         String?
+  pageId       Int?
+  page         Page?            @relation(fields: [pageId], references: [id], onDelete: SetNull)
+  parentId     Int?
+  parent       NavigationItem?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children     NavigationItem[] @relation("MenuHierarchy")
+  location     String           @default("NAVBAR")
+  displayOrder Int              @default(0)
+  isVisible    Boolean          @default(true)
+  openInNewTab Boolean          @default(false)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([pageId])
+  @@index([parentId])
+  @@index([location])
+}
+
+model Media {
+  id           Int       @id @default(autoincrement())
+  filename     String    @unique
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  altText      String?
+  title        String?
+  width        Int?
+  height       Int?
+  folder       String    @default("general")
+  storageKey   String?
+  provider     String    @default("local")
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([folder])
+  @@index([deletedAt])
+}
+
+model News {
+  id                Int      @id @default(autoincrement())
+  slug              String   @unique
+  title             String
+  summary           String?
+  content           String   @default("")
+  coverImage        String?
+  category          String?  @default("Duyuru")
+  publishDate       String?
+  readTime          String?  @default("3 dk")
+  publicationStatus String   @default("PUBLISHED")
+  isFeatured        Boolean  @default(false)
+  displayOrder      Int      @default(0)
+  quoteText         String?
+  quoteAuthor       String?
+  quoteTitle        String?
+  images            String[] @default([])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([publicationStatus])
+  @@index([isFeatured])
+  @@index([displayOrder])
+  @@index([createdAt])
+}
+
+model HomepageHero {
+  id               Int      @id @default(autoincrement())
+  badge            String?  @default("Gençlik Topluluğu")
+  title            String
+  highlightText    String?
+  description      String
+  primaryCtaText   String?  @default("Ekiplerimizi Keşfet")
+  primaryCtaLink   String?  @default("/ekipler")
+  secondaryCtaText String?  @default("Bize Katıl")
+  secondaryCtaLink String?  @default("/katilim")
+  imageUrl         String?
+  displayOrder     Int      @default(0)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model HomepageConfig {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  content   Json
+  updatedAt DateTime @updatedAt
 }

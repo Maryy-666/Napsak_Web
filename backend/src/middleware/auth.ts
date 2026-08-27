@@ -1,21 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client.js";
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const prisma = new PrismaClient({
-  adapter,
-});
+import prisma from "../db.js";
 
 export interface AuthRequest extends Request {
   user?: {
     id: number;
     name: string;
     email: string;
-    role: "USER" | "ADMIN";
+    role: "USER" | "ADMIN" | "MEMBER" | "TEAM_LEADER";
   };
 }
 

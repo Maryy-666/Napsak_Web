@@ -1,44 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(request: NextRequest) {
+export const dynamic = "force-dynamic";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
+export async function GET() {
   try {
-    const cookieStore = cookies();
-    const token = cookieStore.get("session_token")?.value;
-
-    if (!token) {
-      return NextResponse.json(
-        { error: "Geçersiz oturum." },
-        { status: 401 }
-      );
-    }
-
-    const response = await fetch("http://localhost:3001/messages", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+    const token = cookies().get("session_token")?.value;
+    const res = await fetch(`${BACKEND_URL}/messages`, {
       cache: "no-store",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
 
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
+    if (!res.ok) {
       return NextResponse.json(
-        {
-          error: data.error || "Mesajlar alınamadı.",
-        },
-        { status: response.status }
+        { success: false, error: "Mesajlar getirilemedi." },
+        { status: res.status }
       );
     }
 
-    return NextResponse.json(data);
+    const data = await res.json();
+    return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error("[MESSAGES API ERROR]", error);
-
+    console.error("[MESSAGES GET API ERROR]", error);
     return NextResponse.json(
-      { error: "Backend sunucusuna bağlanılamadı." },
+      { success: false, error: "Backend sunucusuna bağlanılamadı." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    const res = await fetch(`${BACKEND_URL}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { success: false, error: data.error || "Mesaj gönderilemedi." },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: data.data || data });
+  } catch (error) {
+    console.error("[MESSAGES POST API ERROR]", error);
+    return NextResponse.json(
+      { success: false, error: "Backend sunucusuna bağlanılamadı." },
       { status: 500 }
     );
   }

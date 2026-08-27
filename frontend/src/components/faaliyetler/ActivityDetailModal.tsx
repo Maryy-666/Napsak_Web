@@ -2,13 +2,40 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, MapPin, Sparkles } from "lucide-react";
+import { X, Calendar, MapPin, Sparkles, ArrowRight, Newspaper } from "lucide-react";
 import { FaaliyetItem } from "./types";
+import { NEWS_DATA } from "../../data/news";
 
 interface ActivityDetailModalProps {
   item: FaaliyetItem | null;
   onClose: () => void;
+}
+
+// Faaliyet kartına karşılık gelen haber URL'sini bulan yardımcı
+function getNewsUrlForFaaliyet(item: FaaliyetItem | null): string {
+  if (!item) return "/haberler";
+
+  // 1. Doğrudan id veya slug eşleşmesi
+  const directMatch = NEWS_DATA.find(
+    (n) => n.id === item.id || n.slug === item.id
+  );
+  if (directMatch) return `/haberler/${directMatch.slug}`;
+
+  // 2. Başlık benzerliği eşleşmesi
+  const titleLower = (item.title || "").toLowerCase();
+  const matchByTitle = NEWS_DATA.find((n) => {
+    const nTitleLower = n.title.toLowerCase();
+    return (
+      titleLower.includes(nTitleLower.slice(0, 6)) ||
+      nTitleLower.includes(titleLower.slice(0, 6))
+    );
+  });
+
+  if (matchByTitle) return `/haberler/${matchByTitle.slug}`;
+
+  return "/haberler";
 }
 
 export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
@@ -36,6 +63,8 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
     };
   }, [item, onClose]);
 
+  const newsUrl = getNewsUrlForFaaliyet(item);
+
   return (
     <AnimatePresence>
       {item && (
@@ -62,7 +91,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-stone-200 text-stone-600 transition-colors shadow-sm"
+              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-stone-200 text-stone-600 transition-colors shadow-sm cursor-pointer"
               aria-label="Kapat"
             >
               <X className="w-5 h-5" />
@@ -115,18 +144,31 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
               </div>
             </div>
 
-            {/* Modal Footer Action */}
-            <div className="mt-5 pt-3 border-t border-stone-200 flex items-center justify-between">
-              <span className="text-xs font-medium text-stone-500 font-sans">
-                📸 N'apsak? Anı Panosu Kaydı
+            {/* Modal Footer Actions */}
+            <div className="mt-5 pt-3.5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-medium text-stone-500 font-sans flex items-center gap-1.5">
+                📸 <span>N'apsak? Anı Panosu Kaydı</span>
               </span>
-              <button
-                type="button"
-                onClick={onClose}
-                className="bg-[#07452C] hover:bg-[#0A5C3A] text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm font-sans"
-              >
-                Kapat
-              </button>
+
+              <div className="flex items-center gap-2.5">
+                <Link
+                  href={newsUrl}
+                  onClick={onClose}
+                  className="bg-[#07452C] hover:bg-[#0A5C3A] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm font-sans inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Newspaper className="w-3.5 h-3.5" />
+                  <span>İlgili Habere Git</span>
+                  <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="bg-stone-200/80 hover:bg-stone-300/80 text-stone-700 font-bold text-xs px-4 py-2.5 rounded-xl transition-all font-sans cursor-pointer"
+                >
+                  Kapat
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

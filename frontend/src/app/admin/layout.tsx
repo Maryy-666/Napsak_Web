@@ -2,31 +2,35 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Calendar,
   ChevronRight,
   ExternalLink,
   FileCheck2,
   FileText,
+  ImageIcon,
   LayoutDashboard,
   Lock,
   LogOut,
   MailCheck,
   Menu,
-  MessageSquare,
   Moon,
+  Newspaper,
   Pin,
-  ShieldCheck,
+  Shield,
   Sparkles,
   Sun,
   Ticket,
+  UserCheck,
   UserCog,
   UserPlus,
   Users,
   X,
 } from "lucide-react";
 import { AdminThemeProvider, useAdminTheme } from "../../context/AdminThemeContext";
+import { AdminConfirmDialog } from "../../components/admin/ui";
+import { clearCurrentUser } from "../../lib/memberAuth";
 
 type NavItem = {
   title: string;
@@ -41,20 +45,26 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
     title: "YÖNETİM & TOPLULUK",
     items: [
       { title: "Genel Bakış", href: "/admin", icon: LayoutDashboard, badge: null, published: true },
+      { title: "Medya Kütüphanesi", href: "/admin/medya", icon: ImageIcon, badge: "Media CMS", published: true },
+      { title: "Ana Sayfa CMS", href: "/admin/anasayfa", icon: LayoutDashboard, badge: "Hero & Stats", published: true },
+      { title: "Haber Yönetimi", href: "/admin/haberler", icon: Newspaper, badge: "News CMS", published: true },
+      { title: "Sayfa Yönetimi", href: "/admin/sayfalar", icon: FileText, badge: "Page CMS", published: true },
+      { title: "Menü Yönetimi", href: "/admin/menuler", icon: Menu, badge: "Nav CMS", published: true },
       { title: "Faaliyetler (Pano)", href: "/admin/faaliyetler", icon: Pin, badge: "Pano", published: true },
       { title: "Çalışma Ekipleri", href: "/admin/ekipler", icon: Users, badge: "5 Ekip", published: true },
+      { title: "Üye Yönetimi", href: "/admin/uyeler", icon: UserCheck, badge: "50 Üye", published: true },
       { title: "Etkinlik Yönetimi", href: "/admin/etkinlikler", icon: Calendar, badge: "3 Aktif", published: true },
-      { title: "Etkinlik Başvuruları", href: "/admin/basvurular", icon: Ticket, badge: "Yakında", published: false },
-      { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: "Yakında", published: false },
-      { title: "İçerik Yönetimi", href: "/admin/icerik", icon: FileText, badge: "Yakında", published: false },
-      { title: "Etkileşim & Katılım", href: "/admin/katilim", icon: MessageSquare, badge: "Yakında", published: false },
+      { title: "Etkinlik Başvuruları", href: "/admin/etkinlik-basvurulari", icon: Ticket, badge: null, published: true },
+      { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: null, published: true },
+      { title: "Rapor Yönetimi", href: "/admin/raporlar", icon: Newspaper, badge: "Reports", published: true },
+      { title: "Dergi Yönetimi", href: "/admin/dergiler", icon: FileText, badge: "Magazines", published: true },
     ],
   },
   {
     title: "SİSTEM & YETKİLENDİRME",
     items: [
       { title: "Kullanıcı Yönetimi", href: "/admin/kullanicilar", icon: UserCog, badge: null, published: true },
-      { title: "Yetkilendirme", href: "/admin/yetkilendirme", icon: Lock, badge: null, published: true },                                                                                                                                                                                              
+      { title: "Yetkilendirme", href: "/admin/yetkilendirme", icon: Lock, badge: null, published: true },
       { title: "Mesaj Yönetimi", href: "/admin/mesajlar", icon: MailCheck, badge: null, published: true },
       { title: "Politika & KVKK", href: "/admin/politikalar", icon: FileCheck2, badge: null, published: true },
     ],
@@ -63,8 +73,16 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
 
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const { toggleTheme, isDark } = useAdminTheme();
+
+  const handleConfirmLogout = () => {
+    clearCurrentUser();
+    setLogoutConfirmOpen(false);
+    router.push("/login");
+  };
 
   return (
     <div
@@ -118,7 +136,16 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             <h4 className="text-xs font-bold font-headings truncate">Yönetici</h4>
             <p className={`text-[10px] font-sans truncate ${isDark ? "text-slate-400" : "text-slate-500"}`}>admin@napsak.com</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <button
+            type="button"
+            onClick={() => setLogoutConfirmOpen(true)}
+            title="Çıkış Yap"
+            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+              isDark ? "text-slate-400 hover:text-rose-400 hover:bg-rose-500/10" : "text-slate-500 hover:text-rose-600 hover:bg-rose-50"
+            }`}
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-4 overflow-y-auto pr-1">
@@ -192,7 +219,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
 
-        <div className={`pt-3 border-t mt-auto ${isDark ? "border-slate-800/80" : "border-slate-200"}`}>
+        <div className={`pt-3 border-t mt-auto space-y-1 ${isDark ? "border-slate-800/80" : "border-slate-200"}`}>
           <Link
             href="/"
             className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
@@ -205,6 +232,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </div>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </Link>
+          <button
+            type="button"
+            onClick={() => setLogoutConfirmOpen(true)}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+              isDark ? "text-rose-400 hover:text-rose-300 hover:bg-rose-500/10" : "text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Çıkış Yap</span>
+            </div>
+          </button>
         </div>
       </aside>
 
@@ -252,16 +291,17 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             <div className={`flex items-center gap-2 text-xs font-bold px-3.5 py-1.5 rounded-xl border ${
               isDark ? "bg-[#141C2E] border-slate-800 text-slate-200" : "bg-slate-100 border-slate-200 text-slate-800"
             }`}>
-              <ShieldCheck className="w-4.5 h-4.5 text-emerald-500 stroke-[2]" />
+              <Shield className="w-4.5 h-4.5 text-emerald-500 stroke-[2]" />
               <span>Yönetici Paneli</span>
             </div>
-            <Link
-              href="/login"
-              className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+            <button
+              type="button"
+              onClick={() => setLogoutConfirmOpen(true)}
+              className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
               title="Çıkış Yap"
             >
               <LogOut className="w-4.5 h-4.5 stroke-[2]" />
-            </Link>
+            </button>
           </div>
         </header>
 
@@ -269,6 +309,18 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+
+      <AdminConfirmDialog
+        isOpen={logoutConfirmOpen}
+        onClose={() => setLogoutConfirmOpen(false)}
+        onConfirm={handleConfirmLogout}
+        title="Oturumu Kapat"
+        description="Yönetici panelinden çıkış yapmak istediğinizden emin misiniz? Oturumunuz sonlandırılacaktır."
+        confirmText="Evet, Çıkış Yap"
+        cancelText="Vazgeç"
+        variant="brand"
+        icon={LogOut}
+      />
     </div>
   );
 }

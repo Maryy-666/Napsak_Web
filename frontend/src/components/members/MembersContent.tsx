@@ -1,125 +1,178 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, Users, Layers, Award, Sparkles, Filter, X } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+import {
+  Search,
+  ShieldCheck,
+  X,
+  Filter,
+  Users,
+  Cpu,
+  Palette,
+  HeartPulse,
+  BookOpen,
+  Share2,
+  Award,
+} from "lucide-react";
 import {
   PUBLIC_MEMBERS,
   MEMBER_TEAMS,
   MemberTeamFilter,
   PublicMember,
+  sortMembersAlphabetically,
 } from "../../data/members";
-import { PublicMemberCard } from "./PublicMemberCard";
+import { PublicMemberCard, PublicMemberPlaceholderCard } from "./PublicMemberCard";
 import { PublicMemberModal } from "./PublicMemberModal";
-import { Badge, Button, PageContainer, Section } from "../ui";
+import { PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
+import { MembersRepository } from "../../lib/membersStore";
+
+function getTeamIconComponent(team: string) {
+  const t = team.toLowerCase();
+  if (t.includes("teknoloji")) return Cpu;
+  if (t.includes("sanat")) return Palette;
+  if (t.includes("sağlık") || t.includes("çevre")) return HeartPulse;
+  if (t.includes("program")) return BookOpen;
+  if (t.includes("kurumsal") || t.includes("iletişim")) return Share2;
+  if (t.includes("yönetim")) return ShieldCheck;
+  if (t.includes("danışma")) return Award;
+  return Users;
+}
 
 export function MembersContent() {
+  const [membersList, setMembersList] = useState<PublicMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTeamFilter, setSelectedTeamFilter] = useState<MemberTeamFilter>("Topluluk Başkanları");
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>("Tümü");
   const [selectedMember, setSelectedMember] = useState<PublicMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filtered members calculation
-  const filteredMembers = useMemo(() => {
-    return PUBLIC_MEMBERS.filter((member) => {
-      // 1. Team filter
-      let matchesTeam = false;
-      if (selectedTeamFilter === "Topluluk Başkanları") {
-        matchesTeam = !!member.isPresident;
-      } else {
-        matchesTeam = member.memberships.some((m) =>
-          m.team.toLowerCase().includes(selectedTeamFilter.toLowerCase())
+  useEffect(() => {
+    MembersRepository.fetchMembersFromDB().then((data) => {
+      if (Array.isArray(data) && data.length > 0) {
+        setMembersList(data);
+      }
+    });
+  }, []);
+
+  const activeMembers = membersList.length > 0 ? membersList : PUBLIC_MEMBERS;
+
+  // Filter and sort members based on selected filter and search query
+  const displayedMembers = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+
+    const filtered = activeMembers.filter((member) => {
+      // Team filter check
+      let matchesTeam = true;
+      if (selectedTeamFilter && selectedTeamFilter !== "Tümü") {
+        const filterLower = selectedTeamFilter.toLowerCase();
+        const inPrimary = member.primaryTeam.toLowerCase().includes(filterLower);
+        const inMemberships = member.memberships?.some((m) =>
+          m.team.toLowerCase().includes(filterLower)
         );
+        matchesTeam = Boolean(inPrimary || inMemberships);
       }
 
-      // 2. Search query (Name, Team, Role)
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !q ||
-        member.name.toLowerCase().includes(q) ||
-        member.primaryRole.toLowerCase().includes(q) ||
-        member.memberships.some(
-          (m) =>
-            m.team.toLowerCase().includes(q) || m.role.toLowerCase().includes(q)
-        );
+      // Search query check
+      let matchesSearch = true;
+      if (q) {
+        matchesSearch =
+          member.name.toLowerCase().includes(q) ||
+          member.primaryRole.toLowerCase().includes(q) ||
+          member.primaryTeam.toLowerCase().includes(q) ||
+          Boolean(
+            member.memberships?.some(
+              (m) =>
+                m.team.toLowerCase().includes(q) || m.role.toLowerCase().includes(q)
+            )
+          );
+      }
 
       return matchesTeam && matchesSearch;
     });
-  }, [searchQuery, selectedTeamFilter]);
 
-  // Statistics counters (Dynamic unique members & roles count)
-  const totalMembers = useMemo(() => new Set(PUBLIC_MEMBERS.map((m) => m.id)).size, []);
-  const totalRoles = useMemo(
-    () => PUBLIC_MEMBERS.reduce((acc, curr) => acc + curr.memberships.length, 0),
-    []
-  );
+    // Turkish alphabetical A-Z sorting
+    return sortMembersAlphabetically(filtered);
+  }, [activeMembers, selectedTeamFilter, searchQuery]);
+
+  // Compute placeholder count for Yönetim Kurulu (total 5 card slots)
+  const yonetimKuruluPlaceholderCount = useMemo(() => {
+    if (selectedTeamFilter !== "Yönetim Kurulu") return 0;
+    const currentCount = displayedMembers.length;
+    return Math.max(0, 5 - currentCount);
+  }, [selectedTeamFilter, displayedMembers]);
+
+  const handleTeamClick = (filterName: string) => {
+    setSelectedTeamFilter(filterName);
+  };
+
+  const IconComponent = getTeamIconComponent(selectedTeamFilter);
 
   return (
-    <PageBackground id="uyeler-index-root" className="select-none px-0 py-0 min-h-screen flex flex-col">
-      {/* 1. HERO SECTION */}
-      <Section padding="none" background="transparent" className="pt-16 sm:pt-24 pb-12 border-b border-[#EEF0F2] relative">
+    <PageBackground
+      id="ekibimiz-index-root"
+      className="select-none px-0 py-0 min-h-screen flex flex-col w-full overflow-x-hidden"
+    >
+      {/* 1. HEADER TITLE SECTION */}
+      <Section
+        padding="none"
+        background="transparent"
+        className="pt-16 sm:pt-20 pb-8 border-b border-[#EEF0F2] relative"
+      >
         <PageContainer className="max-w-6xl sm:max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-4xl mx-auto space-y-6"
+            transition={{ duration: 0.4 }}
+            className="text-center max-w-3xl mx-auto space-y-3"
           >
-            <Badge variant="brand" size="md" className="mx-auto">
-              N'apsak? Topluluk Kadrosu
-            </Badge>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
-              Üyelerimiz
-            </h1>
-
-            <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
-              N'apsak? topluluğuna değer katan, farklı alanlarda üreten ve birlikte öğrenen üyelerimiz.
-            </p>
-
-            {/* COMMUNITY STATS STRIP */}
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-4 sm:gap-8">
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-2xl border border-[#EEF0F2] shadow-xs">
-                <Users className="w-4 h-4 text-[#0A5C3A]" />
-                <span className="text-xs sm:text-sm font-bold text-[#0F1115]">
-                  {totalMembers} Topluluk Üyesi
-                </span>
+            <div className="flex items-center justify-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
               </div>
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-2xl border border-[#EEF0F2] shadow-xs">
-                <Layers className="w-4 h-4 text-[#0A5C3A]" />
-                <span className="text-xs sm:text-sm font-bold text-[#0F1115]">
-                  3 Çalışma Grubu
-                </span>
-              </div>
-              <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-2xl border border-[#EEF0F2] shadow-xs">
-                <Award className="w-4 h-4 text-[#0A5C3A]" />
-                <span className="text-xs sm:text-sm font-bold text-[#0F1115]">
-                  {totalRoles}+ Görev & Sorumluluk
-                </span>
-              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings">
+                Ekibimiz
+              </h1>
             </div>
+
+            <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-medium">
+              N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz.
+            </p>
           </motion.div>
         </PageContainer>
       </Section>
 
-      {/* 2. SEARCH & FILTER CONTROLS */}
-      <Section padding="none" background="transparent" className="py-8 border-b border-[#EEF0F2]">
-        <PageContainer className="max-w-6xl sm:max-w-7xl space-y-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            
-            {/* TEAM FILTER TABS */}
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none snap-x select-none">
+      {/* 2. FILTER PILLS BAR & SEARCH */}
+      <Section padding="none" background="transparent" className="py-6 border-b border-[#EEF0F2]">
+        <PageContainer className="max-w-6xl sm:max-w-7xl space-y-4">
+          <div className="flex flex-col xl:flex-row items-center justify-between gap-4 w-full">
+            {/* FILTER PILLS (NO OVERLAP) */}
+            <div className="flex items-center justify-center xl:justify-start gap-2 flex-wrap sm:flex-nowrap overflow-x-auto w-full xl:w-auto pb-1 xl:pb-0 scrollbar-none snap-x select-none">
+              {/* "Tümü" TAB */}
+              <button
+                type="button"
+                onClick={() => handleTeamClick("Tümü")}
+                className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all shrink-0 cursor-pointer border ${
+                  selectedTeamFilter === "Tümü"
+                    ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-md shadow-[#0A5C3A]/20"
+                    : "bg-white text-[#0A5C3A] border-[#EEF0F2] hover:border-[#0A5C3A]/40 hover:bg-[#F8FBF9]"
+                }`}
+              >
+                Tümü
+              </button>
+
+              {/* TEAM & BOARD TABS */}
               {MEMBER_TEAMS.map((teamFilter) => {
                 const isSelected = selectedTeamFilter === teamFilter;
                 return (
                   <button
                     key={teamFilter}
-                    onClick={() => setSelectedTeamFilter(teamFilter)}
-                    className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 cursor-pointer border ${
+                    type="button"
+                    onClick={() => handleTeamClick(teamFilter)}
+                    className={`px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all shrink-0 cursor-pointer border ${
                       isSelected
                         ? "bg-[#0A5C3A] text-white border-[#0A5C3A] shadow-md shadow-[#0A5C3A]/20"
-                        : "bg-white text-[#5F6773] border-[#EEF0F2] hover:border-[#0A5C3A]/40 hover:text-[#0F1115]"
+                        : "bg-white text-[#0A5C3A] border-[#EEF0F2] hover:border-[#0A5C3A]/40 hover:bg-[#F8FBF9]"
                     }`}
                   >
                     {teamFilter}
@@ -129,17 +182,18 @@ export function MembersContent() {
             </div>
 
             {/* SEARCH INPUT */}
-            <div className="relative w-full md:w-72 shrink-0">
+            <div className="relative w-full xl:w-64 shrink-0">
               <Search className="w-4 h-4 text-[#5F6773] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Üye ara..."
+                placeholder="Kişi veya görev ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-9 py-2.5 bg-white rounded-xl border border-[#EEF0F2] text-xs sm:text-sm font-medium text-[#0F1115] placeholder-[#5F6773] focus:outline-none focus:border-[#0A5C3A] transition-colors shadow-xs"
+                className="w-full pl-10 pr-9 py-2.5 bg-white rounded-full border border-[#EEF0F2] text-xs sm:text-sm font-medium text-[#0F1115] placeholder-[#5F6773] focus:outline-none focus:border-[#0A5C3A] transition-colors shadow-xs"
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5F6773] hover:text-[#0F1115]"
                 >
@@ -147,28 +201,50 @@ export function MembersContent() {
                 </button>
               )}
             </div>
-
           </div>
         </PageContainer>
       </Section>
 
-      {/* 3. MEMBERS GRID SECTION */}
-      <Section padding="none" background="transparent" className="py-12 flex-1">
+      {/* 3. MEMBERS LISTING SECTION */}
+      <Section padding="none" background="transparent" className="py-10 flex-1">
         <PageContainer className="max-w-6xl sm:max-w-7xl space-y-8">
-          
-          {filteredMembers.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-6 sm:gap-x-10">
-              {filteredMembers.map((member, idx) => (
+          {/* SECTION HEADER DIVIDER */}
+          <div className="flex items-center justify-center gap-3">
+            <div className="h-px bg-gradient-to-r from-transparent via-[#EEF0F2] to-[#EEF0F2] flex-1" />
+            <h2 className="text-base sm:text-lg font-extrabold font-headings text-[#0F1115] flex items-center gap-2 px-6 py-2 rounded-full bg-[#F8FBF9] border border-[#EEF0F2] shadow-xs">
+              <IconComponent className="w-4 h-4 text-[#0A5C3A]" />
+              <span>
+                {selectedTeamFilter === "Tümü"
+                  ? "Tüm Ekibimiz (A-Z)"
+                  : selectedTeamFilter}
+              </span>
+              <span className="text-xs font-semibold text-[#5F6773] bg-white px-2 py-0.5 rounded-full border border-[#EEF0F2]">
+                {displayedMembers.length}
+              </span>
+            </h2>
+            <div className="h-px bg-gradient-to-l from-transparent via-[#EEF0F2] to-[#EEF0F2] flex-1" />
+          </div>
+
+          {/* MEMBERS CARDS GRID */}
+          {displayedMembers.length > 0 || yonetimKuruluPlaceholderCount > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+              {displayedMembers.map((member, idx) => (
                 <PublicMemberCard
                   key={member.id}
                   member={member}
-                  activeFilter={selectedTeamFilter}
+                  variant="compact"
+                  activeFilter={selectedTeamFilter !== "Tümü" ? selectedTeamFilter : undefined}
                   index={idx}
                   onSelect={(m) => {
                     setSelectedMember(m);
                     setIsModalOpen(true);
                   }}
                 />
+              ))}
+
+              {/* YÖNETİM KURULUNDAKİ BOŞ POZİSYON PLACEHOLDER KARTLARI */}
+              {Array.from({ length: yonetimKuruluPlaceholderCount }).map((_, idx) => (
+                <PublicMemberPlaceholderCard key={`placeholder-${idx}`} />
               ))}
             </div>
           ) : (
@@ -178,15 +254,16 @@ export function MembersContent() {
                 <Users className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold font-headings text-[#0F1115]">
-                Üye Bulunamadı
+                Kişi Bulunamadı
               </h3>
               <p className="text-xs sm:text-sm text-[#5F6773]">
-                Aradığınız kriterlere veya seçili filtreye uygun üyemiz bulunamadı.
+                Aradığınız kriterlere uygun ekip üyesi bulunamadı.
               </p>
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery("");
-                  setSelectedTeamFilter("Topluluk Başkanları");
+                  setSelectedTeamFilter("Tümü");
                 }}
                 className="px-4 py-2 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-colors inline-block cursor-pointer"
               >
@@ -194,11 +271,10 @@ export function MembersContent() {
               </button>
             </div>
           )}
-
         </PageContainer>
       </Section>
 
-      {/* MEMBER PROFILE MODAL */}
+      {/* MEMBER PROFILE DETAIL MODAL */}
       <PublicMemberModal
         member={selectedMember}
         isOpen={isModalOpen}

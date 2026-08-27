@@ -2,6 +2,7 @@ import { Router } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client.js";
 import { authenticate, requireAdmin } from "../middleware/auth.js";
+import { formLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
 
@@ -32,10 +33,10 @@ router.get("/", authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-// Yeni mesaj oluştur - HERKES
-router.post("/", async (req, res) => {
+// Yeni mesaj oluştur - HERKES (PUBLIC FORM RATE LIMITED)
+router.post("/", formLimiter, async (req, res) => {
   try {
-    const { name, email, subject, content } = req.body;
+    const { name, email, phone, subject, category, content } = req.body;
 
     if (!name || !email || !content) {
       return res.status(400).json({
@@ -47,7 +48,9 @@ router.post("/", async (req, res) => {
       data: {
         name,
         email,
+        phone: phone || null,
         subject: subject || null,
+        category: category || null,
         content,
       },
     });

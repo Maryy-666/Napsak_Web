@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, BookOpen, Download, Sparkles } from "lucide-react";
 import { MagazineIssue } from "./DergilerContent";
@@ -56,10 +57,10 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
     setCurrentPage((prev) => Math.max(1, prev - 2));
   };
 
-  return (
+  const modal = (
     <AnimatePresence>
       {issue && (
-        <div className="fixed inset-0 z-[350] flex items-center justify-center p-2 sm:p-5 overflow-hidden select-none">
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-2 sm:p-5 overflow-hidden select-none">
           {/* Backdrop Blur */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -256,4 +257,6 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
       )}
     </AnimatePresence>
   );
+
+  return typeof document !== "undefined" ? createPortal(modal, document.body) : null;
 };
