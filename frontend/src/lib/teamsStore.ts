@@ -15,7 +15,7 @@ export const TeamsRepository = {
       const res = await fetch("/api/teams", { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           cachedTeams = json.data;
           return cachedTeams;
         }

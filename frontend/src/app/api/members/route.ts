@@ -22,7 +22,7 @@ export async function GET() {
     if (res && res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        return NextResponse.json({ success: true, data: mergeMembers(json.data) });
+        return NextResponse.json({ success: true, data: json.data });
       }
     }
   } catch (error) {
@@ -47,9 +47,13 @@ export async function POST(request: NextRequest) {
         body.memberships || [{ team: body.primaryTeam || "Teknoloji Ekibi", role: body.primaryRole || "Uye" }],
     };
 
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (authHeader) headers["authorization"] = authHeader;
+
     const res = await fetch(`${BACKEND_URL}/members`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(newMember),
     }).catch(() => null);
 

@@ -47,15 +47,18 @@ export function MembersContent() {
   const [selectedMember, setSelectedMember] = useState<PublicMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   useEffect(() => {
     MembersRepository.fetchMembersFromDB().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
+      if (Array.isArray(data)) {
         setMembersList(data);
       }
+      setHasLoaded(true);
     });
   }, []);
 
-  const activeMembers = membersList.length > 0 ? membersList : PUBLIC_MEMBERS;
+  const activeMembers = hasLoaded ? membersList : (membersList.length > 0 ? membersList : PUBLIC_MEMBERS);
 
   // Filter and sort members based on selected filter and search query
   const displayedMembers = useMemo(() => {

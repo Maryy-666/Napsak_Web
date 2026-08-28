@@ -22,7 +22,7 @@ export async function GET() {
     if (res && res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        return NextResponse.json({ success: true, data: mergeTeams(json.data) });
+        return NextResponse.json({ success: true, data: json.data });
       }
     }
   } catch (error) {

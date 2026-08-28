@@ -10,9 +10,13 @@ export async function PATCH(
 ) {
   try {
     const body = await request.json();
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (authHeader) headers["authorization"] = authHeader;
+
     const res = await fetch(`${BACKEND_URL}/members/${params.id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(body),
     }).catch(() => null);
 
@@ -32,8 +36,13 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = {};
+    if (authHeader) headers["authorization"] = authHeader;
+
     const res = await fetch(`${BACKEND_URL}/members/${params.id}`, {
       method: "DELETE",
+      headers,
     }).catch(() => null);
 
     if (res) {

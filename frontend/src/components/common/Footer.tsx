@@ -41,8 +41,9 @@ export const Footer: React.FC = () => {
             href = "/iletisim";
           }
 
+          const title = item.label === "Üyelerimiz" ? "Ekibimiz" : item.label;
           return {
-            title: item.label,
+            title,
             href,
           };
         });

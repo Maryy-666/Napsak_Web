@@ -10,6 +10,7 @@ export type MemberTeamRole = GroupMembership;
 
 export interface PublicMember {
   id: string;
+  memberProfileId?: number | string;
   name: string;
   initials: string;
   primaryTeam: string;

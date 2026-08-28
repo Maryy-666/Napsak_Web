@@ -75,16 +75,18 @@ export const Navbar: React.FC = () => {
                     childHref = "/iletisim";
                   }
 
+                  const childLabel = child.label === "Üyelerimiz" ? "Ekibimiz" : child.label;
                   return {
-                    title: child.label,
+                    title: childLabel,
                     href: childHref,
                     status: "active",
                   };
                 })
               : undefined;
 
+          const itemLabel = item.label === "Üyelerimiz" ? "Ekibimiz" : item.label;
           return {
-            title: item.label,
+            title: itemLabel,
             href,
             status: "active",
             items: children,

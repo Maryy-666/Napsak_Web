@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -38,6 +38,11 @@ const CITIES: CityItem[] = [
 
 export function TurkeyMapSection() {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section
@@ -70,13 +75,14 @@ export function TurkeyMapSection() {
         </div>
 
         {/* Turkey Map Centered Container */}
-        <div className="my-4 sm:my-8 w-full max-w-5xl mx-auto flex justify-center items-center">
-          <ComposableMap
-            projection="geoMercator"
-            projectionConfig={{
-              center: [35.35, 38.95],
-              scale: 2800,
-            }}
+        <div className="my-4 sm:my-8 w-full max-w-5xl mx-auto flex justify-center items-center min-h-[440px]">
+          {isMounted && (
+            <ComposableMap
+              projection="geoMercator"
+              projectionConfig={{
+                center: [35.35, 38.95],
+                scale: 2800,
+              }}
             width={960}
             height={440}
             style={{ width: "100%", height: "auto" }}
@@ -252,6 +258,7 @@ export function TurkeyMapSection() {
               );
             })}
           </ComposableMap>
+          )}
         </div>
 
         {/* Bottom Callout Banner Card */}
