@@ -150,7 +150,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-export default function KatilimContent({ pageData }: { pageData?: any }) {
+export default function KatilimContent() {
   const [openFaq, setOpenFaq] = useState<string | null>("faq-1");
 
   const toggleFaq = (id: string) => {
@@ -182,14 +182,12 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
 
             {/* Büyük Başlık */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 font-headings leading-[1.15]">
-              {pageData?.title ? pageData.title : <>Aramıza <span className="text-[#0A5C3A]">Katıl</span></>}
+              Aramıza <span className="text-[#0A5C3A]">Katıl</span>
             </h1>
 
             {/* Açıklama Metni */}
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed font-sans font-normal max-w-2xl mx-auto">
-              {pageData?.shortDescription
-                ? pageData.shortDescription
-                : "N'apsak? Gençlik Topluluğu'nda fikirlerin, enerjin ve merakın için her zaman bir yer var. İster gönüllü olarak projelere el ver, ister ekiplerimize katılarak düzenli üret, ister etkinliklerimizde bizimle buluş."}
+              N'apsak? Gençlik Topluluğu'nda fikirlerin, enerjin ve merakın için her zaman bir yer var. İster gönüllü olarak projelere el ver, ister ekiplerimize katılarak düzenli üret, ister etkinliklerimizde bizimle buluş.
             </p>
 
             {/* CTA Butonları */}

@@ -38,21 +38,49 @@ export const Navbar: React.FC = () => {
     NavigationRepository.fetchNavFromDB("NAVBAR", "visible").then((res) => {
       if (res && Array.isArray(res.navbar) && res.navbar.length > 0) {
         const dbMapped = res.navbar.map((item: any) => {
-          const href =
-            item.targetType === "PAGE" && item.page?.slug
-              ? `/sayfa/${item.page.slug}`
-              : item.href || "#";
+          const rawSlug = item.page?.slug;
+          const rawHref = item.href;
+          let href = rawHref || "#";
+
+          if (item.targetType === "PAGE" && rawSlug) {
+            if (rawSlug === "hakkimizda") href = "/hakkimizda";
+            else if (rawSlug === "katilim") href = "/katilim";
+            else if (rawSlug === "iletisim") href = "/iletisim";
+            else href = `/sayfa/${rawSlug}`;
+          } else if (rawHref === "/sayfa/hakkimizda") {
+            href = "/hakkimizda";
+          } else if (rawHref === "/sayfa/katilim") {
+            href = "/katilim";
+          } else if (rawHref === "/sayfa/iletisim") {
+            href = "/iletisim";
+          }
 
           const children =
             item.children && item.children.length > 0
-              ? item.children.map((child: any) => ({
-                  title: child.label,
-                  href:
-                    child.targetType === "PAGE" && child.page?.slug
-                      ? `/sayfa/${child.page.slug}`
-                      : child.href || "#",
-                  status: "active",
-                }))
+              ? item.children.map((child: any) => {
+                  const childSlug = child.page?.slug;
+                  const childRawHref = child.href;
+                  let childHref = childRawHref || "#";
+
+                  if (child.targetType === "PAGE" && childSlug) {
+                    if (childSlug === "hakkimizda") childHref = "/hakkimizda";
+                    else if (childSlug === "katilim") childHref = "/katilim";
+                    else if (childSlug === "iletisim") childHref = "/iletisim";
+                    else childHref = `/sayfa/${childSlug}`;
+                  } else if (childRawHref === "/sayfa/hakkimizda") {
+                    childHref = "/hakkimizda";
+                  } else if (childRawHref === "/sayfa/katilim") {
+                    childHref = "/katilim";
+                  } else if (childRawHref === "/sayfa/iletisim") {
+                    childHref = "/iletisim";
+                  }
+
+                  return {
+                    title: child.label,
+                    href: childHref,
+                    status: "active",
+                  };
+                })
               : undefined;
 
           return {

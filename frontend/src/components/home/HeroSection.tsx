@@ -18,17 +18,19 @@ export const HeroSection: React.FC = () => {
     });
   }, []);
 
-  const badgeText = heroSlide?.badge || "Keşke Demek Yerine: N'apsak?";
+  const badgeText = heroSlide?.badge || "2025'ten Beri Harekete Geçenler";
   const title = heroSlide?.title || "N'apsak? Gençlik Topluluğu";
-  const highlight = heroSlide?.highlightText || "Keşke.. diyenlerin değil, N'apsak? deyip harekete geçenlerin topluluğuyuz.";
+  const highlight = heroSlide?.highlightText || "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.";
   const description =
     heroSlide?.description ||
     "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.";
-  const primaryCtaText = heroSlide?.primaryCtaText || "Çalışma Ekiplerimiz";
+  const primaryCtaText = heroSlide?.primaryCtaText;
   const primaryCtaLink = heroSlide?.primaryCtaLink || "/ekipler";
-  const secondaryCtaText = heroSlide?.secondaryCtaText || "Topluluğa Katıl";
+  const secondaryCtaText = heroSlide?.secondaryCtaText;
   const secondaryCtaLink = heroSlide?.secondaryCtaLink || "/katilim";
   const bgImage = heroSlide?.imageUrl || "/images/forest-hero.jpg";
+
+  const hasButtons = Boolean(primaryCtaText || secondaryCtaText);
 
   return (
     <section className="relative w-full h-[100vh] min-h-[100vh] h-[100svh] min-h-[100svh] pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-start overflow-hidden bg-[#07452C]">
@@ -63,30 +65,36 @@ export const HeroSection: React.FC = () => {
 
           {/* Main Message Slogan */}
           <p className="text-base sm:text-lg lg:text-xl text-[#EEF7F3] font-semibold font-sans italic leading-relaxed mb-3 select-none">
-            “{highlight}”
+            {highlight.startsWith("“") ? highlight : `“${highlight}”`}
           </p>
 
           {/* Supporting Description Text */}
-          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none mb-6">
+          <p className={`text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none ${hasButtons ? "mb-6" : "mb-0"}`}>
             {description}
           </p>
 
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href={primaryCtaLink}
-              className="px-5 py-3 rounded-full bg-[#0A5C3A] hover:bg-[#084A2F] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2"
-            >
-              <span>{primaryCtaText}</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href={secondaryCtaLink}
-              className="px-5 py-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs sm:text-sm font-bold transition-all"
-            >
-              <span>{secondaryCtaText}</span>
-            </Link>
-          </div>
+          {/* Action CTAs (rendered only if set in CMS) */}
+          {hasButtons && (
+            <div className="flex flex-wrap items-center gap-3 pt-6">
+              {primaryCtaText && (
+                <Link
+                  href={primaryCtaLink}
+                  className="px-5 py-3 rounded-full bg-[#0A5C3A] hover:bg-[#084A2F] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2"
+                >
+                  <span>{primaryCtaText}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
+              {secondaryCtaText && (
+                <Link
+                  href={secondaryCtaLink}
+                  className="px-5 py-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs sm:text-sm font-bold transition-all"
+                >
+                  <span>{secondaryCtaText}</span>
+                </Link>
+              )}
+            </div>
+          )}
         </motion.div>
       </PageContainer>
     </section>

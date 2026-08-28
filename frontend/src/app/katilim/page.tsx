@@ -32,15 +32,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function KatilimPage() {
-  const page = await PagesRepository.fetchPageBySlugFromDB("katilim");
-  const pageData = page?.publicationStatus === "PUBLISHED" ? page : undefined;
-
+export default function KatilimPage() {
   return (
     <>
       <Navbar />
       <main className="flex-1 w-full flex flex-col pt-16">
-        <KatilimContent pageData={pageData} />
+        <KatilimContent />
       </main>
       <Footer />
     </>

@@ -10,7 +10,7 @@ import { Logo } from "../common/Logo";
 import { PageBackground } from "../common/PageBackground";
 import { ContactForm } from "./ContactForm";
 
-export default function IletisimContent({ pageData }: { pageData?: any }) {
+export default function IletisimContent() {
   const contactItems = [
     {
       icon: Mail,
@@ -41,12 +41,10 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
           >
             <div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0F1115] font-headings leading-tight mb-3">
-                {pageData?.title ? pageData.title : "İletişim"}
+                İletişim
               </h1>
               <p className="text-base sm:text-lg text-[#5F6773] font-medium leading-relaxed font-sans max-w-md mb-6">
-                {pageData?.shortDescription
-                  ? pageData.shortDescription
-                  : "Soruların, önerilerin veya iş birliklerin için bizimle doğrudan iletişime geçebilirsin."}
+                Soruların, önerilerin veya iş birliklerin için bizimle doğrudan iletişime geçebilirsin.
               </p>
 
               {/* Real Direct Contact Info Block */}

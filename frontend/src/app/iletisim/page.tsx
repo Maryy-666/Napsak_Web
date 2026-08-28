@@ -33,15 +33,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function IletisimPage() {
-  const page = await PagesRepository.fetchPageBySlugFromDB("iletisim");
-  const pageData = page?.publicationStatus === "PUBLISHED" ? page : undefined;
-
+export default function IletisimPage() {
   return (
     <>
       <Navbar />
       <main className="flex-1 w-full flex flex-col pt-20">
-        <IletisimContent pageData={pageData} />
+        <IletisimContent />
       </main>
       <Footer />
     </>

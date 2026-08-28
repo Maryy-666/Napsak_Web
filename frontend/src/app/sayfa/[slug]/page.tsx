@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Navbar } from "../../../components/common/Navbar";
 import { Footer } from "../../../components/common/Footer";
 import { PageContainer, Section } from "../../../components/ui";
@@ -16,6 +16,22 @@ interface DynamicPageProps {
 }
 
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
+  if (params.slug === "hakkimizda") {
+    return {
+      title: "Hakkımızda | N'apsak? Gençlik Topluluğu",
+    };
+  }
+  if (params.slug === "katilim") {
+    return {
+      title: "Katılım | N'apsak? Gençlik Topluluğu",
+    };
+  }
+  if (params.slug === "iletisim") {
+    return {
+      title: "İletişim | N'apsak? Gençlik Topluluğu",
+    };
+  }
+
   const page = await PagesRepository.fetchPageBySlugFromDB(params.slug);
 
   if (!page || page.publicationStatus !== "PUBLISHED") {
@@ -40,6 +56,16 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
 }
 
 export default async function DynamicSlugPage({ params }: DynamicPageProps) {
+  if (params.slug === "hakkimizda") {
+    redirect("/hakkimizda");
+  }
+  if (params.slug === "katilim") {
+    redirect("/katilim");
+  }
+  if (params.slug === "iletisim") {
+    redirect("/iletisim");
+  }
+
   const page = await PagesRepository.fetchPageBySlugFromDB(params.slug);
 
   if (!page || page.publicationStatus !== "PUBLISHED") {
