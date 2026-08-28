@@ -209,7 +209,7 @@ const ABOUT_SLIDES = [
   },
 ];
 
-export default function HakkimizdaContent({ pageData }: { pageData?: any }) {
+export default function HakkimizdaContent() {
   const [wordIndex, setWordIndex] = useState(0);
   const [slideIndex, setSlideIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -276,40 +276,27 @@ export default function HakkimizdaContent({ pageData }: { pageData?: any }) {
             transition={{ duration: 0.5 }}
             className="text-center max-w-4xl mx-auto select-none space-y-6"
           >
-            {pageData?.title && pageData.title !== "Hakkımızda" ? (
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] text-xs font-bold border border-[#0A5C3A]/20 mb-2">
-                <Sparkles className="w-4 h-4" />
-                <span>{pageData.title}</span>
-              </div>
-            ) : null}
-
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-relaxed py-1.5">
-              {pageData?.title ? pageData.title : (
-                <>
-                  Fikirlerin cesarete, merakın <br className="hidden sm:inline" />
-                  <span className="inline-block relative text-[#0A5C3A] w-[145px] sm:w-[185px] lg:w-[215px] text-center align-baseline font-black">
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={currentWord}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.25 }}
-                        className="inline-block bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black text-center whitespace-nowrap leading-normal"
-                      >
-                        {currentWord}
-                      </motion.span>
-                    </AnimatePresence>
-                  </span>{" "}
-                  dönüştüğü gençlik alanı.
-                </>
-              )}
+              Fikirlerin cesarete, merakın <br className="hidden sm:inline" />
+              <span className="inline-block relative text-[#0A5C3A] w-[145px] sm:w-[185px] lg:w-[215px] text-center align-baseline font-black">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={currentWord}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.25 }}
+                    className="inline-block bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black text-center whitespace-nowrap leading-normal"
+                  >
+                    {currentWord}
+                  </motion.span>
+                </AnimatePresence>
+              </span>{" "}
+              dönüştüğü gençlik alanı.
             </h1>
 
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
-              {pageData?.shortDescription
-                ? pageData.shortDescription
-                : "Topluluğumuz; lise ve üniversite öğrencilerinin kendi potansiyellerini keşfetmesini, çalışma gruplarıyla projeler üretmesini ve geleceğe özgüvenle hazırlanmasını sağlar."}
+              Topluluğumuz; lise ve üniversite öğrencilerinin kendi potansiyellerini keşfetmesini, çalışma gruplarıyla projeler üretmesini ve geleceğe özgüvenle hazırlanmasını sağlar.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
