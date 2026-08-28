@@ -122,6 +122,37 @@ export const ApplicationsRepository = {
     }).catch((err) => console.error("DB update error:", err));
   },
 
+  async addApplication(data: Partial<ApplicationItem>): Promise<ApplicationItem> {
+    const newApp: ApplicationItem = {
+      id: "app-" + Date.now(),
+      fullName: data.fullName || "İsimsiz Başvuru",
+      email: data.email || "-",
+      phone: data.phone || "-",
+      program: data.program || "Genel Topluluk Üyeliği",
+      city: data.city || "",
+      school: data.school || "",
+      department: data.department || "",
+      grade: data.grade || "",
+      note: data.note || "",
+      status: "Beklemede",
+      createdAt: new Date().toISOString(),
+    };
+
+    cachedApplications = [newApp, ...cachedApplications];
+
+    try {
+      await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newApp),
+      });
+    } catch (err) {
+      console.warn("API /applications POST hatası:", err);
+    }
+
+    return newApp;
+  },
+
   deleteApplication(id: string): void {
     cachedApplications = cachedApplications.filter((app) => app.id !== id);
     fetch(`/api/applications/${id}`, { method: "DELETE" }).catch((err) =>
