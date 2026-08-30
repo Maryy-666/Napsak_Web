@@ -26,7 +26,8 @@ export interface MemberProfile {
   careerPreferences: string[];
   bio: string;
   skills: string;
-  avatar: string;
+  avatar?: string;
+  cv?: { name: string; size: number; uploadedAt: string } | string | any;
 }
 
 const SESSION_KEY = "napsak_current_user";

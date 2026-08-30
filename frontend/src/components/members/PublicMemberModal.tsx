@@ -80,7 +80,6 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
               width={96}
               height={96}
               className="w-24 h-24 rounded-2xl object-cover border-2 border-[#0A5C3A]/20 shadow-md"
-              fallbackText={member.initials}
             />
           ) : (
             <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#0A5C3A] to-[#07452C] text-white font-extrabold text-2xl flex items-center justify-center border-2 border-white shadow-md">

@@ -14,12 +14,9 @@ import {
   Pin,
   Star,
   Users,
-<<<<<<< HEAD
-=======
   Upload,
   Image as ImageIcon,
   Loader2,
->>>>>>> origin/main
 } from "lucide-react";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 import {
@@ -40,11 +37,8 @@ import {
   FaaliyetlerRepository,
   subscribeFaaliyetlerChanges,
 } from "../../../lib/faaliyetlerStore";
-<<<<<<< HEAD
-=======
 import { MediaPickerModal } from "../../../components/admin/media/MediaPickerModal";
 import { MediaRepository } from "../../../lib/mediaStore";
->>>>>>> origin/main
 
 export default function AdminFaaliyetlerPage() {
   const { isDark } = useAdminTheme();
@@ -79,8 +73,6 @@ export default function AdminFaaliyetlerPage() {
   const [summary, setSummary] = useState("");
   const [participantCount, setParticipantCount] = useState<number>(30);
   const [image, setImage] = useState("");
-<<<<<<< HEAD
-=======
   const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState("");
@@ -103,7 +95,6 @@ export default function AdminFaaliyetlerPage() {
       setUploadingImage(false);
     }
   };
->>>>>>> origin/main
 
   const loadData = async () => {
     try {
@@ -538,18 +529,6 @@ export default function AdminFaaliyetlerPage() {
             </div>
 
             <div>
-<<<<<<< HEAD
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Görsel URL
-              </label>
-              <input
-                type="text"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="/images/news-kil-cover.jpg"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
-              />
-=======
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                   Görsel Yükle / URL
@@ -595,7 +574,6 @@ export default function AdminFaaliyetlerPage() {
                   <img src={image} alt="Görsel önizleme" className="w-full h-full object-cover" />
                 </div>
               )}
->>>>>>> origin/main
             </div>
           </div>
 
@@ -617,8 +595,6 @@ export default function AdminFaaliyetlerPage() {
         </form>
       </AdminModal>
 
-<<<<<<< HEAD
-=======
       <MediaPickerModal
         isOpen={isMediaPickerOpen}
         onClose={() => setIsMediaPickerOpen(false)}
@@ -627,7 +603,6 @@ export default function AdminFaaliyetlerPage() {
         onSelect={(url) => setImage(url)}
       />
 
->>>>>>> origin/main
       <AdminConfirmDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
