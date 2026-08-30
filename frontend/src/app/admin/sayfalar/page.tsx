@@ -44,11 +44,12 @@ const pageFormSchema = z.object({
     .max(60, "Slug en fazla 60 karakter olabilir.")
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Geçersiz slug biçimi (küçük harf, rakam ve tire kullanın)"),
   shortDescription: z.string().max(300, "Kısa açıklama en fazla 300 karakter olabilir.").optional(),
-  content: z.string().min(5, "Sayfa içeriği en az 5 karakter olmalıdır."),
+  content: z.string().optional(),
   publicationStatus: z.enum(["PUBLISHED", "DRAFT", "ARCHIVED"]),
   isFeatured: z.boolean().default(false),
   showInMenu: z.boolean().default(false),
   displayOrder: z.number().int().min(0, "Sıra 0 veya daha büyük olmalıdır."),
+  featuredImage: z.string().optional(),
   metaTitle: z.string().max(100).optional(),
   metaDescription: z.string().max(200).optional(),
 });
@@ -105,7 +106,7 @@ export default function AdminSayfalarPage() {
       title: "",
       slug: "",
       shortDescription: "",
-      content: "",
+      content: "Sayfa içeriği yakında eklenecektir.",
       publicationStatus: "PUBLISHED",
       isFeatured: false,
       showInMenu: false,
@@ -124,7 +125,7 @@ export default function AdminSayfalarPage() {
       title: page.title,
       slug: page.slug,
       shortDescription: page.shortDescription || "",
-      content: page.content || "",
+      content: page.content || "Sayfa içeriği yakında eklenecektir.",
       publicationStatus: (page.publicationStatus as any) || "PUBLISHED",
       isFeatured: Boolean(page.isFeatured),
       showInMenu: Boolean(page.showInMenu),
@@ -163,7 +164,12 @@ export default function AdminSayfalarPage() {
     e.preventDefault();
     setApiError("");
 
-    const validation = pageFormSchema.safeParse(formData);
+    const payload = {
+      ...formData,
+      content: formData.content || "Sayfa içeriği",
+    };
+
+    const validation = pageFormSchema.safeParse(payload);
     if (!validation.success) {
       const errors: Record<string, string> = {};
       validation.error.issues.forEach((issue) => {
@@ -177,10 +183,10 @@ export default function AdminSayfalarPage() {
 
     try {
       if (editingPage) {
-        await PagesRepository.updatePage(editingPage.id, formData);
+        await PagesRepository.updatePage(editingPage.id, payload);
         setSuccessMessage("Sayfa veritabanında başarıyla güncellendi.");
       } else {
-        await PagesRepository.addPage(formData);
+        await PagesRepository.addPage(payload);
         setSuccessMessage("Yeni sayfa başarıyla oluşturuldu.");
       }
 

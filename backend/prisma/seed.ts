@@ -157,13 +157,61 @@ const TEAMS_DATA = [
       "Sosyal Medya, Metin & İletişim ve Dış İlişkiler masalarından oluşur. Haftalık içerik planlamaları ve kampanya yönetimi ile aktif iletişim yürütülür.",
     displayOrder: 5,
   },
+  {
+    externalId: "yonetim-kurulu",
+    slug: "yonetim-kurulu",
+    title: "Yönetim Kurulu",
+    iconName: "shield-check",
+    bgImage: "/images/krm.png",
+    shortDescription:
+      "N'apsak? Gençlik Topluluğu'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
+    about:
+      "Yönetim Kurulu, topluluğumuzun vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen, ekipler arası koordinasyonu sağlayan karar organıdır.",
+    focusAreas: [
+      "Stratejik Planlama & Karar Alma",
+      "Topluluk Yönetimi & Vizyon",
+      "Operasyonel Koordinasyon",
+      "Paydaş & Kurumsal İlişkiler",
+    ],
+    whatWeDo: [
+      "Topluluğumuzun stratejik hedeflerini ve vizyon belgelerini oluşturuyoruz.",
+      "Tüm çalışma ekiplerinin eş güdüm içerisinde faaliyet göstermesini sağlıyoruz.",
+      "Kurumsal ve sivil toplum ortaklıklarının yönetimini yürütüyoruz.",
+    ],
+    structure: "Yönetim Kurulu 5 üyeden oluşur.",
+    displayOrder: 6,
+  },
+  {
+    externalId: "danisma-kurulu",
+    slug: "danisma-kurulu",
+    title: "Danışma Kurulu",
+    iconName: "award",
+    bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
+    shortDescription:
+      "Topluluğumuzun vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
+    about:
+      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak N'apsak? Gençlik Topluluğu'nun stratejik yönelimlerine ve toplumsal etki projelerine rehberlik etmektedir.",
+    focusAreas: [
+      "Stratejik Danışmanlık & Rehberlik",
+      "Sürdürülebilirlik & Gelecek Vizyonu",
+      "Toplumsal Etki & Gençlik Politikaları",
+    ],
+    whatWeDo: [
+      "Topluluğun uzun vadeli büyüme stratejilerine danışmanlık sağlıyoruz.",
+      "Gençlik alanındaki yenilikçi projelere kurumsal rehberlik sunuyoruz.",
+    ],
+    structure: "Danışma Kurulu seçkin liderler ve danışmanlardan oluşur.",
+    displayOrder: 7,
+  },
 ];
 
 // STATİK MEMBERS VERİSİ
 const PUBLIC_MEMBERS = [
-  // TOPLULUK EŞ BAŞKANLARI
-  { id: "m-kadir-colmekci", name: "Kadir Çölmekci", initials: "KÇ", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }] },
-  { id: "m-humeyra-erdonmez", name: "Hümeyra Erdönmez", initials: "HE", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }] },
+  // TOPLULUK EŞ BAŞKANLARI & YÖNETİM/DANIŞMA KURULU
+  { id: "m-kadir-colmekci", name: "Kadir Çölmekci", initials: "KÇ", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
+  { id: "m-humeyra-erdonmez", name: "Hümeyra Erdönmez", initials: "HE", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
+  { id: "m-yunus-efe-kolukisa", name: "Yunus Efe Kolukısa", initials: "YEK", primaryTeam: "Yönetim Kurulu", primaryRole: "Yönetim Kurulu Üyesi", isPresident: false, memberships: [{ team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
+  { id: "m-nevgul-bilsel-safkan", name: "Nevgül Bilsel Safkan", initials: "NBS", primaryTeam: "Danışma Kurulu", primaryRole: "Sabancı Vakfı Genel Müdürü", isPresident: false, memberships: [{ team: "Danışma Kurulu", role: "Sabancı Vakfı Genel Müdürü" }] },
 
   // 1. SANAT ÇALIŞMA GRUBU
   { id: "m-zeynep-sude-bulbul", name: "Zeynep Sude Bülbül", initials: "ZB", primaryTeam: "Sanat Çalışma Grubu", primaryRole: "Başkan", memberships: [{ team: "Sanat Çalışma Grubu", role: "Başkan" }] },
@@ -326,6 +374,8 @@ function getTeamSlugByName(teamName: string): string | null {
   if (t.includes("sağlık") || t.includes("çevre")) return "cevre-saglik";
   if (t.includes("program")) return "programlar";
   if (t.includes("kurumsal") || t.includes("iletişim")) return "kurumsal-iletisim";
+  if (t.includes("yönetim")) return "yonetim-kurulu";
+  if (t.includes("danışma")) return "danisma-kurulu";
   return null;
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -29,30 +30,63 @@ export const Navbar: React.FC = () => {
   const [userProfile, setUserProfile] = useState<MemberProfile | null>(null);
   const [navItemsList, setNavItemsList] = useState<any[]>(SITE_CONFIG.mainNav as any[]);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch live navigation items from DB API
+  // Fetch live navigation items from DB API and merge with default config
   useEffect(() => {
     NavigationRepository.fetchNavFromDB("NAVBAR", "visible").then((res) => {
       if (res && Array.isArray(res.navbar) && res.navbar.length > 0) {
-        const mapped = res.navbar.map((item: any) => {
-          const href =
-            item.targetType === "PAGE" && item.page?.slug
-              ? `/sayfa/${item.page.slug}`
-              : item.href || "#";
+        const dbMapped = res.navbar.map((item: any) => {
+          const rawSlug = item.page?.slug;
+          const rawHref = item.href;
+          let href = rawHref || "#";
+
+          if (item.targetType === "PAGE" && rawSlug) {
+            if (rawSlug === "hakkimizda") href = "/hakkimizda";
+            else if (rawSlug === "katilim") href = "/katilim";
+            else if (rawSlug === "iletisim") href = "/iletisim";
+            else href = `/sayfa/${rawSlug}`;
+          } else if (rawHref === "/sayfa/hakkimizda") {
+            href = "/hakkimizda";
+          } else if (rawHref === "/sayfa/katilim") {
+            href = "/katilim";
+          } else if (rawHref === "/sayfa/iletisim") {
+            href = "/iletisim";
+          }
 
           const children =
             item.children && item.children.length > 0
-              ? item.children.map((child: any) => ({
-                  title: child.label,
-                  href:
-                    child.targetType === "PAGE" && child.page?.slug
-                      ? `/sayfa/${child.page.slug}`
-                      : child.href || "#",
-                  status: "active",
-                }))
+              ? item.children.map((child: any) => {
+                  const childSlug = child.page?.slug;
+                  const childRawHref = child.href;
+                  let childHref = childRawHref || "#";
+
+                  if (child.targetType === "PAGE" && childSlug) {
+                    if (childSlug === "hakkimizda") childHref = "/hakkimizda";
+                    else if (childSlug === "katilim") childHref = "/katilim";
+                    else if (childSlug === "iletisim") childHref = "/iletisim";
+                    else childHref = `/sayfa/${childSlug}`;
+                  } else if (childRawHref === "/sayfa/hakkimizda") {
+                    childHref = "/hakkimizda";
+                  } else if (childRawHref === "/sayfa/katilim") {
+                    childHref = "/katilim";
+                  } else if (childRawHref === "/sayfa/iletisim") {
+                    childHref = "/iletisim";
+                  }
+
+                  return {
+                    title: child.label,
+                    href: childHref,
+                    status: "active",
+                  };
+                })
               : undefined;
 
           return {
@@ -62,7 +96,15 @@ export const Navbar: React.FC = () => {
             items: children,
           };
         });
-        setNavItemsList(mapped);
+
+        const staticNav = (SITE_CONFIG.mainNav || []) as any[];
+        const dbTitles = dbMapped.map((d: any) => d.title.toLowerCase());
+        
+        const filteredStatic = staticNav.filter(
+          (s: any) => !dbTitles.includes(s.title.toLowerCase())
+        );
+
+        setNavItemsList([...filteredStatic, ...dbMapped]);
       }
     });
   }, []);
@@ -174,10 +216,10 @@ export const Navbar: React.FC = () => {
       variants={navbarVariants}
       transition={transitionConfig}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ease-in-out border-b",
+        "fixed top-0 left-0 right-0 z-50 w-full h-[88px] transition-all duration-300 ease-in-out border-b",
         isScrolled
-          ? "h-16 bg-[#07452C]/95 border-white/15 shadow-[0_4px_24px_rgba(0,0,0,0.25)] backdrop-blur-md"
-          : "h-20 bg-black/40 border-white/10 backdrop-blur-md"
+          ? "bg-[#07452C]/95 border-white/15 shadow-[0_4px_24px_rgba(0,0,0,0.25)] backdrop-blur-md"
+          : "bg-black/40 border-white/10 backdrop-blur-md"
       )}
     >
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -190,9 +232,9 @@ export const Navbar: React.FC = () => {
         >
           <Logo
             variant="default"
-            size={isScrolled ? 44 : 54}
+            size={72}
             priority
-            className="transition-all duration-300 ease-in-out filter brightness-110 flex items-center justify-center"
+            className="transition-all duration-300 ease-in-out filter brightness-110 flex items-center justify-center shrink-0"
           />
         </Link>
 
@@ -290,7 +332,7 @@ export const Navbar: React.FC = () => {
               );
             }
 
-            // Single Passive Item (Hakkımızda, Etkinlikler etc.)
+            // Single Passive Item
             if (isPassive) {
               return (
                 <span
@@ -307,7 +349,7 @@ export const Navbar: React.FC = () => {
               );
             }
 
-            // Single Active Item (Ana Sayfa, İletişim etc.)
+            // Single Active Item
             return (
               <Link
                 key={item.title}
@@ -459,7 +501,6 @@ export const Navbar: React.FC = () => {
                   const isPassive = item.status === "coming-soon";
                   const active = isLinkActive(item.href);
 
-                  // Mobile Group with SubItems
                   if (hasSubItems) {
                     return (
                       <div key={item.title} className="flex flex-col gap-1 py-1">
@@ -511,7 +552,6 @@ export const Navbar: React.FC = () => {
                     );
                   }
 
-                  // Mobile Single Passive Item
                   if (isPassive) {
                     return (
                       <div
@@ -526,7 +566,6 @@ export const Navbar: React.FC = () => {
                     );
                   }
 
-                  // Mobile Single Active Item
                   return (
                     <Link
                       key={item.title}
@@ -654,58 +693,63 @@ export const Navbar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {logoutConfirmOpen && (
-          <motion.div
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="logout-confirm-title"
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.96 }}
-              transition={transitionConfig}
-              className="w-full max-w-sm rounded-2xl border border-white/15 bg-white p-5 text-[#0F1115] shadow-2xl"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[#0A5C3A]">
-                  <LogOut className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 id="logout-confirm-title" className="text-lg font-extrabold">
-                    Çıkış Yap
-                  </h2>
-                  <p className="mt-1 text-sm font-medium leading-relaxed text-[#5F6773]">
-                    Çıkış yapmak istediğinizden emin misiniz?
-                  </p>
-                </div>
-              </div>
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {logoutConfirmOpen && (
+              <motion.div
+                className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="logout-confirm-title"
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 16, scale: 0.96 }}
+                  transition={transitionConfig}
+                  className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-[#0F1115] shadow-2xl"
+                >
+                  <div className="flex items-start gap-3.5">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-200 bg-emerald-50 text-[#0A5C3A]">
+                      <LogOut className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 id="logout-confirm-title" className="text-lg font-extrabold text-[#0F1115]">
+                        Çıkış Yap
+                      </h2>
+                      <p className="mt-1 text-sm font-medium leading-relaxed text-[#5F6773]">
+                        Çıkış yapmak istediğinizden emin misiniz?
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="mt-5 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setLogoutConfirmOpen(false)}
-                  className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
-                >
-                  Vazgeç
-                </button>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] px-4 py-2 text-xs font-bold text-white shadow-md shadow-[#0A5C3A]/20 transition-colors"
-                >
-                  Evet, Çıkış Yap
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
+                  <div className="mt-6 flex justify-end gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setLogoutConfirmOpen(false)}
+                      className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
+                    >
+                      Vazgeç
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] px-4.5 py-2.5 text-xs font-bold text-white shadow-md shadow-[#0A5C3A]/20 transition-colors"
+                    >
+                      Evet, Çıkış Yap
+                    </button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </motion.header>
   );
 };

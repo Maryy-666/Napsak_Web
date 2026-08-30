@@ -23,13 +23,29 @@ export const Footer: React.FC = () => {
   useEffect(() => {
     NavigationRepository.fetchNavFromDB("FOOTER", "visible").then((res) => {
       if (res && Array.isArray(res.footer) && res.footer.length > 0) {
-        const mapped = res.footer.map((item: any) => ({
-          title: item.label,
-          href:
-            item.targetType === "PAGE" && item.page?.slug
-              ? `/sayfa/${item.page.slug}`
-              : item.href || "#",
-        }));
+        const mapped = res.footer.map((item: any) => {
+          const rawSlug = item.page?.slug;
+          const rawHref = item.href;
+          let href = rawHref || "#";
+
+          if (item.targetType === "PAGE" && rawSlug) {
+            if (rawSlug === "hakkimizda") href = "/hakkimizda";
+            else if (rawSlug === "katilim") href = "/katilim";
+            else if (rawSlug === "iletisim") href = "/iletisim";
+            else href = `/sayfa/${rawSlug}`;
+          } else if (rawHref === "/sayfa/hakkimizda") {
+            href = "/hakkimizda";
+          } else if (rawHref === "/sayfa/katilim") {
+            href = "/katilim";
+          } else if (rawHref === "/sayfa/iletisim") {
+            href = "/iletisim";
+          }
+
+          return {
+            title: item.label,
+            href,
+          };
+        });
         setFooterLinks(mapped);
       }
     });

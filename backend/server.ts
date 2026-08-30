@@ -41,7 +41,8 @@ const prisma = new PrismaClient({
 // Helmet Security Headers (safe defaults, allowing cross-origin image embedding)
 app.use(
   helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: false,
   })
 );
 
@@ -121,7 +122,7 @@ app.use("/media", mediaRouter);
 app.use("/news", newsRouter);
 app.use("/homepage", homepageRouter);
 
-// Global Secure Error Handler (prevents stack trace leakage in production)
+// Global Secure Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error("UNHANDLED SERVER ERROR:", err);
   const isProd = process.env.NODE_ENV === "production";
@@ -133,7 +134,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Backend http://localhost:${PORT} adresinde çalışıyor.`);

@@ -60,7 +60,7 @@ export interface AdminTeamItem {
   title: string;
   shortDescription: string;
   about: string;
-  iconName: "cpu" | "palette" | "heart-pulse" | "book-open" | "share-2";
+  iconName: "cpu" | "palette" | "heart-pulse" | "book-open" | "share-2" | "shield-check" | "award";
   bgImage: string;
   leaderName: string;
   leaderTitle: string;
@@ -73,12 +73,14 @@ export interface AdminTeamItem {
   membersList?: AdminTeamMember[];
 }
 
-const ICON_MAP = {
+const ICON_MAP: Record<string, any> = {
   cpu: Cpu,
   palette: Palette,
   "heart-pulse": HeartPulse,
   "book-open": BookOpen,
   "share-2": Share2,
+  "shield-check": ShieldCheck,
+  award: Award,
 };
 
 const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
@@ -228,6 +230,58 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
     displayOrder: 5,
     membersList: [],
   },
+  {
+    id: "yonetim-kurulu",
+    slug: "yonetim-kurulu",
+    title: "Yönetim Kurulu",
+    iconName: "shield-check",
+    bgImage: "/images/krm.png",
+    shortDescription:
+      "N'apsak? Gençlik Topluluğu'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
+    about:
+      "Yönetim Kurulu, topluluğumuzun vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen ana karar organıdır.",
+    leaderName: "Topluluk Eş Başkanları",
+    leaderTitle: "Yönetim Kurulu",
+    leaderAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    memberCount: 3,
+    focusAreas: [
+      "Stratejik Planlama & Karar Alma",
+      "Topluluk Yönetimi & Vizyon",
+      "Operasyonel Koordinasyon",
+    ],
+    whatWeDo: [
+      "Topluluğun vizyon ve stratejik hedeflerini belirliyoruz.",
+      "Ekipler arası koordinasyon ve yönetim süreçlerini yürütüyoruz.",
+    ],
+    status: "Aktif",
+    displayOrder: 6,
+    membersList: [],
+  },
+  {
+    id: "danisma-kurulu",
+    slug: "danisma-kurulu",
+    title: "Danışma Kurulu",
+    iconName: "award",
+    bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
+    shortDescription:
+      "Topluluğumuzun vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
+    about:
+      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak topluluğun stratejik yönelimlerine rehberlik etmektedir.",
+    leaderName: "Nevgül Bilsel Safkan",
+    leaderTitle: "Sabancı Vakfı Genel Müdürü",
+    leaderAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+    memberCount: 1,
+    focusAreas: [
+      "Stratejik Danışmanlık & Rehberlik",
+      "Sürdürülebilirlik & Gelecek Vizyonu",
+    ],
+    whatWeDo: [
+      "Topluluğun büyüme stratejilerine rehberlik ediyoruz.",
+    ],
+    status: "Aktif",
+    displayOrder: 7,
+    membersList: [],
+  },
 ];
 
 // ==========================================
@@ -263,7 +317,7 @@ const teamFormSchema = z.object({
     .max(60, "Lider unvanı en fazla 60 karakter olabilir."),
   displayOrder: z.number().min(1, "Görüntülenme sırası 1 veya daha büyük olmalıdır."),
   status: z.enum(["Aktif", "Pasif"]),
-  iconName: z.enum(["cpu", "palette", "heart-pulse", "book-open", "share-2"]),
+  iconName: z.enum(["cpu", "palette", "heart-pulse", "book-open", "share-2", "shield-check", "award"]),
   focusAreasText: z.string().min(3, "En az 1 odak alanı giriniz (virgülle ayırın)."),
   whatWeDoText: z.string().min(5, "En az 1 çalışma faaliyeti giriniz (her satıra 1 madde)."),
 });

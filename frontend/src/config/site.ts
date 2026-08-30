@@ -73,7 +73,7 @@ export const SITE_CONFIG = {
           status: "active",
         },
         {
-          title: "Üyelerimiz",
+          title: "Ekibimiz",
           href: ROUTES.UYELER,
           status: "active",
         },

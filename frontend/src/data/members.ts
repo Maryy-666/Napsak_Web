@@ -10,6 +10,7 @@ export type MemberTeamRole = GroupMembership;
 
 export interface PublicMember {
   id: string;
+  memberProfileId?: number | string;
   name: string;
   initials: string;
   primaryTeam: string;
@@ -25,14 +26,22 @@ export interface PublicMember {
 }
 
 export const MEMBER_TEAMS = [
-  "Sanat",
-  "Kurumsal İletişim",
-  "Programlar",
-  "Sağlık ve Çevre",
   "Teknoloji",
+  "Sanat",
+  "Sağlık ve Çevre",
+  "Programlar",
+  "Kurumsal İletişim",
+  "Yönetim Kurulu",
+  "Danışma Kurulu",
 ] as const;
 
 export type MemberTeamFilter = (typeof MEMBER_TEAMS)[number];
+
+export function sortMembersAlphabetically(members: PublicMember[]): PublicMember[] {
+  return [...members].sort((a, b) =>
+    a.name.localeCompare(b.name, "tr-TR", { sensitivity: "base" })
+  );
+}
 
 export function getInitials(name: string): string {
   if (!name) return "N";
@@ -44,7 +53,7 @@ export function getInitials(name: string): string {
 
 export const PUBLIC_MEMBERS: PublicMember[] = [
   // ==================================================
-  // TOPLULUK EŞ BAŞKANLARI (2)
+  // TOPLULUK EŞ BAŞKANLARI & YÖNETİM/DANIŞMA KURULU
   // ==================================================
   {
     id: "m-kadir-colmekci",
@@ -55,6 +64,7 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
     isPresident: true,
     memberships: [
       { team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" },
+      { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
     ],
   },
   {
@@ -66,6 +76,29 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
     isPresident: true,
     memberships: [
       { team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" },
+      { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
+    ],
+  },
+  {
+    id: "m-yunus-efe-kolukisa",
+    name: "Yunus Efe Kolukısa",
+    initials: "YEK",
+    primaryTeam: "Yönetim Kurulu",
+    primaryRole: "Yönetim Kurulu Üyesi",
+    isPresident: false,
+    memberships: [
+      { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
+    ],
+  },
+  {
+    id: "m-nevgul-bilsel-safkan",
+    name: "Nevgül Bilsel Safkan",
+    initials: "NBS",
+    primaryTeam: "Danışma Kurulu",
+    primaryRole: "Sabancı Vakfı Genel Müdürü",
+    isPresident: false,
+    memberships: [
+      { team: "Danışma Kurulu", role: "Sabancı Vakfı Genel Müdürü" },
     ],
   },
 

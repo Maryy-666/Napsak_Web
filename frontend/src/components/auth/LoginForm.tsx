@@ -93,12 +93,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       const responseData = await response.json().catch(() => ({}));
 
       if (response.ok && responseData.success) {
+        // 🟢 JWT Token'ı localStorage'a kaydediyoruz
+        if (responseData.token) {
+          localStorage.setItem("token", responseData.token);
+        }
+
         if (responseData.user?.email) {
           saveCurrentUser({
             id: String(responseData.user.id || responseData.user.email),
             email: responseData.user.email,
             name: responseData.user.name,
             role: responseData.user.role === "ADMIN" ? "admin" : "member",
+            ...(responseData.token && { token: responseData.token }),
           });
         }
 

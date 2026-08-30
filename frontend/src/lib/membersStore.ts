@@ -1,6 +1,7 @@
 "use client";
 
 import { PublicMember, PUBLIC_MEMBERS } from "../data/members";
+import { getAuthToken } from "./memberAuth";
 
 let cachedMembers: PublicMember[] = [];
 
@@ -23,7 +24,9 @@ export const MembersRepository = {
     } catch (err) {
       console.warn("DB'den üyeler alınamadı, yedek depolama kullanılıyor:", err);
     }
-    cachedMembers = PUBLIC_MEMBERS;
+    if (cachedMembers.length === 0) {
+      cachedMembers = PUBLIC_MEMBERS;
+    }
     return cachedMembers;
   },
 
@@ -32,12 +35,19 @@ export const MembersRepository = {
       ...member,
       id: `m-${Date.now()}`,
     };
+    if (cachedMembers.length === 0) {
+      cachedMembers = [...PUBLIC_MEMBERS];
+    }
     cachedMembers.unshift(newMember);
 
     try {
+      const token = typeof window !== "undefined" ? getAuthToken() : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       await fetch("/api/members", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(newMember),
       });
       await this.fetchMembersFromDB();
@@ -49,14 +59,21 @@ export const MembersRepository = {
   },
 
   async updateMember(id: string, updatedFields: Partial<PublicMember>): Promise<PublicMember | null> {
+    if (cachedMembers.length === 0) {
+      cachedMembers = [...PUBLIC_MEMBERS];
+    }
     const index = cachedMembers.findIndex((m) => m.id === id);
     if (index !== -1) {
       cachedMembers[index] = { ...cachedMembers[index], ...updatedFields };
 
       try {
+        const token = typeof window !== "undefined" ? getAuthToken() : null;
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         await fetch(`/api/members/${id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(updatedFields),
         });
         await this.fetchMembersFromDB();
@@ -70,21 +87,32 @@ export const MembersRepository = {
   },
 
   async deleteMember(id: string): Promise<boolean> {
-    const index = cachedMembers.findIndex((m) => m.id === id);
-    if (index !== -1) {
-      cachedMembers.splice(index, 1);
-
-      try {
-        await fetch(`/api/members/${id}`, {
-          method: "DELETE",
-        });
-        await this.fetchMembersFromDB();
-      } catch (err) {
-        console.error("Üye silinirken API hatası:", err);
-      }
-
-      return true;
+    if (cachedMembers.length === 0) {
+      cachedMembers = [...PUBLIC_MEMBERS];
     }
-    return false;
+
+    // Immediately filter out deleted member from in-memory cache
+    cachedMembers = cachedMembers.filter((m) => m.id !== id && m.memberProfileId?.toString() !== id);
+
+    try {
+      const token = typeof window !== "undefined" ? getAuthToken() : null;
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`/api/members/${id}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (res.ok) {
+        await this.fetchMembersFromDB();
+        // Re-apply filter in case DB returned static fallback
+        cachedMembers = cachedMembers.filter((m) => m.id !== id && m.memberProfileId?.toString() !== id);
+      }
+    } catch (err) {
+      console.error("Üye silinirken API hatası:", err);
+    }
+
+    return true;
   },
 };

@@ -47,20 +47,24 @@ export async function POST(request: NextRequest) {
         body.memberships || [{ team: body.primaryTeam || "Teknoloji Ekibi", role: body.primaryRole || "Uye" }],
     };
 
+    const authHeader = request.headers.get("authorization");
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (authHeader) headers["authorization"] = authHeader;
+
     const res = await fetch(`${BACKEND_URL}/members`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newMember),
+      headers,
+      body: JSON.stringify(body),
     }).catch(() => null);
 
-    if (res) {
-      const json = await res.json().catch(() => ({}));
-      if (res.ok) return NextResponse.json(json, { status: res.status });
+    if (res && res.ok) {
+      const json = await res.json();
+      return NextResponse.json(json);
     }
 
     inMemoryMembers.unshift(newMember);
-    return NextResponse.json({ success: true, data: newMember, persisted: false });
+    return NextResponse.json({ success: true, data: newMember });
   } catch (error) {
-    return NextResponse.json({ success: false, error: "Uye olusturulamadi." }, { status: 500 });
+    return NextResponse.json({ success: false, error: "Uye eklenemedi" }, { status: 500 });
   }
 }

@@ -14,6 +14,12 @@ import {
   Pin,
   Star,
   Users,
+<<<<<<< HEAD
+=======
+  Upload,
+  Image as ImageIcon,
+  Loader2,
+>>>>>>> origin/main
 } from "lucide-react";
 import { useAdminTheme } from "../../../context/AdminThemeContext";
 import {
@@ -34,6 +40,11 @@ import {
   FaaliyetlerRepository,
   subscribeFaaliyetlerChanges,
 } from "../../../lib/faaliyetlerStore";
+<<<<<<< HEAD
+=======
+import { MediaPickerModal } from "../../../components/admin/media/MediaPickerModal";
+import { MediaRepository } from "../../../lib/mediaStore";
+>>>>>>> origin/main
 
 export default function AdminFaaliyetlerPage() {
   const { isDark } = useAdminTheme();
@@ -68,6 +79,31 @@ export default function AdminFaaliyetlerPage() {
   const [summary, setSummary] = useState("");
   const [participantCount, setParticipantCount] = useState<number>(30);
   const [image, setImage] = useState("");
+<<<<<<< HEAD
+=======
+  const [isMediaPickerOpen, setIsMediaPickerOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleDirectFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setUploadError("");
+    try {
+      const uploaded = await MediaRepository.uploadMedia(file, "activities");
+      setImage(uploaded.url);
+      setSuccessMessage("Görsel ana makineden yüklendi.");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err: any) {
+      console.error("Görsel yükleme hatası:", err);
+      setUploadError(err.message || "Görsel yüklenirken hata oluştu.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+>>>>>>> origin/main
 
   const loadData = async () => {
     try {
@@ -502,6 +538,7 @@ export default function AdminFaaliyetlerPage() {
             </div>
 
             <div>
+<<<<<<< HEAD
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Görsel URL
               </label>
@@ -512,6 +549,53 @@ export default function AdminFaaliyetlerPage() {
                 placeholder="/images/news-kil-cover.jpg"
                 className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
               />
+=======
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Görsel Yükle / URL
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsMediaPickerOpen(true)}
+                  className="text-xs text-[#0A5C3A] font-bold hover:underline flex items-center gap-1"
+                >
+                  <ImageIcon className="w-3.5 h-3.5" />
+                  <span>Kütüphaneden Seç</span>
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="/images/... veya Görsel URL"
+                  className="flex-1 min-w-0 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
+                />
+                <label className="px-3 py-2 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer hover:bg-[#084A2F] transition-all shrink-0">
+                  {uploadingImage ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Upload className="w-3.5 h-3.5" />
+                  )}
+                  <span>Dosya Seç</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    onChange={handleDirectFileUpload}
+                    disabled={uploadingImage}
+                  />
+                </label>
+              </div>
+              {uploadError && (
+                <p className="text-xs text-rose-500 font-semibold mt-1">{uploadError}</p>
+              )}
+              {image && (
+                <div className="mt-2 relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <img src={image} alt="Görsel önizleme" className="w-full h-full object-cover" />
+                </div>
+              )}
+>>>>>>> origin/main
             </div>
           </div>
 
@@ -533,6 +617,17 @@ export default function AdminFaaliyetlerPage() {
         </form>
       </AdminModal>
 
+<<<<<<< HEAD
+=======
+      <MediaPickerModal
+        isOpen={isMediaPickerOpen}
+        onClose={() => setIsMediaPickerOpen(false)}
+        targetFolder="activities"
+        allowedType="image"
+        onSelect={(url) => setImage(url)}
+      />
+
+>>>>>>> origin/main
       <AdminConfirmDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}

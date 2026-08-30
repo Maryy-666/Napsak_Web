@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { UserPlus } from "lucide-react";
 import { PublicMember, getInitials } from "../../data/members";
+import { ImageWithFallback } from "../common/ImageWithFallback";
 
 export interface PublicMemberCardProps {
   member: PublicMember;
   activeFilter?: string;
   variant?: "featured" | "compact";
   index?: number;
-  onSelect: (member: PublicMember) => void;
+  onSelect?: (member: PublicMember) => void;
 }
 
 export function PublicMemberCard({
@@ -30,8 +32,8 @@ export function PublicMemberCard({
       };
     }
 
-    if (activeFilter && activeFilter !== "Topluluk Eş Başkanları") {
-      const matched = member.memberships.find((m) =>
+    if (activeFilter && activeFilter !== "Tümü" && activeFilter !== "Topluluk Eş Başkanları") {
+      const matched = member.memberships?.find((m) =>
         m.team.toLowerCase().includes(activeFilter.toLowerCase())
       );
       if (matched) {
@@ -56,8 +58,11 @@ export function PublicMemberCard({
       }
     }
 
-    const primaryMembership = member.memberships[0];
-    let tag = primaryMembership ? primaryMembership.team.toUpperCase() : member.primaryTeam.toUpperCase();
+    const primaryMembership = member.memberships?.[0];
+    let tag = primaryMembership
+      ? primaryMembership.team.toUpperCase()
+      : (member.primaryTeam || "N'APSAK TOPLULUĞU").toUpperCase();
+
     if (primaryMembership?.subRole) {
       const cleanTeamName = primaryMembership.team
         .replace(" Ekibi", "")
@@ -87,74 +92,90 @@ export function PublicMemberCard({
   if (variant === "featured" || member.isPresident) {
     return (
       <div
-        onClick={() => onSelect(member)}
-        className="group relative flex items-center gap-4 sm:gap-6 bg-white border border-[#EEF0F2] rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(10,92,58,0.12)] hover:border-[#0A5C3A]/40 transition-all duration-300 cursor-pointer select-none overflow-hidden min-w-0 w-full text-left"
+        onClick={() => onSelect?.(member)}
+        className="group relative flex flex-col items-center text-center p-6 rounded-3xl bg-white border border-[#EEF0F2] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden"
       >
-        {/* DECORATIVE VECTOR GRAPHICS */}
-        {index === 0 ? (
-          <div className="absolute top-3 right-4 text-[#0A5C3A]/30 group-hover:text-[#0A5C3A]/60 transition-colors pointer-events-none">
-            <svg className="w-8 h-8" viewBox="0 0 40 40" fill="none">
-              <path d="M20 6V34M6 20H34" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-            </svg>
-          </div>
-        ) : (
-          <div className="absolute top-3 right-4 text-[#0A5C3A]/30 group-hover:text-[#0A5C3A]/60 transition-colors pointer-events-none">
-            <svg className="w-7 h-7" viewBox="0 0 40 40" fill="none">
-              <path d="M20 4L36 20L20 36L4 20Z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
-            </svg>
-          </div>
-        )}
-
-        {/* LARGE AVATAR CIRCLE */}
-        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#07452C] text-white flex items-center justify-center font-headings font-black text-2xl sm:text-3xl tracking-widest border-4 border-white shadow-md shrink-0 group-hover:scale-105 transition-transform duration-300">
-          {initials}
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0A5C3A] to-[#07452C] text-white flex items-center justify-center font-headings font-extrabold text-xl tracking-wider mb-4 border-2 border-white shadow-md group-hover:scale-105 transition-transform duration-300 overflow-hidden relative">
+          {member.avatar ? (
+            <ImageWithFallback
+              src={member.avatar}
+              alt={member.name}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <span>{initials}</span>
+          )}
         </div>
-
-        {/* MEMBER DETAILS */}
-        <div className="space-y-1 min-w-0 flex-1">
-          <h3 className="text-base sm:text-xl font-extrabold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-tight truncate">
-            {member.name}
-          </h3>
-          <p className="text-xs sm:text-sm font-semibold text-[#5F6773] font-sans truncate">
-            {roleText}
-          </p>
-          <p className="text-[10px] sm:text-xs font-black text-[#0A5C3A] uppercase tracking-wider font-sans pt-0.5 truncate">
+        <h3 className="text-base sm:text-lg font-extrabold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-tight">
+          {member.name}
+        </h3>
+        <p className="text-xs font-semibold text-[#0A5C3A] font-sans mt-1">
+          {roleText}
+        </p>
+        {teamTagText && (
+          <span className="mt-3 px-3 py-1 rounded-full bg-[#EEF7F3] text-[10px] font-extrabold text-[#0A5C3A] uppercase tracking-wider">
             {teamTagText}
-          </p>
-        </div>
+          </span>
+        )}
       </div>
     );
   }
 
-  // COMPACT HORIZONTAL CARD (Matching exact design)
+  // COMPACT CARD (Standard Member Card)
   return (
     <div
-      onClick={() => onSelect(member)}
-      className={`group relative flex items-center gap-3.5 rounded-2xl p-3.5 sm:p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(10,92,58,0.12)] hover:border-[#0A5C3A] transition-all duration-300 cursor-pointer select-none min-w-0 w-full text-left ${
-        isLeaderRole
-          ? "bg-gradient-to-r from-emerald-50/70 to-white border-2 border-[#0A5C3A]/50"
-          : "bg-white border border-[#EEF0F2]"
-      }`}
+      onClick={() => onSelect?.(member)}
+      className="group relative flex items-center gap-3.5 rounded-2xl p-3.5 sm:p-4 bg-white border border-[#EEF0F2] hover:border-[#0A5C3A]/40 hover:shadow-sm transition-all duration-300 cursor-pointer select-none min-w-0 w-full text-left"
     >
-      {/* SMALLER CIRCULAR INITIALS AVATAR */}
-      <div
-        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full text-white flex items-center justify-center font-headings font-bold text-xs sm:text-sm tracking-wider border-2 border-white shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 ${
-          isLeaderRole ? "bg-[#0A5C3A]" : "bg-[#07452C]"
-        }`}
-      >
-        {initials}
+      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#07452C] text-white flex items-center justify-center font-headings font-bold text-xs sm:text-sm tracking-wider border-2 border-white shadow-xs shrink-0 group-hover:scale-105 transition-transform duration-300 overflow-hidden relative">
+        {member.avatar ? (
+          <ImageWithFallback
+            src={member.avatar}
+            alt={member.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <span>{initials}</span>
+        )}
       </div>
 
-      {/* MEMBER NAME, ROLE & TEAM TAG */}
       <div className="space-y-0.5 min-w-0 flex-1 overflow-hidden">
         <h4 className="text-sm sm:text-base font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-tight truncate">
           {member.name}
         </h4>
-        <p className="text-xs font-semibold text-[#0A5C3A] font-sans truncate">
-          {roleText}
+
+        {roleText ? (
+          <p className="text-xs font-semibold text-[#0A5C3A] font-sans truncate">
+            {roleText}
+          </p>
+        ) : null}
+        {teamTagText ? (
+          <p className="text-[10px] font-extrabold text-[#5F6773] uppercase tracking-wider font-sans truncate">
+            {teamTagText}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function PublicMemberPlaceholderCard() {
+  return (
+    <div className="relative flex items-center gap-3.5 rounded-2xl p-3.5 sm:p-4 bg-slate-50/60 border-2 border-dashed border-[#DDE7E1] hover:border-[#0A5C3A]/40 transition-all duration-300 select-none min-w-0 w-full text-left">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center border-2 border-white shadow-xs shrink-0">
+        <UserPlus className="w-5 h-5 opacity-70" />
+      </div>
+      <div className="space-y-0.5 min-w-0 flex-1 overflow-hidden">
+        <h4 className="text-sm sm:text-base font-bold font-headings text-slate-700 leading-tight truncate">
+          Yönetim Kurulu Üyesi
+        </h4>
+        <p className="text-xs font-semibold text-[#0A5C3A]/80 font-sans truncate">
+          Pozisyon Açık
         </p>
-        <p className="text-[10px] font-extrabold text-[#5F6773] uppercase tracking-wider font-sans truncate">
-          {teamTagText}
+        <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider font-sans truncate">
+          YÖNETİM KURULU
         </p>
       </div>
     </div>
