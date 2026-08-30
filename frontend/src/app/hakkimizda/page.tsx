@@ -33,14 +33,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HakkimizdaPage() {
-  const page = await PagesRepository.fetchPageBySlugFromDB("hakkimizda");
-  const pageData = page?.publicationStatus === "PUBLISHED" ? page : undefined;
-
   return (
     <>
       <Navbar />
       <main className="flex-1 w-full flex flex-col pt-16">
-        <HakkimizdaContent pageData={pageData} />
+        <HakkimizdaContent />
       </main>
       <Footer />
     </>

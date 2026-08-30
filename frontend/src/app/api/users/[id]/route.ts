@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -10,13 +12,18 @@ export async function DELETE(
   try {
     const { id } = params;
     const cookieStore = cookies();
-    const token = cookieStore.get("session_token")?.value;
+    const cookieToken = cookieStore.get("session_token")?.value;
+    const authHeader = request.headers.get("authorization");
+    const token = cookieToken || (authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : authHeader);
 
-    const response = await fetch(`http://localhost:3001/users/${id}`, {
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${BACKEND_URL}/users/${id}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
     }).catch(() => null);
 
     if (response && !response.ok) {
@@ -33,3 +40,4 @@ export async function DELETE(
     return NextResponse.json({ success: false, error: "Backend sunucusuna bağlanılamadı." }, { status: 500 });
   }
 }
+

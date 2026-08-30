@@ -187,7 +187,7 @@ export async function seedFaz4Data() {
 
     await prisma.navigationItem.create({
       data: {
-        label: "Üyelerimiz",
+        label: "Ekibimiz",
         targetType: "CUSTOM_URL",
         href: "/uyeler",
         parentId: toplulukParent.id,

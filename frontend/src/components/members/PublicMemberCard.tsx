@@ -88,8 +88,8 @@ export function PublicMemberCard({
     };
   }, [member, activeFilter]);
 
-  // FEATURED CARD (For Topluluk Eş Başkanları)
-  if (variant === "featured" || member.isPresident) {
+  // FEATURED CARD (Explicitly requested)
+  if (variant === "featured") {
     return (
       <div
         onClick={() => onSelect?.(member)}
@@ -122,7 +122,7 @@ export function PublicMemberCard({
     );
   }
 
-  // COMPACT CARD (Standard Member Card)
+  // COMPACT CARD (Standard Member Card Layout)
   return (
     <div
       onClick={() => onSelect?.(member)}

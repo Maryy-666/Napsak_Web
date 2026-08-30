@@ -1,36 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Sparkles } from "lucide-react";
 import { Badge, PageContainer } from "../ui";
-import { HomepageRepository, HomepageHeroItem } from "../../lib/homepageStore";
 
 export const HeroSection: React.FC = () => {
-  const [heroSlide, setHeroSlide] = useState<HomepageHeroItem | null>(null);
-
-  useEffect(() => {
-    HomepageRepository.fetchHeroSlidesFromDB().then((slides) => {
-      if (Array.isArray(slides) && slides.length > 0) {
-        setHeroSlide(slides[0]);
-      }
-    });
-  }, []);
-
-  const badgeText = heroSlide?.badge || "Keşke Demek Yerine: N'apsak?";
-  const title = heroSlide?.title || "N'apsak? Gençlik Topluluğu";
-  const highlight = heroSlide?.highlightText || "Keşke.. diyenlerin değil, N'apsak? deyip harekete geçenlerin topluluğuyuz.";
+  const badgeText = "2025'ten Beri Harekete Geçenler";
+  const title = "N'apsak? Gençlik Topluluğu";
+  const highlight = "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.";
   const description =
-    heroSlide?.description ||
     "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.";
-  const primaryCtaText = heroSlide?.primaryCtaText ?? "Çalışma Ekiplerimiz";
-  const primaryCtaLink = heroSlide?.primaryCtaLink || "/ekipler";
-  const secondaryCtaText = heroSlide?.secondaryCtaText ?? "Topluluğa Katıl";
-  const secondaryCtaLink = heroSlide?.secondaryCtaLink || "/katilim";
-  const bgImage = heroSlide?.imageUrl || "/images/forest-hero.jpg";
-
-  const hasButtons = Boolean(primaryCtaText || secondaryCtaText);
+  const bgImage = "/images/forest-hero.jpg";
 
   return (
     <section className="relative w-full h-[100vh] min-h-[100vh] h-[100svh] min-h-[100svh] pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-start overflow-hidden bg-[#07452C]">
@@ -65,36 +46,13 @@ export const HeroSection: React.FC = () => {
 
           {/* Main Message Slogan */}
           <p className="text-base sm:text-lg lg:text-xl text-[#EEF7F3] font-semibold font-sans italic leading-relaxed mb-3 select-none">
-            {highlight.startsWith("“") ? highlight : `“${highlight}”`}
+            {highlight}
           </p>
 
           {/* Supporting Description Text */}
-          <p className={`text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none ${hasButtons ? "mb-6" : "mb-0"}`}>
+          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-normal font-sans leading-relaxed select-none mb-0">
             {description}
           </p>
-
-          {/* Action CTAs (rendered only if set) */}
-          {hasButtons && (
-            <div className="flex flex-wrap items-center gap-3">
-              {primaryCtaText && (
-                <Link
-                  href={primaryCtaLink}
-                  className="px-5 py-3 rounded-full bg-[#0A5C3A] hover:bg-[#084A2F] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2"
-                >
-                  <span>{primaryCtaText}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              )}
-              {secondaryCtaText && (
-                <Link
-                  href={secondaryCtaLink}
-                  className="px-5 py-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs sm:text-sm font-bold transition-all"
-                >
-                  <span>{secondaryCtaText}</span>
-                </Link>
-              )}
-            </div>
-          )}
         </motion.div>
       </PageContainer>
     </section>

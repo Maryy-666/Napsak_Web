@@ -52,6 +52,14 @@ export const Navbar: React.FC = () => {
             if (rawSlug === "hakkimizda") href = "/hakkimizda";
             else if (rawSlug === "katilim") href = "/katilim";
             else if (rawSlug === "iletisim") href = "/iletisim";
+            else if (rawSlug === "sss") href = "/sss";
+            else if (rawSlug === "uyeler") href = "/uyeler";
+            else if (rawSlug === "ekipler") href = "/ekipler";
+            else if (rawSlug === "faaliyetler") href = "/faaliyetler";
+            else if (rawSlug === "etkinlikler") href = "/etkinlikler";
+            else if (rawSlug === "dergiler") href = "/dergiler";
+            else if (rawSlug === "haberler") href = "/haberler";
+            else if (rawSlug === "raporlar") href = "/raporlar";
             else href = `/sayfa/${rawSlug}`;
           } else if (rawHref === "/sayfa/hakkimizda") {
             href = "/hakkimizda";
@@ -59,6 +67,8 @@ export const Navbar: React.FC = () => {
             href = "/katilim";
           } else if (rawHref === "/sayfa/iletisim") {
             href = "/iletisim";
+          } else if (rawHref === "/sayfa/sss") {
+            href = "/sss";
           }
 
           const children =
@@ -72,6 +82,14 @@ export const Navbar: React.FC = () => {
                     if (childSlug === "hakkimizda") childHref = "/hakkimizda";
                     else if (childSlug === "katilim") childHref = "/katilim";
                     else if (childSlug === "iletisim") childHref = "/iletisim";
+                    else if (childSlug === "sss") childHref = "/sss";
+                    else if (childSlug === "uyeler") childHref = "/uyeler";
+                    else if (childSlug === "ekipler") childHref = "/ekipler";
+                    else if (childSlug === "faaliyetler") childHref = "/faaliyetler";
+                    else if (childSlug === "etkinlikler") childHref = "/etkinlikler";
+                    else if (childSlug === "dergiler") childHref = "/dergiler";
+                    else if (childSlug === "haberler") childHref = "/haberler";
+                    else if (childSlug === "raporlar") childHref = "/raporlar";
                     else childHref = `/sayfa/${childSlug}`;
                   } else if (childRawHref === "/sayfa/hakkimizda") {
                     childHref = "/hakkimizda";
@@ -79,18 +97,22 @@ export const Navbar: React.FC = () => {
                     childHref = "/katilim";
                   } else if (childRawHref === "/sayfa/iletisim") {
                     childHref = "/iletisim";
+                  } else if (childRawHref === "/sayfa/sss") {
+                    childHref = "/sss";
                   }
 
+                  const childTitle = String(child.label || "").trim() === "Üyelerimiz" ? "Ekibimiz" : child.label;
                   return {
-                    title: child.label,
+                    title: childTitle,
                     href: childHref,
                     status: "active",
                   };
                 })
               : undefined;
 
+          const itemTitle = String(item.label || "").trim() === "Üyelerimiz" ? "Ekibimiz" : item.label;
           return {
-            title: item.label,
+            title: itemTitle,
             href,
             status: "active",
             items: children,

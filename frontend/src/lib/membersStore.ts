@@ -16,7 +16,7 @@ export const MembersRepository = {
       const res = await fetch("/api/members", { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           cachedMembers = json.data;
           return cachedMembers;
         }
@@ -87,11 +87,6 @@ export const MembersRepository = {
   },
 
   async deleteMember(id: string): Promise<boolean> {
-    if (cachedMembers.length === 0) {
-      cachedMembers = [...PUBLIC_MEMBERS];
-    }
-
-    // Immediately filter out deleted member from in-memory cache
     cachedMembers = cachedMembers.filter((m) => m.id !== id && m.memberProfileId?.toString() !== id);
 
     try {
@@ -106,7 +101,6 @@ export const MembersRepository = {
 
       if (res.ok) {
         await this.fetchMembersFromDB();
-        // Re-apply filter in case DB returned static fallback
         cachedMembers = cachedMembers.filter((m) => m.id !== id && m.memberProfileId?.toString() !== id);
       }
     } catch (err) {

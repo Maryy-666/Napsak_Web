@@ -369,7 +369,7 @@ export default function AdminUyelerPage() {
       header: "ÜYE BİLGİSİ",
       accessor: (m: PublicMember) => {
         const isTeamLeader = m.memberships?.some(
-          (mem: any) => mem.isLeader || mem.role?.toLowerCase().includes("sorumlus")
+          (mem: any) => mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"))
         );
 
         return (
@@ -419,7 +419,7 @@ export default function AdminUyelerPage() {
         <div className="flex flex-wrap gap-1">
           {m.memberships && m.memberships.length > 0 ? (
             m.memberships.map((mem: any, idx: number) => {
-              const isLd = mem.isLeader || mem.role?.toLowerCase().includes("sorumlus");
+              const isLd = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
               return (
                 <span
                   key={idx}

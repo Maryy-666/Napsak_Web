@@ -34,26 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SSSPage() {
-  const page = await PagesRepository.fetchPageBySlugFromDB("sss");
-  const pageData = page?.publicationStatus === "PUBLISHED" ? page : undefined;
-
-  let customFaqs: Array<{ question: string; answer: string }> | undefined = undefined;
-  if (pageData?.content) {
-    try {
-      const parsed = JSON.parse(pageData.content);
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].question) {
-        customFaqs = parsed;
-      }
-    } catch {
-      // Plain text content or markdown fallback.
-    }
-  }
-
   return (
     <>
       <Navbar />
       <main className="flex-1 w-full flex flex-col pt-20">
-        <SSSContent pageData={pageData} customFaqs={customFaqs} />
+        <SSSContent />
       </main>
       <Footer />
     </>

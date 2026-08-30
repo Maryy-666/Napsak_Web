@@ -62,6 +62,7 @@ export default function ForgotPasswordContent() {
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   const [countdown, setCountdown] = useState(0);
   const [isResending, setIsResending] = useState(false);
+  const [resetUrl, setResetUrl] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -148,15 +149,19 @@ export default function ForgotPasswordContent() {
         body: JSON.stringify(data),
       });
 
+      const resData = await response.json().catch(() => ({}));
+
       if (response.ok) {
+        if (resData.resetUrl) {
+          setResetUrl(resData.resetUrl);
+        }
         // Step 1: Wait 200ms on freeze state before transitioning
         setTimeout(() => {
           setPhase("logo-move");
           startCountdown(60);
         }, 200);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "İstek başarısız oldu.");
+        throw new Error(resData.error || "İstek başarısız oldu.");
       }
     } catch (err: any) {
       setPhase("idle");
@@ -176,13 +181,17 @@ export default function ForgotPasswordContent() {
         body: JSON.stringify({ email: emailValue }),
       });
 
+      const resData = await response.json().catch(() => ({}));
+      if (resData.resetUrl) {
+        setResetUrl(resData.resetUrl);
+      }
+
       const { toast } = await import("sonner");
       if (response.ok) {
         toast.success("Şifre sıfırlama bağlantısı tekrar gönderildi.");
         startCountdown(60);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        toast.error(errorData.error || "İstek başarısız oldu.");
+        toast.error(resData.error || "İstek başarısız oldu.");
       }
     } catch {
       const { toast } = await import("sonner");
@@ -436,7 +445,7 @@ export default function ForgotPasswordContent() {
                     className="w-full flex flex-col items-center pointer-events-auto"
                   >
                     {/* Open Mail Application Button */}
-                    <div className="mt-6 w-full flex flex-col items-center">
+                    <div className="mt-6 w-full flex flex-col items-center gap-3">
                       <a
                         href={getMailAppUrl(emailValue)}
                         target="_blank"
@@ -445,6 +454,15 @@ export default function ForgotPasswordContent() {
                       >
                         Mail Uygulamasını Aç
                       </a>
+
+                      {resetUrl && (
+                        <a
+                          href={resetUrl}
+                          className="inline-flex items-center justify-center h-[46px] px-6 rounded-[12px] text-xs font-bold text-[#0A5C3A] bg-[#EAF5EF] hover:bg-[#D6EBE0] border border-[#0A5C3A]/30 transition-all duration-150 cursor-pointer"
+                        >
+                          🔗 Şifre Sıfırlama Bağlantısını Doğrudan Aç
+                        </a>
+                      )}
                     </div>
 
                     {/* Resend Countdown */}

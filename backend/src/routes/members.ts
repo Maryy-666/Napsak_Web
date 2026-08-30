@@ -24,9 +24,7 @@ const toPublicMember = (member: any) => ({
       ? member.memberships.flatMap((m: any) => {
           const mainTeamName = m.team?.title || member.primaryTeam || "Teknoloji Ekibi";
           const isLeader = Boolean(
-            m.isLeader ||
-              m.team?.leaderId === member.id ||
-              (m.subRole && m.subRole.toLowerCase().includes("sorumlus"))
+            m.roleTitle === "Başkan" || (m.isLeader && m.roleTitle?.includes("Başkan"))
           );
 
           const items: any[] = [
@@ -196,7 +194,7 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
       if (Array.isArray(body.memberships)) {
         for (const mem of body.memberships) {
           const teamSlugOrId = mem.teamSlug || mem.teamId || mem.team;
-          const team = await tx.team.findFirst({
+          let team = await tx.team.findFirst({
             where: {
               OR: [
                 { slug: String(teamSlugOrId) },
@@ -206,8 +204,35 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
             },
           });
 
+          if (!team && mem.team) {
+            const teamTitle = String(mem.team).trim();
+            const generatedSlug = teamTitle
+              .toLowerCase()
+              .replace(/ğ/g, "g")
+              .replace(/ü/g, "u")
+              .replace(/ş/g, "s")
+              .replace(/ı/g, "i")
+              .replace(/ö/g, "o")
+              .replace(/ç/g, "c")
+              .replace(/[^a-z0-9]/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "");
+
+            team = await tx.team.create({
+              data: {
+                externalId: `t-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                slug: generatedSlug || `team-${Date.now()}`,
+                title: teamTitle,
+                shortDescription: `${teamTitle} çalışma grubu.`,
+                about: `${teamTitle} hakkında detaylı bilgi.`,
+                bgImage: "/images/istockphoto-1173149385-612x612.jpg",
+                structure: "Gençlik Topluluğu Çalışma Grubu",
+              },
+            });
+          }
+
           if (team) {
-            const isL = mem.role === "Başkan" || Boolean(mem.isLeader);
+            const isL = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
             await tx.teamMembership.upsert({
               where: {
                 memberId_teamId: {
@@ -299,7 +324,7 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
       if (Array.isArray(body.memberships)) {
         for (const mem of body.memberships) {
           const teamSlugOrId = mem.teamSlug || mem.teamId || mem.team;
-          const team = await tx.team.findFirst({
+          let team = await tx.team.findFirst({
             where: {
               OR: [
                 { slug: String(teamSlugOrId) },
@@ -309,8 +334,35 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
             },
           });
 
+          if (!team && mem.team) {
+            const teamTitle = String(mem.team).trim();
+            const generatedSlug = teamTitle
+              .toLowerCase()
+              .replace(/ğ/g, "g")
+              .replace(/ü/g, "u")
+              .replace(/ş/g, "s")
+              .replace(/ı/g, "i")
+              .replace(/ö/g, "o")
+              .replace(/ç/g, "c")
+              .replace(/[^a-z0-9]/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "");
+
+            team = await tx.team.create({
+              data: {
+                externalId: `t-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                slug: generatedSlug || `team-${Date.now()}`,
+                title: teamTitle,
+                shortDescription: `${teamTitle} çalışma grubu.`,
+                about: `${teamTitle} hakkında detaylı bilgi.`,
+                bgImage: "/images/istockphoto-1173149385-612x612.jpg",
+                structure: "Gençlik Topluluğu Çalışma Grubu",
+              },
+            });
+          }
+
           if (team) {
-            const isL = mem.role === "Başkan" || Boolean(mem.isLeader);
+            const isL = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
             await tx.teamMembership.upsert({
               where: {
                 memberId_teamId: {

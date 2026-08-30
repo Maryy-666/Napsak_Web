@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { TEAMS_DATA, TeamData } from "@/data/teams";
 
 export const dynamic = "force-dynamic";
@@ -7,14 +8,6 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:300
 
 let inMemoryTeams: TeamData[] = [...TEAMS_DATA];
 
-function mergeTeams(dbTeams: TeamData[]) {
-  const byId = new Map(TEAMS_DATA.map((team) => [team.id, team]));
-  for (const team of dbTeams) {
-    byId.set(team.id, team);
-  }
-  return Array.from(byId.values());
-}
-
 export async function GET() {
   try {
     const res = await fetch(`${BACKEND_URL}/teams`, { cache: "no-store" }).catch(() => null);
@@ -22,7 +15,7 @@ export async function GET() {
     if (res && res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        return NextResponse.json({ success: true, data: mergeTeams(json.data) });
+        return NextResponse.json({ success: true, data: json.data });
       }
     }
   } catch (error) {
@@ -51,9 +44,19 @@ export async function POST(request: NextRequest) {
       gallery: body.gallery,
     };
 
+    const cookieStore = cookies();
+    const cookieToken = cookieStore.get("session_token")?.value;
+    const authHeader = request.headers.get("authorization");
+    const token = cookieToken || (authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : authHeader);
+
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${BACKEND_URL}/teams`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(newTeam),
     }).catch(() => null);
 
@@ -68,3 +71,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: "Ekip olusturulamadi." }, { status: 500 });
   }
 }
+

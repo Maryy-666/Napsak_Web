@@ -49,11 +49,7 @@ export interface FAQSectionProps {
   customFaqs?: Array<{ question: string; answer: string }>;
 }
 
-export function FAQSection({
-  showHeader = true,
-  background = "transparent",
-  customFaqs,
-}: FAQSectionProps) {
+export function FAQSection({ showHeader = true, background = "transparent", customFaqs }: FAQSectionProps) {
   const faqList = customFaqs && customFaqs.length > 0 ? customFaqs : FAQS;
   const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
 

@@ -77,6 +77,17 @@ router.get("/", async (req, res) => {
       orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
     });
 
+    // Ensure "Üyelerimiz" is permanently converted to "Ekibimiz"
+    allItems.forEach((item) => {
+      if (item.label === "Üyelerimiz") {
+        item.label = "Ekibimiz";
+        prisma.navigationItem.update({
+          where: { id: item.id },
+          data: { label: "Ekibimiz" },
+        }).catch(() => null);
+      }
+    });
+
     // Build hierarchy (Top level items with children)
     const itemMap = new Map<number, any>();
     allItems.forEach((item) => {

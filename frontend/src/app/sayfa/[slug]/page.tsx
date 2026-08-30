@@ -65,6 +65,30 @@ export default async function DynamicSlugPage({ params }: DynamicPageProps) {
   if (params.slug === "iletisim") {
     redirect("/iletisim");
   }
+  if (params.slug === "sss") {
+    redirect("/sss");
+  }
+  if (params.slug === "uyeler") {
+    redirect("/uyeler");
+  }
+  if (params.slug === "ekipler") {
+    redirect("/ekipler");
+  }
+  if (params.slug === "faaliyetler") {
+    redirect("/faaliyetler");
+  }
+  if (params.slug === "etkinlikler") {
+    redirect("/etkinlikler");
+  }
+  if (params.slug === "dergiler") {
+    redirect("/dergiler");
+  }
+  if (params.slug === "haberler") {
+    redirect("/haberler");
+  }
+  if (params.slug === "raporlar") {
+    redirect("/raporlar");
+  }
 
   const page = await PagesRepository.fetchPageBySlugFromDB(params.slug);
 

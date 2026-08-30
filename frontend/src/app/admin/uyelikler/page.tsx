@@ -487,6 +487,26 @@ export default function AdminUyeliklerPage() {
                   <p className="leading-relaxed text-xs italic">{selectedApp.note}</p>
                 </div>
               )}
+
+              {selectedApp.cvUrl && (
+                <div className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 ${isDark ? "bg-slate-900/60 border-slate-800" : "bg-slate-50 border-slate-200"}`}>
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <FileText className="w-4 h-4 text-[#0A5C3A] shrink-0" />
+                    <span className={`text-xs font-semibold truncate ${isDark ? "text-white" : "text-slate-900"}`}>
+                      {selectedApp.cvFileName || "Başvuran CV / Özgeçmiş"}
+                    </span>
+                  </div>
+                  <a
+                    href={selectedApp.cvUrl}
+                    download={selectedApp.cvFileName || "özgeçmiş.pdf"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-colors shrink-0"
+                  >
+                    CV İndir / Görüntüle
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* DURUM GÜNCELLEME BUTONLARI */}

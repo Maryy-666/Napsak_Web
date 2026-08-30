@@ -1,6 +1,7 @@
 "use client";
 
 import { TEAMS_DATA, TeamData } from "../data/teams";
+import { getAuthToken } from "./memberAuth";
 
 let cachedTeams: TeamData[] = [];
 
@@ -15,7 +16,7 @@ export const TeamsRepository = {
       const res = await fetch("/api/teams", { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           cachedTeams = json.data;
           return cachedTeams;
         }
@@ -23,7 +24,9 @@ export const TeamsRepository = {
     } catch (err) {
       console.warn("DB'den ekipler alınamadı, varsayılan depo kullanılıyor:", err);
     }
-    cachedTeams = TEAMS_DATA;
+    if (cachedTeams.length === 0) {
+      cachedTeams = TEAMS_DATA;
+    }
     return cachedTeams;
   },
 
@@ -35,9 +38,13 @@ export const TeamsRepository = {
     cachedTeams.push(newTeam);
 
     try {
+      const token = typeof window !== "undefined" ? getAuthToken() : null;
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
       await fetch("/api/teams", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(newTeam),
       });
       await this.fetchTeamsFromDB();
@@ -54,9 +61,13 @@ export const TeamsRepository = {
       cachedTeams[index] = { ...cachedTeams[index], ...updatedFields };
 
       try {
+        const token = typeof window !== "undefined" ? getAuthToken() : null;
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         await fetch(`/api/teams/${id}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify(updatedFields),
         });
         await this.fetchTeamsFromDB();
@@ -75,8 +86,13 @@ export const TeamsRepository = {
       cachedTeams.splice(index, 1);
 
       try {
+        const token = typeof window !== "undefined" ? getAuthToken() : null;
+        const headers: Record<string, string> = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         await fetch(`/api/teams/${id}`, {
           method: "DELETE",
+          headers,
         });
         await this.fetchTeamsFromDB();
       } catch (err) {
@@ -88,3 +104,4 @@ export const TeamsRepository = {
     return false;
   },
 };
+

@@ -1,19 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PUBLIC_MEMBERS, PublicMember } from "@/data/members";
+import { cookies } from "next/headers";
+import { PublicMember } from "@/data/members";
+import { inMemoryMembers, addInMemoryMember } from "@/lib/inMemoryMembersStore";
 
 export const dynamic = "force-dynamic";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
-
-let inMemoryMembers: PublicMember[] = [...PUBLIC_MEMBERS];
-
-function mergeMembers(dbMembers: PublicMember[]) {
-  const byId = new Map(PUBLIC_MEMBERS.map((member) => [member.id, member]));
-  for (const member of dbMembers) {
-    byId.set(member.id, member);
-  }
-  return Array.from(byId.values());
-}
 
 export async function GET() {
   try {
@@ -22,7 +14,7 @@ export async function GET() {
     if (res && res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
-        return NextResponse.json({ success: true, data: mergeMembers(json.data) });
+        return NextResponse.json({ success: true, data: json.data });
       }
     }
   } catch (error) {
@@ -47,9 +39,15 @@ export async function POST(request: NextRequest) {
         body.memberships || [{ team: body.primaryTeam || "Teknoloji Ekibi", role: body.primaryRole || "Uye" }],
     };
 
+    const cookieStore = cookies();
+    const cookieToken = cookieStore.get("session_token")?.value;
     const authHeader = request.headers.get("authorization");
+    const token = cookieToken || (authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : authHeader);
+
     const headers: Record<string, string> = { "Content-Type": "application/json" };
-    if (authHeader) headers["authorization"] = authHeader;
+    if (token) {
+      headers["authorization"] = `Bearer ${token}`;
+    }
 
     const res = await fetch(`${BACKEND_URL}/members`, {
       method: "POST",
@@ -62,9 +60,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(json);
     }
 
-    inMemoryMembers.unshift(newMember);
+    addInMemoryMember(newMember);
     return NextResponse.json({ success: true, data: newMember });
   } catch (error) {
     return NextResponse.json({ success: false, error: "Uye eklenemedi" }, { status: 500 });
   }
 }
+
+

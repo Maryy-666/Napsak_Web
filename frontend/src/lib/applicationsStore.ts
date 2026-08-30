@@ -14,6 +14,8 @@ export interface ApplicationItem {
   status: "Beklemede" | "Onaylandı" | "Reddedildi";
   createdAt: string;
   note?: string;
+  cvUrl?: string;
+  cvFileName?: string;
 }
 
 const INITIAL_APPLICATIONS: ApplicationItem[] = [
@@ -134,6 +136,8 @@ export const ApplicationsRepository = {
       department: data.department || "",
       grade: data.grade || "",
       note: data.note || "",
+      cvUrl: data.cvUrl || "",
+      cvFileName: data.cvFileName || "",
       status: "Beklemede",
       createdAt: new Date().toISOString(),
     };
