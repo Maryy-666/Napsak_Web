@@ -88,11 +88,8 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           )}
 
           <div>
-            <h3 className="text-xl font-extrabold text-[#0F1115] flex items-center justify-center gap-2">
+            <h3 className="text-xl font-extrabold text-[#0F1115]">
               {member.name}
-              {member.isPresident && (
-                <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" />
-              )}
             </h3>
             <p className="text-sm font-semibold text-[#0A5C3A] mt-0.5">
               {member.primaryRole}

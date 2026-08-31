@@ -131,14 +131,14 @@ export const TEAMS_DATA: TeamData[] = [
   {
     id: "cevre-saglik",
     slug: "cevre-saglik",
-    title: "Çevre ve Sağlık Ekibi",
+    title: "Yaşam ve Sürdürülebilirlik Ekibi",
     iconName: "heart-pulse",
     bgImage: "/images/pngtree-vibrant-earth-planet-surrounded-by-fresh-green-leaves-eco-friendly-concept-image_21673995.webp",
     featuredSectionImage: "/images/cevre-ve-saglik.png",
     shortDescription:
       "Sürdürülebilirlik, çevre bilinci, sağlıklı yaşam ve toplumsal fayda odaklı sosyal sorumluluk projeleri gerçekleştirir.",
     about:
-      "Çevre ve Sağlık Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında gençlerde sürdürülebilir alışkanlıklar ve sorumluluk duygusu geliştirmeyi hedefler.",
+      "Yaşam ve Sürdürülebilirlik Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında gençlerde sürdürülebilir alışkanlıklar ve sorumluluk duygusu geliştirmeyi hedefler.",
     focusAreas: [
       "Ekolojik Farkındalık & İklim Eylemi",
       "Sıfır Atık & Sürdürülebilirlik",

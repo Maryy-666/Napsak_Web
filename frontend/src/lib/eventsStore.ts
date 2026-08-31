@@ -82,7 +82,7 @@ const INITIAL_EVENTS: EventItem[] = [
     id: "evt-103",
     title: "Doğayla Denge: Doğa Yürüyüşü ve Çevre Temizliği",
     category: "cevre-saglik",
-    categoryLabel: "Çevre ve Sağlık",
+    categoryLabel: "Yaşam ve Sürdürülebilirlik",
     date: "20 Temmuz 2025",
     time: "10:00 - 15:00",
     location: "Belgrat Ormanı Aktivite Alanı",

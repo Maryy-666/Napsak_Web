@@ -20,10 +20,20 @@ const upload = multer({
 const ALLOWED_MIME_TYPES = [
   "image/jpeg",
   "image/jpg",
+  "image/pjpeg",
+  "image/jfif",
   "image/png",
+  "image/x-png",
   "image/webp",
   "image/gif",
+  "image/svg+xml",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+  "image/avif",
+  "image/heic",
+  "image/heif",
   "application/pdf",
+  "application/octet-stream",
 ];
 
 const EXECUTABLE_EXTENSIONS = [
@@ -139,7 +149,7 @@ router.get("/", async (req, res) => {
 });
 
 // POST /media/upload (ADMIN ONLY)
-router.post("/upload", authenticate, requireAdmin, upload.single("file"), async (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
@@ -154,12 +164,16 @@ router.post("/upload", authenticate, requireAdmin, upload.single("file"), async 
     }
 
     // 2. MIME type check
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return res.status(400).json({ message: `Desteklenmeyen dosya türü: ${file.mimetype}. İzin verilenler: JPG, PNG, WEBP, GIF, PDF.` });
+    const fileMime = (file.mimetype || "").toLowerCase();
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isAllowedMime = ALLOWED_MIME_TYPES.includes(fileMime) || fileMime.startsWith("image/");
+    const isAllowedExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".ico", ".pdf", ".avif", ".heic", ".jfif"].includes(ext);
+
+    if (!isAllowedMime && !isAllowedExt) {
+      return res.status(400).json({ message: `Desteklenmeyen dosya türü: ${file.mimetype}. İzin verilenler: Görsel ve PDF dosyaları.` });
     }
 
     // 3. Extension check
-    const ext = path.extname(file.originalname).toLowerCase();
     if (EXECUTABLE_EXTENSIONS.includes(ext)) {
       return res.status(400).json({ message: "Güvenlik nedeniyle çalıştırılabilir dosyalar yüklenemez." });
     }

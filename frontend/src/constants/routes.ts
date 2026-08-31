@@ -21,6 +21,7 @@ export const ROUTES = {
   RESET_PASSWORD: "/reset-password",
   PROFIL: "/profil",
   KAYIT: "/kayit",
+  BIZDEN_HABERDAR_OL: "/bizden-haberdar-ol",
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;

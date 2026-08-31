@@ -256,7 +256,7 @@ export default function EtkinliklerContent() {
                 { id: "all", label: "Tümü" },
                 { id: "teknoloji", label: "Teknoloji" },
                 { id: "sanat", label: "Sanat" },
-                { id: "cevre-saglik", label: "Çevre & Sağlık" },
+                { id: "cevre-saglik", label: "Yaşam ve Sürdürülebilirlik" },
                 { id: "programlar", label: "Programlar" },
               ].map((cat) => (
                 <button

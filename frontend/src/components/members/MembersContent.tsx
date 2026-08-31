@@ -21,7 +21,7 @@ import {
   PublicMember,
   sortMembersAlphabetically,
 } from "../../data/members";
-import { PublicMemberCard, PublicMemberPlaceholderCard } from "./PublicMemberCard";
+import { PublicMemberCard } from "./PublicMemberCard";
 import { PublicMemberModal } from "./PublicMemberModal";
 import { PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
@@ -96,13 +96,6 @@ export function MembersContent() {
     // Turkish alphabetical A-Z sorting
     return sortMembersAlphabetically(filtered);
   }, [activeMembers, selectedTeamFilter, searchQuery]);
-
-  // Compute placeholder count for Yönetim Kurulu (total 5 card slots)
-  const yonetimKuruluPlaceholderCount = useMemo(() => {
-    if (selectedTeamFilter !== "Yönetim Kurulu") return 0;
-    const currentCount = displayedMembers.length;
-    return Math.max(0, 5 - currentCount);
-  }, [selectedTeamFilter, displayedMembers]);
 
   const handleTeamClick = (filterName: string) => {
     setSelectedTeamFilter(filterName);
@@ -214,7 +207,7 @@ export function MembersContent() {
               <IconComponent className="w-4 h-4 text-[#0A5C3A]" />
               <span>
                 {selectedTeamFilter === "Tümü"
-                  ? "Tüm Ekibimiz (A-Z)"
+                  ? "Ekibimiz"
                   : selectedTeamFilter}
               </span>
               <span className="text-xs font-semibold text-[#5F6773] bg-white px-2 py-0.5 rounded-full border border-[#EEF0F2]">
@@ -225,7 +218,7 @@ export function MembersContent() {
           </div>
 
           {/* MEMBERS CARDS GRID */}
-          {displayedMembers.length > 0 || yonetimKuruluPlaceholderCount > 0 ? (
+          {displayedMembers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {displayedMembers.map((member, idx) => (
                 <PublicMemberCard
@@ -239,11 +232,6 @@ export function MembersContent() {
                     setIsModalOpen(true);
                   }}
                 />
-              ))}
-
-              {/* YÖNETİM KURULUNDAKİ BOŞ POZİSYON PLACEHOLDER KARTLARI */}
-              {Array.from({ length: yonetimKuruluPlaceholderCount }).map((_, idx) => (
-                <PublicMemberPlaceholderCard key={`placeholder-${idx}`} />
               ))}
             </div>
           ) : (

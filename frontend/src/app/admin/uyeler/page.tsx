@@ -384,8 +384,8 @@ export default function AdminUyelerPage() {
             <div className="flex flex-col text-left">
               <div className="flex items-center gap-1.5 font-bold text-sm">
                 <span>{m.name}</span>
-                {m.isPresident ? (
-                  <span title="Topluluk Eş Başkanı">
+                {m.isPresident || m.name.toLowerCase().includes("yunus efe") ? (
+                  <span title={m.isPresident ? "Topluluk Eş Başkanı" : "Yönetim Kurulu Üyesi"}>
                     <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   </span>
                 ) : isTeamLeader ? (

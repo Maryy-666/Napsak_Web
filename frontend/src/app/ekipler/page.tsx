@@ -6,11 +6,11 @@ import { TeamsIndexContent } from "../../components/teams/TeamsIndexContent";
 export const metadata: Metadata = {
   title: "Çalışma Ekiplerimiz | N'apsak? Gençlik Topluluğu",
   description:
-    "N'apsak? Gençlik Topluluğu bağımsız çalışma ekipleri: Teknoloji, Sanat, Çevre & Sağlık, Programlar ve Kurumsal İletişim ekiplerimizle tanışın, üretimin bir parçası olun.",
+    "N'apsak? Gençlik Topluluğu bağımsız çalışma ekipleri: Teknoloji, Sanat, Yaşam ve Sürdürülebilirlik, Programlar ve Kurumsal İletişim ekiplerimizle tanışın, üretimin bir parçası olun.",
   openGraph: {
     title: "Çalışma Ekiplerimiz | N'apsak? Gençlik Topluluğu",
     description:
-      "N'apsak? Gençlik Topluluğu bağımsız çalışma ekipleri: Teknoloji, Sanat, Çevre & Sağlık, Programlar ve Kurumsal İletişim ekiplerimizle tanışın, üretimin bir parçası olun.",
+      "N'apsak? Gençlik Topluluğu bağımsız çalışma ekipleri: Teknoloji, Sanat, Yaşam ve Sürdürülebilirlik, Programlar ve Kurumsal İletişim ekiplerimizle tanışın, üretimin bir parçası olun.",
     type: "website",
   },
 };
