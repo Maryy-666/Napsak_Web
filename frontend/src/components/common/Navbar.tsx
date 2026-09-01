@@ -12,6 +12,8 @@ import { Logo } from "./Logo";
 import { Button } from "../ui/Button";
 import { AuthUser, MemberProfile, getCurrentUser, getMemberProfile, clearCurrentUser } from "../../lib/memberAuth";
 import { NavigationRepository } from "../../lib/navigationStore";
+import { useLanguage } from "../../context/LanguageContext";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -21,6 +23,36 @@ export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+  const { language, t } = useLanguage();
+
+  const translateNavTitle = (title: string) => {
+    if (!title) return title;
+    if (language !== "en") return title;
+
+    const lower = title.toLocaleLowerCase("tr-TR").trim();
+    if (lower === "ana sayfa") return "Home";
+    if (lower === "hakkımızda" || lower === "hakkimizda") return "About Us";
+    if (lower === "etkinlikler") return "Events";
+    if (lower === "haberler") return "News";
+    if (lower === "faaliyetler") return "Activities";
+    if (lower === "dergiler") return "Magazines";
+    if (lower === "ekipler") return "Teams";
+    if (lower === "raporlar") return "Reports";
+    if (lower.includes("iletişim") || lower.includes("iletisim")) return "Contact";
+    if (lower === "sss" || lower === "faq") return "FAQ";
+    if (lower === "üyeler" || lower === "uyeler") return "Members";
+    if (lower.startsWith("çalışmalar") || lower.startsWith("calismalar")) return "Our Works";
+    if (lower.startsWith("topluluk")) return "Community";
+    if (lower.includes("çalışma ekipleri") || lower.includes("calisma ekipleri")) return "Working Teams";
+    if (lower === "ekibimiz" || lower === "bizim ekip") return "Our Team";
+    if (lower.includes("etkileşim") || lower.includes("katılım") || lower.includes("katilim")) return "Join & Engage";
+    if (lower.includes("açık pozisyonlar") || lower.includes("acik pozisyonlar")) return "Open Positions";
+    return title;
+  };
+
+
+
+
 
   // Scroll, mobile menu, and desktop dropdown states
   const [isScrolled, setIsScrolled] = useState(false);
@@ -90,6 +122,7 @@ export const Navbar: React.FC = () => {
                     else if (childSlug === "dergiler") childHref = "/dergiler";
                     else if (childSlug === "haberler") childHref = "/haberler";
                     else if (childSlug === "raporlar") childHref = "/raporlar";
+                    else if (childSlug === "acik-pozisyonlar" || childSlug === "acikpozisyonlar") childHref = ROUTES.ACIK_POZISYONLAR;
                     else childHref = `/sayfa/${childSlug}`;
                   } else if (childRawHref === "/sayfa/hakkimizda") {
                     childHref = "/hakkimizda";
@@ -111,6 +144,40 @@ export const Navbar: React.FC = () => {
               : undefined;
 
           const itemTitle = String(item.label || "").trim() === "Üyelerimiz" ? "Ekibimiz" : item.label;
+
+          // Always guarantee Açık Pozisyonlar is in Topluluk dropdown
+          if (itemTitle.toLowerCase().includes("topluluk")) {
+            const finalChildren = children ? [...children] : [];
+            const hasPositions = finalChildren.some(
+              (c: any) =>
+                c.href === ROUTES.ACIK_POZISYONLAR ||
+                String(c.title).toLowerCase().includes("pozisyon")
+            );
+            if (!hasPositions) {
+              const posItem = {
+                title: "Açık Pozisyonlar",
+                href: ROUTES.ACIK_POZISYONLAR,
+                status: "active",
+              };
+              const sssIdx = finalChildren.findIndex(
+                (c: any) =>
+                  c.href === ROUTES.SSS ||
+                  String(c.title).toLowerCase().includes("sss")
+              );
+              if (sssIdx !== -1) {
+                finalChildren.splice(sssIdx, 0, posItem);
+              } else {
+                finalChildren.push(posItem);
+              }
+            }
+            return {
+              title: itemTitle,
+              href,
+              status: "active",
+              items: finalChildren,
+            };
+          }
+
           return {
             title: itemTitle,
             href,
@@ -118,6 +185,7 @@ export const Navbar: React.FC = () => {
             items: children,
           };
         });
+
 
         const staticNav = (SITE_CONFIG.mainNav || []) as any[];
         const dbTitles = dbMapped.map((d: any) => d.title.toLowerCase());
@@ -293,7 +361,7 @@ export const Navbar: React.FC = () => {
                     aria-expanded={isOpen}
                     aria-haspopup="true"
                   >
-                    <span>{item.title}</span>
+                    <span>{translateNavTitle(item.title)}</span>
                     <ChevronDown
                       className={cn(
                         "w-3.5 h-3.5 stroke-[2.5] transition-transform duration-200",
@@ -322,9 +390,9 @@ export const Navbar: React.FC = () => {
                                 className="flex items-center justify-between px-3 py-2 text-xs font-medium text-white/40 cursor-not-allowed select-none rounded-lg hover:bg-white/[0.03]"
                                 title="Yakında Hizmetinizde"
                               >
-                                <span>{subItem.title}</span>
+                                <span>{translateNavTitle(subItem.title)}</span>
                                 <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-normal">
-                                  Yakında
+                                  {t("nav.comingSoon", "Yakında")}
                                 </span>
                               </div>
                             );
@@ -343,7 +411,7 @@ export const Navbar: React.FC = () => {
                                   : "text-white/80 hover:bg-white/10 hover:text-white"
                               )}
                             >
-                              <span>{subItem.title}</span>
+                              <span>{translateNavTitle(subItem.title)}</span>
                             </Link>
                           );
                         })}
@@ -363,9 +431,9 @@ export const Navbar: React.FC = () => {
                   title="Yakında Hizmetinizde"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <span>{item.title}</span>
+                  <span>{translateNavTitle(item.title)}</span>
                   <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-normal">
-                    Yakında
+                    {t("nav.comingSoon", "Yakında")}
                   </span>
                 </span>
               );
@@ -384,7 +452,7 @@ export const Navbar: React.FC = () => {
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                {item.title}
+                {translateNavTitle(item.title)}
                 {active && (
                   <motion.div
                     layoutId="activeNavIndicator"
@@ -397,7 +465,7 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Action Buttons: Giriş Yap, Kayıt Ol & Topluluğa Katıl */}
+        {/* Right Action Buttons: Giriş Yap, Kayıt Ol, Topluluğa Katıl & Language Switcher (En sağda) */}
         <div className="hidden lg:flex items-center gap-2 lg:gap-3">
           {currentUser ? (
             isAdmin ? (
@@ -405,20 +473,20 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={ROUTES.ADMIN}
                   className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-emerald-400/40 bg-[#0A5C3A] text-white text-xs sm:text-sm font-semibold hover:bg-[#128C59] transition-all shadow-xs whitespace-nowrap shrink-0"
-                  title="Admin Paneli"
+                  title={t("nav.admin")}
                 >
                   <ShieldCheck className="w-4 h-4 stroke-[2]" />
-                  <span>Admin Panel</span>
+                  <span>{t("nav.admin")}</span>
                 </Link>
 
                 <button
                   type="button"
                   onClick={requestLogout}
                   className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-white/10 text-white text-xs sm:text-sm font-semibold hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
-                  title="Çıkış Yap"
+                  title={t("nav.logout")}
                 >
                   <LogOut className="w-4 h-4 stroke-[2]" />
-                  <span>Çıkış Yap</span>
+                  <span>{t("nav.logout")}</span>
                 </button>
               </div>
             ) : (
@@ -426,11 +494,11 @@ export const Navbar: React.FC = () => {
                 <Link
                   href={ROUTES.PROFIL}
                   className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/25 bg-white/12 text-white overflow-hidden transition hover:bg-white/22 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20"
-                  aria-label="Profilim"
-                  title="Profilim"
+                  aria-label={t("nav.profile")}
+                  title={t("nav.profile")}
                 >
                   {userProfile?.avatar ? (
-                    <img src={userProfile.avatar} alt="Profilim" className="h-full w-full object-cover rounded-full" />
+                    <img src={userProfile.avatar} alt={t("nav.profile")} className="h-full w-full object-cover rounded-full" />
                   ) : (
                     <UserRound className="h-4.5 w-4.5" />
                   )}
@@ -440,10 +508,10 @@ export const Navbar: React.FC = () => {
                   type="button"
                   onClick={requestLogout}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/20 bg-white/10 text-white text-xs font-medium hover:bg-rose-500/20 hover:border-rose-400/40 hover:text-rose-200 transition-all cursor-pointer"
-                  title="Çıkış Yap"
+                  title={t("nav.logout")}
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Çıkış</span>
+                  <span className="hidden lg:inline">{t("nav.logout")}</span>
                 </button>
               </div>
             )
@@ -455,7 +523,7 @@ export const Navbar: React.FC = () => {
                 size="sm"
                 className="!bg-white/10 !text-white !border-white/25 hover:!bg-white/20 font-semibold text-xs px-3.5 h-9"
               >
-                Giriş Yap
+                {t("nav.login")}
               </Button>
 
               <Button
@@ -464,7 +532,7 @@ export const Navbar: React.FC = () => {
                 size="sm"
                 className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-xs px-3.5 h-9"
               >
-                Kayıt Ol
+                {t("nav.register")}
               </Button>
 
               <Button
@@ -474,11 +542,16 @@ export const Navbar: React.FC = () => {
                 rightIcon={<ArrowRight className="w-3.5 h-3.5 stroke-[2]" />}
                 className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-xs px-3.5 h-9 shadow-md"
               >
-                Topluluğa Katıl
+                {t("nav.join")}
               </Button>
             </>
           )}
+
+          {/* Dil Seçici (En sağda, Topluluğa Katıl butonunun yanında) */}
+          <LanguageSwitcher />
         </div>
+
+
 
         {/* Mobile Hamburger Toggle Button */}
         <div className="flex items-center lg:hidden">
@@ -527,10 +600,10 @@ export const Navbar: React.FC = () => {
                     return (
                       <div key={item.title} className="flex flex-col gap-1 py-1">
                         <div className="flex items-center justify-between px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
-                          <span>{item.title}</span>
+                          <span>{translateNavTitle(item.title)}</span>
                           {isPassive && (
                             <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
-                              Yakında
+                              {t("nav.comingSoon", "Yakında")}
                             </span>
                           )}
                         </div>
@@ -544,9 +617,9 @@ export const Navbar: React.FC = () => {
                                   key={sub.title}
                                   className="flex items-center justify-between h-10 px-3 text-sm font-medium rounded-lg text-white/40 cursor-not-allowed select-none bg-white/[0.02]"
                                 >
-                                  <span>{sub.title}</span>
+                                  <span>{translateNavTitle(sub.title)}</span>
                                   <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-white/40 font-normal">
-                                    Yakında
+                                    {t("nav.comingSoon", "Yakında")}
                                   </span>
                                 </div>
                               );
@@ -565,7 +638,7 @@ export const Navbar: React.FC = () => {
                                     : "text-white/80 hover:bg-white/10 hover:text-white"
                                 )}
                               >
-                                {sub.title}
+                                {translateNavTitle(sub.title)}
                               </Link>
                             );
                           })}
@@ -580,9 +653,9 @@ export const Navbar: React.FC = () => {
                         key={item.title}
                         className="flex items-center justify-between h-11 px-4 text-base font-medium rounded-lg text-white/40 cursor-not-allowed select-none bg-white/[0.02]"
                       >
-                        <span>{item.title}</span>
+                        <span>{translateNavTitle(item.title)}</span>
                         <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 text-white/50 font-normal">
-                          Yakında
+                          {t("nav.comingSoon", "Yakında")}
                         </span>
                       </div>
                     );
@@ -601,13 +674,18 @@ export const Navbar: React.FC = () => {
                       )}
                       aria-current={active ? "page" : undefined}
                     >
-                      {item.title}
+                      {translateNavTitle(item.title)}
                     </Link>
                   );
                 })}
               </nav>
 
               <div className="pt-4 border-t border-white/15 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between px-3 py-2 bg-white/10 rounded-xl border border-white/15">
+                  <span className="text-xs text-white/90 font-bold">{t("a11y.languageSelector", "Dil Seçimi")}</span>
+                  <LanguageSwitcher />
+                </div>
+
                 {currentUser && (
                   isAdmin ? (
                     <div className="flex flex-col gap-2">
@@ -620,7 +698,7 @@ export const Navbar: React.FC = () => {
                         leftIcon={<ShieldCheck className="h-4 w-4" />}
                         className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-sm"
                       >
-                        Admin Panel
+                        {t("nav.admin")}
                       </Button>
                       <Button
                         variant="secondary"
@@ -633,7 +711,7 @@ export const Navbar: React.FC = () => {
                         leftIcon={<LogOut className="h-4 w-4" />}
                         className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm"
                       >
-                        Çıkış Yap
+                        {t("nav.logout")}
                       </Button>
                     </div>
                   ) : (
@@ -646,14 +724,14 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                         leftIcon={
                           userProfile?.avatar ? (
-                            <img src={userProfile.avatar} alt="Profilim" className="h-5 w-5 rounded-full object-cover shrink-0" />
+                            <img src={userProfile.avatar} alt={t("nav.profile")} className="h-5 w-5 rounded-full object-cover shrink-0" />
                           ) : (
                             <UserRound className="h-4 w-4" />
                           )
                         }
                         className="!bg-white/15 !text-white !border-white/30 hover:!bg-white/25 font-semibold text-sm flex-1"
                       >
-                        Profilim
+                        {t("nav.profile")}
                       </Button>
                       <Button
                         variant="secondary"
@@ -663,7 +741,7 @@ export const Navbar: React.FC = () => {
                           requestLogout();
                         }}
                         className="!bg-rose-500/20 !text-rose-200 !border-rose-400/30 hover:!bg-rose-500/30 font-semibold text-sm px-3.5"
-                        title="Çıkış Yap"
+                        title={t("nav.logout")}
                       >
                         <LogOut className="h-4 w-4" />
                       </Button>
@@ -682,7 +760,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="!bg-white/10 !text-white !border-white/30 hover:!bg-white/20 font-semibold text-sm"
                       >
-                        Giriş Yap
+                        {t("nav.login")}
                       </Button>
 
                       <Button
@@ -693,7 +771,7 @@ export const Navbar: React.FC = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="!bg-white/20 !text-white !border-white/30 hover:!bg-white/30 font-semibold text-sm"
                       >
-                        Kayıt Ol
+                        {t("nav.register")}
                       </Button>
                     </div>
 
@@ -703,9 +781,10 @@ export const Navbar: React.FC = () => {
                       size="lg"
                       fullWidth
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold"
+                      rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
+                      className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-semibold text-sm shadow-md"
                     >
-                      Topluluğa Katıl
+                      {t("nav.join")}
                     </Button>
                   </>
                 )}

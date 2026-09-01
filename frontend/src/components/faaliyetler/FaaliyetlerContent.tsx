@@ -6,8 +6,12 @@ import { ArrowRight } from "lucide-react";
 import { ROUTES } from "../../constants/routes";
 import { InnerPageBackground } from "../common/InnerPageBackground";
 import { Button } from "../ui/Button";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function FaaliyetlerContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   return (
     <InnerPageBackground className="min-h-screen pt-24 sm:pt-28 pb-16">
       {/* ---------------------------------------------------- */}
@@ -20,9 +24,9 @@ export default function FaaliyetlerContent() {
 
         {/* Title */}
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#0F1115] tracking-tight font-headings max-w-4xl mx-auto leading-tight">
-          Faaliyetlerimiz &{" "}
+          {isEn ? "Our Activities & " : "Faaliyetlerimiz & "}
           <span className="text-[#07452C] relative inline-block">
-            İlham Panomuz
+            {isEn ? "Inspiration Board" : "İlham Panomuz"}
             <svg
               className="absolute -bottom-2 left-0 w-full h-3 text-[#81B29A]"
               viewBox="0 0 100 12"
@@ -41,9 +45,12 @@ export default function FaaliyetlerContent() {
 
         {/* Subtitle */}
         <p className="mt-4 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
-          N'apsak? ekolojiden teknolojiye, sanattan toplumsal faydaya gençlerin birlikte ürettiği, hayal ettiği ve hayata geçirdiği tüm faaliyetlerin canlı pano görünümü.
+          {isEn
+            ? "A live board view of all activities created, produced, and brought to life by youth across technology, art, environment, and social impact."
+            : "N'apsak? ekolojiden teknolojiye, sanattan toplumsal faydaya gençlerin birlikte ürettiği, hayal ettiği ve hayata geçirdiği tüm faaliyetlerin canlı pano görünümü."}
         </p>
       </section>
+
 
       {/* ---------------------------------------------------- */}
       {/* MAIN VISION BOARD SECTION                            */}

@@ -19,9 +19,13 @@ import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
 import { ApplicationsRepository } from "../../lib/applicationsStore";
 import { TeamsRepository } from "../../lib/teamsStore";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function BasvuruContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const router = useRouter();
+
   const [teamsList, setTeamsList] = useState<string[]>([
     "Teknoloji Ekibi",
     "Sanat Ekibi",
@@ -203,10 +207,10 @@ export default function BasvuruContent() {
                 <div className="flex flex-col justify-center min-w-0 flex-1">
                   <span className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Aramıza Katıl</span>
+                    <span>{isEn ? "Join Us" : "Aramıza Katıl"}</span>
                   </span>
                   <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight">
-                    Topluluğa Katıl Başvurusu
+                    {isEn ? "Community Membership Application" : "Topluluğa Katıl Başvurusu"}
                   </h1>
                 </div>
               </div>

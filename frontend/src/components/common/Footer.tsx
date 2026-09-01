@@ -5,9 +5,23 @@ import Link from "next/link";
 import { ROUTES } from "../../constants/routes";
 import { NavigationRepository } from "../../lib/navigationStore";
 import { Logo } from "./Logo";
+import { useLanguage } from "../../context/LanguageContext";
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const { language, t } = useLanguage();
+
+  const translateFooterTitle = (title: string) => {
+    if (!title) return title;
+    const lower = title.toLowerCase().trim();
+    if (lower === "ana sayfa") return t("nav.home");
+    if (lower === "hakkımızda") return t("nav.about");
+    if (lower === "etkinlikler") return t("nav.events");
+    if (lower === "çalışmalar" || lower === "faaliyetler") return t("nav.activities");
+    if (lower === "topluluk" || lower === "üyeler") return t("nav.community");
+    if (lower === "iletişim") return t("nav.contact");
+    return title;
+  };
 
   const fallbackNavLinks = [
     { title: "Ana Sayfa", href: ROUTES.HOME },
@@ -65,13 +79,15 @@ export const Footer: React.FC = () => {
             </Link>
 
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-medium break-words">
-              N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları
-              geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı
-              amaçlayan bir gençlik topluluğudur.
+              {language === "en"
+                ? "N'apsak? Youth Community aims to unleash youth potential, prepare them for the future, and provide opportunities for self-development across tech & creative domains."
+                : "N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik topluluğudur."}
             </p>
 
             <p className="text-xs sm:text-sm font-bold text-[#0A5C3A] italic font-headings tracking-tight">
-              “Keşke” demeden, N'apsak? diyerek harekete geç.
+              {language === "en"
+                ? "Instead of saying 'I wish', take action by asking N'apsak?"
+                : "“Keşke” demeden, N'apsak? diyerek harekete geç."}
             </p>
           </div>
 
@@ -83,7 +99,7 @@ export const Footer: React.FC = () => {
                     href={link.href}
                     className="text-[#5F6773] hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-md inline-block whitespace-nowrap"
                   >
-                    {link.title}
+                    {translateFooterTitle(link.title)}
                   </Link>
                 </li>
               ))}
@@ -95,7 +111,7 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6773] font-medium text-center sm:text-left w-full">
           <p className="break-words">
-            © {currentYear} N'apsak? Gençlik Topluluğu. Tüm hakları saklıdır.
+            © {currentYear} N'apsak? Gençlik Topluluğu. {t("footer.rights", "Tüm hakları saklıdır.")}
           </p>
 
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4">
@@ -103,23 +119,24 @@ export const Footer: React.FC = () => {
               href={ROUTES.KVKK}
               className="hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-sm whitespace-nowrap"
             >
-              KVKK Aydınlatma Metni
+              {t("footer.kvkk", "KVKK Aydınlatma Metni")}
             </Link>
             <span className="hidden sm:inline">•</span>
             <Link
               href={ROUTES.CEREZ_POLITIKASI}
               className="hover:text-[#0A5C3A] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-sm whitespace-nowrap"
             >
-              Çerez Politikası
+              {t("footer.cookies", "Çerez Politikası")}
             </Link>
             <span className="hidden sm:inline">•</span>
             <p className="text-[#0A5C3A] font-semibold whitespace-nowrap">
-              Gençlerle birlikte, geleceğe.
+              {language === "en" ? "With youth, into the future." : "Gençlerle birlikte, geleceğe."}
             </p>
           </div>
         </div>
       </div>
     </footer>
+
   );
 };
 

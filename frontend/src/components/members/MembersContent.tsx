@@ -26,6 +26,7 @@ import { PublicMemberModal } from "./PublicMemberModal";
 import { PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { MembersRepository } from "../../lib/membersStore";
+import { useLanguage } from "../../context/LanguageContext";
 
 function getTeamIconComponent(team: string) {
   const t = team.toLowerCase();
@@ -40,6 +41,8 @@ function getTeamIconComponent(team: string) {
 }
 
 export function MembersContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [membersList, setMembersList] = useState<PublicMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>("Tümü");
@@ -123,12 +126,14 @@ export function MembersContent() {
                 <Users className="w-5 h-5" />
               </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings">
-                Ekibimiz
+                {isEn ? "Our Team" : "Ekibimiz"}
               </h1>
             </div>
 
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-medium">
-              N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz.
+              {isEn
+                ? "All working teams, executive board, and advisory board members driving N'apsak? Youth Community."
+                : "N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz."}
             </p>
           </motion.div>
         </PageContainer>

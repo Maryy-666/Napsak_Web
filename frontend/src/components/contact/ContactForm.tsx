@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
+
 
 interface FormErrors {
   name?: string;
@@ -26,12 +28,16 @@ const GOOGLE_FORM_ENTRY_IDS = {
 } as const;
 
 export const ContactForm: React.FC = () => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "Genel Bilgi",
     message: "",
   });
+
 
   const [touched, setTouched] = useState({
     name: false,
@@ -237,12 +243,12 @@ export const ContactForm: React.FC = () => {
 
         {/* Ad Soyad */}
         <Input
-          label="Ad Soyad"
+          label={isEn ? "Full Name" : "Ad Soyad"}
           name="name"
           value={formData.name}
           onChange={handleChange}
           onBlur={() => handleBlur("name")}
-          placeholder="Adınız ve soyadınız"
+          placeholder={isEn ? "Your full name" : "Adınız ve soyadınız"}
           required
           errorText={errors.name}
           isValid={touched.name && isNameValid}
@@ -251,13 +257,13 @@ export const ContactForm: React.FC = () => {
 
         {/* E-posta */}
         <Input
-          label="E-posta"
+          label={isEn ? "Email Address" : "E-posta"}
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           onBlur={() => handleBlur("email")}
-          placeholder="eposta@ornek.com"
+          placeholder={isEn ? "email@example.com" : "eposta@ornek.com"}
           required
           errorText={errors.email}
           isValid={touched.email && isEmailValid}
@@ -270,12 +276,12 @@ export const ContactForm: React.FC = () => {
             htmlFor="contact-subject-select"
             className="text-[15px] font-medium text-[#0F1115] mb-2 inline-flex items-center gap-1 select-none"
           >
-            Konu
+            {isEn ? "Subject" : "Konu"}
             <span className="text-[#DC2626]" aria-hidden="true">
               *
             </span>
             <span className="text-xs text-[#9FA6B2] font-normal font-sans ml-0.5">
-              (zorunlu)
+              ({isEn ? "required" : "zorunlu"})
             </span>
           </label>
 
@@ -298,14 +304,14 @@ export const ContactForm: React.FC = () => {
                   : "border-[#EEF0F2] hover:border-[#D1D5DB] focus:border-[#0A5C3A] focus:ring-[4px] focus:ring-[#0A5C3A]/12"
               }`}
             >
-              <option value="Genel Bilgi">Genel Bilgi</option>
-              <option value="Topluluk Hakkında">Topluluk Hakkında</option>
-              <option value="Etkinlikler">Etkinlikler</option>
-              <option value="İş Birliği">İş Birliği</option>
-              <option value="Sponsorluk">Sponsorluk</option>
-              <option value="Teknik Destek">Teknik Destek</option>
-              <option value="Öneri / Geri Bildirim">Öneri / Geri Bildirim</option>
-              <option value="Diğer">Diğer</option>
+              <option value="Genel Bilgi">{isEn ? "General Information" : "Genel Bilgi"}</option>
+              <option value="Topluluk Hakkında">{isEn ? "About Community" : "Topluluk Hakkında"}</option>
+              <option value="Etkinlikler">{isEn ? "Events" : "Etkinlikler"}</option>
+              <option value="İş Birliği">{isEn ? "Collaboration" : "İş Birliği"}</option>
+              <option value="Sponsorluk">{isEn ? "Sponsorship" : "Sponsorluk"}</option>
+              <option value="Teknik Destek">{isEn ? "Technical Support" : "Teknik Destek"}</option>
+              <option value="Öneri / Geri Bildirim">{isEn ? "Feedback & Suggestions" : "Öneri / Geri Bildirim"}</option>
+              <option value="Diğer">{isEn ? "Other" : "Diğer"}</option>
             </select>
 
             {/* Custom Arrow Icon - Thin Elegant Stroke */}
@@ -334,17 +340,17 @@ export const ContactForm: React.FC = () => {
               htmlFor="contact-message-input"
               className="text-[15px] font-medium text-[#0F1115] inline-flex items-center gap-1 select-none"
             >
-              Mesaj
+              {isEn ? "Message" : "Mesaj"}
               <span className="text-[#DC2626]" aria-hidden="true">
                 *
               </span>
               <span className="text-xs text-[#9FA6B2] font-normal font-sans ml-0.5">
-                (zorunlu)
+                ({isEn ? "required" : "zorunlu"})
               </span>
             </label>
             {touched.message && isMessageValid && !errors.message && (
               <span className="text-xs text-[#0A5C3A] font-medium flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Geçerli
+                <CheckCircle2 className="w-3.5 h-3.5" /> {isEn ? "Valid" : "Geçerli"}
               </span>
             )}
           </div>
@@ -356,7 +362,7 @@ export const ContactForm: React.FC = () => {
             onChange={handleChange}
             onBlur={() => handleBlur("message")}
             disabled={isSubmitting}
-            placeholder="Mesajınızı buraya yazın..."
+            placeholder={isEn ? "Write your message here..." : "Mesajınızı buraya yazın..."}
             aria-invalid={!!errors.message}
             className={`w-full text-base bg-white text-[#0F1115] rounded-[8px] border p-3.5 outline-none shadow-sm transition-all duration-150 ease-in-out font-sans ${
               isSubmitting
@@ -393,16 +399,20 @@ export const ContactForm: React.FC = () => {
               className="mt-0.5 w-[18px] h-[18px] rounded-[5px] border-[#EEF0F2] text-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/12 cursor-pointer accent-[#0A5C3A] shrink-0 transition-all"
             />
             <span className="text-xs text-[#5F6773] font-medium leading-relaxed font-sans pt-0.5">
-              Kişisel verilerimin işlenmesini kabul ediyorum ({" "}
+              {isEn ? "I agree to the processing of my personal data (" : "Kişisel verilerimin işlenmesini kabul ediyorum ( "}
               <a
                 href="#kvkk"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert("KVKK Aydınlatma Metni: Gönderdiğiniz kişisel veriler yalnızca iletişim talebinizi yanıtlamak amacıyla 6698 sayılı KVKK kapsamında işlenmektedir.");
+                  alert(
+                    isEn
+                      ? "Privacy Notice: Personal data provided will only be processed for responding to your contact request in compliance with data privacy regulations."
+                      : "KVKK Aydınlatma Metni: Gönderdiğiniz kişisel veriler yalnızca iletişim talebinizi yanıtlamak amacıyla 6698 sayılı KVKK kapsamında işlenmektedir."
+                  );
                 }}
                 className="text-[#0A5C3A] underline underline-offset-2 font-semibold hover:text-[#0D7449]"
               >
-                KVKK Aydınlatma Metni
+                {isEn ? "Privacy Policy" : "KVKK Aydınlatma Metni"}
               </a>
               )
             </span>
@@ -426,7 +436,7 @@ export const ContactForm: React.FC = () => {
           isLoading={isSubmitting}
           className="mt-1 text-base font-semibold"
         >
-          Mesaj Gönder
+          {isEn ? "Send Message" : "Mesaj Gönder"}
         </Button>
       </form>
     </>

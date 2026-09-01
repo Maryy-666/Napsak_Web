@@ -23,6 +23,7 @@ import {
 import { Badge, Button, Card, PageContainer, Section } from "../ui";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Framer Motion animasyon varyantları
 const fadeInUp: Variants = {
@@ -37,6 +38,7 @@ const fadeInUp: Variants = {
     },
   }),
 };
+
 
 // 1. Katılım Türleri (3 Açık Tonlu, Güçlü Kart)
 const PARTICIPATION_TYPES = [
@@ -151,11 +153,14 @@ const FAQ_ITEMS = [
 ];
 
 export default function KatilimContent({ pageData }: { pageData?: any }) {
+  const { language, t } = useLanguage();
   const [openFaq, setOpenFaq] = useState<string | null>("faq-1");
 
   const toggleFaq = (id: string) => {
     setOpenFaq((prev) => (prev === id ? null : id));
   };
+
+  const isEn = language === "en";
 
   return (
     <PageBackground id="katilim-root" className="select-none px-0 py-0 overflow-hidden bg-white text-slate-900">
@@ -177,18 +182,26 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             {/* Üst Rozet */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF5EF] border border-[#0A5C3A]/20 text-[#0A5C3A] text-xs font-semibold tracking-wide">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>N'apsak? Topluluk Katılım Rehberi</span>
+              <span>{isEn ? "N'apsak? Community Joining Guide" : "N'apsak? Topluluk Katılım Rehberi"}</span>
             </div>
 
             {/* Büyük Başlık */}
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 font-headings leading-[1.15]">
-              {pageData?.title ? pageData.title : <>Aramıza <span className="text-[#0A5C3A]">Katıl</span></>}
+              {pageData?.title ? (
+                pageData.title
+              ) : isEn ? (
+                <>Join <span className="text-[#0A5C3A]">Us</span></>
+              ) : (
+                <>Aramıza <span className="text-[#0A5C3A]">Katıl</span></>
+              )}
             </h1>
 
             {/* Açıklama Metni */}
             <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed font-sans font-normal max-w-2xl mx-auto">
               {pageData?.shortDescription
                 ? pageData.shortDescription
+                : isEn
+                ? "There is always a place for your ideas, energy, and curiosity in N'apsak? Youth Community. Contribute to projects as a volunteer, produce regularly in our teams, or meet us at our events."
                 : "N'apsak? Gençlik Topluluğu'nda fikirlerin, enerjin ve merakın için her zaman bir yer var. İster gönüllü olarak projelere el ver, ister ekiplerimize katılarak düzenli üret, ister etkinliklerimizde bizimle buluş."}
             </p>
 
@@ -198,7 +211,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                 href="#katilim-turleri"
                 className="bg-[#0A5C3A] hover:bg-[#128C59] text-white px-6 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-md shadow-[#0A5C3A]/20 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>Katılım Yollarını Keşfet</span>
+                <span>{isEn ? "Discover Ways to Join" : "Katılım Yollarını Keşfet"}</span>
                 <ChevronDown className="w-4 h-4 stroke-[2.5]" />
               </a>
 
@@ -206,10 +219,11 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                 href={ROUTES.BASVURU}
                 className="bg-white border border-slate-200 text-slate-900 hover:border-[#0A5C3A]/40 hover:bg-slate-50 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-2xs flex items-center justify-center gap-2"
               >
-                <span>Başvuru Yap</span>
+                <span>{isEn ? "Apply Now" : "Başvuru Yap"}</span>
                 <ArrowRight className="w-4 h-4 text-[#0A5C3A] stroke-[2.5]" />
               </Link>
             </div>
+
 
             {/* Mini Değerler Rozeti */}
             <div className="pt-6 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-500">

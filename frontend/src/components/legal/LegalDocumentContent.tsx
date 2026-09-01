@@ -3,6 +3,7 @@
 import React from "react";
 import { ShieldCheck, FileText, Lock, CheckCircle2 } from "lucide-react";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface LegalDocumentProps {
   title: string;
@@ -20,6 +21,9 @@ export default function LegalDocumentContent({
   lastUpdated,
   sections,
 }: LegalDocumentProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   return (
     <PageBackground className="px-0 py-0 pb-24 text-[#0F1115]">
       {/* Banner */}
@@ -28,7 +32,7 @@ export default function LegalDocumentContent({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-emerald-300 text-xs font-semibold mb-4 border border-white/15">
             <ShieldCheck className="w-4 h-4" />
-            <span>Yasal Metinler & Gizlilik</span>
+            <span>{isEn ? "Legal & Privacy Documents" : "Yasal Metinler & Gizlilik"}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings tracking-tight mb-4">
             {title}
@@ -37,10 +41,11 @@ export default function LegalDocumentContent({
             {subtitle}
           </p>
           <div className="mt-4 text-xs text-emerald-300/80 font-mono">
-            Son Güncelleme: {lastUpdated}
+            {isEn ? "Last Updated: " : "Son Güncelleme: "}{lastUpdated}
           </div>
         </div>
       </section>
+
 
       {/* Body */}
       <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20">

@@ -6,9 +6,13 @@ import { PageContainer } from "../ui/PageContainer";
 import { PageHeader } from "../common/PageHeader";
 import { FAQSection } from "./FAQSection";
 import { Logo } from "../common/Logo";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function SSSContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
+
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -97,9 +101,13 @@ export default function SSSContent() {
         <div className="relative z-10 w-full flex flex-col items-center">
           <PageContainer>
             <PageHeader
-              title="Sıkça Sorulan Sorular"
-              description="Merak ettiğin tüm soruların cevaplarını burada bulabilirsin."
-              badge="Destek & Bilgi"
+              title={isEn ? "Frequently Asked Questions" : "Sıkça Sorulan Sorular"}
+              description={
+                isEn
+                  ? "Find answers to everything you need to know about N'apsak? Youth Community."
+                  : "Merak ettiğin tüm soruların cevaplarını burada bulabilirsin."
+              }
+              badge={isEn ? "Support & Info" : "Destek & Bilgi"}
               centered
             />
           </PageContainer>

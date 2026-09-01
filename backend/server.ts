@@ -23,7 +23,9 @@ import navigationRouter from "./src/routes/navigation.js";
 import mediaRouter from "./src/routes/media.js";
 import newsRouter from "./src/routes/news.js";
 import homepageRouter from "./src/routes/homepage.js";
+import positionsRouter from "./src/routes/positions.js";
 import { globalLimiter, authLimiter, formLimiter } from "./src/middleware/rateLimiter.js";
+
 
 const app = express();
 
@@ -121,6 +123,8 @@ app.use("/navigation", navigationRouter);
 app.use("/media", mediaRouter);
 app.use("/news", newsRouter);
 app.use("/homepage", homepageRouter);
+app.use("/positions", positionsRouter);
+
 
 // Global Secure Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -22,7 +22,9 @@ export const ROUTES = {
   PROFIL: "/profil",
   KAYIT: "/kayit",
   BIZDEN_HABERDAR_OL: "/bizden-haberdar-ol",
+  ACIK_POZISYONLAR: "/acik-pozisyonlar",
 } as const;
+
 
 export type RouteKey = keyof typeof ROUTES;
 export type RoutePath = typeof ROUTES[RouteKey];

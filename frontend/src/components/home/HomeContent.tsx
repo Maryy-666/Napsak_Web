@@ -22,38 +22,38 @@ import { CoreValuesSection } from "./CoreValuesSection";
 import { NewsSection } from "./NewsSection";
 import { ROUTES } from "../../constants/routes";
 import { SITE_CONFIG } from "../../config/site";
-
-
-
-// N'apsak Culture & Process Steps
-const CULTURAL_STEPS = [
-  {
-    num: "01",
-    title: "Keşfet",
-    description: "İlgi alanlarını keşfet, topluluğumuzu ve ekiplerimizi tanı.",
-    icon: Compass,
-  },
-  {
-    num: "02",
-    title: "Katıl",
-    description: "Sana en yakın çalışma alanına dahil ol, diğer gençlerle birlikte üret.",
-    icon: UserPlus,
-  },
-  {
-    num: "03",
-    title: "Üret",
-    description: "Projelerde, etkinliklerde ve ekip çalışmalarında aktif rol al.",
-    icon: Lightbulb,
-  },
-  {
-    num: "04",
-    title: "Geliş",
-    description: "Yeni şeyler öğren, deneyim kazan ve topluluğun gelişimine katkı sağla.",
-    icon: TrendingUp,
-  },
-];
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function HomeContent() {
+  const { language, t } = useLanguage();
+
+  const culturalSteps = [
+    {
+      num: "01",
+      title: t("culture.step1.title", "Keşfet"),
+      description: t("culture.step1.desc", "İlgi alanlarını keşfet, topluluğumuzu ve ekiplerimizi tanı."),
+      icon: Compass,
+    },
+    {
+      num: "02",
+      title: t("culture.step2.title", "Katıl"),
+      description: t("culture.step2.desc", "Sana en yakın çalışma alanına dahil ol, diğer gençlerle birlikte üret."),
+      icon: UserPlus,
+    },
+    {
+      num: "03",
+      title: t("culture.step3.title", "Üret"),
+      description: t("culture.step3.desc", "Projelerde, etkinliklerde ve ekip çalışmalarında aktif rol al."),
+      icon: Lightbulb,
+    },
+    {
+      num: "04",
+      title: t("culture.step4.title", "Geliş"),
+      description: t("culture.step4.desc", "Yeni şeyler öğren, deneyim kazan ve topluluğun gelişimine katkı sağla."),
+      icon: TrendingUp,
+    },
+  ];
+
   return (
     <div className="w-full flex flex-col items-center bg-white overflow-hidden" id="home-page-root">
       
@@ -66,19 +66,19 @@ export default function HomeContent() {
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-10 select-none">
             <Badge variant="brand" size="md" className="mb-3">
-              Topluluk Kültürü
+              {t("culture.badge", "Topluluk Kültürü")}
             </Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-3">
-              N'apsak'lı olmak ne demek?
+              {t("culture.title", "N'apsak'lı olmak ne demek?")}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
-              Sadece bir topluluğun parçası olmak değil; üretmek, öğrenmek ve birlikte gelişmek.
+              {t("culture.subtitle", "Sadece bir topluluğun parçası olmak değil; üretmek, öğrenmek ve birlikte gelişmek.")}
             </p>
           </div>
 
           {/* 4 Steps Process Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-6xl mx-auto">
-            {CULTURAL_STEPS.map((step, index) => {
+            {culturalSteps.map((step, index) => {
               const IconComp = step.icon;
               return (
                 <motion.div
@@ -131,13 +131,15 @@ export default function HomeContent() {
         <PageContainer>
           <div className="text-center max-w-3xl mx-auto mb-12 select-none">
             <Badge variant="brand" size="md" className="mb-3">
-              Topluluğumuz Hakkında
+              {language === "en" ? "About Our Community" : "Topluluğumuz Hakkında"}
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
-              Gençlerin Potansiyelini Harekete Geçiriyoruz
+              {language === "en" ? "Unleashing Youth Potential Together" : "Gençlerin Potansiyelini Harekete Geçiriyoruz"}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
-              {SITE_CONFIG.description}
+              {language === "en"
+                ? "The meeting point for youth who produce, learn, and grow together."
+                : SITE_CONFIG.description}
             </p>
           </div>
 
@@ -152,10 +154,12 @@ export default function HomeContent() {
                 <Target className="w-6 h-6 stroke-[2]" />
               </div>
               <h3 className="text-xl font-bold text-[#0F1115] font-headings mb-3">
-                Vizyonumuz
+                {language === "en" ? "Our Vision" : "Vizyonumuz"}
               </h3>
               <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-relaxed">
-                Gençlerin potansiyellerini ortaya çıkararak onları yalnızca bugünün değil, yarının dünyasına da hazırlamak; akademik gelişimin yanında sosyal, kültürel, teknolojik ve sanatsal alanlarda da gelişimi desteklemektir.
+                {language === "en"
+                  ? "To prepare youth not just for today but for tomorrow by unleashing their potential; supporting personal growth across academic, social, technological, and creative fields."
+                  : "Gençlerin potansiyellerini ortaya çıkararak onları yalnızca bugünün değil, yarının dünyasına da hazırlamak; akademik gelişimin yanında sosyal, kültürel, teknolojik ve sanatsal alanlarda da gelişimi desteklemektir."}
               </p>
             </Card>
 
@@ -168,10 +172,12 @@ export default function HomeContent() {
                 <Users className="w-6 h-6 stroke-[2]" />
               </div>
               <h3 className="text-xl font-bold text-[#0F1115] font-headings mb-3">
-                Misyonumuz
+                {language === "en" ? "Our Mission" : "Misyonumuz"}
               </h3>
               <p className="text-sm sm:text-base text-[#5F6773] font-sans leading-relaxed">
-                Gençlerin enerjisini, merakını ve yaratıcılığını doğru yönlendirerek gelişim yolculuklarına katkıda bulunmak; eğitim, hobi, sanat, teknoloji ve sosyal sorumluluk alanlarında birlikte üretme kültürünü desteklemektir.
+                {language === "en"
+                  ? "To guide youth energy, curiosity, and creativity toward positive development; building a culture of producing together in education, art, technology, and social responsibility."
+                  : "Gençlerin enerjisini, merakını ve yaratıcılığını doğru yönlendirerek gelişim yolculuklarına katkıda bulunmak; eğitim, hobi, sanat, teknoloji ve sosyal sorumluluk alanlarında birlikte üretme kültürünü desteklemektir."}
               </p>
             </Card>
           </div>
@@ -186,13 +192,13 @@ export default function HomeContent() {
         <PageContainer>
           <div className="text-center max-w-3xl mx-auto mb-8 select-none">
             <Badge variant="brand" size="md" className="mb-3">
-              Çalışma Ekiplerimiz
+              {t("teams.badge", "Çalışma Ekiplerimiz")}
             </Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
-              Farklı Alanlarda Birlikte Üretiyoruz
+              {t("teams.title", "Farklı Alanlarda Birlikte Üretiyoruz")}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
-              Topluluğumuz bünyesinde farklı ilgi alanlarına yönelik çalışmalar yürüten ekiplerimizle üretmenin ve gelişmenin gücünü birlikte keşfediyoruz.
+              {t("teams.subtitle", "Topluluğumuz bünyesinde farklı ilgi alanlarına yönelik çalışmalar yürüten ekiplerimizle üretmenin ve gelişmenin gücünü birlikte keşfediyoruz.")}
             </p>
           </div>
 
@@ -214,10 +220,10 @@ export default function HomeContent() {
 
             <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings tracking-tight mb-4 leading-tight">
-                N'apsak?'ta birlikte üretelim.
+                {t("cta.title", "N'apsak?'ta birlikte üretelim.")}
               </h2>
               <p className="text-base sm:text-lg text-white/85 font-sans font-medium mb-8 leading-relaxed">
-                Sen de potansiyelini harekete geçir, projelerini hayata geçir ve gelişen topluluğumuzun bir parçası ol.
+                {t("cta.subtitle", "Sen de potansiyelini harekete geçir, projelerini hayata geçir ve gelişen topluluğumuzun bir parçası ol.")}
               </p>
               <Button
                 href={ROUTES.BASVURU}
@@ -226,7 +232,7 @@ export default function HomeContent() {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
                 className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold text-base px-8 h-14"
               >
-                Topluluğa Katıl
+                {t("nav.join", "Topluluğa Katıl")}
               </Button>
             </div>
           </div>
@@ -235,3 +241,4 @@ export default function HomeContent() {
     </div>
   );
 }
+

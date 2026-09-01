@@ -4,14 +4,22 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { Badge, PageContainer } from "../ui";
+import { useLanguage } from "../../context/LanguageContext";
 
 export const HeroSection: React.FC = () => {
-  const badgeText = "2025'ten Beri Harekete Geçenler";
-  const title = "N'apsak? Gençlik Topluluğu";
-  const highlight = "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz.";
-  const description =
-    "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız.";
+  const { t } = useLanguage();
+  const badgeText = t("hero.badge", "2025'ten Beri Harekete Geçenler");
+  const title = t("hero.title", "N'apsak? Gençlik Topluluğu");
+  const highlight = t(
+    "hero.highlight",
+    "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz."
+  );
+  const description = t(
+    "hero.description",
+    "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktasıyız. Farklı alanlarda kendini geliştirmek, yeni insanlarla tanışmak ve birlikte üretmenin gücünü keşfetmek için buradayız."
+  );
   const bgImage = "/images/forest-hero.jpg";
+
 
   return (
     <section className="relative w-full h-[100vh] min-h-[100vh] h-[100svh] min-h-[100svh] pt-24 sm:pt-28 pb-10 sm:pb-14 flex items-center justify-start overflow-hidden bg-[#07452C]">

@@ -21,6 +21,8 @@ import { EventItem, EventsRepository } from "../../lib/eventsStore";
 import { getCurrentUser, getMemberProfile } from "../../lib/memberAuth";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
+
 
 // Framer Motion animasyon varyantı
 const fadeInUp: Variants = {
@@ -43,8 +45,11 @@ function parseDateBlock(dateStr: string) {
 }
 
 export default function EtkinliklerContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"aktif" | "gecmis">("aktif");
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [applyingEvent, setApplyingEvent] = useState<EventItem | null>(null);
@@ -188,17 +193,19 @@ export default function EtkinliklerContent() {
             className="text-center max-w-4xl mx-auto select-none space-y-4"
           >
             <Badge variant="brand" size="md" className="mb-2">
-              Etkinlik Takvimi
+              {isEn ? "Events Calendar" : "Etkinlik Takvimi"}
             </Badge>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
-              Keşfet, Katıl ve <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">
-                Birlikte Üret.
-              </span>
+              {isEn ? (
+                <>Discover, Join & <br className="hidden sm:inline" /><span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">Produce Together.</span></>
+              ) : (
+                <>Keşfet, Katıl ve <br className="hidden sm:inline" /><span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">Birlikte Üret.</span></>
+              )}
             </h1>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
-              Topluluğumuzun düzenlediği zirveler, atölyeler, doğa yürüyüşleri ve sosyal sorumluluk buluşmaları.
-              Aktif etkinliklere kaydolabilir, geçmiş faaliyetlerimizi inceleyebilirsin.
+              {isEn
+                ? "Summits, workshops, nature walks, and social responsibility gatherings by our community. Register for upcoming events or browse past activities."
+                : "Topluluğumuzun düzenlediği zirveler, atölyeler, doğa yürüyüşleri ve sosyal sorumluluk buluşmaları. Aktif etkinliklere kaydolabilir, geçmiş faaliyetlerimizi inceleyebilirsin."}
             </p>
           </motion.div>
         </PageContainer>
@@ -223,7 +230,7 @@ export default function EtkinliklerContent() {
                 }`}
               >
                 <Zap className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Yaklaşan & Aktif</span>
+                <span>{isEn ? "Upcoming & Active" : "Yaklaşan & Aktif"}</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-sans ${
                   activeTab === "aktif" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
@@ -241,7 +248,7 @@ export default function EtkinliklerContent() {
                 }`}
               >
                 <CheckCircle2 className="w-3.5 h-3.5 stroke-[2]" />
-                <span>Geçmiş</span>
+                <span>{isEn ? "Past" : "Geçmiş"}</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-sans ${
                   activeTab === "gecmis" ? "bg-white/20 text-white" : "bg-slate-200 text-slate-700"
                 }`}>
@@ -253,11 +260,11 @@ export default function EtkinliklerContent() {
             {/* Sağ: Kategori Pill Butonları */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
               {[
-                { id: "all", label: "Tümü" },
-                { id: "teknoloji", label: "Teknoloji" },
-                { id: "sanat", label: "Sanat" },
-                { id: "cevre-saglik", label: "Yaşam ve Sürdürülebilirlik" },
-                { id: "programlar", label: "Programlar" },
+                { id: "all", label: isEn ? "All" : "Tümü" },
+                { id: "teknoloji", label: isEn ? "Technology" : "Teknoloji" },
+                { id: "sanat", label: isEn ? "Art" : "Sanat" },
+                { id: "cevre-saglik", label: isEn ? "Health & Sustainability" : "Yaşam ve Sürdürülebilirlik" },
+                { id: "programlar", label: isEn ? "Programs" : "Programlar" },
               ].map((cat) => (
                 <button
                   key={cat.id}
