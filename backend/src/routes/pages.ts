@@ -1,5 +1,6 @@
 import { Router } from "express";
 import prisma from "../db.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -18,25 +19,34 @@ const generateSlug = (text: string): string => {
     .replace(/-+/g, "-");
 };
 
-// Status normalize yardımcısı
-const normalizeStatus = (status: any): "DRAFT" | "PUBLISHED" | "ARCHIVED" => {
-  if (!status) return "PUBLISHED";
-  const s = String(status).toUpperCase().trim();
-  if (s === "PUBLISHED" || s === "YAYINLANDI" || s === "TRUE") return "PUBLISHED";
-  if (s === "ARCHIVED" || s === "ARSIVLENDI") return "ARCHIVED";
-  return "DRAFT";
-};
-
 // GET ALL PAGES
 router.get("/", async (req, res) => {
   try {
     const statusParam = req.query.status ? String(req.query.status).trim() : "published";
     const q = req.query.q ? String(req.query.q).trim().toLowerCase() : "";
 
+    let isAdmin = false;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const session = await prisma.session.findUnique({
+        where: { token },
+        include: { user: true },
+      });
+      if (session && session.expiresAt > new Date()) {
+        const role = String(session.user.role).toUpperCase();
+        if (role === "ADMIN" || role === "TEAM_LEADER") {
+          isAdmin = true;
+        }
+      }
+    }
+
     const where: any = {};
 
-    if (statusParam !== "all") {
-      where.publicationStatus = normalizeStatus(statusParam);
+    if (!isAdmin) {
+      where.publicationStatus = "PUBLISHED";
+    } else if (statusParam !== "all") {
+      where.publicationStatus = statusParam.toUpperCase();
     }
 
     if (q) {
@@ -65,11 +75,31 @@ router.get("/:slug", async (req, res) => {
     const { slug } = req.params;
     const isNumericId = /^\d+$/.test(slug);
 
+    let isAdmin = false;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const session = await prisma.session.findUnique({
+        where: { token },
+        include: { user: true },
+      });
+      if (session && session.expiresAt > new Date()) {
+        const role = String(session.user.role).toUpperCase();
+        if (role === "ADMIN" || role === "TEAM_LEADER") {
+          isAdmin = true;
+        }
+      }
+    }
+
     const page = isNumericId
       ? await prisma.page.findUnique({ where: { id: parseInt(slug, 10) } })
       : await prisma.page.findUnique({ where: { slug } });
 
     if (!page) {
+      return res.status(404).json({ message: "Sayfa bulunamadı." });
+    }
+
+    if (!isAdmin && page.publicationStatus !== "PUBLISHED") {
       return res.status(404).json({ message: "Sayfa bulunamadı." });
     }
 
@@ -80,8 +110,8 @@ router.get("/:slug", async (req, res) => {
   }
 });
 
-// CREATE PAGE (Korumasız - Geliştirme Ortamı)
-router.post("/", async (req, res) => {
+// CREATE PAGE (ADMIN)
+router.post("/", authenticate, requireAdmin, async (req, res) => {
   try {
     const {
       title,
@@ -89,15 +119,11 @@ router.post("/", async (req, res) => {
       shortDescription,
       content,
       publicationStatus,
-      status, // Bazı formlar status ismiyle yollayabilir
       isFeatured,
       showInMenu,
       displayOrder,
       metaTitle,
       metaDescription,
-      featuredImage,
-      bannerImage,
-      imageUrl,
     } = req.body;
 
     if (!title || !String(title).trim()) {
@@ -114,34 +140,30 @@ router.post("/", async (req, res) => {
       finalSlug = `${finalSlug}-${Date.now().toString().slice(-4)}`;
     }
 
-    // Resim URL'sini esnek yakala
-    const imagePath = featuredImage || bannerImage || imageUrl || null;
-
     const newPage = await prisma.page.create({
       data: {
         title: String(title).trim(),
         slug: finalSlug,
         shortDescription: shortDescription ? String(shortDescription).trim() : null,
         content: content ? String(content) : "",
-        publicationStatus: normalizeStatus(publicationStatus || status),
+        publicationStatus: publicationStatus ? String(publicationStatus).toUpperCase() : "PUBLISHED",
         isFeatured: Boolean(isFeatured),
         showInMenu: Boolean(showInMenu),
         displayOrder: typeof displayOrder === "number" ? displayOrder : 0,
         metaTitle: metaTitle ? String(metaTitle).trim() : null,
         metaDescription: metaDescription ? String(metaDescription).trim() : null,
-        ...(imagePath && { featuredImage: String(imagePath) }),
       },
     });
 
     res.status(201).json(newPage);
   } catch (error: any) {
     console.error("POST /pages error:", error);
-    res.status(500).json({ message: error.message || "Sayfa oluşturulurken hata oluştu." });
+    res.status(500).json({ message: "Sayfa oluşturulurken hata oluştu." });
   }
 });
 
-// UPDATE PAGE (Korumasız - Geliştirme Ortamı)
-router.patch("/:id", async (req, res) => {
+// UPDATE PAGE (ADMIN)
+router.patch("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);
@@ -160,15 +182,11 @@ router.patch("/:id", async (req, res) => {
       shortDescription,
       content,
       publicationStatus,
-      status,
       isFeatured,
       showInMenu,
       displayOrder,
       metaTitle,
       metaDescription,
-      featuredImage,
-      bannerImage,
-      imageUrl,
     } = req.body;
 
     const data: any = {};
@@ -176,19 +194,12 @@ router.patch("/:id", async (req, res) => {
     if (title !== undefined) data.title = String(title).trim();
     if (shortDescription !== undefined) data.shortDescription = shortDescription ? String(shortDescription).trim() : null;
     if (content !== undefined) data.content = String(content);
-    if (publicationStatus !== undefined || status !== undefined) {
-      data.publicationStatus = normalizeStatus(publicationStatus || status);
-    }
+    if (publicationStatus !== undefined) data.publicationStatus = String(publicationStatus).toUpperCase();
     if (isFeatured !== undefined) data.isFeatured = Boolean(isFeatured);
     if (showInMenu !== undefined) data.showInMenu = Boolean(showInMenu);
     if (displayOrder !== undefined) data.displayOrder = Number(displayOrder);
     if (metaTitle !== undefined) data.metaTitle = metaTitle ? String(metaTitle).trim() : null;
     if (metaDescription !== undefined) data.metaDescription = metaDescription ? String(metaDescription).trim() : null;
-
-    const imagePath = featuredImage || bannerImage || imageUrl;
-    if (imagePath !== undefined) {
-      data.featuredImage = imagePath ? String(imagePath) : null;
-    }
 
     if (rawSlug && generateSlug(String(rawSlug)) !== existingPage.slug) {
       let updatedSlug = generateSlug(String(rawSlug));
@@ -209,12 +220,12 @@ router.patch("/:id", async (req, res) => {
     res.json(updatedPage);
   } catch (error: any) {
     console.error("PATCH /pages/:id error:", error);
-    res.status(500).json({ message: error.message || "Sayfa güncellenirken hata oluştu." });
+    res.status(500).json({ message: "Sayfa güncellenirken hata oluştu." });
   }
 });
 
-// DELETE PAGE (Korumasız - Geliştirme Ortamı)
-router.delete("/:id", async (req, res) => {
+// DELETE PAGE (ADMIN)
+router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);

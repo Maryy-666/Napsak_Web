@@ -48,15 +48,31 @@ model MemberProfile {
   avatar      String?
   linkedin    String?
   city        String?
+
   school      String?
   department  String?
   isPresident Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  slug             String?
+  bioEn            String?
+  education        String?
+  educationEn      String?
+  expertise        String?
+  expertiseEn      String?
+  responsibilities String?
+  responsibilitiesEn String?
+  twitter          String?
+  github           String?
+  instagram        String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   memberships TeamMembership[]
   ledTeams    Team[]           @relation("TeamLeader")
+
+  @@index([slug])
 }
+
 
 model Team {
   id                   Int              @id @default(autoincrement())
@@ -402,3 +418,58 @@ model HomepageConfig {
   content   Json
   updatedAt DateTime @updatedAt
 }
+
+model Position {
+  id                        Int      @id @default(autoincrement())
+  slug                      String   @unique
+  title                     String
+  titleEn                   String?
+  team                      String
+  teamEn                    String?
+  teamCategory              String   @default("iletisim")
+  shortDescription          String
+  shortDescriptionEn        String?
+  description               String?
+  descriptionEn             String?
+  responsibilities          String[] @default([])
+  responsibilitiesEn        String[] @default([])
+  requirements              String[] @default([])
+  requirementsEn            String[] @default([])
+  preferredQualifications  String[] @default([])
+  preferredQualificationsEn String[] @default([])
+  workType                  String   @default("Gönüllü")
+  workTypeEn                String?  @default("Volunteer / Remote")
+  location                  String   @default("Uzaktan / Çevrim İçi")
+  locationEn                String?  @default("Remote / Online")
+  isActive                  Boolean  @default(true)
+  isUrgent                  Boolean  @default(false)
+  displayOrder              Int      @default(0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([displayOrder])
+}
+
+model Partner {
+  id            Int      @id @default(autoincrement())
+  slug          String   @unique
+  name          String
+  nameEn        String?
+  description   String?
+  descriptionEn String?
+  logo          String?
+  websiteUrl    String?
+  category      String   @default("Paydaş")
+  categoryEn    String?  @default("Partner")
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([displayOrder])
+  @@index([category])
+}
+
+

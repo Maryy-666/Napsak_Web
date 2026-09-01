@@ -8,25 +8,35 @@ const toPublicMember = (member: any) => ({
   id: member.externalId,
   memberProfileId: member.id,
   name: member.name,
+  slug: member.slug || undefined,
   initials: member.initials,
   primaryTeam: member.primaryTeam,
   primaryRole: member.primaryRole,
   isPresident: member.isPresident,
   bio: member.bio || undefined,
+  bioEn: member.bioEn || undefined,
   avatar: member.avatar || undefined,
   linkedin: member.linkedin || undefined,
+  twitter: member.twitter || undefined,
+  github: member.github || undefined,
+  instagram: member.instagram || undefined,
   city: member.city || undefined,
   school: member.school || undefined,
   department: member.department || undefined,
+  education: member.education || undefined,
+  educationEn: member.educationEn || undefined,
+  expertise: member.expertise || undefined,
+  expertiseEn: member.expertiseEn || undefined,
+  responsibilities: member.responsibilities || undefined,
+  responsibilitiesEn: member.responsibilitiesEn || undefined,
   userId: member.userId || undefined,
+
   memberships:
     member.memberships && member.memberships.length > 0
       ? member.memberships.flatMap((m: any) => {
           const mainTeamName = m.team?.title || member.primaryTeam || "Teknoloji Ekibi";
           const isLeader = Boolean(
-            m.isLeader ||
-              m.team?.leaderId === member.id ||
-              (m.subRole && m.subRole.toLowerCase().includes("sorumlus"))
+            m.roleTitle === "Başkan" || (m.isLeader && m.roleTitle?.includes("Başkan"))
           );
 
           const items: any[] = [
@@ -196,7 +206,7 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
       if (Array.isArray(body.memberships)) {
         for (const mem of body.memberships) {
           const teamSlugOrId = mem.teamSlug || mem.teamId || mem.team;
-          const team = await tx.team.findFirst({
+          let team = await tx.team.findFirst({
             where: {
               OR: [
                 { slug: String(teamSlugOrId) },
@@ -206,8 +216,35 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
             },
           });
 
+          if (!team && mem.team) {
+            const teamTitle = String(mem.team).trim();
+            const generatedSlug = teamTitle
+              .toLowerCase()
+              .replace(/ğ/g, "g")
+              .replace(/ü/g, "u")
+              .replace(/ş/g, "s")
+              .replace(/ı/g, "i")
+              .replace(/ö/g, "o")
+              .replace(/ç/g, "c")
+              .replace(/[^a-z0-9]/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "");
+
+            team = await tx.team.create({
+              data: {
+                externalId: `t-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                slug: generatedSlug || `team-${Date.now()}`,
+                title: teamTitle,
+                shortDescription: `${teamTitle} çalışma grubu.`,
+                about: `${teamTitle} hakkında detaylı bilgi.`,
+                bgImage: "/images/istockphoto-1173149385-612x612.jpg",
+                structure: "Gençlik Topluluğu Çalışma Grubu",
+              },
+            });
+          }
+
           if (team) {
-            const isL = mem.role === "Başkan" || Boolean(mem.isLeader);
+            const isL = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
             await tx.teamMembership.upsert({
               where: {
                 memberId_teamId: {
@@ -279,16 +316,28 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
       const dataToUpdate: any = {};
 
       if (body.name !== undefined) dataToUpdate.name = String(body.name).trim();
+      if (body.slug !== undefined) dataToUpdate.slug = body.slug;
       if (body.initials !== undefined) dataToUpdate.initials = body.initials;
       if (body.primaryTeam !== undefined) dataToUpdate.primaryTeam = body.primaryTeam;
       if (body.primaryRole !== undefined) dataToUpdate.primaryRole = body.primaryRole;
       if (body.isPresident !== undefined) dataToUpdate.isPresident = Boolean(body.isPresident);
       if (body.bio !== undefined) dataToUpdate.bio = body.bio;
+      if (body.bioEn !== undefined) dataToUpdate.bioEn = body.bioEn;
       if (body.avatar !== undefined) dataToUpdate.avatar = body.avatar;
       if (body.linkedin !== undefined) dataToUpdate.linkedin = body.linkedin;
+      if (body.twitter !== undefined) dataToUpdate.twitter = body.twitter;
+      if (body.github !== undefined) dataToUpdate.github = body.github;
+      if (body.instagram !== undefined) dataToUpdate.instagram = body.instagram;
       if (body.city !== undefined) dataToUpdate.city = body.city;
       if (body.school !== undefined) dataToUpdate.school = body.school;
       if (body.department !== undefined) dataToUpdate.department = body.department;
+      if (body.education !== undefined) dataToUpdate.education = body.education;
+      if (body.educationEn !== undefined) dataToUpdate.educationEn = body.educationEn;
+      if (body.expertise !== undefined) dataToUpdate.expertise = body.expertise;
+      if (body.expertiseEn !== undefined) dataToUpdate.expertiseEn = body.expertiseEn;
+      if (body.responsibilities !== undefined) dataToUpdate.responsibilities = body.responsibilities;
+      if (body.responsibilitiesEn !== undefined) dataToUpdate.responsibilitiesEn = body.responsibilitiesEn;
+
 
       const updated = await tx.memberProfile.update({
         where: { id: existingMember.id },
@@ -299,7 +348,7 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
       if (Array.isArray(body.memberships)) {
         for (const mem of body.memberships) {
           const teamSlugOrId = mem.teamSlug || mem.teamId || mem.team;
-          const team = await tx.team.findFirst({
+          let team = await tx.team.findFirst({
             where: {
               OR: [
                 { slug: String(teamSlugOrId) },
@@ -309,8 +358,35 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
             },
           });
 
+          if (!team && mem.team) {
+            const teamTitle = String(mem.team).trim();
+            const generatedSlug = teamTitle
+              .toLowerCase()
+              .replace(/ğ/g, "g")
+              .replace(/ü/g, "u")
+              .replace(/ş/g, "s")
+              .replace(/ı/g, "i")
+              .replace(/ö/g, "o")
+              .replace(/ç/g, "c")
+              .replace(/[^a-z0-9]/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "");
+
+            team = await tx.team.create({
+              data: {
+                externalId: `t-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                slug: generatedSlug || `team-${Date.now()}`,
+                title: teamTitle,
+                shortDescription: `${teamTitle} çalışma grubu.`,
+                about: `${teamTitle} hakkında detaylı bilgi.`,
+                bgImage: "/images/istockphoto-1173149385-612x612.jpg",
+                structure: "Gençlik Topluluğu Çalışma Grubu",
+              },
+            });
+          }
+
           if (team) {
-            const isL = mem.role === "Başkan" || Boolean(mem.isLeader);
+            const isL = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
             await tx.teamMembership.upsert({
               where: {
                 memberId_teamId: {

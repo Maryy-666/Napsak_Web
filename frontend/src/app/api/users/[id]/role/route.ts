@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const cookieStore = cookies();
-    const token = cookieStore.get("session_token")?.value;
+    const cookieToken = cookieStore.get("session_token")?.value;
+    const authHeader = request.headers.get("authorization");
+    const token = cookieToken || (authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : authHeader);
 
     if (!token) {
       return NextResponse.json(
@@ -19,7 +23,7 @@ export async function PATCH(
     const body = await request.json();
 
     const response = await fetch(
-      `http://localhost:3001/users/${params.id}/role`,
+      `${BACKEND_URL}/users/${params.id}/role`,
       {
         method: "PATCH",
         headers: {
@@ -51,4 +55,4 @@ export async function PATCH(
       { status: 500 }
     );
   }
-}
+}

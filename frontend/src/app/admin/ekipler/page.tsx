@@ -150,15 +150,15 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
   {
     id: "cevre-saglik",
     slug: "cevre-saglik",
-    title: "Çevre ve Sağlık Ekibi",
+    title: "Yaşam ve Sürdürülebilirlik Ekibi",
     iconName: "heart-pulse",
     bgImage: "/images/pngtree-vibrant-earth-planet-surrounded-by-fresh-green-leaves-eco-friendly-concept-image_21673995.webp",
     shortDescription:
       "Sürdürülebilirlik, çevre bilinci, sağlıklı yaşam ve toplumsal fayda odaklı sosyal sorumluluk projeleri gerçekleştirir.",
     about:
-      "Çevre ve Sağlık Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında sürdürülebilir çalışmalar yürütür.",
+      "Yaşam ve Sürdürülebilirlik Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında sürdürülebilir çalışmalar yürütür.",
     leaderName: "Burak Kaan",
-    leaderTitle: "Çevre & Sağlık Lideri",
+    leaderTitle: "Yaşam ve Sürdürülebilirlik Lideri",
     leaderAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
     memberCount: 20,
     focusAreas: [

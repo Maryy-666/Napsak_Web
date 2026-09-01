@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, GripVertical } from "lucide-react";
 import { toast } from "sonner";
@@ -15,7 +16,7 @@ import {
   saveMemberProfile,
 } from "../../lib/memberAuth";
 
-const STEPS = ["İletişim Bilgileri", "Üniversite & Deneyim", "Yetenekler & Tercihler"];
+const STEPS = ["İletişim Bilgileri", "Eğitim & Deneyim", "Yetenekler & Tercihler"];
 const INTERESTS = ["Teknoloji", "Sanat", "Girişimcilik", "Sosyal Sorumluluk", "Çevre", "Kariyer", "Tasarım", "İçerik"];
 const CAREER_OPTIONS = ["Yazılım", "Tasarım", "Pazarlama", "İnsan Kaynakları", "Etkinlik Yönetimi", "İçerik Üretimi", "Veri Bilimi", "Girişimcilik"];
 
@@ -30,6 +31,7 @@ type RegisterForm = {
   university: string;
   universityType: string;
   department: string;
+  graduationStatus: string;
   grade: string;
   startDate: string;
   graduationDate: string;
@@ -39,6 +41,7 @@ type RegisterForm = {
   careerPreferences: string[];
   skills: string;
   bio: string;
+  kvkkAccepted: boolean;
 };
 
 const initialForm: RegisterForm = {
@@ -52,7 +55,8 @@ const initialForm: RegisterForm = {
   university: "",
   universityType: "",
   department: "",
-  grade: "",
+  graduationStatus: "Öğrenci",
+  grade: "1. Sınıf",
   startDate: "",
   graduationDate: "",
   gpa: "",
@@ -61,6 +65,7 @@ const initialForm: RegisterForm = {
   careerPreferences: [],
   skills: "",
   bio: "",
+  kvkkAccepted: false,
 };
 
 function formatPhone(value: string) {
@@ -79,7 +84,7 @@ export default function RegisterContent() {
 
   const fullName = useMemo(() => `${form.firstName.trim()} ${form.lastName.trim()}`.trim(), [form.firstName, form.lastName]);
 
-  const updateField = (field: keyof RegisterForm, value: string) => {
+  const updateField = (field: keyof RegisterForm, value: any) => {
     setForm((current) => ({
       ...current,
       [field]: field === "phone" ? formatPhone(value) : value,
@@ -118,13 +123,19 @@ export default function RegisterContent() {
     }
 
     if (step === 1 && (!form.university.trim() || !form.department.trim())) {
-      toast.error("Üniversite ve bölüm bilgilerini doldur.");
+      toast.error("Okul ve alan/bölüm bilgilerini doldur.");
       return false;
     }
 
-    if (step === 2 && form.interests.length === 0) {
-      toast.error("En az bir ilgi alanı seç.");
-      return false;
+    if (step === 2) {
+      if (form.interests.length === 0) {
+        toast.error("En az bir ilgi alanı seç.");
+        return false;
+      }
+      if (!form.kvkkAccepted) {
+        toast.error("Kayıt olabilmek için KVKK aydınlatma metnini onaylamalısınız.");
+        return false;
+      }
     }
 
     return true;
@@ -181,7 +192,7 @@ export default function RegisterContent() {
         universityType: form.universityType,
         school: form.university.trim(),
         department: form.department.trim(),
-        grade: form.grade,
+        grade: form.graduationStatus === "Mezun" ? "Mezun" : form.grade,
         startDate: form.startDate,
         graduationDate: form.graduationDate,
         gpa: form.gpa,
@@ -254,16 +265,60 @@ export default function RegisterContent() {
 
             {step === 1 && (
               <section>
-                <h2 className="mb-6 text-2xl font-bold text-[#0F1115]">Üniversite</h2>
+                <h2 className="mb-6 text-2xl font-bold text-[#0F1115]">Okul Bilgileri</h2>
                 <div className="rounded-xl border border-[#DDE7E1] bg-white p-4 shadow-[0_8px_28px_rgba(15,17,21,0.04)] sm:p-5">
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <SelectField label="Üniversite*" value={form.university} onChange={(value) => updateField("university", value)} options={["Kocaeli Üniversitesi", "Gebze Teknik Üniversitesi", "Sakarya Üniversitesi", "İstanbul Üniversitesi", "Diğer"]} placeholder="Üniversite" />
-                    <SelectField label="Üniversite Tipi" value={form.universityType} onChange={(value) => updateField("universityType", value)} options={["Devlet", "Vakıf", "Açıköğretim", "Mezun"]} placeholder="Üniversite Tipi" />
-                    <Field label="Bölüm*" value={form.department} onChange={(value) => updateField("department", value)} placeholder="Bölüm" className="md:col-span-2" />
-                    <Field label="Başlangıç" value={form.startDate} onChange={(value) => updateField("startDate", value)} placeholder="AA-YYYY" />
-                    <Field label="Bitiş / Tahmini" value={form.graduationDate} onChange={(value) => updateField("graduationDate", value)} placeholder="AA-YYYY" />
-                    <SelectField label="Sınıf" value={form.grade} onChange={(value) => updateField("grade", value)} options={["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Mezun"]} placeholder="Sınıf" />
-                    <Field label="Genel Not Ortalaması" value={form.gpa} onChange={(value) => updateField("gpa", value)} placeholder="Örn: 3.25" inputMode="decimal" />
+                    <Field
+                      label="Okul*"
+                      value={form.university}
+                      onChange={(value) => updateField("university", value)}
+                      placeholder="Okulunuzun adı"
+                    />
+                    <Field
+                      label="Alan / Bölüm*"
+                      value={form.department}
+                      onChange={(value) => updateField("department", value)}
+                      placeholder="Alanınız / Bölümünüz"
+                    />
+                    <SelectField
+                      label="Eğitim Durumu*"
+                      value={form.graduationStatus || "Öğrenci"}
+                      onChange={(value) => {
+                        setForm((prev) => ({
+                          ...prev,
+                          graduationStatus: value,
+                          grade: value === "Mezun" ? "Mezun" : prev.grade === "Mezun" ? "1. Sınıf" : prev.grade,
+                        }));
+                      }}
+                      options={["Öğrenci", "Mezun"]}
+                    />
+                    {form.graduationStatus !== "Mezun" && (
+                      <SelectField
+                        label="Sınıf"
+                        value={form.grade || "1. Sınıf"}
+                        onChange={(value) => updateField("grade", value)}
+                        options={["Hazırlık", "1. Sınıf", "2. Sınıf", "3. Sınıf", "4. Sınıf", "Yüksek Lisans / Doktora"]}
+                      />
+                    )}
+                    <Field
+                      label="Başlangıç"
+                      value={form.startDate}
+                      onChange={(value) => updateField("startDate", value)}
+                      placeholder="AA-YYYY"
+                    />
+                    <Field
+                      label="Mezuniyet / Tahmini"
+                      value={form.graduationDate}
+                      onChange={(value) => updateField("graduationDate", value)}
+                      placeholder="AA-YYYY"
+                    />
+                    <Field
+                      label="Not Ortalaması"
+                      value={form.gpa}
+                      onChange={(value) => updateField("gpa", value)}
+                      placeholder="Örn: 3.25"
+                      inputMode="decimal"
+                    />
                   </div>
                 </div>
                 <label className="mt-6 block">
@@ -315,6 +370,24 @@ export default function RegisterContent() {
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   <Field label="Yetenekler" value={form.skills} onChange={(value) => updateField("skills", value)} placeholder="Tasarım, yazılım, sunum, fotoğraf..." />
                   <Field label="Kısa Tanıtım" value={form.bio} onChange={(value) => updateField("bio", value)} placeholder="Kendini kısaca anlat" />
+                </div>
+
+                {/* KVKK Onay Kutusu */}
+                <div className="mt-6 border-t border-[#EEF0F2] pt-4">
+                  <label className="flex items-start gap-2.5 cursor-pointer text-xs text-[#0F1115] select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.kvkkAccepted}
+                      onChange={(e) => setForm((prev) => ({ ...prev, kvkkAccepted: e.target.checked }))}
+                      className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#0A5C3A] focus:ring-[#0A5C3A] cursor-pointer"
+                    />
+                    <span className="leading-snug">
+                      <Link href={ROUTES.KVKK} target="_blank" className="font-semibold text-[#0A5C3A] hover:underline">
+                        KVKK kapsamında kişisel verilerimin işlenmesine ilişkin aydınlatma metnini
+                      </Link>{" "}
+                      okudum ve kabul ediyorum. <span className="text-rose-500">*</span>
+                    </span>
+                  </label>
                 </div>
               </section>
             )}
@@ -420,7 +493,7 @@ function SelectField({
   value: string;
   onChange: (value: string) => void;
   options: string[];
-  placeholder: string;
+  placeholder?: string;
 }) {
   return (
     <label className="block">
@@ -428,9 +501,9 @@ function SelectField({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 text-sm text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10"
+        className="h-10 w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 text-sm text-[#0F1115] outline-none transition focus:border-[#0A5C3A] focus:ring-4 focus:ring-[#0A5C3A]/10 cursor-pointer"
       >
-        <option value="">{placeholder}</option>
+        {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((option) => (
           <option key={option} value={option}>
             {option}

@@ -23,7 +23,11 @@ import navigationRouter from "./src/routes/navigation.js";
 import mediaRouter from "./src/routes/media.js";
 import newsRouter from "./src/routes/news.js";
 import homepageRouter from "./src/routes/homepage.js";
+import positionsRouter from "./src/routes/positions.js";
+import partnersRouter from "./src/routes/partners.js";
 import { globalLimiter, authLimiter, formLimiter } from "./src/middleware/rateLimiter.js";
+
+
 
 const app = express();
 
@@ -38,7 +42,7 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-// Helmet Security Headers (CSP engeli kaldırıldı)
+// Helmet Security Headers (safe defaults, allowing cross-origin image embedding)
 app.use(
   helmet({
     contentSecurityPolicy: false,
@@ -66,7 +70,7 @@ app.use(
 
 app.use(express.json());
 
-// Global Rate Limiter
+// Global Rate Limiter (Production-safe, 300 requests per 15 min per IP)
 app.use(globalLimiter);
 
 // Serve uploads folder statically
@@ -121,6 +125,10 @@ app.use("/navigation", navigationRouter);
 app.use("/media", mediaRouter);
 app.use("/news", newsRouter);
 app.use("/homepage", homepageRouter);
+app.use("/positions", positionsRouter);
+app.use("/partners", partnersRouter);
+
+
 
 // Global Secure Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { PageContainer } from "../ui/PageContainer";
 import { Section } from "../ui/Section";
+import { useLanguage } from "../../context/LanguageContext";
 
 export interface StatItem {
   id: string;
@@ -11,39 +12,37 @@ export interface StatItem {
   label: string;
 }
 
-// Centralized default statistics data (easily replaceable when backend/DB is connected)
-export const DEFAULT_STATS: StatItem[] = [
-  {
-    id: "active-members",
-    value: "86+",
-    label: "AKTİF ÜYE",
-  },
-  {
-    id: "working-teams",
-    value: "5+",
-    label: "ÇALIŞMA EKİBİ",
-  },
-  {
-    id: "events",
-    value: "40+",
-    label: "ETKİNLİK",
-  },
-  {
-    id: "applications",
-    value: "150+",
-    label: "BAŞVURU",
-  },
-];
-
-interface StatsSectionProps {
-  stats?: StatItem[];
-  className?: string;
-}
-
-export const StatsSection: React.FC<StatsSectionProps> = ({
-  stats = DEFAULT_STATS,
+export const StatsSection: React.FC<{ stats?: StatItem[]; className?: string }> = ({
+  stats,
   className = "",
 }) => {
+  const { t } = useLanguage();
+
+  const defaultStats: StatItem[] = [
+    {
+      id: "active-members",
+      value: "86+",
+      label: t("stats.members", "AKTİF ÜYE"),
+    },
+    {
+      id: "working-teams",
+      value: "5+",
+      label: t("stats.teams", "ÇALIŞMA EKİBİ"),
+    },
+    {
+      id: "events",
+      value: "40+",
+      label: t("stats.events", "ETKİNLİK"),
+    },
+    {
+      id: "applications",
+      value: "150+",
+      label: t("stats.applications", "BAŞVURU"),
+    },
+  ];
+
+  const statItems = stats || defaultStats;
+
   return (
     <Section
       padding="none"
@@ -54,7 +53,7 @@ export const StatsSection: React.FC<StatsSectionProps> = ({
       <PageContainer>
         <div className="w-full max-w-6xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 w-full">
-            {stats.map((stat, index) => {
+            {statItems.map((stat, index) => {
               // Responsive delicate border dividers:
               // Index 0: right & bottom on mobile/tablet (2x2), right only on desktop (4x1)
               // Index 1: bottom on mobile/tablet, right on desktop

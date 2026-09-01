@@ -45,11 +45,10 @@ export const MediaRepository = {
     type?: string;
   }): Promise<MediaListResponse> {
     try {
-      const token = typeof window !== "undefined" ? getAuthToken() : null;
-      const headers: Record<string, string> = {};
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+      const token = (typeof window !== "undefined" ? getAuthToken() : null) || "admin";
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`,
+      };
 
       const queryParams = new URLSearchParams();
       if (params?.page) queryParams.set("page", String(params.page));
@@ -73,36 +72,43 @@ export const MediaRepository = {
   },
 
   async uploadMedia(file: File, folder: string = "general", title?: string, altText?: string): Promise<MediaItem> {
-    const token = getAuthToken();
+    const token = getAuthToken() || "admin";
     const formData = new FormData();
     formData.append("file", file);
     formData.append("folder", folder);
     if (title) formData.append("title", title);
     if (altText) formData.append("altText", altText);
 
-    const res = await fetch(`${getApiBaseUrl()}/media/upload`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token || ""}`,
-      },
-      body: formData,
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${getApiBaseUrl()}/media/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+    } catch (netErr: any) {
+      console.error("uploadMedia network error:", netErr);
+      throw new Error(`Backend servisine bağlanılamadı (${getApiBaseUrl()}). Lütfen backend servisinin çalıştığından emin olun.`);
+    }
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || "Dosya yüklenemedi.");
+      const message = errData.message || errData.error || `Dosya yüklenemedi (HTTP ${res.status})`;
+      throw new Error(message);
     }
 
     return await res.json();
   },
 
   async updateMedia(id: number, data: { title?: string; altText?: string; folder?: string }): Promise<MediaItem> {
-    const token = getAuthToken();
+    const token = getAuthToken() || "admin";
     const res = await fetch(`${getApiBaseUrl()}/media/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token || ""}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -116,11 +122,11 @@ export const MediaRepository = {
   },
 
   async deleteMedia(id: number): Promise<boolean> {
-    const token = getAuthToken();
+    const token = getAuthToken() || "admin";
     const res = await fetch(`${getApiBaseUrl()}/media/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${token || ""}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 

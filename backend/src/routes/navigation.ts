@@ -1,5 +1,6 @@
 import { Router } from "express";
 import prisma from "../db.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -29,7 +30,21 @@ router.get("/", async (req, res) => {
     const locationParam = req.query.location ? String(req.query.location).trim().toUpperCase() : undefined;
     const statusParam = req.query.status ? String(req.query.status).trim() : "visible";
 
-    let isAdmin = true; // Geliştirme ortamı için yetki açık
+    let isAdmin = false;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const session = await prisma.session.findUnique({
+        where: { token },
+        include: { user: true },
+      });
+      if (session && session.expiresAt > new Date()) {
+        const role = String(session.user.role).toUpperCase();
+        if (role === "ADMIN" || role === "TEAM_LEADER") {
+          isAdmin = true;
+        }
+      }
+    }
 
     const where: any = {};
 
@@ -62,6 +77,17 @@ router.get("/", async (req, res) => {
       orderBy: [{ displayOrder: "asc" }, { id: "asc" }],
     });
 
+    // Ensure "Üyelerimiz" is permanently converted to "Ekibimiz"
+    allItems.forEach((item) => {
+      if (item.label === "Üyelerimiz") {
+        item.label = "Ekibimiz";
+        prisma.navigationItem.update({
+          where: { id: item.id },
+          data: { label: "Ekibimiz" },
+        }).catch(() => null);
+      }
+    });
+
     // Build hierarchy (Top level items with children)
     const itemMap = new Map<number, any>();
     allItems.forEach((item) => {
@@ -91,10 +117,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-// REORDER NAVIGATION ITEMS (ADMIN) - Korumasız
-router.patch("/reorder", async (req, res) => {
+// REORDER NAVIGATION ITEMS (ADMIN)
+router.patch("/reorder", authenticate, requireAdmin, async (req, res) => {
   try {
-    const { items } = req.body;
+    const { items } = req.body; // Array of { id: number, displayOrder: number }
     if (!Array.isArray(items)) {
       return res.status(400).json({ message: "Geçersiz sıralama verisi." });
     }
@@ -115,12 +141,12 @@ router.patch("/reorder", async (req, res) => {
   }
 });
 
-// CREATE NAVIGATION ITEM (ADMIN) - Korumasız ve Çökme Korumalı
-router.post("/", async (req, res) => {
+// CREATE NAVIGATION ITEM (ADMIN)
+router.post("/", authenticate, requireAdmin, async (req, res) => {
   try {
     const {
       label,
-      targetType = "CUSTOM_URL",
+      targetType = "PAGE",
       href,
       pageId,
       parentId,
@@ -144,35 +170,30 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Geçersiz konum (NAVBAR, FOOTER, BOTH)." });
     }
 
-    let parsedPageId: number | null = null;
-    let parsedParentId: number | null = parentId && !isNaN(Number(parentId)) ? parseInt(String(parentId), 10) : null;
-    let finalHref: string | null = href ? String(href).trim() : null;
+    let parsedPageId: number | null = pageId ? parseInt(String(pageId), 10) : null;
+    let parsedParentId: number | null = parentId ? parseInt(String(parentId), 10) : null;
 
-    // Hedef tipine göre veri temizliği
     if (uppercaseTargetType === "PAGE") {
-      parsedPageId = pageId && !isNaN(Number(pageId)) ? parseInt(String(pageId), 10) : null;
       if (!parsedPageId) {
         return res.status(400).json({ message: "Sayfa bağlantısı (PAGE) için geçerli bir Sayfa seçimi zorunludur." });
       }
       const pageExists = await prisma.page.findUnique({ where: { id: parsedPageId } });
       if (!pageExists) {
-        return res.status(400).json({ message: "Seçilen sayfa veritabanında bulunamadı." });
+        return res.status(400).json({ message: "Seçilen sayfa bulunamadı." });
       }
-      finalHref = null;
     } else if (uppercaseTargetType === "CUSTOM_URL") {
-      parsedPageId = null;
-      if (!finalHref) {
-        finalHref = "#"; // Boş gelirse varsayılan olarak '#' atanır
+      if (!href || !String(href).trim()) {
+        return res.status(400).json({ message: "Özel bağlantı (CUSTOM_URL) için URL adresi zorunludur." });
       }
+      parsedPageId = null;
     } else if (uppercaseTargetType === "DROPDOWN_PARENT") {
       parsedPageId = null;
-      finalHref = null;
     }
 
     if (parsedParentId) {
       const parentExists = await prisma.navigationItem.findUnique({ where: { id: parsedParentId } });
       if (!parentExists) {
-        parsedParentId = null; // Üst menü bulunamazsa sıfırla, çökme yaratma
+        return res.status(400).json({ message: "Seçilen üst menü öğesi bulunamadı." });
       }
     }
 
@@ -180,7 +201,7 @@ router.post("/", async (req, res) => {
       data: {
         label: String(label).trim(),
         targetType: uppercaseTargetType,
-        href: finalHref,
+        href: href ? String(href).trim() : null,
         pageId: parsedPageId,
         parentId: parsedParentId,
         location: uppercaseLocation,
@@ -202,12 +223,12 @@ router.post("/", async (req, res) => {
     res.status(201).json(newItem);
   } catch (error: any) {
     console.error("POST /navigation error:", error);
-    res.status(500).json({ message: error.message || "Menü öğesi oluşturulurken sunucu hatası oluştu." });
+    res.status(500).json({ message: "Menü öğesi oluşturulurken hata oluştu." });
   }
 });
 
-// UPDATE NAVIGATION ITEM (ADMIN) - Korumasız
-router.patch("/:id", async (req, res) => {
+// UPDATE NAVIGATION ITEM (ADMIN)
+router.patch("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);
@@ -292,12 +313,12 @@ router.patch("/:id", async (req, res) => {
     res.json(updatedItem);
   } catch (error: any) {
     console.error("PATCH /navigation/:id error:", error);
-    res.status(500).json({ message: "Menü öğesi güncellenemedi." });
+    res.status(500).json({ message: "Menü öğesi güncellenirken hata oluştu." });
   }
 });
 
-// DELETE NAVIGATION ITEM (ADMIN) - Korumasız
-router.delete("/:id", async (req, res) => {
+// DELETE NAVIGATION ITEM (ADMIN)
+router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);

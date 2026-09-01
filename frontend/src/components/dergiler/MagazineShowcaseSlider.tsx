@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight, Eye, ArrowRight, BookOpen } from "lucide-rea
 import { MagazineIssue } from "./DergilerContent";
 import { Button } from "../ui/Button";
 
+import { useLanguage } from "../../context/LanguageContext";
+
 interface MagazineShowcaseSliderProps {
   magazines: MagazineIssue[];
   onSelectIssue: (issue: MagazineIssue) => void;
@@ -16,9 +18,10 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
   magazines,
   onSelectIssue,
 }) => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Reset active index when magazines list changes (e.g., filter change)
   useEffect(() => {
     setActiveIndex(0);
   }, [magazines]);
@@ -27,10 +30,13 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
     return (
       <div className="rounded-2xl border border-dashed border-[#DDE7E1] bg-white p-12 text-center my-6">
         <BookOpen className="mx-auto h-10 w-10 text-[#5F6773] opacity-40 mb-3" />
-        <p className="text-sm font-semibold text-[#5F6773]">Filtrenize uygun dergi bulunamadı.</p>
+        <p className="text-sm font-semibold text-[#5F6773]">
+          {isEn ? "No magazines found matching your filter." : "Filtrenize uygun dergi bulunamadı."}
+        </p>
       </div>
     );
   }
+
 
   const handleNext = () => {
     setActiveIndex((prev) => (prev + 1) % magazines.length);
@@ -215,7 +221,7 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
                   <div>
                     <div className="flex items-center justify-between text-[10px] text-stone-500 font-semibold mb-0.5 font-sans">
                       <span className="text-[#07452C] font-bold">{mag.issueNumber}</span>
-                      <span>{mag.pages} Sayfa</span>
+                      <span>{mag.pages} {isEn ? "Pages" : "Sayfa"}</span>
                     </div>
                     <h4 className="font-headings text-xs font-bold text-stone-900 line-clamp-1 group-hover:text-[#07452C]">
                       {mag.title}
@@ -239,7 +245,7 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
                       }}
                       className="inline-flex items-center gap-1 text-[11px] font-bold text-[#07452C] hover:text-[#0A5C3A] transition-colors"
                     >
-                      <span>{isActive ? "İncele" : "Seç"}</span>
+                      <span>{isActive ? (isEn ? "Preview" : "İncele") : (isEn ? "Select" : "Seç")}</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -287,7 +293,7 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
               onClick={() => onSelectIssue(currentMagazine)}
               className="rounded-xl shadow-md !bg-[#07452C] hover:!bg-[#0A5C3A] text-white font-bold text-xs px-5 h-10"
             >
-              {currentMagazine.issueNumber} - Dergiyi İncele & Oku
+              {currentMagazine.issueNumber} - {isEn ? "Preview & Read Magazine" : "Dergiyi İncele & Oku"}
             </Button>
           </div>
         )}

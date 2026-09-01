@@ -517,7 +517,7 @@ export default function AdminEtkinliklerPage() {
     { label: "Programlar", value: "programlar" },
     { label: "Teknoloji", value: "teknoloji" },
     { label: "Sanat", value: "sanat" },
-    { label: "Çevre & Sağlık", value: "cevre-saglik" },
+    { label: "Yaşam ve Sürdürülebilirlik", value: "cevre-saglik" },
   ];
 
   return (
@@ -757,7 +757,7 @@ export default function AdminEtkinliklerPage() {
                 <option value="programlar">Programlar & Sosyal</option>
                 <option value="teknoloji">Teknoloji & İnovasyon</option>
                 <option value="sanat">Sanat & Tasarım</option>
-                <option value="cevre-saglik">Çevre & Sağlık</option>
+                <option value="cevre-saglik">Yaşam ve Sürdürülebilirlik</option>
               </select>
             </div>
           </div>

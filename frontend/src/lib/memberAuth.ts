@@ -1,12 +1,8 @@
-"use client";
-
-export type MemberRole = "admin" | "member";
-
 export interface AuthUser {
-  id: string;
+  id?: string;
   email: string;
-  name?: string;
-  role: MemberRole;
+  name: string;
+  role?: string;
   token?: string;
 }
 
@@ -14,49 +10,37 @@ export interface MemberProfile {
   fullName: string;
   email: string;
   phone: string;
-  birthDate?: string;
-  linkedin?: string;
+  birthDate: string;
+  linkedin: string;
   city: string;
-  university?: string;
-  universityType?: string;
+  university: string;
+  universityType: string;
   school: string;
   department: string;
   grade: string;
-  startDate?: string;
-  graduationDate?: string;
-  gpa?: string;
-  experience?: string;
-  interests?: string[];
-  careerPreferences?: string[];
+  startDate: string;
+  graduationDate: string;
+  gpa: string;
+  experience: string;
+  interests: string[];
+  careerPreferences: string[];
   bio: string;
   skills: string;
   avatar?: string;
-  cv?: {
-    name: string;
-    size: number;
-    uploadedAt: string;
-  };
+  cv?: { name: string; size: number; uploadedAt: string } | string | any;
 }
 
-/**
- * SECURITY ARCHITECTURAL NOTICE:
- * Currently, session management (`SESSION_KEY`) uses client-side `localStorage`
- * for local state persistence and simulated auth state in this App Router setup.
- *
- * TODO (Backend Integration Requirement):
- * Upon full database and backend authentication integration (e.g. Prisma + NextAuth / JWT / Iron Session),
- * session tokens MUST be migrated exclusively to HttpOnly, Secure, SameSite cookies
- * rather than client-side `localStorage` to prevent token exposure via XSS vectors.
- */
-const SESSION_KEY = "napsak_auth_user";
-const profileKey = (email: string) => `napsak_member_profile_${email.toLowerCase()}`;
+const SESSION_KEY = "napsak_current_user";
+
+function profileKey(email: string) {
+  return `napsak_profile_${email.trim().toLowerCase()}`;
+}
 
 export function getCurrentUser(): AuthUser | null {
   if (typeof window === "undefined") return null;
-
   try {
     const raw = window.localStorage.getItem(SESSION_KEY);
-    return raw ? (JSON.parse(raw) as AuthUser) : null;
+    return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
   }

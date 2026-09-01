@@ -127,8 +127,11 @@ html.access-reduce-motion *::after {
 html.access-highlight-links a {
   text-decoration: underline !important;
   text-decoration-color: #07452C !important;
-  text-decoration-thickness: 2px !important;
+  text-decoration-thickness: 2.5px !important;
+  text-underline-offset: 3px !important;
   font-weight: 700 !important;
+  background-color: rgba(7, 69, 44, 0.06) !important;
+  border-radius: 2px !important;
 }
 
 /* 8. Enhanced Focus Ring */
@@ -138,5 +141,140 @@ html.access-enhanced-focus *:focus-visible {
   outline-offset: 3px !important;
   box-shadow: 0 0 0 5px rgba(7, 69, 44, 0.3) !important;
 }
+
+/* 9. Page Structure Outlines */
+html.access-page-structure nav,
+html.access-page-structure main,
+html.access-page-structure footer,
+html.access-page-structure header,
+html.access-page-structure section,
+html.access-page-structure article,
+html.access-page-structure aside {
+  outline: 2px dashed #07452C !important;
+  outline-offset: 2px !important;
+}
+html.access-page-structure h1,
+html.access-page-structure h2,
+html.access-page-structure h3 {
+  outline: 1.5px dotted #0A5C3A !important;
+  outline-offset: 2px !important;
+}
+
+/* 10. Hide Decorative Images (keep layout space & accessibility widget icons intact) */
+html.access-hide-images img:not(.access-widget-icon),
+html.access-hide-images [data-accessibility-keep="false"] img,
+html.access-hide-images [style*="background-image"]:not(#accessibility-drawer *):not(#accessibility-trigger *) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Strictly protect accessibility widget controls from any global hiding rules & ensure max z-index */
+#accessibility-trigger {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  z-index: 2147483645 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#accessibility-drawer {
+  z-index: 2147483647 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#accessibility-trigger *,
+#accessibility-drawer * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+
+/* 11. Accessible Interactive Tooltips (Scoped only to elements with explicit data-a11y-tooltip) */
+html.access-show-tooltips [data-a11y-tooltip] {
+  position: relative;
+}
+html.access-show-tooltips [data-a11y-tooltip]:hover::after,
+html.access-show-tooltips [data-a11y-tooltip]:focus-visible::after {
+  content: attr(data-a11y-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0F1115;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 999999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 12. Big UI & Buttons Mode */
+html.access-big-ui button,
+html.access-big-ui a,
+html.access-big-ui input,
+html.access-big-ui select {
+  min-height: 48px !important;
+  font-size: 1.05em !important;
+  padding-left: 1.2rem !important;
+  padding-right: 1.2rem !important;
+}
+
+/* 13. Saturation Modes */
+html.access-sat-high {
+  filter: saturate(200%) !important;
+}
+html.access-sat-low {
+  filter: saturate(50%) !important;
+}
+html.access-sat-mono {
+  filter: grayscale(100%) !important;
+}
+
+/* 14. Text Alignment */
+html.access-text-left p,
+html.access-text-left h1,
+html.access-text-left h2,
+html.access-text-left h3,
+html.access-text-left span {
+  text-align: left !important;
+}
+html.access-text-center p,
+html.access-text-center h1,
+html.access-text-center h2,
+html.access-text-center h3,
+html.access-text-center span {
+  text-align: center !important;
+}
+html.access-text-right p,
+html.access-text-right h1,
+html.access-text-right h2,
+html.access-text-right h3,
+html.access-text-right span {
+  text-align: right !important;
+}
+html.access-text-justify p,
+html.access-text-justify span {
+  text-align: justify !important;
+}
+
+/* 15. Custom Cursor Overrides */
+html.access-cursor-big-black,
+html.access-cursor-big-black * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='%230F1115' stroke='%23ffffff' stroke-width='1.5'%3E%3Cpath d='M3 3l7 18 3-7 7-3L3 3z'/%3E%3C/svg%3E"), auto !important;
+}
+html.access-cursor-big-white,
+html.access-cursor-big-white * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='%23ffffff' stroke='%230F1115' stroke-width='1.5'%3E%3Cpath d='M3 3l7 18 3-7 7-3L3 3z'/%3E%3C/svg%3E"), auto !important;
+}
+
+
+
 
 

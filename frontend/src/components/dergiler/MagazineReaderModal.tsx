@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, BookOpen, Download, Sparkles } from "lucide-react";
 import { MagazineIssue } from "./DergilerContent";
 import { Button } from "../ui/Button";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface MagazineReaderModalProps {
   issue: MagazineIssue | null;
@@ -18,7 +19,10 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
   onClose,
   onDownloadPDF,
 }) => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [currentPage, setCurrentPage] = useState(1);
+
 
   // ESC key & Arrow keys listener
   useEffect(() => {
@@ -105,14 +109,14 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     onClick={() => onDownloadPDF(issue)}
                     className="rounded-xl border-stone-700 text-stone-300 hover:text-white hover:bg-stone-800 text-xs hidden sm:flex"
                   >
-                    PDF İndir
+                    {isEn ? "Download PDF" : "PDF İndir"}
                   </Button>
                 )}
                 <button
                   type="button"
                   onClick={onClose}
                   className="w-9 h-9 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors flex items-center justify-center cursor-pointer"
-                  aria-label="Kapat"
+                  aria-label={isEn ? "Close" : "Kapat"}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -159,28 +163,28 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     <div className="space-y-4 text-stone-800">
                       <div className="flex items-center justify-between border-b border-stone-200 pb-2">
                         <span className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
-                          Sayfa {currentPage - 1}
+                          {isEn ? "Page" : "Sayfa"} {currentPage - 1}
                         </span>
                         <span className="text-[11px] text-stone-500">{issue.issueNumber}</span>
                       </div>
                       <h4 className="font-headings text-base sm:text-lg font-bold text-stone-900 leading-snug">
-                        {issue.articles[(currentPage - 2) % issue.articles.length] || "Öne Çıkan Başlıklar"}
+                        {issue.articles[(currentPage - 2) % issue.articles.length] || (isEn ? "Featured Topics" : "Öne Çıkan Başlıklar")}
                       </h4>
                       <p className="font-sans text-xs sm:text-sm text-stone-600 leading-relaxed font-normal">
                         {issue.summary}
                       </p>
                       <div className="p-3.5 rounded-2xl bg-stone-100/90 border border-stone-200/90 text-xs text-stone-700 space-y-1">
-                        <span className="font-bold text-[#07452C] block">Editör Notu & Analiz:</span>
+                        <span className="font-bold text-[#07452C] block">{isEn ? "Editor Note & Analysis:" : "Editör Notu & Analiz:"}</span>
                         <p className="leading-relaxed font-sans">{issue.editorialNote}</p>
                       </div>
                       <div className="space-y-2 pt-2 border-t border-stone-200">
-                        <span className="text-xs font-bold text-[#07452C]">Katkıda Bulunan Yazarlar:</span>
+                        <span className="text-xs font-bold text-[#07452C]">{isEn ? "Contributing Authors:" : "Katkıda Bulunan Yazarlar:"}</span>
                         <p className="text-xs font-medium text-stone-600">{issue.contributors.join(", ")}</p>
                       </div>
                     </div>
                   )}
                   <span className="text-[10px] font-bold text-stone-400 pt-4 self-start">
-                    Sayfa {currentPage === 1 ? "Kapak" : currentPage - 1}
+                    {isEn ? "Page " : "Sayfa "}{currentPage === 1 ? (isEn ? "Cover" : "Kapak") : currentPage - 1}
                   </span>
                 </div>
 
@@ -190,18 +194,20 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     <div className="flex items-center justify-between border-b border-stone-200 pb-2">
                       <span className="text-[11px] text-stone-500 font-semibold">{issue.category}</span>
                       <span className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
-                        Sayfa {currentPage}
+                        {isEn ? "Page" : "Sayfa"} {currentPage}
                       </span>
                     </div>
                     <h4 className="font-headings text-base sm:text-lg font-bold text-stone-900 leading-snug">
-                      {issue.articles[currentPage % issue.articles.length] || "Topluluk Dosyası"}
+                      {issue.articles[currentPage % issue.articles.length] || (isEn ? "Community File" : "Topluluk Dosyası")}
                     </h4>
                     <p className="font-sans text-xs sm:text-sm text-stone-600 leading-relaxed font-normal">
-                      N'apsak? gençlik topluluğunun hazırladığı dijital içerikler, açık kaynak kültür dosyaları ve genç sanatçıların bağımsız yayın çalışmaları bu sayıda detaylı olarak incelenmektedir.
+                      {isEn
+                        ? "Digital content, open-source culture files, and independent publications prepared by N'apsak? youth community are thoroughly analyzed in this issue."
+                        : "N'apsak? gençlik topluluğunun hazırladığı dijital içerikler, açık kaynak kültür dosyaları ve genç sanatçıların bağımsız yayın çalışmaları bu sayıda detaylı olarak incelenmektedir."}
                     </p>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-stone-200/80 space-y-2 text-xs">
-                      <span className="font-bold text-[#07452C] block">Dergi İçindekiler Rehberi:</span>
+                      <span className="font-bold text-[#07452C] block">{isEn ? "Table of Contents Guide:" : "Dergi İçindekiler Rehberi:"}</span>
                       <ul className="space-y-1 text-stone-600 font-medium">
                         {issue.articles.map((art, idx) => (
                           <li key={idx} className="flex items-center gap-1.5">
@@ -213,11 +219,11 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     </div>
 
                     <div className="pt-2 border-t border-stone-200 text-xs font-medium text-stone-500">
-                      Yayın Tarihi: {issue.publishDate} ({issue.period}) • {issue.pages} Sayfa
+                      {isEn ? "Publish Date: " : "Yayın Tarihi: "}{issue.publishDate} ({issue.period}) • {issue.pages} {isEn ? "Pages" : "Sayfa"}
                     </div>
                   </div>
                   <span className="text-[10px] font-bold text-stone-400 pt-4 self-end">
-                    Sayfa {currentPage}
+                    {isEn ? "Page " : "Sayfa "}{currentPage}
                   </span>
                 </div>
               </div>
@@ -232,13 +238,13 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Önceki Sayfalar</span>
+                <span>{isEn ? "Previous Pages" : "Önceki Sayfalar"}</span>
               </button>
 
               <div className="flex items-center gap-2 text-xs font-bold text-stone-400">
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <span>
-                  Sayfa {currentPage} - {Math.min(totalPages, currentPage + 1)} / {totalPages}
+                  {isEn ? "Page " : "Sayfa "}{currentPage} - {Math.min(totalPages, currentPage + 1)} / {totalPages}
                 </span>
               </div>
 
@@ -248,7 +254,7 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                 disabled={currentPage >= totalPages}
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-300 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-colors cursor-pointer"
               >
-                <span>Sonraki Sayfalar</span>
+                <span>{isEn ? "Next Pages" : "Sonraki Sayfalar"}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>

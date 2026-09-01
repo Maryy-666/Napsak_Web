@@ -9,6 +9,7 @@ import { TEAMS_DATA, TEAM_ICONS, TeamData } from "../../data/teams";
 import { Badge, Button, Card, PageContainer, Section } from "../ui";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -26,8 +27,11 @@ const fadeInUp: Variants = {
 import { TeamsRepository } from "../../lib/teamsStore";
 
 export function TeamsIndexContent() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const [teamsList, setTeamsList] = useState<TeamData[]>(TEAMS_DATA);
   const [selectedTeamId, setSelectedTeamId] = useState<string>(TEAMS_DATA[0].id);
+
 
   React.useEffect(() => {
     TeamsRepository.fetchTeamsFromDB().then((data) => {
@@ -56,19 +60,21 @@ export function TeamsIndexContent() {
             className="text-center max-w-4xl mx-auto space-y-6"
           >
             <Badge variant="brand" size="md" className="mx-auto">
-              N'apsak? Çalışma Ekipleri
+              {isEn ? "N'apsak? Working Teams" : "N'apsak? Çalışma Ekipleri"}
             </Badge>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
-              Fikirlerin projeye, tutkunun <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">
-                üretime dönüştüğü
-              </span>{" "}
-              gençlik alanları.
+              {isEn ? (
+                <>Youth spaces where ideas turn into projects & passion into <span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">production</span>.</>
+              ) : (
+                <>Fikirlerin projeye, tutkunun <br className="hidden sm:inline" /><span className="bg-gradient-to-r from-[#0A5C3A] to-[#128C59] bg-clip-text text-transparent font-black">üretime dönüştüğü</span> gençlik alanları.</>
+              )}
             </h1>
 
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
-              Topluluğumuz bünyesindeki 5 bağımsız çalışma ekibi; sanat, teknoloji, çevre, eğitim ve iletişim alanlarında gençlerin yeteneklerini ortaya çıkarmasına olanak tanır.
+              {isEn
+                ? "Our 5 independent working teams enable youth to unleash their skills across art, technology, environment, education, and communications."
+                : "Topluluğumuz bünyesindeki 5 bağımsız çalışma ekibi; sanat, teknoloji, çevre, eğitim ve iletişim alanlarında gençlerin yeteneklerini ortaya çıkarmasına olanak tanır."}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -79,7 +85,7 @@ export function TeamsIndexContent() {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
                 className="font-bold px-7 h-12 text-sm sm:text-base rounded-xl"
               >
-                Bir Ekibe Katıl
+                {isEn ? "Join a Team" : "Bir Ekibe Katıl"}
               </Button>
               <Button
                 href={ROUTES.HAKKIMIZDA}
@@ -87,7 +93,7 @@ export function TeamsIndexContent() {
                 size="lg"
                 className="font-semibold px-6 h-12 text-sm sm:text-base rounded-xl border-[#EEF0F2]"
               >
-                Topluluğu Tanı
+                {isEn ? "Discover Community" : "Topluluğu Tanı"}
               </Button>
             </div>
           </motion.div>

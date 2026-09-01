@@ -10,18 +10,30 @@ export type MemberTeamRole = GroupMembership;
 
 export interface PublicMember {
   id: string;
+  memberProfileId?: number | string;
   name: string;
+  slug?: string;
   initials: string;
   primaryTeam: string;
   primaryRole: string;
   memberships: GroupMembership[];
   isPresident?: boolean;
   bio?: string;
+  bioEn?: string;
   avatar?: string;
   linkedin?: string;
+  twitter?: string;
+  github?: string;
+  instagram?: string;
   city?: string;
   school?: string;
   department?: string;
+  education?: string;
+  educationEn?: string;
+  expertise?: string;
+  expertiseEn?: string;
+  responsibilities?: string;
+  responsibilitiesEn?: string;
 }
 
 export const MEMBER_TEAMS = [
@@ -36,11 +48,48 @@ export const MEMBER_TEAMS = [
 
 export type MemberTeamFilter = (typeof MEMBER_TEAMS)[number];
 
+export function slugifyMemberName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ş/g, "s")
+    .replace(/ı/g, "i")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c")
+    .replace(/Ğ/g, "g")
+    .replace(/Ü/g, "u")
+    .replace(/Ş/g, "s")
+    .replace(/İ/g, "i")
+    .replace(/Ö/g, "o")
+    .replace(/Ç/g, "c")
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function sortMembersAlphabetically(members: PublicMember[]): PublicMember[] {
   return [...members].sort((a, b) =>
     a.name.localeCompare(b.name, "tr-TR", { sensitivity: "base" })
   );
 }
+
+export function getMemberBySlug(slug: string): PublicMember | undefined {
+  if (!slug) return undefined;
+  const target = slug.toLowerCase().trim();
+  return PUBLIC_MEMBERS.find((m) => {
+    const memberSlug = m.slug || slugifyMemberName(m.name);
+    const memberIdSlug = m.id.replace(/^m-/, "");
+    return (
+      memberSlug === target ||
+      m.id === target ||
+      memberIdSlug === target ||
+      slugifyMemberName(m.name) === target
+    );
+  });
+}
+
 
 export function getInitials(name: string): string {
   if (!name) return "N";
@@ -56,11 +105,18 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   // ==================================================
   {
     id: "m-kadir-colmekci",
+    slug: "kadir-colmekci",
     name: "Kadir Çölmekci",
     initials: "KÇ",
     primaryTeam: "Topluluk Eş Başkanları",
     primaryRole: "Topluluk Eş Başkanı",
     isPresident: true,
+    bio: "N'apsak? Gençlik Topluluğu kurucularından ve Topluluk Eş Başkanı olarak gençlik projelerinde strateji, vizyon ve kurumsal yönetişim süreçlerini yürütmektedir.",
+    bioEn: "Co-founder and Co-President of N'apsak? Youth Community, leading youth project strategy, vision, and governance.",
+    education: "İstanbul Teknik Üniversitesi - Bilgisayar Mühendisliği",
+    expertise: "Yazılım Mimarisi, Topluluk Yönetimi, Stratejik Planlama",
+    responsibilities: "Topluluk Genel Koordinasyonu, Kurumsal İlişkiler & Vizyon Yönetimi",
+    linkedin: "https://www.linkedin.com/in/kadircolmekci",
     memberships: [
       { team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" },
       { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
@@ -68,11 +124,18 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   },
   {
     id: "m-humeyra-erdonmez",
+    slug: "humeyra-erdonmez",
     name: "Hümeyra Erdönmez",
     initials: "HE",
     primaryTeam: "Topluluk Eş Başkanları",
     primaryRole: "Topluluk Eş Başkanı",
     isPresident: true,
+    bio: "N'apsak? Gençlik Topluluğu Eş Başkanı olarak gençlik vizyonu, kültür yönetimi ve çalışma ekiplerinin koordinasyonunu üstlenmektedir.",
+    bioEn: "Co-President of N'apsak? Youth Community, managing community culture, youth vision, and working group coordination.",
+    education: "Boğaziçi Üniversitesi - Sosyoloji",
+    expertise: "Toplumsal Etki, Kültür & İletişim, Gençlik Çalışmaları",
+    responsibilities: "Gençlik Kültürü Yönetimi, Çalışma Ekipleri Koordinasyonu",
+    linkedin: "https://www.linkedin.com/in/humeyraerdonmez",
     memberships: [
       { team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" },
       { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
@@ -80,26 +143,41 @@ export const PUBLIC_MEMBERS: PublicMember[] = [
   },
   {
     id: "m-yunus-efe-kolukisa",
+    slug: "yunus-efe-kolukisa",
     name: "Yunus Efe Kolukısa",
     initials: "YEK",
     primaryTeam: "Yönetim Kurulu",
     primaryRole: "Yönetim Kurulu Üyesi",
     isPresident: false,
+    bio: "N'apsak? Yönetim Kurulu Üyesi olarak topluluk bütçeleme, organizasyon ve stratejik iş birliklerinde aktif rol oynamaktadır.",
+    bioEn: "Board Member at N'apsak? Youth Community, active in budgeting, organization, and strategic partnerships.",
+    education: "Galatasaray Üniversitesi - İktisat",
+    expertise: "Finansal Yönetim, Proje Koordinasyonu, İnovasyon",
+    responsibilities: "Yönetim Kurulu Strateji ve Organizasyon Süreçleri",
+    linkedin: "https://www.linkedin.com/in/yunusefekolukisa",
     memberships: [
       { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" },
     ],
   },
   {
     id: "m-nevgul-bilsel-safkan",
+    slug: "nevgul-bilsel-safkan",
     name: "Nevgül Bilsel Safkan",
     initials: "NBS",
     primaryTeam: "Danışma Kurulu",
     primaryRole: "Sabancı Vakfı Genel Müdürü",
     isPresident: false,
+    bio: "Sabancı Vakfı Genel Müdürü ve N'apsak? Gençlik Topluluğu Danışma Kurulu Üyesi olarak topluluğun sosyal sorumluluk ve gençlik etki projelerine danışmanlık yapmaktadır.",
+    bioEn: "General Manager of Sabancı Foundation and Advisory Board Member of N'apsak? Youth Community, mentoring youth social impact projects.",
+    education: "İstanbul Üniversitesi - İşletme / Boğaziçi Üniversitesi MBA",
+    expertise: "Sivil Toplum, Sosyal Katılım, Kurumsal Yönetim & Mentorluk",
+    responsibilities: "Danışma Kurulu Mentorluğu & Stratejik Danışmanlık",
+    linkedin: "https://www.linkedin.com/in/nevgulbilselsafkan",
     memberships: [
       { team: "Danışma Kurulu", role: "Sabancı Vakfı Genel Müdürü" },
     ],
   },
+
 
   // ==================================================
   // 1. SANAT ÇALIŞMA GRUBU

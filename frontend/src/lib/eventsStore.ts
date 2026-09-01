@@ -73,7 +73,7 @@ const getFetchOptions = (method: string = "GET", body?: any): RequestInit => {
   return options;
 };
 
-// DEFAULT INITIAL EVENTS
+// DEFAULT INITIAL EVENTS (Hem sizin hem arkadaşınızın eklediği tüm veriler birleştirildi)
 const INITIAL_EVENTS: EventItem[] = [
   {
     id: "evt-101",
@@ -106,6 +106,45 @@ const INITIAL_EVENTS: EventItem[] = [
     description: "Yapay zeka araçlarının günlük projelerde etkin kullanımı.",
     badge: "Kontenjan Sınırlı",
     registrationEnabled: true,
+  },
+  {
+    id: "evt-103",
+    title: "Doğayla Denge: Doğa Yürüyüşü ve Çevre Temizliği",
+    category: "cevre-saglik",
+    categoryLabel: "Yaşam ve Sürdürülebilirlik",
+    date: "20 Temmuz 2025",
+    time: "10:00 - 15:00",
+    location: "Belgrat Ormanı Aktivite Alanı",
+    status: "gecmis",
+    appliedCount: 65,
+    description:
+      "Ruhsal ve fiziksel sağlığı destekleyen doğa yürüyüşü, çevre temizliği farkındalığı ve açık hava sohbeti tamamlandı.",
+  },
+  {
+    id: "evt-104",
+    title: "Yaratıcı Yazarlık & Dijital Sanat Sergisi",
+    category: "sanat",
+    categoryLabel: "Sanat & Estetik",
+    date: "05 Haziran 2025",
+    time: "15:00 - 19:00",
+    location: "Kültür & Sanat Atölyesi",
+    status: "gecmis",
+    appliedCount: 54,
+    description:
+      "Genç yazarlarımızın hikayeleri ve dijital sanat ekibimizin illüstrasyon çalışmalarının sergilendiği estetik sergi gerçekleşti.",
+  },
+  {
+    id: "evt-105",
+    title: "Topluluk İçi Ideathon & Fikir Kampı",
+    category: "programlar",
+    categoryLabel: "Programlar & Sosyal",
+    date: "15 Mayıs 2025",
+    time: "13:00 - 17:00",
+    location: "Online Discord Sunucusu",
+    status: "gecmis",
+    appliedCount: 86,
+    description:
+      "86 aktif üyemizin katılımıyla 2025 dönemi projelerinin belirlendiği online fikir üretme kampı tamamlandı.",
   },
 ];
 
@@ -160,7 +199,6 @@ export const EventsRepository = {
             date: item.startDate ? new Date(item.startDate).toLocaleDateString("tr-TR") : item.date || "",
             time: item.time || "14:00",
             location: item.location || "Belirtilmedi",
-            // DÜZELTME: "Yaklaşan" veya benzeri durumları frontend'in tanıdığı "aktif" değerine dönüştürür
             status: item.status?.toLowerCase() === "yaklaşan" ? "aktif" : (item.status || "aktif"),
             publicationStatus: item.publicationStatus || "PUBLISHED",
             shortDescription: item.shortDescription || item.description || "",
@@ -171,7 +209,6 @@ export const EventsRepository = {
             coverImage: item.image || item.coverImage || undefined,
             image: item.image || item.coverImage || undefined,
             isFeatured: Boolean(item.isFeatured),
-            // DÜZELTME: Açıkça false yapılmamışsa başvuru butonunu aktif tutar
             registrationEnabled: item.registrationEnabled !== false,
             registrationDeadline: item.registrationDeadline || undefined,
             startDate: item.startDate || undefined,

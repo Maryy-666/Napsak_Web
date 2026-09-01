@@ -46,12 +46,23 @@ const memberFormSchema = z.object({
   primaryRole: z.string().min(2, "Ekip içi görev/unvan zorunludur."),
   isPresident: z.boolean(),
   bio: z.string().optional(),
+  bioEn: z.string().optional(),
   avatar: z.string().optional(),
   linkedin: z.string().optional(),
+  twitter: z.string().optional(),
+  github: z.string().optional(),
+  instagram: z.string().optional(),
   city: z.string().optional(),
   school: z.string().optional(),
   department: z.string().optional(),
+  education: z.string().optional(),
+  educationEn: z.string().optional(),
+  expertise: z.string().optional(),
+  expertiseEn: z.string().optional(),
+  responsibilities: z.string().optional(),
+  responsibilitiesEn: z.string().optional(),
 });
+
 
 type MemberFormData = z.infer<typeof memberFormSchema>;
 
@@ -182,11 +193,21 @@ export default function AdminUyelerPage() {
       primaryRole: "Uzman",
       isPresident: false,
       bio: "",
+      bioEn: "",
       avatar: "",
       linkedin: "",
-      city: "",
+      twitter: "",
+      github: "",
+      instagram: "",
+      city: "İstanbul",
       school: "",
       department: "",
+      education: "",
+      educationEn: "",
+      expertise: "",
+      expertiseEn: "",
+      responsibilities: "",
+      responsibilitiesEn: "",
     });
     setMembershipsInput([
       {
@@ -209,11 +230,21 @@ export default function AdminUyelerPage() {
       primaryRole: member.primaryRole,
       isPresident: Boolean(member.isPresident),
       bio: member.bio || "",
+      bioEn: member.bioEn || "",
       avatar: member.avatar || "",
       linkedin: member.linkedin || "",
+      twitter: member.twitter || "",
+      github: member.github || "",
+      instagram: member.instagram || "",
       city: member.city || "",
       school: member.school || "",
       department: member.department || "",
+      education: member.education || "",
+      educationEn: member.educationEn || "",
+      expertise: member.expertise || "",
+      expertiseEn: member.expertiseEn || "",
+      responsibilities: member.responsibilities || "",
+      responsibilitiesEn: member.responsibilitiesEn || "",
     });
 
     setMembershipsInput(
@@ -369,7 +400,7 @@ export default function AdminUyelerPage() {
       header: "ÜYE BİLGİSİ",
       accessor: (m: PublicMember) => {
         const isTeamLeader = m.memberships?.some(
-          (mem: any) => mem.isLeader || mem.role?.toLowerCase().includes("sorumlus")
+          (mem: any) => mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"))
         );
 
         return (
@@ -384,8 +415,8 @@ export default function AdminUyelerPage() {
             <div className="flex flex-col text-left">
               <div className="flex items-center gap-1.5 font-bold text-sm">
                 <span>{m.name}</span>
-                {m.isPresident ? (
-                  <span title="Topluluk Eş Başkanı">
+                {m.isPresident || m.name.toLowerCase().includes("yunus efe") ? (
+                  <span title={m.isPresident ? "Topluluk Eş Başkanı" : "Yönetim Kurulu Üyesi"}>
                     <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   </span>
                 ) : isTeamLeader ? (
@@ -419,7 +450,7 @@ export default function AdminUyelerPage() {
         <div className="flex flex-wrap gap-1">
           {m.memberships && m.memberships.length > 0 ? (
             m.memberships.map((mem: any, idx: number) => {
-              const isLd = mem.isLeader || mem.role?.toLowerCase().includes("sorumlus");
+              const isLd = mem.role === "Başkan" || (Boolean(mem.isLeader) && mem.role?.includes("Başkan"));
               return (
                 <span
                   key={idx}
@@ -722,6 +753,113 @@ export default function AdminUyelerPage() {
               />
             </div>
           </div>
+
+          {/* Eğitim & Uzmanlık & Görevler */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Eğitim Bilgisi (TR)
+              </label>
+              <input
+                type="text"
+                value={formData.education || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, education: e.target.value }))}
+                placeholder="Örn: İTÜ Bilgisayar Mühendisliği"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Uzmanlık Alanları (TR)
+              </label>
+              <input
+                type="text"
+                value={formData.expertise || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, expertise: e.target.value }))}
+                placeholder="Örn: Yazılım, Proje Yönetimi"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Topluluk Görevleri (TR)
+              </label>
+              <input
+                type="text"
+                value={formData.responsibilities || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, responsibilities: e.target.value }))}
+                placeholder="Örn: Strateji, Genel Koordinasyon"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+          </div>
+
+          {/* Biyografi (Bio TR) */}
+          <div>
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              Kısa Biyografi / Hakkında (TR)
+            </label>
+            <textarea
+              rows={3}
+              value={formData.bio || ""}
+              onChange={(e) => setFormData((p) => ({ ...p, bio: e.target.value }))}
+              placeholder="Üyenin geçmişi, deneyimi ve topluluktaki rolü hakkında kısa biyografi..."
+              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-sm focus:outline-none focus:border-[#0A5C3A]"
+            />
+          </div>
+
+          {/* Sosyal Medya Bağlantıları (LinkedIn, Twitter, GitHub, Instagram) */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                LinkedIn URL
+              </label>
+              <input
+                type="url"
+                value={formData.linkedin || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, linkedin: e.target.value }))}
+                placeholder="https://linkedin.com/in/..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Twitter / X URL
+              </label>
+              <input
+                type="url"
+                value={formData.twitter || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, twitter: e.target.value }))}
+                placeholder="https://x.com/..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                GitHub URL
+              </label>
+              <input
+                type="url"
+                value={formData.github || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, github: e.target.value }))}
+                placeholder="https://github.com/..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Instagram URL
+              </label>
+              <input
+                type="url"
+                value={formData.instagram || ""}
+                onChange={(e) => setFormData((p) => ({ ...p, instagram: e.target.value }))}
+                placeholder="https://instagram.com/..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 dark:bg-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A]"
+              />
+            </div>
+          </div>
+
 
           {/* ÇOKLU EKİP ÜYELİKLERİ YÖNETİMİ (TeamMembership) */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-4">

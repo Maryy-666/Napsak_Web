@@ -9,22 +9,27 @@ import { Card } from "../ui/Card";
 import { Logo } from "../common/Logo";
 import { PageBackground } from "../common/PageBackground";
 import { ContactForm } from "./ContactForm";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function IletisimContent({ pageData }: { pageData?: any }) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const contactItems = [
     {
       icon: Mail,
-      title: "E-posta",
+      title: isEn ? "Email" : "E-posta",
       value: SITE_CONFIG.contact.email,
       href: `mailto:${SITE_CONFIG.contact.email}`,
     },
     {
       icon: Phone,
-      title: "Topluluk Hattı",
+      title: isEn ? "Community Line" : "Topluluk Hattı",
       value: SITE_CONFIG.contact.phone,
       href: `tel:${SITE_CONFIG.contact.phone.replace(/\s+/g, "")}`,
     },
   ];
+
 
   return (
     <LayoutGroup id="iletisim-layout-group">
@@ -41,18 +46,20 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
           >
             <div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0F1115] font-headings leading-tight mb-3">
-                {pageData?.title ? pageData.title : "İletişim"}
+                {pageData?.title ? pageData.title : isEn ? "Contact Us" : "İletişim"}
               </h1>
               <p className="text-base sm:text-lg text-[#5F6773] font-medium leading-relaxed font-sans max-w-md mb-6">
                 {pageData?.shortDescription
                   ? pageData.shortDescription
+                  : isEn
+                  ? "Reach out directly for questions, suggestions, or collaboration opportunities."
                   : "Soruların, önerilerin veya iş birliklerin için bizimle doğrudan iletişime geçebilirsin."}
               </p>
 
               {/* Real Direct Contact Info Block */}
               <div className="space-y-4 my-6 py-4 border-y border-[#EEF0F2]/80">
                 <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-3">
-                  İletişim Kanalları
+                  {isEn ? "Contact Channels" : "İletişim Kanalları"}
                 </p>
                 {contactItems.map((item, idx) => {
                   const Icon = item.icon;

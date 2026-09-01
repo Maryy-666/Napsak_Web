@@ -262,6 +262,26 @@ router.post("/logout", async (req, res) => {
   }
 });
 
+import nodemailer from "nodemailer";
+
+const getSmtpTransporter = () => {
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const secure = process.env.SMTP_SECURE === "true" || port === 465;
+
+  if (host && user && pass) {
+    return nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: { user, pass },
+    });
+  }
+  return null;
+};
+
 /* =====================================================
    FORGOT PASSWORD
 ===================================================== */
@@ -304,9 +324,7 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
     });
 
     // Gerçek token oluştur.
-    const plainToken = crypto
-      .randomBytes(32)
-      .toString("hex");
+    const plainToken = crypto.randomBytes(32).toString("hex");
 
     // DB'de gerçek token yerine hash sakla.
     const tokenHash = crypto
@@ -314,9 +332,7 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
       .update(plainToken)
       .digest("hex");
 
-    const expiresAt = new Date(
-      Date.now() + PASSWORD_RESET_DURATION
-    );
+    const expiresAt = new Date(Date.now() + PASSWORD_RESET_DURATION);
 
     await prisma.passwordResetToken.create({
       data: {
@@ -327,44 +343,10 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
     });
 
     // Frontend adresi
-    const frontendUrl =
-      process.env.FRONTEND_URL || "http://localhost:3000";
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const resetUrl = `${frontendUrl}/reset-password/${plainToken}`;
 
-    const resetUrl =
-      `${frontendUrl}/reset-password/${plainToken}`;
-
-    /* ---------------------------------------------
-       DEVELOPMENT MODE
-    --------------------------------------------- */
-
-    if (!resend) {
-      console.log(`
-========================================
-PASSWORD RESET - DEVELOPMENT MODE
-========================================
-
-Email:
-${user.email}
-
-Reset URL:
-${resetUrl}
-
-This link expires in 15 minutes.
-
-========================================
-`);
-    }
-
-    /* ---------------------------------------------
-       RESEND
-    --------------------------------------------- */
-
-    if (resend) {
-      const { error } = await resend.emails.send({
-        from: FROM_EMAIL,
-        to: user.email,
-        subject: "Şifrenizi Sıfırlayın | N'apsak?",
-        html: `
+    const emailHtml = `
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -372,93 +354,83 @@ This link expires in 15 minutes.
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Şifrenizi Sıfırlayın | N'apsak?</title>
 </head>
-
-<body style="
-  margin: 0;
-  padding: 40px 16px;
-  background-color: #F8FAFC;
-  font-family: Arial, sans-serif;
-  color: #0F1115;
-">
-
-  <div style="
-    max-width: 520px;
-    margin: 0 auto;
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 16px;
-    padding: 32px;
-  ">
-
-    <h2 style="color: #0A5C3A;">
-      N'apsak?
-    </h2>
-
-    <h3>
-      Şifre Sıfırlama Talebi
-    </h3>
-
-    <p>
-      Hesabınız için bir şifre sıfırlama talebinde bulundunuz.
+<body style="margin: 0; padding: 40px 16px; background-color: #F8FAFC; font-family: Arial, sans-serif; color: #0F1115;">
+  <div style="max-width: 520px; margin: 0 auto; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px;">
+    <h2 style="color: #0A5C3A; margin-top: 0;">N'apsak? Gençlik Topluluğu</h2>
+    <h3 style="color: #0F1115;">Şifre Sıfırlama Talebi</h3>
+    <p style="color: #475569; font-size: 15px; line-height: 1.6;">
+      Hesabınız için bir şifre sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın:
     </p>
-
-    <p>
-      Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın.
-    </p>
-
-    <p>
-      <a
-        href="${resetUrl}"
-        style="
-          display: inline-block;
-          padding: 14px 24px;
-          background: #0A5C3A;
-          color: #FFFFFF;
-          text-decoration: none;
-          border-radius: 10px;
-          font-weight: 600;
-        "
-      >
+    <div style="margin: 28px 0; text-align: center;">
+      <a href="${resetUrl}" style="display: inline-block; padding: 14px 28px; background: #0A5C3A; color: #FFFFFF; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 15px;">
         Şifremi Yenile
       </a>
-    </p>
-
-    <p>
+    </div>
+    <p style="color: #64748B; font-size: 13px;">
       Bu bağlantı 15 dakika içinde geçerliliğini yitirecektir.
     </p>
-
-    <p>
-      Bu talebi siz yapmadıysanız bu e-postayı güvenle
-      göz ardı edebilirsiniz.
+    <p style="color: #94A3B8; font-size: 12px; margin-bottom: 0;">
+      Bu talebi siz yapmadıysanız bu e-postayı güvenle göz ardı edebilirsiniz.
     </p>
-
   </div>
-
 </body>
 </html>
-        `,
-      });
+`;
 
-      if (error) {
-        console.error(
-          "PASSWORD RESET EMAIL ERROR:",
-          error
-        );
+    let emailSent = false;
 
-        // Mail gönderilemese bile development ortamında
-        // linki terminalde göstermek faydalı.
-        if (process.env.NODE_ENV !== "production") {
-          console.log(
-            `[DEV FALLBACK] Reset URL: ${resetUrl}`
-          );
-        }
+    // 1. Try Nodemailer SMTP
+    const smtpTransporter = getSmtpTransporter();
+    if (smtpTransporter) {
+      try {
+        const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || FROM_EMAIL;
+        await smtpTransporter.sendMail({
+          from: fromEmail,
+          to: user.email,
+          subject: "Şifrenizi Sıfırlayın | N'apsak?",
+          html: emailHtml,
+        });
+        emailSent = true;
+        console.log(`✅ [SMTP] Password reset email sent to ${user.email}`);
+      } catch (err) {
+        console.error("❌ [SMTP ERROR]", err);
       }
     }
 
+    // 2. Try Resend
+    if (!emailSent && resend) {
+      try {
+        const { error } = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: user.email,
+          subject: "Şifrenizi Sıfırlayın | N'apsak?",
+          html: emailHtml,
+        });
+        if (!error) {
+          emailSent = true;
+          console.log(`✅ [Resend] Password reset email sent to ${user.email}`);
+        } else {
+          console.error("❌ [Resend ERROR]", error);
+        }
+      } catch (err) {
+        console.error("❌ [Resend ERROR]", err);
+      }
+    }
+
+    console.log(`
+==================================================
+🔑 PASSWORD RESET LINK GENERATED
+Email: ${user.email}
+Reset URL: ${resetUrl}
+Email Sent: ${emailSent ? "YES (Inbox)" : "NO (Console & Direct Link Fallback)"}
+==================================================
+`);
+
     return res.json({
       success: true,
-      message:
-        "Eğer bu email kayıtlıysa şifre sıfırlama bağlantısı gönderildi.",
+      message: "Eğer bu email kayıtlıysa şifre sıfırlama bağlantısı gönderildi.",
+      resetUrl,
+      emailSent,
     });
   } catch (error) {
     console.error("FORGOT PASSWORD ERROR:", error);

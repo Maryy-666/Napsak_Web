@@ -7,23 +7,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, MapPin, Sparkles, ArrowRight, Newspaper } from "lucide-react";
 import { FaaliyetItem } from "./types";
 import { NEWS_DATA } from "../../data/news";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface ActivityDetailModalProps {
   item: FaaliyetItem | null;
   onClose: () => void;
 }
 
-// Faaliyet kartına karşılık gelen haber URL'sini bulan yardımcı
 function getNewsUrlForFaaliyet(item: FaaliyetItem | null): string {
   if (!item) return "/haberler";
-
-  // 1. Doğrudan id veya slug eşleşmesi
   const directMatch = NEWS_DATA.find(
     (n) => n.id === item.id || n.slug === item.id
   );
   if (directMatch) return `/haberler/${directMatch.slug}`;
 
-  // 2. Başlık benzerliği eşleşmesi
   const titleLower = (item.title || "").toLowerCase();
   const matchByTitle = NEWS_DATA.find((n) => {
     const nTitleLower = n.title.toLowerCase();
@@ -34,7 +31,6 @@ function getNewsUrlForFaaliyet(item: FaaliyetItem | null): string {
   });
 
   if (matchByTitle) return `/haberler/${matchByTitle.slug}`;
-
   return "/haberler";
 }
 
@@ -42,7 +38,9 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
   item,
   onClose,
 }) => {
-  // ESC Key handler to close modal
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -63,20 +61,19 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
     };
   }, [item, onClose]);
 
+  if (!item) return null;
+
   const newsUrl = getNewsUrlForFaaliyet(item);
 
   return (
     <AnimatePresence>
       {item && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 select-none">
-          {/* Backdrop Blur Overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs select-none">
+          {/* Ambient Modal Backdrop Click Handler */}
+          <div
+            className="absolute inset-0 cursor-pointer"
             onClick={onClose}
-            className="absolute inset-0 bg-stone-900/60 backdrop-blur-md"
+            aria-label={isEn ? "Close dialog" : "Pencereyi kapat"}
           />
 
           {/* Expanded Polaroid Detail Modal Box */}
@@ -92,7 +89,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
               type="button"
               onClick={onClose}
               className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/80 hover:bg-stone-200 text-stone-600 transition-colors shadow-sm cursor-pointer"
-              aria-label="Kapat"
+              aria-label={isEn ? "Close" : "Kapat"}
             >
               <X className="w-5 h-5" />
             </button>
@@ -132,7 +129,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full border border-stone-200/80 shadow-2xs font-sans">
                   <MapPin className="w-3.5 h-3.5 text-[#2A9D8F]" />
-                  <span>N'apsak? Topluluk Atölyesi</span>
+                  <span>{isEn ? "N'apsak? Community Workshop" : "N'apsak? Topluluk Atölyesi"}</span>
                 </div>
               </div>
 
@@ -147,7 +144,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
             {/* Modal Footer Actions */}
             <div className="mt-5 pt-3.5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs font-medium text-stone-500 font-sans flex items-center gap-1.5">
-                📸 <span>N'apsak? Anı Panosu Kaydı</span>
+                📸 <span>{isEn ? "N'apsak? Memory Board Entry" : "N'apsak? Anı Panosu Kaydı"}</span>
               </span>
 
               <div className="flex items-center gap-2.5">
@@ -157,7 +154,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
                   className="bg-[#07452C] hover:bg-[#0A5C3A] text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm font-sans inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <Newspaper className="w-3.5 h-3.5" />
-                  <span>İlgili Habere Git</span>
+                  <span>{isEn ? "View Related News" : "İlgili Habere Git"}</span>
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                 </Link>
 
@@ -166,7 +163,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
                   onClick={onClose}
                   className="bg-stone-200/80 hover:bg-stone-300/80 text-stone-700 font-bold text-xs px-4 py-2.5 rounded-xl transition-all font-sans cursor-pointer"
                 >
-                  Kapat
+                  {isEn ? "Close" : "Kapat"}
                 </button>
               </div>
             </div>

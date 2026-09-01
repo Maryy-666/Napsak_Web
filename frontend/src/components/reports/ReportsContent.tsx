@@ -17,6 +17,8 @@ import { PageBackground } from "../common/PageBackground";
 import { ReportCoverPreview } from "./ReportCoverPreview";
 import { downloadReportPdf } from "../../lib/pdfExporter";
 import { ReportsRepository } from "../../lib/reportsStore";
+import { useLanguage } from "../../context/LanguageContext";
+
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 14 },
@@ -154,7 +156,7 @@ const REPORTS: Report[] = [
   },
 ];
 
-const CATEGORIES = [
+const CATEGORIES_TR = [
   "Tümü",
   "Gençlik & Katılım",
   "Çalışma Ekipleri",
@@ -162,8 +164,19 @@ const CATEGORIES = [
   "Saha Araştırmaları",
 ];
 
+const CATEGORIES_EN = [
+  "All",
+  "Youth & Participation",
+  "Working Teams",
+  "Events & Meetups",
+  "Field Research",
+];
+
 export function ReportsContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [reportsList, setReportsList] = useState<Report[]>(REPORTS);
+
   const [activeCategory, setActiveCategory] = useState<string>("Tümü");
   const [query, setQuery] = useState<string>("");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
@@ -295,15 +308,17 @@ export function ReportsContent() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#07452C]/10 border border-[#07452C]/20 text-[#07452C] font-extrabold text-xs tracking-wide uppercase shadow-2xs">
               <BarChart3 className="w-3.5 h-3.5 text-[#07452C]" />
-              <span>N'apsak? Dijital Rapor & Yayın Arşivi</span>
+              <span>{isEn ? "N'apsak? Digital Reports & Publication Archive" : "N'apsak? Dijital Rapor & Yayın Arşivi"}</span>
             </div>
 
             <h1 className="font-headings text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] leading-tight">
-              Gençlik Gözlemleri & Araştırma Raporları
+              {isEn ? "Youth Observations & Research Reports" : "Gençlik Gözlemleri & Araştırma Raporları"}
             </h1>
 
             <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm font-medium leading-relaxed text-[#5F6773]">
-              Saha deneyimlerimizi, anket verilerini ve gençlik katılım trendlerini kurumsal araştırma yayınlarımızla arşivliyoruz.
+              {isEn
+                ? "We archive our field experiences, survey data, and youth participation trends with institutional research publications."
+                : "Saha deneyimlerimizi, anket verilerini ve gençlik katılım trendlerini kurumsal araştırma yayınlarımızla arşivliyoruz."}
             </p>
           </motion.div>
         </PageContainer>
@@ -317,7 +332,7 @@ export function ReportsContent() {
             {/* Category Filter Pills */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
               <Filter className="h-4 w-4 shrink-0 text-[#07452C] mr-1" />
-              {CATEGORIES.map((category) => (
+              {CATEGORIES_TR.map((category, idx) => (
                 <button
                   key={category}
                   type="button"
@@ -328,7 +343,7 @@ export function ReportsContent() {
                       : "border-[#E5E7EB] bg-[#F8FAFC] text-[#4B5563] hover:border-[#07452C]/35 hover:bg-white hover:text-[#0F1115]"
                   }`}
                 >
-                  {category}
+                  {isEn ? CATEGORIES_EN[idx] : category}
                 </button>
               ))}
             </div>
@@ -339,9 +354,10 @@ export function ReportsContent() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Rapor veya konu ara..."
+                placeholder={isEn ? "Search reports or topics..." : "Rapor veya konu ara..."}
                 className="h-9 w-full rounded-xl border border-[#E5E7EB] bg-white pl-8 pr-8 text-xs font-medium text-[#0F1115] outline-none transition placeholder:text-[#9FA6B2] focus:border-[#07452C] focus:ring-2 focus:ring-[#07452C]/10 shadow-2xs"
               />
+
               {query && (
                 <button
                   type="button"

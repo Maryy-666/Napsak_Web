@@ -16,7 +16,12 @@ import {
   StickerLightbulb,
 } from "./BoardStickers";
 
+import { useLanguage } from "../../context/LanguageContext";
+
 export const VisionBoard: React.FC = () => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [adminItems, setAdminItems] = useState<AdminFaaliyetItem[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<FaaliyetItem | null>(null);
@@ -68,7 +73,6 @@ export const VisionBoard: React.FC = () => {
       "sage",
     ];
 
-    // Alternate attachment: Even cards get Pin, Odd cards get Tape (Never both!)
     const isPin = index % 2 === 0;
 
     return {
@@ -77,7 +81,7 @@ export const VisionBoard: React.FC = () => {
       description: adminItem.summary,
       memoryCaption: adminItem.summary,
       category: cat,
-      categoryLabel: adminItem.category || "Topluluk",
+      categoryLabel: adminItem.category || (isEn ? "Community" : "Topluluk"),
       date: adminItem.date || "2025",
       iconName:
         cat === "teknoloji"
@@ -94,18 +98,15 @@ export const VisionBoard: React.FC = () => {
     };
   });
 
-  // Filter activities based on active filter button
   const filteredActivities = mappedActivities.filter((act) => {
     if (activeFilter === "all") return true;
     return act.category === activeFilter;
   });
 
-  // DYNAMIC BOARD HEIGHT CALCULATION BASED ONLY ON ACTIVE ACTIVITIES:
   const activeCount = filteredActivities.length;
   const totalRows = Math.max(1, Math.ceil(activeCount / 3));
   const desktopCanvasHeight = totalRows * 285 + 40;
 
-  // Render ONLY active activity slots with generous margins
   const colLefts = ["80px", "490px", "890px"];
   const boardSlots: BoardSlot[] = filteredActivities.map((act, idx) => {
     const row = Math.floor(idx / 3);
@@ -132,17 +133,17 @@ export const VisionBoard: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#07452C]" />
           <h2 className="text-sm sm:text-base font-bold text-stone-800 font-headings">
-            Faaliyet & Anı Panosu
+            {isEn ? "Activities & Memory Board" : "Faaliyet & Anı Panosu"}
           </h2>
         </div>
 
         {/* Right Side Filter Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           {[
-            { id: "all", label: "Tüm Panolar" },
-            { id: "atolye", label: "Atölye & Tasarım" },
-            { id: "teknoloji", label: "Yazılım & Kampüs" },
-            { id: "sosyal", label: "Sosyal Etki" },
+            { id: "all", label: isEn ? "All Boards" : "Tüm Panolar" },
+            { id: "atolye", label: isEn ? "Workshop & Design" : "Atölye & Tasarım" },
+            { id: "teknoloji", label: isEn ? "Software & Campus" : "Yazılım & Kampüs" },
+            { id: "sosyal", label: isEn ? "Social Impact" : "Sosyal Etki" },
           ].map((btn) => (
             <button
               key={btn.id}

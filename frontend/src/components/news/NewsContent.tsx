@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight, Calendar, Newspaper, Search, Sparkles } from "lucide-react";
 import { NewsRepository } from "../../lib/newsStore";
 import { Badge, PageContainer, Section } from "../ui";
+import { useLanguage } from "../../context/LanguageContext";
 
 type NewsCard = {
   id: string;
@@ -30,6 +31,9 @@ const mapNewsItem = (item: any): NewsCard => ({
 });
 
 export function NewsContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
   const [newsItems, setNewsItems] = useState<NewsCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,14 +64,15 @@ export function NewsContent() {
             size="md"
             className="!bg-[#0A5C3A]/10 !text-[#0A5C3A] !border-[#0A5C3A]/20"
           >
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> N'apsak? Naptık!
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {isEn ? "N'apsak? Latest Updates!" : "N'apsak? Naptık!"}
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight">
-            Haberler & Duyurular
+            {isEn ? "News & Announcements" : "Haberler & Duyurular"}
           </h1>
           <p className="text-base sm:text-lg font-sans text-[#5F6773] max-w-2xl">
-            Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan
-            hikayeleri.
+            {isEn
+              ? "The latest workshops, events, collaborations, and impactful stories from our community."
+              : "Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan hikayeleri."}
           </p>
         </div>
 
@@ -78,7 +83,7 @@ export function NewsContent() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Haber veya duyuru ara..."
+              placeholder={isEn ? "Search news or announcements..." : "Haber veya duyuru ara..."}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#EEF0F2] bg-white text-xs font-medium outline-none focus:border-[#0A5C3A]"
             />
           </div>
@@ -93,7 +98,7 @@ export function NewsContent() {
                   : "bg-white border border-[#EEF0F2] text-[#5F6773] hover:bg-slate-50"
               }`}
             >
-              Tümü
+              {isEn ? "All" : "Tümü"}
             </button>
             {categories.map((category) => (
               <button
@@ -114,11 +119,11 @@ export function NewsContent() {
 
         {loading ? (
           <div className="py-16 text-center text-slate-500 text-sm font-medium">
-            Haberler yükleniyor...
+            {isEn ? "Loading news..." : "Haberler yükleniyor..."}
           </div>
         ) : filteredNews.length === 0 ? (
           <div className="py-16 text-center text-slate-500 text-sm font-medium">
-            Yayında haber bulunmuyor.
+            {isEn ? "No news published yet." : "Yayında haber bulunmuyor."}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,7 +163,7 @@ export function NewsContent() {
 
                   <div className="pt-3 border-t border-[#EEF0F2] flex items-center justify-between">
                     <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0A5C3A] group-hover:text-[#084A2F]">
-                      <span>Oku</span>
+                      <span>{isEn ? "Read Article" : "Oku"}</span>
                       <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                     </div>
                     <span className="w-7 h-7 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center">
@@ -170,6 +175,7 @@ export function NewsContent() {
             ))}
           </div>
         )}
+
       </PageContainer>
     </Section>
   );

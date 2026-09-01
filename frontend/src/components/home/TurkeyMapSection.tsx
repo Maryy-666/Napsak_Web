@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -8,6 +8,7 @@ import {
   Marker,
 } from "react-simple-maps";
 import { MapPin, Sprout, Heart } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
 
 const geoUrl =
   "https://gist.githubusercontent.com/mebaysan/9be56dd1ca5659c0ff7ea5e2b5cf6479/raw/turkey-geojson.json";
@@ -38,6 +39,12 @@ const CITIES: CityItem[] = [
 
 export function TurkeyMapSection() {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <section
@@ -55,28 +62,33 @@ export function TurkeyMapSection() {
           {/* Top Pill Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#0A5C3A]/25 text-[#07452C] font-semibold text-xs sm:text-sm shadow-xs">
             <MapPin className="w-4 h-4 text-[#0A5C3A]" />
-            <span>Topluluk Haritası</span>
+            <span>{t("map.badge", "Topluluk Haritası")}</span>
           </div>
 
           {/* Main Title */}
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#07452C] font-headings">
-            Biz Her Yerdeyiz
+            {t("map.title", "Biz Her Yerdeyiz")}
           </h2>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-base lg:text-lg text-[#5F6773] font-sans font-medium max-w-xl mx-auto leading-relaxed">
-            Farklı şehirlerden gençleri bir araya getiriyor, birlikte üretmenin ve gelişmenin gücünü büyütüyoruz.
+            {t(
+              "map.subtitle",
+              "Farklı şehirlerden gençleri bir araya getiriyor, birlikte üretmenin ve gelişmenin gücünü büyütüyoruz."
+            )}
           </p>
         </div>
 
+
         {/* Turkey Map Centered Container */}
-        <div className="my-4 sm:my-8 w-full max-w-5xl mx-auto flex justify-center items-center">
-          <ComposableMap
-            projection="geoMercator"
-            projectionConfig={{
-              center: [35.35, 38.95],
-              scale: 2800,
-            }}
+        <div className="my-4 sm:my-8 w-full max-w-5xl mx-auto flex justify-center items-center min-h-[440px]">
+          {isMounted && (
+            <ComposableMap
+              projection="geoMercator"
+              projectionConfig={{
+                center: [35.35, 38.95],
+                scale: 2800,
+              }}
             width={960}
             height={440}
             style={{ width: "100%", height: "auto" }}
@@ -252,6 +264,7 @@ export function TurkeyMapSection() {
               );
             })}
           </ComposableMap>
+          )}
         </div>
 
         {/* Bottom Callout Banner Card */}

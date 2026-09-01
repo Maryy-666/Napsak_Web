@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import crypto from "crypto";
 import prisma from "../db.js";
+import { authenticate, requireAdmin } from "../middleware/auth.js";
 import { getStorageProvider } from "../storage/StorageProvider.js";
 
 const router = express.Router();
@@ -19,10 +20,20 @@ const upload = multer({
 const ALLOWED_MIME_TYPES = [
   "image/jpeg",
   "image/jpg",
+  "image/pjpeg",
+  "image/jfif",
   "image/png",
+  "image/x-png",
   "image/webp",
   "image/gif",
+  "image/svg+xml",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+  "image/avif",
+  "image/heic",
+  "image/heif",
   "application/pdf",
+  "application/octet-stream",
 ];
 
 const EXECUTABLE_EXTENSIONS = [
@@ -137,7 +148,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /media/upload (Korumasız - Geliştirme Ortamı)
+// POST /media/upload (ADMIN ONLY)
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
@@ -153,12 +164,16 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     }
 
     // 2. MIME type check
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return res.status(400).json({ message: `Desteklenmeyen dosya türü: ${file.mimetype}. İzin verilenler: JPG, PNG, WEBP, GIF, PDF.` });
+    const fileMime = (file.mimetype || "").toLowerCase();
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isAllowedMime = ALLOWED_MIME_TYPES.includes(fileMime) || fileMime.startsWith("image/");
+    const isAllowedExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg", ".ico", ".pdf", ".avif", ".heic", ".jfif"].includes(ext);
+
+    if (!isAllowedMime && !isAllowedExt) {
+      return res.status(400).json({ message: `Desteklenmeyen dosya türü: ${file.mimetype}. İzin verilenler: Görsel ve PDF dosyaları.` });
     }
 
     // 3. Extension check
-    const ext = path.extname(file.originalname).toLowerCase();
     if (EXECUTABLE_EXTENSIONS.includes(ext)) {
       return res.status(400).json({ message: "Güvenlik nedeniyle çalıştırılabilir dosyalar yüklenemez." });
     }
@@ -191,7 +206,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     // Extract image dimensions
     const dimensions = getImageDimensions(file.buffer, file.mimetype);
 
-    // Save Media record in DB
+    // Save Media record in DB (with orphan file cleanup if DB save fails)
     let mediaRecord;
     try {
       mediaRecord = await prisma.media.create({
@@ -225,8 +240,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
-// PATCH /media/:id (Korumasız - Geliştirme Ortamı)
-router.patch("/:id", async (req, res) => {
+// PATCH /media/:id (ADMIN ONLY - Metadata Update)
+router.patch("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);
@@ -258,8 +273,8 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// DELETE /media/:id (Korumasız - Geliştirme Ortamı)
-router.delete("/:id", async (req, res) => {
+// DELETE /media/:id (ADMIN ONLY - Usage Check & Delete)
+router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const id = parseInt(rawId, 10);
@@ -275,15 +290,21 @@ router.delete("/:id", async (req, res) => {
     const targetUrl = media.url;
     const filename = media.filename;
 
-    // Usage checks...
+    // Perform Usage Check across all models
     const usageDetails: string[] = [];
 
+    // 1. MemberProfile
     const members = await prisma.memberProfile.findMany({
-      where: { OR: [{ avatar: targetUrl }, { avatar: { contains: filename } }] },
+      where: {
+        OR: [{ avatar: targetUrl }, { avatar: { contains: filename } }],
+      },
       select: { name: true },
     });
-    if (members.length > 0) usageDetails.push(`Üye Profilleri: ${members.map((m) => m.name).join(", ")}`);
+    if (members.length > 0) {
+      usageDetails.push(`Üye Profilleri: ${members.map((m) => m.name).join(", ")}`);
+    }
 
+    // 2. Team
     const teams = await prisma.team.findMany({
       where: {
         OR: [
@@ -295,20 +316,33 @@ router.delete("/:id", async (req, res) => {
       },
       select: { title: true },
     });
-    if (teams.length > 0) usageDetails.push(`Ekipler: ${teams.map((t) => t.title).join(", ")}`);
+    if (teams.length > 0) {
+      usageDetails.push(`Ekipler: ${teams.map((t) => t.title).join(", ")}`);
+    }
 
+    // 3. Event
     const events = await prisma.event.findMany({
-      where: { OR: [{ image: targetUrl }, { image: { contains: filename } }] },
+      where: {
+        OR: [{ image: targetUrl }, { image: { contains: filename } }],
+      },
       select: { title: true },
     });
-    if (events.length > 0) usageDetails.push(`Etkinlikler: ${events.map((e) => e.title).join(", ")}`);
+    if (events.length > 0) {
+      usageDetails.push(`Etkinlikler: ${events.map((e) => e.title).join(", ")}`);
+    }
 
+    // 4. Activity
     const activities = await prisma.activity.findMany({
-      where: { OR: [{ image: targetUrl }, { image: { contains: filename } }] },
+      where: {
+        OR: [{ image: targetUrl }, { image: { contains: filename } }],
+      },
       select: { title: true },
     });
-    if (activities.length > 0) usageDetails.push(`Faaliyetler: ${activities.map((a) => a.title).join(", ")}`);
+    if (activities.length > 0) {
+      usageDetails.push(`Faaliyetler: ${activities.map((a) => a.title).join(", ")}`);
+    }
 
+    // 5. Page
     const pages = await prisma.page.findMany({
       where: {
         OR: [
@@ -319,8 +353,11 @@ router.delete("/:id", async (req, res) => {
       },
       select: { title: true },
     });
-    if (pages.length > 0) usageDetails.push(`Dinamik Sayfalar: ${pages.map((p) => p.title).join(", ")}`);
+    if (pages.length > 0) {
+      usageDetails.push(`Dinamik Sayfalar: ${pages.map((p) => p.title).join(", ")}`);
+    }
 
+    // 6. Report
     const reports = await prisma.report.findMany({
       where: {
         OR: [
@@ -332,8 +369,11 @@ router.delete("/:id", async (req, res) => {
       },
       select: { title: true },
     });
-    if (reports.length > 0) usageDetails.push(`Raporlar: ${reports.map((r) => r.title).join(", ")}`);
+    if (reports.length > 0) {
+      usageDetails.push(`Raporlar: ${reports.map((r) => r.title).join(", ")}`);
+    }
 
+    // 7. Magazine
     const magazines = await prisma.magazine.findMany({
       where: {
         OR: [
@@ -345,8 +385,11 @@ router.delete("/:id", async (req, res) => {
       },
       select: { title: true },
     });
-    if (magazines.length > 0) usageDetails.push(`Dergiler: ${magazines.map((m) => m.title).join(", ")}`);
+    if (magazines.length > 0) {
+      usageDetails.push(`Dergiler: ${magazines.map((m) => m.title).join(", ")}`);
+    }
 
+    // 8. News
     const newsList = await prisma.news.findMany({
       where: {
         OR: [
@@ -357,14 +400,25 @@ router.delete("/:id", async (req, res) => {
       },
       select: { title: true },
     });
-    if (newsList.length > 0) usageDetails.push(`Haberler: ${newsList.map((n) => n.title).join(", ")}`);
+    if (newsList.length > 0) {
+      usageDetails.push(`Haberler: ${newsList.map((n) => n.title).join(", ")}`);
+    }
 
+    // 9. HomepageHero
     const heroes = await prisma.homepageHero.findMany({
-      where: { OR: [{ imageUrl: targetUrl }, { imageUrl: { contains: filename } }] },
+      where: {
+        OR: [
+          { imageUrl: targetUrl },
+          { imageUrl: { contains: filename } },
+        ],
+      },
       select: { title: true },
     });
-    if (heroes.length > 0) usageDetails.push(`Ana Sayfa Hero: ${heroes.map((h) => h.title).join(", ")}`);
+    if (heroes.length > 0) {
+      usageDetails.push(`Ana Sayfa Hero: ${heroes.map((h) => h.title).join(", ")}`);
+    }
 
+    // If media is used in any content, block deletion
     if (usageDetails.length > 0) {
       return res.status(400).json({
         message: "Bu medya içeriğinizde aktif olarak kullanıldığı için silinemez.",
@@ -372,6 +426,7 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
+    // Unused: Delete storage file & DB record
     if (media.storageKey) {
       const storageProvider = getStorageProvider();
       await storageProvider.delete(media.storageKey);

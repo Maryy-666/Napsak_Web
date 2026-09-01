@@ -1,12 +1,12 @@
 import React from "react";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Navbar } from "../../../components/common/Navbar";
 import { Footer } from "../../../components/common/Footer";
 import { PageContainer, Section } from "../../../components/ui";
 import { InnerPageBackground } from "../../../components/common/InnerPageBackground";
 import { PagesRepository } from "../../../lib/pagesStore";
-import { ArrowLeft, Sparkles, Calendar, Clock } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 interface DynamicPageProps {
@@ -16,6 +16,22 @@ interface DynamicPageProps {
 }
 
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
+  if (params.slug === "hakkimizda") {
+    return {
+      title: "Hakkımızda | N'apsak? Gençlik Topluluğu",
+    };
+  }
+  if (params.slug === "katilim") {
+    return {
+      title: "Katılım | N'apsak? Gençlik Topluluğu",
+    };
+  }
+  if (params.slug === "iletisim") {
+    return {
+      title: "İletişim | N'apsak? Gençlik Topluluğu",
+    };
+  }
+
   const page = await PagesRepository.fetchPageBySlugFromDB(params.slug);
 
   if (!page || page.publicationStatus !== "PUBLISHED") {
@@ -40,6 +56,40 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
 }
 
 export default async function DynamicSlugPage({ params }: DynamicPageProps) {
+  if (params.slug === "hakkimizda") {
+    redirect("/hakkimizda");
+  }
+  if (params.slug === "katilim") {
+    redirect("/katilim");
+  }
+  if (params.slug === "iletisim") {
+    redirect("/iletisim");
+  }
+  if (params.slug === "sss") {
+    redirect("/sss");
+  }
+  if (params.slug === "uyeler") {
+    redirect("/uyeler");
+  }
+  if (params.slug === "ekipler") {
+    redirect("/ekipler");
+  }
+  if (params.slug === "faaliyetler") {
+    redirect("/faaliyetler");
+  }
+  if (params.slug === "etkinlikler") {
+    redirect("/etkinlikler");
+  }
+  if (params.slug === "dergiler") {
+    redirect("/dergiler");
+  }
+  if (params.slug === "haberler") {
+    redirect("/haberler");
+  }
+  if (params.slug === "raporlar") {
+    redirect("/raporlar");
+  }
+
   const page = await PagesRepository.fetchPageBySlugFromDB(params.slug);
 
   if (!page || page.publicationStatus !== "PUBLISHED") {
@@ -72,12 +122,12 @@ export default async function DynamicSlugPage({ params }: DynamicPageProps) {
                   <span>N'APSAK? BİLGİ SAYFASI</span>
                 </div>
 
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight leading-[1.15]">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings">
                   {page.title}
                 </h1>
 
                 {page.shortDescription && (
-                  <p className="text-lg sm:text-xl text-[#5F6773] font-sans leading-relaxed max-w-3xl">
+                  <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed max-w-3xl font-medium">
                     {page.shortDescription}
                   </p>
                 )}
@@ -85,42 +135,19 @@ export default async function DynamicSlugPage({ params }: DynamicPageProps) {
             </PageContainer>
           </Section>
 
-          {/* Page Content Body */}
-          <Section padding="lg" background="transparent" className="py-12">
-            <PageContainer className="max-w-5xl">
-              <div className="bg-white rounded-[28px] border border-[#EEF0F2] p-8 sm:p-12 shadow-sm text-left space-y-6">
-                {paragraphs.map((p, idx) => {
-                  const trimmed = p.trim();
-                  if (!trimmed) return null;
-
-                  if (trimmed.startsWith("# ")) {
-                    return (
-                      <h1 key={idx} className="text-2xl sm:text-3xl font-extrabold font-headings text-[#0F1115] pt-4 pb-2 border-b border-[#EEF0F2]">
-                        {trimmed.replace("# ", "")}
-                      </h1>
-                    );
-                  }
-                  if (trimmed.startsWith("## ")) {
-                    return (
-                      <h2 key={idx} className="text-xl sm:text-2xl font-bold font-headings text-[#0F1115] pt-3 pb-1">
-                        {trimmed.replace("## ", "")}
-                      </h2>
-                    );
-                  }
-                  if (trimmed.startsWith("### ")) {
-                    return (
-                      <h3 key={idx} className="text-lg font-bold font-headings text-[#0A5C3A] pt-2">
-                        {trimmed.replace("### ", "")}
-                      </h3>
-                    );
-                  }
-
-                  return (
-                    <p key={idx} className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed">
-                      {trimmed}
+          {/* Main Body Content */}
+          <Section padding="lg" background="transparent" className="py-12 flex-1">
+            <PageContainer className="max-w-4xl">
+              <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#EEF0F2] shadow-sm space-y-6 text-left">
+                {paragraphs.length > 0 ? (
+                  paragraphs.map((para, idx) => (
+                    <p key={idx} className="text-[#0F1115] text-base leading-relaxed font-sans font-normal whitespace-pre-line">
+                      {para}
                     </p>
-                  );
-                })}
+                  ))
+                ) : (
+                  <p className="text-slate-500 italic text-center py-10">Bu sayfa için henüz içerik girilmemiştir.</p>
+                )}
               </div>
             </PageContainer>
           </Section>

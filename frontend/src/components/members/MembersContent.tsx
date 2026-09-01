@@ -18,15 +18,15 @@ import {
 import {
   PUBLIC_MEMBERS,
   MEMBER_TEAMS,
-  MemberTeamFilter,
   PublicMember,
   sortMembersAlphabetically,
 } from "../../data/members";
-import { PublicMemberCard, PublicMemberPlaceholderCard } from "./PublicMemberCard";
+import { PublicMemberCard } from "./PublicMemberCard";
 import { PublicMemberModal } from "./PublicMemberModal";
 import { PageContainer, Section } from "../ui";
 import { PageBackground } from "../common/PageBackground";
 import { MembersRepository } from "../../lib/membersStore";
+import { useLanguage } from "../../context/LanguageContext";
 
 function getTeamIconComponent(team: string) {
   const t = team.toLowerCase();
@@ -41,21 +41,26 @@ function getTeamIconComponent(team: string) {
 }
 
 export function MembersContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [membersList, setMembersList] = useState<PublicMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>("Tümü");
   const [selectedMember, setSelectedMember] = useState<PublicMember | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   useEffect(() => {
     MembersRepository.fetchMembersFromDB().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
+      if (Array.isArray(data)) {
         setMembersList(data);
       }
+      setHasLoaded(true);
     });
   }, []);
 
-  const activeMembers = membersList.length > 0 ? membersList : PUBLIC_MEMBERS;
+  const activeMembers = hasLoaded ? membersList : (membersList.length > 0 ? membersList : PUBLIC_MEMBERS);
 
   // Filter and sort members based on selected filter and search query
   const displayedMembers = useMemo(() => {
@@ -95,13 +100,6 @@ export function MembersContent() {
     return sortMembersAlphabetically(filtered);
   }, [activeMembers, selectedTeamFilter, searchQuery]);
 
-  // Compute placeholder count for Yönetim Kurulu (total 5 card slots)
-  const yonetimKuruluPlaceholderCount = useMemo(() => {
-    if (selectedTeamFilter !== "Yönetim Kurulu") return 0;
-    const currentCount = displayedMembers.length;
-    return Math.max(0, 5 - currentCount);
-  }, [selectedTeamFilter, displayedMembers]);
-
   const handleTeamClick = (filterName: string) => {
     setSelectedTeamFilter(filterName);
   };
@@ -109,10 +107,7 @@ export function MembersContent() {
   const IconComponent = getTeamIconComponent(selectedTeamFilter);
 
   return (
-    <PageBackground
-      id="ekibimiz-index-root"
-      className="select-none px-0 py-0 min-h-screen flex flex-col w-full overflow-x-hidden"
-    >
+    <PageBackground id="uyeler-index-root" className="select-none px-0 py-0 min-h-screen flex flex-col w-full overflow-x-hidden">
       {/* 1. HEADER TITLE SECTION */}
       <Section
         padding="none"
@@ -131,12 +126,14 @@ export function MembersContent() {
                 <Users className="w-5 h-5" />
               </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings">
-                Ekibimiz
+                {isEn ? "Our Team" : "Ekibimiz"}
               </h1>
             </div>
 
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-medium">
-              N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz.
+              {isEn
+                ? "All working teams, executive board, and advisory board members driving N'apsak? Youth Community."
+                : "N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz."}
             </p>
           </motion.div>
         </PageContainer>
@@ -215,7 +212,7 @@ export function MembersContent() {
               <IconComponent className="w-4 h-4 text-[#0A5C3A]" />
               <span>
                 {selectedTeamFilter === "Tümü"
-                  ? "Tüm Ekibimiz (A-Z)"
+                  ? "Ekibimiz"
                   : selectedTeamFilter}
               </span>
               <span className="text-xs font-semibold text-[#5F6773] bg-white px-2 py-0.5 rounded-full border border-[#EEF0F2]">
@@ -226,7 +223,7 @@ export function MembersContent() {
           </div>
 
           {/* MEMBERS CARDS GRID */}
-          {displayedMembers.length > 0 || yonetimKuruluPlaceholderCount > 0 ? (
+          {displayedMembers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {displayedMembers.map((member, idx) => (
                 <PublicMemberCard
@@ -241,17 +238,12 @@ export function MembersContent() {
                   }}
                 />
               ))}
-
-              {/* YÖNETİM KURULUNDAKİ BOŞ POZİSYON PLACEHOLDER KARTLARI */}
-              {Array.from({ length: yonetimKuruluPlaceholderCount }).map((_, idx) => (
-                <PublicMemberPlaceholderCard key={`placeholder-${idx}`} />
-              ))}
             </div>
           ) : (
-            /* EMPTY STATE */
+            /* EMPTY RESULT */
             <div className="py-16 text-center max-w-md mx-auto space-y-4 bg-white rounded-[28px] border border-[#EEF0F2] p-8 shadow-xs">
               <div className="w-12 h-12 rounded-2xl bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center mx-auto">
-                <Users className="w-6 h-6" />
+                <Filter className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold font-headings text-[#0F1115]">
                 Kişi Bulunamadı

@@ -12,9 +12,13 @@ import {
 } from "lucide-react";
 import { TEAMS_DATA, TEAM_ICONS, TeamData } from "../../data/teams";
 import { TeamsRepository } from "../../lib/teamsStore";
+import { useLanguage } from "../../context/LanguageContext";
 
 export const TeamCarousel: React.FC = () => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const shouldReduceMotion = useReducedMotion();
+
   const [teamsList, setTeamsList] = useState<TeamData[]>(TEAMS_DATA);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -330,7 +334,7 @@ export const TeamCarousel: React.FC = () => {
 
                   {isFront && (
                     <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-[#0A5C3A] text-white tracking-wider uppercase shadow-md">
-                      Öne Çıkan
+                      {isEn ? "Featured" : "Öne Çıkan"}
                     </span>
                   )}
                 </div>
@@ -355,7 +359,7 @@ export const TeamCarousel: React.FC = () => {
                 {/* Bottom Card Footer Accent */}
                 <div className="relative z-10 w-full pt-4 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
                   <span className="text-white/90">
-                    N'apsak? Ekibi
+                    {isEn ? "N'apsak? Team" : "N'apsak? Ekibi"}
                   </span>
                   <Link
                     href={`/ekipler/${team.slug}`}

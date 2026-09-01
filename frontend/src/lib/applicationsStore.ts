@@ -8,12 +8,19 @@ export interface ApplicationItem {
   phone?: string;
   program: string;
   city?: string;
+  district?: string;
   school?: string;
   department?: string;
+  graduationStatus?: string;
   grade?: string;
+  pastMember?: string;
+  pastTeam?: string;
+  kvkkAccepted?: boolean;
   status: "Beklemede" | "Onaylandı" | "Reddedildi";
   createdAt: string;
   note?: string;
+  cvUrl?: string;
+  cvFileName?: string;
 }
 
 const INITIAL_APPLICATIONS: ApplicationItem[] = [
@@ -122,6 +129,43 @@ export const ApplicationsRepository = {
     }).catch((err) => console.error("DB update error:", err));
   },
 
+  async addApplication(data: Partial<ApplicationItem>): Promise<ApplicationItem> {
+    const newApp: ApplicationItem = {
+      id: "app-" + Date.now(),
+      fullName: data.fullName || "İsimsiz Başvuru",
+      email: data.email || "-",
+      phone: data.phone || "-",
+      program: data.program || "Genel Topluluk Üyeliği",
+      city: data.city || "",
+      district: data.district || "",
+      school: data.school || "",
+      department: data.department || "",
+      graduationStatus: data.graduationStatus || "",
+      grade: data.grade || "",
+      pastMember: data.pastMember || "",
+      pastTeam: data.pastTeam || "",
+      kvkkAccepted: data.kvkkAccepted || false,
+      note: data.note || "",
+      cvUrl: data.cvUrl || "",
+      cvFileName: data.cvFileName || "",
+      status: "Beklemede",
+      createdAt: new Date().toISOString(),
+    };
+
+    cachedApplications = [newApp, ...cachedApplications];
+
+    try {
+      await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newApp),
+      });
+    } catch (err) {
+      console.warn("API /applications POST hatası:", err);
+    }
+
+    return newApp;
+  },
   deleteApplication(id: string): void {
     cachedApplications = cachedApplications.filter((app) => app.id !== id);
     fetch(`/api/applications/${id}`, { method: "DELETE" }).catch((err) =>

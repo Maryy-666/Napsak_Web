@@ -15,6 +15,7 @@ import {
 import { ROUTES } from "../../constants/routes";
 import { NewsRepository } from "../../lib/newsStore";
 import { PageContainer, Section } from "../ui";
+import { useLanguage } from "../../context/LanguageContext";
 
 type NewsCard = {
   id: string;
@@ -37,6 +38,7 @@ const mapNewsItem = (item: any): NewsCard => ({
 });
 
 export const NewsSection: React.FC = () => {
+  const { t } = useLanguage();
   const [newsList, setNewsList] = useState<NewsCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -68,12 +70,10 @@ export const NewsSection: React.FC = () => {
   }, [currentIndex, totalNews]);
 
   const handlePrev = () => {
-    if (totalNews === 0) return;
-    setCurrentIndex((prev) => (prev === 0 ? totalNews - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev - 1 + totalNews) % totalNews);
   };
 
   const handleNext = () => {
-    if (totalNews === 0) return;
     setCurrentIndex((prev) => (prev + 1) % totalNews);
   };
 
@@ -93,7 +93,7 @@ export const NewsSection: React.FC = () => {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A5C3A]/10 border border-[#0A5C3A]/20 text-[#0A5C3A] font-extrabold text-sm tracking-wide uppercase shadow-sm"
             >
               <Sparkles className="w-4 h-4" />
-              <span>N'apsak? Naptık!</span>
+              <span>{t("news.badge", "N'apsak? Naptık!")}</span>
             </motion.div>
 
             <motion.h2
@@ -103,7 +103,7 @@ export const NewsSection: React.FC = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight"
             >
-              Bizden Haberler
+              {t("news.title", "Bizden Haberler")}
             </motion.h2>
 
             <motion.p
@@ -113,8 +113,10 @@ export const NewsSection: React.FC = () => {
               transition={{ delay: 0.2 }}
               className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed"
             >
-              Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan
-              renkli hikayeleri.
+              {t(
+                "news.subtitle",
+                "Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan renkli hikayeleri."
+              )}
             </motion.p>
           </div>
 
@@ -123,7 +125,7 @@ export const NewsSection: React.FC = () => {
               href={ROUTES.HABERLER}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0A5C3A] text-white text-xs font-bold shadow-md hover:bg-[#084A2F] transition-all"
             >
-              <span>Tüm Haberler</span>
+              <span>{t("news.viewAll", "Tüm Haberler")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button

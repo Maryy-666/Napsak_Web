@@ -18,8 +18,10 @@ import { MagazineReaderModal } from "./MagazineReaderModal";
 import { downloadMagazinePdf } from "../../lib/pdfExporter";
 
 import { MagazinesRepository } from "../../lib/magazinesStore";
+import { useLanguage } from "../../context/LanguageContext";
 
 export type MagazineIssue = {
+
   id: string;
   issueNumber: string;
   title: string;
@@ -206,7 +208,7 @@ const MAGAZINES: MagazineIssue[] = [
   },
 ];
 
-const CATEGORIES = [
+const CATEGORIES_TR = [
   "Tümü",
   "Teknoloji & Gelecek",
   "Sanat & Edebiyat",
@@ -214,8 +216,19 @@ const CATEGORIES = [
   "Özel Sayılar",
 ];
 
+const CATEGORIES_EN = [
+  "All",
+  "Tech & Future",
+  "Art & Literature",
+  "Youth & Culture",
+  "Special Issues",
+];
+
 export default function DergilerContent() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [magazinesList, setMagazinesList] = useState<MagazineIssue[]>(MAGAZINES);
+
   const [activeCategory, setActiveCategory] = useState("Tümü");
   const [query, setQuery] = useState("");
   const [selectedIssue, setSelectedIssue] = useState<MagazineIssue | null>(null);
@@ -346,15 +359,17 @@ export default function DergilerContent() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A5C3A]/10 border border-[#0A5C3A]/20 text-[#0A5C3A] font-extrabold text-xs sm:text-sm tracking-wide uppercase shadow-sm">
               <BookOpen className="w-4 h-4 text-[#0A5C3A]" />
-              <span>N'apsak? Dijital Yayınlar & Dergi Kütüphanesi</span>
+              <span>{isEn ? "N'apsak? Digital Publications & Library" : "N'apsak? Dijital Yayınlar & Dergi Kütüphanesi"}</span>
             </div>
 
             <h1 className="font-headings text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] leading-tight">
-              Topluluk Dergileri & Özel Yayınlar
+              {isEn ? "Community Magazines & Special Issues" : "Topluluk Dergileri & Özel Yayınlar"}
             </h1>
 
             <p className="mx-auto mt-2 max-w-xl text-sm sm:text-base font-medium leading-relaxed text-[#5F6773]">
-              Gençlerin kaleme aldığı dijital yayınlar, kültür-sanat dosyaları ve fanzin sayılarını dijital kütüphanemizde keşfedin.
+              {isEn
+                ? "Discover digital publications, culture & arts files, and zines written by youth in our digital library."
+                : "Gençlerin kaleme aldığı dijital yayınlar, kültür-sanat dosyaları ve fanzin sayılarını dijital kütüphanemizde keşfedin."}
             </p>
           </motion.div>
         </PageContainer>
@@ -368,7 +383,7 @@ export default function DergilerContent() {
             {/* Category Filter Pills */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
               <Filter className="h-4 w-4 shrink-0 text-[#0A5C3A] mr-1" />
-              {CATEGORIES.map((category) => (
+              {CATEGORIES_TR.map((category, idx) => (
                 <button
                   key={category}
                   type="button"
@@ -379,11 +394,12 @@ export default function DergilerContent() {
                       : "border-[#E5E7EB] bg-[#F8FAFC] text-[#4B5563] hover:border-[#07452C]/35 hover:bg-white hover:text-[#0F1115]"
                   }`}
                 >
-                  {category}
+                  {isEn ? CATEGORIES_EN[idx] : category}
                 </button>
               ))}
             </div>
           </div>
+
 
           {/* HORIZONTAL SHOWCASE CAROUSEL SLIDER */}
           <MagazineShowcaseSlider

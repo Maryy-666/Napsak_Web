@@ -4,8 +4,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, X } from "lucide-react";
 import { Badge, Card, PageContainer, Section } from "../ui";
+import { useLanguage } from "../../context/LanguageContext";
 
-export const FAQS = [
+export const FAQS_TR = [
   {
     question: "Nasıl katılabilirim?",
     answer:
@@ -43,18 +44,58 @@ export const FAQS = [
   },
 ];
 
+export const FAQS = FAQS_TR;
+
+
+export const FAQS_EN = [
+  {
+    question: "How can I join?",
+    answer:
+      "You can use automated responses via DM or fill out the application form in our bio to join us :).",
+  },
+  {
+    question: "Who can join?",
+    answer:
+      "Any young person from high school onwards can apply regardless of city.",
+  },
+  {
+    question: "What does N'apsak? Youth Community do?",
+    answer:
+      "It was established to create and produce ideas together. Our goal is not just organizing events, but enabling youth to discover their potential, develop skills, and create impactful projects.",
+  },
+  {
+    question: "Which teams can I join?",
+    answer:
+      "We have Art, Technology, Health & Environment, Programs, and Media & Communication teams. If you love writing, drawing, coding, or event management, you will surely find a place.",
+  },
+  {
+    question: "I have no experience, can I still join?",
+    answer:
+      "You need no prior experience if you are open to growth, eager to learn, and ready to take action! We are here to help inexperienced members gain valuable experience.",
+  },
+  {
+    question: "I have never been in such a community, how does the process work?",
+    answer:
+      "No worries at all :). We support you throughout the process, introduce you to teams, and guide you step by step. Everyone here took their first step once.",
+  },
+  {
+    question: "In short...",
+    answer:
+      "We are a community not of those saying 'I wish', but of those asking 'N'apsak?' and taking action.",
+  },
+];
+
 export interface FAQSectionProps {
   showHeader?: boolean;
   background?: "transparent" | "white" | "subtle";
   customFaqs?: Array<{ question: string; answer: string }>;
 }
 
-export function FAQSection({
-  showHeader = true,
-  background = "transparent",
-  customFaqs,
-}: FAQSectionProps) {
-  const faqList = customFaqs && customFaqs.length > 0 ? customFaqs : FAQS;
+export function FAQSection({ showHeader = true, background = "transparent", customFaqs }: FAQSectionProps) {
+  const { language } = useLanguage();
+  const defaultFaqs = language === "en" ? FAQS_EN : FAQS_TR;
+  const faqList = customFaqs && customFaqs.length > 0 ? customFaqs : defaultFaqs;
+
   const [selectedQuestion, setSelectedQuestion] = useState<number | null>(null);
 
   // References for focus management & accessibility

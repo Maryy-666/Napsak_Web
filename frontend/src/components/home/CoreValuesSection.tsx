@@ -11,6 +11,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { Section, PageContainer } from "../ui";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface CoreValue {
   id: string;
@@ -19,7 +20,7 @@ interface CoreValue {
   icon: LucideIcon;
 }
 
-const CORE_VALUES_DATA: CoreValue[] = [
+const CORE_VALUES_TR: CoreValue[] = [
   {
     id: "cesitlilik",
     title: "Çeşitlilik",
@@ -57,7 +58,50 @@ const CORE_VALUES_DATA: CoreValue[] = [
   },
 ];
 
+const CORE_VALUES_EN: CoreValue[] = [
+  {
+    id: "cesitlilik",
+    title: "Diversity",
+    description:
+      "We bring together youth from different cities, educational backgrounds, and interests. We see differences as a strength and foster an inclusive environment where everyone is valued.",
+    icon: Users,
+  },
+  {
+    id: "tarafsizlik",
+    title: "Impartiality",
+    description:
+      "We stay free of political, religious, or ideological influences, focusing solely on youth growth and common good. Impartiality is a core pillar of our trust environment.",
+    icon: Scale,
+  },
+  {
+    id: "yenilikcilik",
+    title: "Innovation",
+    description:
+      "We emphasize bringing new ideas to life and fostering youth creativity to adapt to a changing world. We aim to contribute to both our community and society through innovative approaches.",
+    icon: Lightbulb,
+  },
+  {
+    id: "birliktelik",
+    title: "Togetherness",
+    description:
+      "We believe in the power of producing together and combining diverse perspectives. We build collaborative projects, prioritize team spirit, and value every member as a vital part of our community.",
+    icon: HeartHandshake,
+  },
+  {
+    id: "katilimcilik",
+    title: "Participation",
+    description:
+      "We believe every young person's idea is valuable. By involving members in decision-making and creative processes, we empower everyone to be a producer, not just a participant.",
+    icon: UserPlus,
+  },
+];
+
+
 export function CoreValuesSection() {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+  const coreValuesData = isEn ? CORE_VALUES_EN : CORE_VALUES_TR;
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const centerRef = useRef<HTMLDivElement>(null);
@@ -103,12 +147,6 @@ export function CoreValuesSection() {
     };
   }, [updateLines]);
 
-  // Balanced radial positioning mapping:
-  // 0: Çeşitlilik (Top Center)
-  // 1: Tarafsızlık (Upper Left)
-  // 2: Yenilikçilik (Upper Right)
-  // 3: Birliktelik (Lower Left)
-  // 4: Katılımcılık (Lower Right)
   const getDesktopPositionStyle = (index: number) => {
     const cardDimensionClass = "w-[280px] lg:w-[300px] xl:w-[325px] min-h-[215px]";
     switch (index) {
@@ -189,13 +227,13 @@ export function CoreValuesSection() {
               className="w-[320px] sm:w-[355px] lg:w-[380px] h-[68px] sm:h-[72px] lg:h-[76px] rounded-full bg-white border-2 border-[#0A5C3A]/25 shadow-[0_14px_40px_rgba(10,92,58,0.14)] flex items-center justify-center transition-all duration-300 hover:border-[#0A5C3A]/70 hover:shadow-[0_20px_48px_rgba(10,92,58,0.20)]"
             >
               <h2 className="text-lg sm:text-xl lg:text-[22px] font-extrabold font-headings text-[#0A5C3A] tracking-wider uppercase text-center leading-none select-none">
-                TEMEL DEĞERLERİMİZ
+                {isEn ? "OUR CORE VALUES" : "TEMEL DEĞERLERİMİZ"}
               </h2>
             </motion.div>
           </div>
 
           {/* 5 Core Values Floating Cards */}
-          {CORE_VALUES_DATA.map((item, index) => {
+          {coreValuesData.map((item, index) => {
             const IconComp = item.icon;
             const isHovered = hoveredIndex === index;
             const positionClass = getDesktopPositionStyle(index);
@@ -247,14 +285,14 @@ export function CoreValuesSection() {
           <div className="text-center mb-8 sm:mb-10">
             <div className="inline-block px-6 py-3 sm:px-8 sm:py-3.5 rounded-full bg-white border-2 border-[#0A5C3A]/25 shadow-[0_14px_40px_rgba(10,92,58,0.14)]">
               <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold font-headings text-[#0A5C3A] tracking-wider uppercase leading-none">
-                TEMEL DEĞERLERİMİZ
+                {isEn ? "OUR CORE VALUES" : "TEMEL DEĞERLERİMİZ"}
               </h2>
             </div>
           </div>
 
           {/* Cards Grid: 1 col on mobile (<768px), 2 cols on tablet (768px-1023px) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-            {CORE_VALUES_DATA.map((item, index) => {
+            {coreValuesData.map((item, index) => {
               const IconComp = item.icon;
               const isFirst = index === 0;
               return (
