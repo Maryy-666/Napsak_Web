@@ -19,7 +19,9 @@ export const translations: Record<Language, TranslationDictionary> = {
     "nav.faq": "SSS",
     "nav.members": "Üyeler",
     "nav.positions": "Açık Pozisyonlar",
+    "nav.partners": "Paydaşlarımız",
     "nav.works": "Çalışmalarımız",
+
 
     "nav.community": "Topluluk",
 
@@ -128,7 +130,9 @@ export const translations: Record<Language, TranslationDictionary> = {
     "nav.faq": "FAQ",
     "nav.members": "Members",
     "nav.positions": "Open Positions",
+    "nav.partners": "Partners & Supporters",
     "nav.works": "Our Works",
+
 
     "nav.community": "Community",
 

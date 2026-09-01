@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { X, Sparkles, Layers, UserCheck, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { X, Sparkles, Layers, UserCheck, ShieldCheck, ArrowRight } from "lucide-react";
 import { PublicMember } from "../../data/members";
 import { ImageWithFallback } from "../common/ImageWithFallback";
+
 
 export interface PublicMemberModalProps {
   member: PublicMember | null;
@@ -127,6 +129,27 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           </div>
         </div>
 
+        {/* MEMBER DETAIL LINK FOR BOARD & ADVISORY MEMBERS */}
+        {Boolean(
+          member.primaryTeam?.toLowerCase().includes("yönetim") ||
+          member.primaryTeam?.toLowerCase().includes("danışma") ||
+          member.isPresident ||
+          member.memberships?.some((m) =>
+            m.team.toLowerCase().includes("yönetim") || m.team.toLowerCase().includes("danışma")
+          )
+        ) && (
+          <div className="pt-2">
+            <Link
+              href={`/ekipler/${member.slug || member.name.toLowerCase().trim().replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "")}`}
+              onClick={onClose}
+              className="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-[#0A5C3A] hover:bg-[#0D7449] text-white text-xs font-bold transition-all shadow-sm font-sans"
+            >
+              <span>Detaylı Profili Görüntüle</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
+
         {/* FOOTER VERIFICATION BADGE */}
         <div className="pt-4 border-t border-[#EEF0F2] flex items-center justify-between text-xs text-[#5F6773] font-medium">
           <span className="flex items-center gap-1.5">
@@ -134,6 +157,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           </span>
           <span>N'apsak? Gençlik Topluluğu</span>
         </div>
+
       </div>
     </div>
   );

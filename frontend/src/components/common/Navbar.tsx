@@ -47,8 +47,10 @@ export const Navbar: React.FC = () => {
     if (lower === "ekibimiz" || lower === "bizim ekip") return "Our Team";
     if (lower.includes("etkileşim") || lower.includes("katılım") || lower.includes("katilim")) return "Join & Engage";
     if (lower.includes("açık pozisyonlar") || lower.includes("acik pozisyonlar")) return "Open Positions";
+    if (lower.includes("paydaş") || lower.includes("paydas")) return "Partners & Supporters";
     return title;
   };
+
 
 
 
@@ -123,6 +125,7 @@ export const Navbar: React.FC = () => {
                     else if (childSlug === "haberler") childHref = "/haberler";
                     else if (childSlug === "raporlar") childHref = "/raporlar";
                     else if (childSlug === "acik-pozisyonlar" || childSlug === "acikpozisyonlar") childHref = ROUTES.ACIK_POZISYONLAR;
+                    else if (childSlug === "paydaslarimiz" || childSlug === "paydaslar") childHref = ROUTES.PAYDASLARIMIZ;
                     else childHref = `/sayfa/${childSlug}`;
                   } else if (childRawHref === "/sayfa/hakkimizda") {
                     childHref = "/hakkimizda";
@@ -145,7 +148,7 @@ export const Navbar: React.FC = () => {
 
           const itemTitle = String(item.label || "").trim() === "Üyelerimiz" ? "Ekibimiz" : item.label;
 
-          // Always guarantee Açık Pozisyonlar is in Topluluk dropdown
+          // Always guarantee Açık Pozisyonlar & Paydaşlarımız are in Topluluk dropdown
           if (itemTitle.toLowerCase().includes("topluluk")) {
             const finalChildren = children ? [...children] : [];
             const hasPositions = finalChildren.some(
@@ -170,6 +173,31 @@ export const Navbar: React.FC = () => {
                 finalChildren.push(posItem);
               }
             }
+
+            const hasPartners = finalChildren.some(
+              (c: any) =>
+                c.href === ROUTES.PAYDASLARIMIZ ||
+                String(c.title).toLowerCase().includes("paydaş") ||
+                String(c.title).toLowerCase().includes("paydas")
+            );
+            if (!hasPartners) {
+              const partnerItem = {
+                title: "Paydaşlarımız",
+                href: ROUTES.PAYDASLARIMIZ,
+                status: "active",
+              };
+              const sssIdx = finalChildren.findIndex(
+                (c: any) =>
+                  c.href === ROUTES.SSS ||
+                  String(c.title).toLowerCase().includes("sss")
+              );
+              if (sssIdx !== -1) {
+                finalChildren.splice(sssIdx, 0, partnerItem);
+              } else {
+                finalChildren.push(partnerItem);
+              }
+            }
+
             return {
               title: itemTitle,
               href,
@@ -177,6 +205,7 @@ export const Navbar: React.FC = () => {
               items: finalChildren,
             };
           }
+
 
           return {
             title: itemTitle,

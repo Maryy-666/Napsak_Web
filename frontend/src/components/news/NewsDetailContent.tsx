@@ -15,6 +15,8 @@ import {
 import { NewsItem, NEWS_DATA } from "../../data/news";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
+import { NewsContentFormatter } from "./NewsContentFormatter";
+
 
 interface NewsDetailContentProps {
   news: NewsItem;
@@ -147,10 +149,9 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             )}
 
             {/* Main Content Body */}
-            <div className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed space-y-4">
-              <p>{news.content}</p>
-            </div>
+            <NewsContentFormatter content={news.content} />
           </motion.div>
+
 
           {/* Extra Photo Gallery Section */}
           {news.images && news.images.length > 0 && (

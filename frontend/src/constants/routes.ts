@@ -23,7 +23,9 @@ export const ROUTES = {
   KAYIT: "/kayit",
   BIZDEN_HABERDAR_OL: "/bizden-haberdar-ol",
   ACIK_POZISYONLAR: "/acik-pozisyonlar",
+  PAYDASLARIMIZ: "/paydaslarimiz",
 } as const;
+
 
 
 export type RouteKey = keyof typeof ROUTES;

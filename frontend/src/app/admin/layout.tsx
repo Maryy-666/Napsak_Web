@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Briefcase,
+  Building2,
   Calendar,
   ChevronRight,
   ExternalLink,
@@ -55,6 +56,7 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
       { title: "Çalışma Ekipleri", href: "/admin/ekipler", icon: Users, badge: "5 Ekip", published: true },
       { title: "Üye Yönetimi", href: "/admin/uyeler", icon: UserCheck, badge: "50 Üye", published: true },
       { title: "Açık Pozisyonlar", href: "/admin/acik-pozisyonlar", icon: Briefcase, badge: "Pozisyonlar", published: true },
+      { title: "Paydaşlarımız", href: "/admin/paydaslar", icon: Building2, badge: "Paydaşlar", published: true },
       { title: "Etkinlik Yönetimi", href: "/admin/etkinlikler", icon: Calendar, badge: "3 Aktif", published: true },
       { title: "Etkinlik Başvuruları", href: "/admin/etkinlik-basvurulari", icon: Ticket, badge: null, published: true },
       { title: "Üyelik Başvuruları", href: "/admin/uyelikler", icon: UserPlus, badge: null, published: true },
@@ -62,6 +64,7 @@ const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
       { title: "Dergi Yönetimi", href: "/admin/dergiler", icon: FileText, badge: "Magazines", published: true },
     ],
   },
+
 
   {
     title: "SİSTEM & YETKİLENDİRME",

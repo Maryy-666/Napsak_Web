@@ -88,10 +88,16 @@ export const SITE_CONFIG = {
           status: "active",
         },
         {
+          title: "Paydaşlarımız",
+          href: ROUTES.PAYDASLARIMIZ,
+          status: "active",
+        },
+        {
           title: "SSS",
           href: ROUTES.SSS,
           status: "active",
         },
+
 
       ],
     },

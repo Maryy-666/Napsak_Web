@@ -30,6 +30,26 @@ export const MembersRepository = {
     return cachedMembers;
   },
 
+  async fetchMemberBySlug(slug: string): Promise<PublicMember | null> {
+
+    const allMembers = await this.fetchMembersFromDB();
+    const target = slug.toLowerCase().trim();
+
+    const found = allMembers.find((m) => {
+      const mSlug = m.slug || (m.name ? m.name.toLowerCase().trim().replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s").replace(/ı/g, "i").replace(/ö/g, "o").replace(/ç/g, "c").replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") : "");
+      const mIdSlug = m.id.replace(/^m-/, "");
+      return (
+        mSlug === target ||
+        m.id === target ||
+        mIdSlug === target
+      );
+    });
+
+    if (found) return found;
+    return null;
+  },
+
+
   async addMember(member: Omit<PublicMember, "id">): Promise<PublicMember> {
     const newMember: PublicMember = {
       ...member,

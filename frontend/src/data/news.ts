@@ -19,8 +19,25 @@ export interface NewsItem {
 
 export const NEWS_DATA: NewsItem[] = [
   {
+    id: "mentorluk-programi-basvurulari-basladi",
+    slug: "mentorluk-programi-basvurulari-basladi",
+    title: "N'apsak? Mentorluk Programı Başvuruları Başladı!",
+    date: "1 Aralık 2025",
+    category: "Gelişim & Mentorluk",
+    excerpt:
+      "Akademik gelişim ve proje üretimi süreçlerinde deneyimli mentorlarımızdan bire bir rehberlik almak için başvurular açıldı.",
+    coverImage: "/images/news-kariyer-cover.jpg",
+    content:
+      "N'apsak? Gençlik Topluluğu Mentorluk Programı ile geleceğine yön vermek isteyen gençleri alanında uzman mentorlarla bir araya getiriyoruz. Program kapsamında Akademik Mentorluk ve Proje Mentorluğu olmak üzere iki farklı kulvarda destek sunulmaktadır. Akademik hedeflerin ve ders çalışma sürecin için mentor desteği almak istersen Akademik Mentorluk başvurusunu https://forms.gle/academic-mentor-demo adresinden tamamlayabilirsin. Proje fikrini geliştirmek ve profesyonel hale getirmek için ise Proje Mentorluğu başvurusunu https://forms.gle/project-mentor-demo adresi üzerinden iletebilirsin.",
+    images: [
+      "/images/news-kariyer-cover.jpg",
+      "/images/news-kariyer-1.jpg",
+    ],
+  },
+  {
     id: "kil-atolyesi",
     slug: "kil-atolyesi",
+
     title: "Kil Atölyesi: Çamurdan Hayallere",
     date: "15 Ekim 2025",
     category: "Sanat & Atölye",
