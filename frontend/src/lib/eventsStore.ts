@@ -23,7 +23,6 @@ export interface EventItem {
   isFeatured?: boolean;
   registrationEnabled?: boolean;
   registrationDeadline?: string;
-  capacity?: number;
   startDate?: string;
   endDate?: string;
 }
@@ -44,7 +43,37 @@ export interface EventApplication {
   status: "Beklemede" | "Onaylandı" | "Reddedildi";
 }
 
-// DEFAULT INITIAL EVENTS (AKTİF VE GEÇMİŞ ETKİNLİKLER)
+// REST/API YARDIMCI HEADER VE FETCH YAPILANDIRMASI
+const getFetchOptions = (method: string = "GET", body?: any): RequestInit => {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (typeof window !== "undefined") {
+    const token =
+      localStorage.getItem("token") ||
+      localStorage.getItem("authToken") ||
+      localStorage.getItem("accessToken");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  const options: RequestInit = {
+    method,
+    headers,
+    credentials: "include", // Cookie/NextAuth oturum bilgilerini sunucuya otomatik taşır
+    cache: "no-store",
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  return options;
+};
+
+// DEFAULT INITIAL EVENTS
 const INITIAL_EVENTS: EventItem[] = [
   {
     id: "evt-101",
@@ -58,10 +87,10 @@ const INITIAL_EVENTS: EventItem[] = [
     partner: "1923 Gençlik Topluluğu & Beylikdüzü Belediyesi",
     quota: 120,
     appliedCount: 42,
-    description:
-      "N'apsak? Gençlik Topluluğu'nun ilk büyük yüz yüze buluşması! 1923 Gençlik Topluluğu iş birliği ile gençlerin projelerini sergileyebileceği, sunum ve networking zirvesi.",
+    description: "N'apsak? Gençlik Topluluğu'nun ilk büyük yüz yüze buluşması!",
     coverImage: "/images/news-ani-cover.jpg",
     badge: "Öne Çıkan Aktif Zirve",
+    registrationEnabled: true,
   },
   {
     id: "evt-102",
@@ -74,55 +103,14 @@ const INITIAL_EVENTS: EventItem[] = [
     status: "aktif",
     quota: 80,
     appliedCount: 29,
-    description:
-      "Yapay zeka araçlarının günlük projelerde etkin kullanımı, açık kaynak kodlama ve yeşil teknoloji yaklaşımlarının ele alınacağı interaktif online atölye serisi.",
+    description: "Yapay zeka araçlarının günlük projelerde etkin kullanımı.",
     badge: "Kontenjan Sınırlı",
-  },
-  {
-    id: "evt-103",
-    title: "Doğayla Denge: Doğa Yürüyüşü ve Çevre Temizliği",
-    category: "cevre-saglik",
-    categoryLabel: "Çevre ve Sağlık",
-    date: "20 Temmuz 2025",
-    time: "10:00 - 15:00",
-    location: "Belgrat Ormanı Aktivite Alanı",
-    status: "gecmis",
-    appliedCount: 65,
-    description:
-      "Ruhsal ve fiziksel sağlığı destekleyen doğa yürüyüşü, çevre temizliği farkındalığı ve açık hava sohbeti tamamlandı.",
-  },
-  {
-    id: "evt-104",
-    title: "Yaratıcı Yazarlık & Dijital Sanat Sergisi",
-    category: "sanat",
-    categoryLabel: "Sanat & Estetik",
-    date: "05 Haziran 2025",
-    time: "15:00 - 19:00",
-    location: "Kültür & Sanat Atölyesi",
-    status: "gecmis",
-    appliedCount: 54,
-    description:
-      "Genç yazarlarımızın hikayeleri ve dijital sanat ekibimizin illüstrasyon çalışmalarının sergilendiği estetik sergi gerçekleşti.",
-  },
-  {
-    id: "evt-105",
-    title: "Topluluk İçi Ideathon & Fikir Kampı",
-    category: "programlar",
-    categoryLabel: "Programlar & Sosyal",
-    date: "15 Mayıs 2025",
-    time: "13:00 - 17:00",
-    location: "Online Discord Sunucusu",
-    status: "gecmis",
-    appliedCount: 86,
-    description:
-      "86 aktif üyemizin katılımıyla 2025 dönemi projelerinin belirlendiği online fikir üretme kampı tamamlandı.",
+    registrationEnabled: true,
   },
 ];
 
-// DEFAULT INITIAL APPLICATIONS (Gerçek DB Verileri ile Çalışır)
 const INITIAL_APPLICATIONS: EventApplication[] = [];
 
-// SINGLETON STORE MANAGEMENT
 const globalForEvents = globalThis as unknown as {
   eventsStore?: EventItem[];
   eventApplicationsStore?: EventApplication[];
@@ -147,94 +135,116 @@ export const EventsRepository = {
 
   async fetchEventsFromDB(statusFilter?: string): Promise<EventItem[]> {
     try {
-      const url = statusFilter ? `/api/events?status=${statusFilter}` : "/api/events";
-      const res = await fetch(url, { cache: "no-store" });
+      const url = statusFilter && statusFilter !== "Tümü" && statusFilter !== "all" 
+        ? `/api/events?status=${statusFilter}` 
+        : "/api/events";
+        
+      const res = await fetch(url, getFetchOptions("GET"));
+
       if (res.ok) {
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const dbEvents: EventItem[] = json.data.map((item: any) => ({
+        
+        const rawArray = Array.isArray(json.data?.data) 
+          ? json.data.data 
+          : Array.isArray(json.data) 
+          ? json.data 
+          : [];
+
+        if (json.success && rawArray.length > 0) {
+          const dbEvents: EventItem[] = rawArray.map((item: any) => ({
             id: String(item.id),
             slug: item.slug || String(item.id),
             title: item.title,
             category: item.category || "programlar",
             categoryLabel: item.category === "teknoloji" ? "Teknoloji & İnovasyon" : "Programlar & Sosyal",
-            date: item.startDate ? new Date(item.startDate).toLocaleDateString("tr-TR") : "",
-            time: "14:00",
+            date: item.startDate ? new Date(item.startDate).toLocaleDateString("tr-TR") : item.date || "",
+            time: item.time || "14:00",
             location: item.location || "Belirtilmedi",
-            status: item.status || "Yaklaşan",
+            // DÜZELTME: "Yaklaşan" veya benzeri durumları frontend'in tanıdığı "aktif" değerine dönüştürür
+            status: item.status?.toLowerCase() === "yaklaşan" ? "aktif" : (item.status || "aktif"),
             publicationStatus: item.publicationStatus || "PUBLISHED",
             shortDescription: item.shortDescription || item.description || "",
             description: item.description || "",
             content: item.content || item.description || "",
             appliedCount: item.appliedCount || 0,
-            capacity: item.capacity || 100,
+            quota: item.quota || item.capacity || 100,
             coverImage: item.image || item.coverImage || undefined,
             image: item.image || item.coverImage || undefined,
             isFeatured: Boolean(item.isFeatured),
-            registrationEnabled: item.registrationEnabled !== undefined ? Boolean(item.registrationEnabled) : true,
+            // DÜZELTME: Açıkça false yapılmamışsa başvuru butonunu aktif tutar
+            registrationEnabled: item.registrationEnabled !== false,
             registrationDeadline: item.registrationDeadline || undefined,
             startDate: item.startDate || undefined,
             endDate: item.endDate || undefined,
           }));
 
           eventsStore.length = 0;
-          eventsStore.push(...dbEvents);
+          eventsStore.push(...dbEvents, ...INITIAL_EVENTS);
           return eventsStore;
         }
       }
     } catch (err) {
       console.warn("DB'den etkinlikler alınamadı, yerel depolama kullanılıyor:", err);
     }
+    
+    eventsStore.length = 0;
+    eventsStore.push(...INITIAL_EVENTS);
     return eventsStore;
   },
 
-  getActiveEvents(): EventItem[] {
-    return eventsStore.filter((e) => e.status === "aktif");
-  },
-
-  getPastEvents(): EventItem[] {
-    return eventsStore.filter((e) => e.status === "gecmis");
-  },
-
   addEvent(event: Omit<EventItem, "id" | "appliedCount">): EventItem {
+    const isRegEnabled = event.registrationEnabled !== undefined ? Boolean(event.registrationEnabled) : true;
+    
     const newEvent: EventItem = {
       ...event,
       id: `evt-${Date.now().toString().slice(-4)}`,
       appliedCount: 0,
+      registrationEnabled: isRegEnabled,
     };
     eventsStore.unshift(newEvent);
 
-    // Background DB sync
-    fetch("/api/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: event.title,
-        description: event.description,
-        location: event.location,
-        category: event.category,
-        status: event.status,
-        image: event.coverImage,
-        startDate: new Date().toISOString(),
-      }),
-    }).then(() => this.fetchEventsFromDB()).catch(() => {});
+    const payload = {
+      title: event.title,
+      description: event.description,
+      location: event.location,
+      category: event.category,
+      status: "aktif",
+      image: event.coverImage || event.image,
+      startDate: event.startDate ? new Date(event.startDate).toISOString() : new Date().toISOString(),
+      endDate: event.endDate ? new Date(event.endDate).toISOString() : undefined,
+      registrationEnabled: isRegEnabled,
+    };
+
+    fetch("/api/events", getFetchOptions("POST", payload))
+      .then((res) => {
+        if (!res.ok) console.error("Etkinlik ekleme API hatası:", res.status);
+        return this.fetchEventsFromDB();
+      })
+      .catch((err) => console.error("Etkinlik kaydedilemedi:", err));
 
     return newEvent;
   },
 
   updateEvent(id: string, updatedFields: Partial<EventItem>): EventItem | null {
-    const index = eventsStore.findIndex((e) => e.id === id);
+    const index = eventsStore.findIndex((e) => e.id === String(id));
     if (index !== -1) {
       eventsStore[index] = { ...eventsStore[index], ...updatedFields };
 
-      const numericId = Number(id);
-      if (Number.isInteger(numericId)) {
-        fetch(`/api/events/${numericId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedFields),
-        }).then(() => this.fetchEventsFromDB()).catch(() => {});
-      }
+      const payload = {
+        id,
+        ...updatedFields,
+        ...(updatedFields.date ? { startDate: new Date(updatedFields.date).toISOString() } : {}),
+        ...(updatedFields.registrationEnabled !== undefined 
+          ? { registrationEnabled: Boolean(updatedFields.registrationEnabled) } 
+          : {}),
+      };
+
+      fetch("/api/events", getFetchOptions("PATCH", payload))
+        .then((res) => {
+          if (!res.ok) console.error("Güncelleme API hatası:", res.status);
+          return this.fetchEventsFromDB();
+        })
+        .catch((err) => console.error("Güncelleme başarısız:", err));
 
       return eventsStore[index];
     }
@@ -242,16 +252,13 @@ export const EventsRepository = {
   },
 
   deleteEvent(id: string): boolean {
-    const index = eventsStore.findIndex((e) => e.id === id);
+    const index = eventsStore.findIndex((e) => e.id === String(id));
     if (index !== -1) {
       eventsStore.splice(index, 1);
 
-      const numericId = Number(id);
-      if (Number.isInteger(numericId)) {
-        fetch(`/api/events/${numericId}`, {
-          method: "DELETE",
-        }).then(() => this.fetchEventsFromDB()).catch(() => {});
-      }
+      fetch(`/api/events/${id}`, getFetchOptions("DELETE"))
+        .then(() => this.fetchEventsFromDB())
+        .catch((err) => console.error("Silme hatası:", err));
 
       return true;
     }
@@ -261,7 +268,7 @@ export const EventsRepository = {
   // ETKİNLİK BAŞVURULARI DB VE STORE YÖNETİMİ
   async fetchApplicationsFromDB(): Promise<EventApplication[]> {
     try {
-      const res = await fetch("/api/event-applications", { cache: "no-store" });
+      const res = await fetch("/api/event-applications", getFetchOptions("GET"));
       if (res.ok) {
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
@@ -287,7 +294,7 @@ export const EventsRepository = {
         }
       }
     } catch (err) {
-      console.warn("DB'den etkinlik başvuruları alınamadı, yerel bellek kullanılıyor:", err);
+      console.warn("DB'den etkinlik başvuruları alınamadı:", err);
     }
     return eventApplicationsStore;
   },
@@ -297,54 +304,25 @@ export const EventsRepository = {
       ...data,
       id: `APP-EVT-${Date.now().toString().slice(-4)}`,
       status: data.status || "Beklemede",
-      appliedAt: new Date().toLocaleDateString("tr-TR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }),
+      appliedAt: new Date().toLocaleDateString("tr-TR"),
     };
     eventApplicationsStore.unshift(newApplication);
 
-    // Event applied count artırma
-    const targetEvent = eventsStore.find((e) => e.id === data.eventId);
-    if (targetEvent) {
-      targetEvent.appliedCount += 1;
-    }
-
-    // Arka planda DB kaydı
-    fetch("/api/event-applications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        eventId: data.eventId,
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
-        city: data.city,
-        school: data.school,
-        department: data.department,
-        grade: data.grade,
-        note: data.note,
-        status: newApplication.status,
-      }),
-    }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
+    fetch("/api/event-applications", getFetchOptions("POST", data))
+      .then(() => this.fetchApplicationsFromDB())
+      .catch((err) => console.error("Başvuru eklenemedi:", err));
 
     return newApplication;
   },
 
   updateApplicationStatus(id: string, status: "Beklemede" | "Onaylandı" | "Reddedildi"): EventApplication | null {
-    const index = eventApplicationsStore.findIndex((a) => a.id === id);
+    const index = eventApplicationsStore.findIndex((a) => a.id === String(id));
     if (index !== -1) {
       eventApplicationsStore[index].status = status;
 
-      const numericId = Number(id);
-      if (Number.isInteger(numericId)) {
-        fetch(`/api/event-applications/${numericId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status }),
-        }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
-      }
+      fetch(`/api/event-applications/${id}`, getFetchOptions("PATCH", { status }))
+        .then(() => this.fetchApplicationsFromDB())
+        .catch((err) => console.error("Başvuru güncelleme hatası:", err));
 
       return eventApplicationsStore[index];
     }
@@ -352,16 +330,13 @@ export const EventsRepository = {
   },
 
   deleteApplication(id: string): boolean {
-    const index = eventApplicationsStore.findIndex((a) => a.id === id);
+    const index = eventApplicationsStore.findIndex((a) => a.id === String(id));
     if (index !== -1) {
       eventApplicationsStore.splice(index, 1);
 
-      const numericId = Number(id);
-      if (Number.isInteger(numericId)) {
-        fetch(`/api/event-applications/${numericId}`, {
-          method: "DELETE",
-        }).then(() => this.fetchApplicationsFromDB()).catch(() => {});
-      }
+      fetch(`/api/event-applications/${id}`, getFetchOptions("DELETE"))
+        .then(() => this.fetchApplicationsFromDB())
+        .catch((err) => console.error("Başvuru silme hatası:", err));
 
       return true;
     }

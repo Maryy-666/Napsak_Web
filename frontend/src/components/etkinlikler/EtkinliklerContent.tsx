@@ -14,7 +14,6 @@ import {
   Users,
   X,
   Zap,
-  Clock,
 } from "lucide-react";
 import { Badge, Button, PageContainer, Section } from "../ui";
 import { EventItem, EventsRepository } from "../../lib/eventsStore";
@@ -62,13 +61,18 @@ export default function EtkinliklerContent() {
   const [grade, setGrade] = useState("");
   const [note, setNote] = useState("");
 
+  // DÜZELTME: Sayfa ilk açıldığında DB'den en güncel veriyi bekleterek çeker ve sekmelere basma gereksinimini kaldırır
   useEffect(() => {
-    setEvents(EventsRepository.getAllEvents());
-    EventsRepository.fetchEventsFromDB().then((data) => {
-      if (Array.isArray(data)) {
-        setEvents(data);
+    async function loadEvents() {
+      const dbData = await EventsRepository.fetchEventsFromDB();
+      if (Array.isArray(dbData) && dbData.length > 0) {
+        setEvents([...dbData]);
+      } else {
+        setEvents([...EventsRepository.getAllEvents()]);
       }
-    });
+    }
+
+    loadEvents();
   }, []);
 
   // Modal açıkken arka plan sayfasının kaymasını engelle
@@ -177,7 +181,7 @@ export default function EtkinliklerContent() {
     <PageBackground id="etkinlikler-root" className="select-none px-0 py-0 overflow-hidden">
       
       {/* ------------------------------------------------------------- */}
-      {/* 1. ÜST ALAN (HERO - Önceki Zengin Başlık)                     */}
+      {/* 1. ÜST ALAN (HERO)                                            */}
       {/* ------------------------------------------------------------- */}
       <Section padding="none" background="transparent" className="pt-14 sm:pt-18 pb-8 sm:pb-10 border-b border-slate-100 relative">
         <PageContainer className="max-w-6xl sm:max-w-7xl">
@@ -205,7 +209,7 @@ export default function EtkinliklerContent() {
       </Section>
 
       {/* ------------------------------------------------------------- */}
-      {/* 2. FİLTRE ALANI (Tek Satır, Sade Chip & Tab Tasarımı)         */}
+      {/* 2. FİLTRE ALANI                                               */}
       {/* ------------------------------------------------------------- */}
       <Section padding="none" background="transparent" className="py-8 sm:py-12 border-b border-slate-100">
         <PageContainer className="max-w-6xl">
@@ -276,7 +280,7 @@ export default function EtkinliklerContent() {
           </div>
 
           {/* ------------------------------------------------------------- */}
-          {/* 3. ETKİNLİK KARTLARI (Responsive Kompakt Grid)                */}
+          {/* 3. ETKİNLİK KARTLARI                                         */}
           {/* ------------------------------------------------------------- */}
           {filteredEvents.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8 max-w-md mx-auto">
@@ -323,7 +327,7 @@ export default function EtkinliklerContent() {
                           {event.title}
                         </h3>
 
-                        {/* Sade İkonlu Bilgi Satırları (Box/Border YOK!) */}
+                        {/* İkonlu Bilgi Satırları */}
                         <div className="space-y-1.5 mb-3 text-xs font-medium text-slate-700 font-sans">
                           <div className="flex items-center gap-2">
                             <Calendar className="w-3.5 h-3.5 text-[#0A5C3A] shrink-0" />
@@ -335,7 +339,7 @@ export default function EtkinliklerContent() {
                           </div>
                         </div>
 
-                        {/* Maksimum 2 Satır Açıklama */}
+                        {/* Açıklama */}
                         <p className="text-xs sm:text-sm text-slate-600 font-sans font-normal leading-relaxed line-clamp-2 mb-5">
                           {event.description}
                         </p>
@@ -442,7 +446,6 @@ function ApplyModal({
     <AnimatePresence>
       {event && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto select-none">
-          {/* Siyah Yarı-Şeffaf Arka Plan Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -451,9 +454,7 @@ function ApplyModal({
             className="fixed inset-0 bg-black/60 backdrop-blur-sm"
           />
 
-          {/* Hizalama Konteynırı */}
           <div className="min-h-full flex items-center justify-center p-4 sm:p-6 text-center relative z-10 pointer-events-none">
-            {/* Açılan Kart Penceremiz (Kaydırılabilir Alan) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -61,3 +61,37 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const token = cookies().get("session_token")?.value;
+    const { id, ...updateData } = body;
+
+    const res = await fetch(`${BACKEND_URL}/events/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { success: false, error: data.error || "Etkinlik güncellenemedi." },
+        { status: res.status }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: data.data || data });
+  } catch (error) {
+    console.error("[EVENTS PATCH API ERROR]", error);
+    return NextResponse.json(
+      { success: false, error: "Backend sunucusuna bağlanılamadı." },
+      { status: 500 }
+    );
+  }
+}
