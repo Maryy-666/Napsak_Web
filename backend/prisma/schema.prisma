@@ -20,6 +20,14 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum PositionApplicationStatus {
+  NEW
+  IN_REVIEW
+  INTERVIEW
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id           Int           @id @default(autoincrement())
   name         String
@@ -29,10 +37,11 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
-  profile             MemberProfile?
-  applications        Application[]
-  sessions            Session[]
-  passwordResetTokens PasswordResetToken[]
+  profile              MemberProfile?
+  applications         Application[]
+  positionApplications PositionApplication[]
+  sessions             Session[]
+  passwordResetTokens  PasswordResetToken[]
 }
 
 model MemberProfile {
@@ -447,8 +456,35 @@ model Position {
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
 
+  positionApplications PositionApplication[]
+
   @@index([isActive])
   @@index([displayOrder])
+}
+
+model PositionApplication {
+  id            Int                       @id @default(autoincrement())
+  userId        Int
+  positionId    Int
+  phone         String?
+  school        String?
+  department    String?
+  cvUrl         String?
+  whyApply      String?
+  experience    String?
+  customAnswers Json?
+  status        PositionApplicationStatus @default(NEW)
+  adminNote     String?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  position Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, positionId])
+  @@index([userId])
+  @@index([positionId])
+  @@index([status])
 }
 
 model Partner {

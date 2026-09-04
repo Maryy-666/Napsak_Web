@@ -67,13 +67,15 @@ export default function FaaliyetlerContent() {
           <div className="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
           <div className="relative z-10">
             <span className="bg-white/15 text-white text-xs font-bold px-3 py-1 rounded-md mb-3 inline-block">
-              Harekete Geç
+              {isEn ? "Take Action" : "Harekete Geç"}
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight mb-2">
-              Sen de N'apsak?'ta yerini al!
+              {isEn ? "Take your place in N'apsak?!" : "Sen de N'apsak?'ta yerini al!"}
             </h3>
             <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl">
-              Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için mülakatlı üyelik başvurusu yapabilirsin.
+              {isEn
+                ? "You can submit your membership application to discover your potential, produce your projects, and meet like-minded youth."
+                : "Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için mülakatlı üyelik başvurusu yapabilirsin."}
             </p>
           </div>
           <Button
@@ -83,7 +85,7 @@ export default function FaaliyetlerContent() {
             rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
             className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold shrink-0 shadow-lg text-base px-6 h-12 relative z-10"
           >
-            Topluluğa Katıl
+            {isEn ? "Join Community" : "Topluluğa Katıl"}
           </Button>
         </div>
       </section>

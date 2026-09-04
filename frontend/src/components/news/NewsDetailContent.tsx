@@ -16,6 +16,7 @@ import { NewsItem, NEWS_DATA } from "../../data/news";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
 import { NewsContentFormatter } from "./NewsContentFormatter";
+import { useLanguage } from "../../context/LanguageContext";
 
 
 interface NewsDetailContentProps {
@@ -23,7 +24,14 @@ interface NewsDetailContentProps {
 }
 
 export function NewsDetailContent({ news }: NewsDetailContentProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const otherNews = NEWS_DATA;
+
+  const displayTitle = isEn ? (news.titleEn || news.title) : news.title;
+  const displayCategory = isEn ? (news.categoryEn || news.category) : news.category;
+  const displayExcerpt = isEn ? (news.excerptEn || news.excerpt) : news.excerpt;
+  const displayContent = isEn ? (news.contentEn || news.content) : news.content;
 
   return (
     <InnerPageBackground className="min-h-screen flex flex-col">
@@ -36,12 +44,12 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
               href="/"
               className="hover:text-[#0A5C3A] transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" /> Ana Sayfa
+              <ArrowLeft className="w-4 h-4" /> {isEn ? "Home" : "Ana Sayfa"}
             </Link>
             <span className="text-[#CDD1D5]">/</span>
-            <span className="text-[#5F6773]">Haberler</span>
+            <span className="text-[#5F6773]">{isEn ? "News" : "Haberler"}</span>
             <span className="text-[#CDD1D5]">/</span>
-            <span className="text-[#0F1115] font-semibold line-clamp-1">{news.title}</span>
+            <span className="text-[#0F1115] font-semibold line-clamp-1">{displayTitle}</span>
           </div>
 
           {/* Title Header */}
@@ -55,16 +63,16 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0A5C3A] text-white font-bold text-xs uppercase tracking-wide shadow-sm">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>N'apsak? Naptık!</span>
+                <span>{isEn ? "N'apsak? Latest!" : "N'apsak? Naptık!"}</span>
               </div>
               <span className="px-3.5 py-1.5 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] font-extrabold text-xs uppercase tracking-wide border border-[#0A5C3A]/20">
-                {news.category}
+                {displayCategory}
               </span>
             </div>
 
             {/* Main News Title */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight leading-[1.18]">
-              {news.title}
+              {displayTitle}
             </h1>
 
             {/* Date */}
@@ -84,7 +92,7 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             <div className="relative w-full h-[320px] sm:h-[480px] md:h-[540px] rounded-[20px] overflow-hidden">
               <Image
                 src={news.coverImage}
-                alt={news.title}
+                alt={displayTitle}
                 fill
                 priority
                 sizes="(max-width: 1200px) 100vw, 1200px"
@@ -110,13 +118,13 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
                 <Newspaper className="w-5 h-5 stroke-[2]" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold font-headings text-[#0F1115]">
-                Haber Detayı
+                {isEn ? "News Detail" : "Haber Detayı"}
               </h2>
             </div>
 
             {/* Excerpt Lead Paragraph */}
             <p className="text-lg sm:text-xl font-sans text-[#0F1115] font-semibold leading-relaxed border-l-4 border-[#0A5C3A] pl-4 py-1">
-              {news.excerpt}
+              {displayExcerpt}
             </p>
 
             {/* Inspiring Quote Card (Atatürk Quote for 23 Nisan) */}
@@ -149,7 +157,7 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             )}
 
             {/* Main Content Body */}
-            <NewsContentFormatter content={news.content} />
+            <NewsContentFormatter content={displayContent} />
           </motion.div>
 
 
@@ -164,10 +172,10 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
               <div className="flex items-center justify-between border-b border-[#EEF0F2] pb-5">
                 <div>
                   <span className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                    ETKİNLİK KARELERİ
+                    {isEn ? "EVENT PHOTOS" : "ETKİNLİK KARELERİ"}
                   </span>
                   <h3 className="text-2xl font-bold font-headings text-[#0F1115] mt-0.5">
-                    Haber Görselleri
+                    {isEn ? "News Gallery" : "Haber Görselleri"}
                   </h3>
                 </div>
                 <div className="w-9 h-9 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] flex items-center justify-center text-sm font-bold">
@@ -185,7 +193,7 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
                     <div className="relative w-full h-full rounded-[16px] overflow-hidden">
                       <Image
                         src={imgSrc}
-                        alt={`${news.title} Görsel ${idx + 1}`}
+                        alt={`${displayTitle} ${isEn ? "Image" : "Görsel"} ${idx + 1}`}
                         fill
                         sizes="(max-width: 640px) 100vw, 50vw"
                         className="object-contain object-center p-1 rounded-[16px] transition-transform duration-500 group-hover:scale-105"
@@ -207,20 +215,24 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 text-left">
               <div>
                 <span className="text-[#0A5C3A] text-xs font-bold uppercase tracking-wider">
-                  KEŞFETMEYE DEVAM ET
+                  {isEn ? "KEEP EXPLORING" : "KEŞFETMEYE DEVAM ET"}
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-extrabold font-headings text-[#0F1115] mt-1">
-                  Diğer Haberler
+                  {isEn ? "Other News" : "Diğer Haberler"}
                 </h2>
               </div>
               <p className="text-sm text-[#5F6773] max-w-sm">
-                Topluluğumuzun öne çıkan tüm haberlerini, etkinliklerini ve duyurularını inceleyin.
+                {isEn
+                  ? "Explore all featured news, events, and announcements from our community."
+                  : "Topluluğumuzun öne çıkan tüm haberlerini, etkinliklerini ve duyurularını inceleyin."}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
               {otherNews.map((item) => {
                 const isCurrent = item.slug === news.slug;
+                const itemTitle = isEn ? (item.titleEn || item.title) : item.title;
+                const itemExcerpt = isEn ? (item.excerptEn || item.excerpt) : item.excerpt;
 
                 if (isCurrent) {
                   return (
@@ -230,16 +242,16 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#0A5C3A] text-white uppercase tracking-wider shadow-sm">
-                          Buradasın
+                          {isEn ? "You Are Here" : "Buradasın"}
                         </span>
                         <span className="text-xs font-medium text-[#5F6773]">{item.date}</span>
                       </div>
                       <div>
                         <h3 className="text-base font-bold font-headings text-[#0A5C3A] mb-1 line-clamp-2">
-                          {item.title}
+                          {itemTitle}
                         </h3>
                         <p className="text-xs font-sans text-[#5F6773] line-clamp-2">
-                          {item.excerpt}
+                          {itemExcerpt}
                         </p>
                       </div>
                     </div>
@@ -260,10 +272,10 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
                     </div>
                     <div>
                       <h3 className="text-base font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors mb-1 line-clamp-2">
-                        {item.title}
+                        {itemTitle}
                       </h3>
                       <p className="text-xs font-sans text-[#5F6773] line-clamp-2">
-                        {item.excerpt}
+                        {itemExcerpt}
                       </p>
                     </div>
                   </Link>

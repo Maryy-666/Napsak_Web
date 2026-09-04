@@ -12,6 +12,7 @@ import { Button } from "../ui/Button";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
 
 // Form validation schema
 const schema = z.object({
@@ -58,6 +59,9 @@ function getMailAppUrl(email: string): string {
 const STORAGE_KEY = "forgot_password_resend_until";
 
 export default function ForgotPasswordContent() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
+
   const [phase, setPhase] = useState<ForgotPasswordPhase>("idle");
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
   const [countdown, setCountdown] = useState(0);
@@ -328,10 +332,12 @@ export default function ForgotPasswordContent() {
                   </motion.div>
                   <div className="flex flex-col justify-center min-w-0 flex-1">
                     <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight text-[#0F1115] font-headings leading-none mb-3 whitespace-nowrap select-none">
-                      Şifrenizi mi Unuttunuz?
+                      {isEn ? "Forgot Password?" : "Şifrenizi mi Unuttunuz?"}
                     </h1>
                     <p className="text-base text-[#5F6773] leading-relaxed font-sans font-medium">
-                      E-posta adresinizi girin. Hesabınız varsa, güvenli bir şifre sıfırlama bağlantısı göndereceğiz.
+                      {isEn
+                        ? "Enter your email address. If an account exists, we'll send a password reset link."
+                        : "E-posta adresinizi girin. Hesabınız varsa, güvenli bir şifre sıfırlama bağlantısı göndereceğiz."}
                     </p>
                   </div>
                 </div>
@@ -341,11 +347,11 @@ export default function ForgotPasswordContent() {
                     <Input
                       {...register("email")}
                       type="email"
-                      label="E-posta"
-                      placeholder="ornek@napsak.com"
+                      label={isEn ? "Email" : "E-posta"}
+                      placeholder={isEn ? "example@napsak.com" : "ornek@napsak.com"}
                       required
                       disabled={disabled}
-                      errorText={errors.email?.message}
+                      errorText={errors.email?.message ? (isEn ? (errors.email.message.includes("zorunlu") ? "Email address is required." : "Enter a valid email address.") : errors.email.message) : undefined}
                       leftIcon={<Mail className="w-4.5 h-4.5" />}
                       showClearButton={!disabled}
                       onClear={() => setValue("email", "", { shouldValidate: true })}
@@ -363,7 +369,7 @@ export default function ForgotPasswordContent() {
                     disabled={disabled}
                     className="!h-[56px] !rounded-[14px] text-base font-semibold bg-[#0A5C3A] hover:bg-[#0D7449] shadow-[0_1px_2px_rgba(10,92,58,0.18)] hover:shadow-[0_8px_20px_rgba(10,92,58,0.18)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150"
                   >
-                    Bağlantıyı Gönder
+                    {isEn ? "Send Reset Link" : "Bağlantıyı Gönder"}
                   </Button>
                 </form>
 
@@ -378,7 +384,7 @@ export default function ForgotPasswordContent() {
                       transition={{ duration: 0.15 }}
                       className="flex items-center gap-1.5"
                     >
-                      <span>←</span> Girişe Dön
+                      <span>←</span> {isEn ? "Back to Sign In" : "Girişe Dön"}
                     </motion.span>
                   </Link>
                 </div>
@@ -406,7 +412,7 @@ export default function ForgotPasswordContent() {
                     className="flex flex-col items-center w-full"
                   >
                     <h2 className="text-3xl sm:text-[40px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight sm:leading-none select-none">
-                      Bağlantı Gönderildi
+                      {isEn ? "Link Sent" : "Bağlantı Gönderildi"}
                     </h2>
                   </motion.div>
                 )}
@@ -422,13 +428,15 @@ export default function ForgotPasswordContent() {
                     className="w-full flex flex-col items-center"
                   >
                     <p className="text-[#0A5C3A] font-semibold text-base max-w-[340px] mt-4">
-                      Eğer bu e-posta adresine ait bir hesap varsa, şifre sıfırlama bağlantısı gönderilecektir.
+                      {isEn
+                        ? "If an account exists for this email address, a password reset link will be sent."
+                        : "Eğer bu e-posta adresine ait bir hesap varsa, şifre sıfırlama bağlantısı gönderilecektir."}
                     </p>
 
                     <div className="flex flex-col items-center gap-2 select-none mt-6">
                       <Mail className="w-8 h-8 text-[#9FA6B2] stroke-[1.5]" />
                       <span className="text-sm font-semibold text-[#5F6773] font-sans">
-                        Lütfen gelen kutunuzu kontrol edin.
+                        {isEn ? "Please check your inbox." : "Lütfen gelen kutunuzu kontrol edin."}
                       </span>
                     </div>
                   </motion.div>
@@ -452,7 +460,7 @@ export default function ForgotPasswordContent() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center h-[50px] px-8 rounded-[12px] text-sm font-semibold text-white bg-[#0A5C3A] hover:bg-[#0D7449] shadow-[0_1px_2px_rgba(10,92,58,0.18)] hover:shadow-[0_8px_20px_rgba(10,92,58,0.18)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150 cursor-pointer"
                       >
-                        Mail Uygulamasını Aç
+                        {isEn ? "Open Mail App" : "Mail Uygulamasını Aç"}
                       </a>
 
                       {resetUrl && (
@@ -460,7 +468,7 @@ export default function ForgotPasswordContent() {
                           href={resetUrl}
                           className="inline-flex items-center justify-center h-[46px] px-6 rounded-[12px] text-xs font-bold text-[#0A5C3A] bg-[#EAF5EF] hover:bg-[#D6EBE0] border border-[#0A5C3A]/30 transition-all duration-150 cursor-pointer"
                         >
-                          🔗 Şifre Sıfırlama Bağlantısını Doğrudan Aç
+                          🔗 {isEn ? "Open Password Reset Link Directly" : "Şifre Sıfırlama Bağlantısını Doğrudan Aç"}
                         </a>
                       )}
                     </div>
@@ -477,7 +485,7 @@ export default function ForgotPasswordContent() {
                             transition={{ duration: 0.15 }}
                             className="text-xs text-[#5F6773] font-semibold font-sans select-none"
                           >
-                            {countdown} saniye sonra tekrar gönderebilirsiniz
+                            {isEn ? `You can resend in ${countdown} seconds` : `${countdown} saniye sonra tekrar gönderebilirsiniz`}
                           </motion.span>
                         ) : (
                           <motion.button
@@ -491,7 +499,7 @@ export default function ForgotPasswordContent() {
                             disabled={isResending}
                             className="text-xs font-semibold text-[#5F6773] hover:text-[#0A5C3A] transition-colors cursor-pointer"
                           >
-                            {isResending ? "Gönderiliyor..." : "Tekrar Gönder"}
+                            {isResending ? (isEn ? "Sending..." : "Gönderiliyor...") : (isEn ? "Resend" : "Tekrar Gönder")}
                           </motion.button>
                         )}
                       </AnimatePresence>
@@ -499,7 +507,7 @@ export default function ForgotPasswordContent() {
 
                     {/* Spam message */}
                     <p className="text-xs text-[#9FA6B2] font-normal font-sans mt-5 select-none pointer-events-none">
-                      💡 Spam klasörünüzü de kontrol etmeyi unutmayın.
+                      💡 {isEn ? "Don't forget to check your spam folder." : "Spam klasörünüzü de kontrol etmeyi unutmayın."}
                     </p>
                   </motion.div>
                 )}

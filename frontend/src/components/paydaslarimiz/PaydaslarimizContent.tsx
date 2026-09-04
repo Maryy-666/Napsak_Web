@@ -295,7 +295,11 @@ export default function PaydaslarimizContent() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0A5C3A] hover:text-[#0D7449] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-md px-1 py-0.5"
-                            aria-label={`${nameText} web sitesini ziyaret et (Yeni sekmede açılır)`}
+                            aria-label={
+                              isEn
+                                ? `Visit ${nameText} website (Opens in a new tab)`
+                                : `${nameText} web sitesini ziyaret et (Yeni sekmede açılır)`
+                            }
                           >
                             <Globe className="w-3.5 h-3.5" />
                             <span>{isEn ? "Visit Website" : "Web Sitesini Ziyaret Et"}</span>

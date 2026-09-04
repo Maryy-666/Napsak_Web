@@ -62,25 +62,27 @@ export const ContactForm: React.FC = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = "Ad Soyad alanı zorunludur.";
+      newErrors.name = isEn ? "Full name is required." : "Ad Soyad alanı zorunludur.";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "E-posta alanı zorunludur.";
+      newErrors.email = isEn ? "Email is required." : "E-posta alanı zorunludur.";
     } else if (!isEmailValid) {
-      newErrors.email = "Geçerli bir e-posta adresi giriniz.";
+      newErrors.email = isEn ? "Please enter a valid email address." : "Geçerli bir e-posta adresi giriniz.";
     }
 
     if (!formData.subject.trim()) {
-      newErrors.subject = "Konu seçimi zorunludur.";
+      newErrors.subject = isEn ? "Subject selection is required." : "Konu seçimi zorunludur.";
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = "Mesaj alanı zorunludur.";
+      newErrors.message = isEn ? "Message is required." : "Mesaj alanı zorunludur.";
     }
 
     if (!isKvkkAccepted) {
-      newErrors.kvkk = "Devam etmek için kişisel verilerin işlenmesini onaylamalısınız.";
+      newErrors.kvkk = isEn
+        ? "You must accept the data processing terms to proceed."
+        : "Devam etmek için kişisel verilerin işlenmesini onaylamalısınız.";
     }
 
     setErrors(newErrors);
@@ -180,7 +182,9 @@ export const ContactForm: React.FC = () => {
       console.error("Form gönderim hatası:", err);
       setIsSubmitting(false);
       setSubmitError(
-        "Mesajınız gönderilirken bir sorun oluştu. Lütfen bağlantınızı kontrol edip tekrar deneyiniz."
+        isEn
+          ? "There was a problem sending your message. Please check your connection and try again."
+          : "Mesajınız gönderilirken bir sorun oluştu. Lütfen bağlantınızı kontrol edip tekrar deneyiniz."
       );
     }
   };
@@ -219,9 +223,13 @@ export const ContactForm: React.FC = () => {
           >
             <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5 stroke-[2]" />
             <div>
-              <p className="font-semibold text-base">Mesajınız başarıyla iletildi.</p>
+              <p className="font-semibold text-base">
+                {isEn ? "Message sent successfully." : "Mesajınız başarıyla iletildi."}
+              </p>
               <p className="text-xs text-[#0A5C3A]/90 mt-0.5">
-                İlettiğiniz mesaj ekibimize ulaştı. En kısa sürede sizinle iletişime geçeceğiz.
+                {isEn
+                  ? "Your message has reached our team. We will contact you as soon as possible."
+                  : "İlettiğiniz mesaj ekibimize ulaştı. En kısa sürede sizinle iletişime geçeceğiz."}
               </p>
             </div>
           </div>
@@ -235,7 +243,7 @@ export const ContactForm: React.FC = () => {
           >
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 stroke-[2]" />
             <div>
-              <p className="font-semibold text-base">Gönderim Başarısız</p>
+              <p className="font-semibold text-base">{isEn ? "Submission Failed" : "Gönderim Başarısız"}</p>
               <p className="text-xs text-[#DC2626]/90 mt-0.5">{submitError}</p>
             </div>
           </div>

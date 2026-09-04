@@ -158,16 +158,17 @@ export function FAQSection({ showHeader = true, background = "transparent", cust
                 size="md"
                 className="mb-3"
               >
-                Sıkça Sorulan Sorular
+                {language === "en" ? "Frequently Asked Questions" : "Sıkça Sorulan Sorular"}
               </Badge>
 
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
-                Merak Ettikleriniz
+                {language === "en" ? "What You Wonder" : "Merak Ettikleriniz"}
               </h2>
 
               <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans">
-                N'apsak? hakkında en çok merak edilen soruların cevaplarını
-                burada bulabilirsin.
+                {language === "en"
+                  ? "Find answers to the most curious questions about N'apsak? here."
+                  : "N'apsak? hakkında en çok merak edilen soruların cevaplarını burada bulabilirsin."}
               </p>
             </div>
           )}
@@ -248,7 +249,7 @@ export function FAQSection({ showHeader = true, background = "transparent", cust
                     ref={closeButtonRef}
                     type="button"
                     onClick={handleCloseModal}
-                    aria-label="Pencereyi Kapat"
+                    aria-label={language === "en" ? "Close Window" : "Pencereyi Kapat"}
                     className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
                   >
                     <X className="w-5 h-5 text-white" />

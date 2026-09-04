@@ -11,22 +11,10 @@ import { PasswordInput } from "./PasswordInput";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
 import { saveCurrentUser } from "../../lib/memberAuth";
-
-// Zod Validation Schema for Login Credentials
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "E-posta adresi zorunludur.")
-    .email("Geçerli bir e-posta adresi giriniz."),
-  password: z
-    .string()
-    .min(1, "Şifre zorunludur."),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { useLanguage } from "../../context/LanguageContext";
 
 interface LoginFormProps {
-  onSubmitSuccess?: (data: LoginFormData) => void;
+  onSubmitSuccess?: (data: any) => void;
   isFrozen?: boolean;
 }
 
@@ -34,6 +22,21 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSubmitSuccess,
   isFrozen = false,
 }) => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
+
+  const loginSchema = z.object({
+    email: z
+      .string()
+      .min(1, isEn ? "Email address is required." : "E-posta adresi zorunludur.")
+      .email(isEn ? "Please enter a valid email address." : "Geçerli bir e-posta adresi giriniz."),
+    password: z
+      .string()
+      .min(1, isEn ? "Password is required." : "Şifre zorunludur."),
+  });
+
+  type LoginFormData = z.infer<typeof loginSchema>;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const disabled = isSubmitting || isFrozen;
   const isLoading = isSubmitting || isFrozen;
@@ -113,11 +116,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         }
       } else {
         const { toast } = await import("sonner");
-        toast.error(responseData.error || "Giriş başarısız oldu.");
+        toast.error(responseData.error || (isEn ? "Login failed." : "Giriş başarısız oldu."));
       }
     } catch (err: any) {
       const { toast } = await import("sonner");
-      toast.error(err.message || "Giriş yapılırken bir hata oluştu.");
+      toast.error(err.message || (isEn ? "An error occurred while signing in." : "Giriş yapılırken bir hata oluştu."));
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +145,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="text-3xl sm:text-[44px] font-bold tracking-tight text-[#0F1115] font-headings leading-[1.1] select-none"
           >
-            Hoş Geldiniz
+            {isEn ? "Welcome Back" : "Hoş Geldiniz"}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 6 }}
@@ -150,7 +153,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
             className="text-base sm:text-[17px] text-[#5F6773] mt-1.5 select-none font-medium font-sans leading-[1.5]"
           >
-            Hesabınıza giriş yaparak devam edin.
+            {isEn ? "Sign in to your account to continue." : "Hesabınıza giriş yaparak devam edin."}
           </motion.p>
         </div>
       </div>
@@ -167,8 +170,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <Input
             {...register("email")}
             type="email"
-            label="E-posta"
-            placeholder="ornek@gmail.com"
+            label={isEn ? "Email" : "E-posta"}
+            placeholder={isEn ? "example@gmail.com" : "ornek@gmail.com"}
             required
             disabled={disabled}
             errorText={errors.email?.message}
@@ -198,14 +201,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               disabled={disabled}
               tabIndex={0}
             >
-              Şifremi Unuttum
+              {isEn ? "Forgot Password?" : "Şifremi Unuttum"}
             </Button>
           </div>
 
           <PasswordInput
             {...register("password")}
-            label="Şifre"
-            placeholder="Şifrenizi girin"
+            label={isEn ? "Password" : "Şifre"}
+            placeholder={isEn ? "Enter your password" : "Şifrenizi girin"}
             required
             disabled={disabled}
             errorText={errors.password?.message}
@@ -231,7 +234,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             className="!h-[56px] sm:!h-[56px] !rounded-[14px] text-base font-semibold bg-[#0A5C3A] hover:bg-[#0D7449] hover:shadow-[0_8px_20px_rgba(10,92,58,0.18)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150"
             rightIcon={!isLoading && <span className="ml-1.5 text-lg leading-none">→</span>}
           >
-            {isLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+            {isLoading
+              ? isEn
+                ? "Signing in..."
+                : "Giriş Yapılıyor..."
+              : isEn
+              ? "Sign In"
+              : "Giriş Yap"}
           </Button>
         </motion.div>
 
@@ -252,7 +261,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           className="w-full text-center flex flex-col items-center gap-2"
         >
           <p className="text-sm text-[#5F6773] select-none font-medium">
-            Hesabınız yok mu?
+            {isEn ? "Don't have an account?" : "Hesabınız yok mu?"}
           </p>
           <div className="flex items-center justify-center gap-4 text-sm font-semibold">
             <Button
@@ -261,7 +270,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               disabled={disabled}
               className="text-base font-semibold text-[#0A5C3A] hover:text-[#0D7449] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
             >
-              Kayıt Ol →
+              {isEn ? "Register →" : "Kayıt Ol →"}
             </Button>
             <span className="text-[#D1D5DB]">•</span>
             <Button
@@ -270,7 +279,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               disabled={disabled}
               className="text-sm font-semibold text-[#5F6773] hover:text-[#0A5C3A] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
             >
-              Topluluğa Katıl
+              {isEn ? "Join Community" : "Topluluğa Katıl"}
             </Button>
           </div>
         </motion.div>
@@ -284,7 +293,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         >
           <ShieldCheck className="w-4 h-4" />
           <span className="text-xs font-semibold tracking-wide font-sans">
-            Güvenli bağlantı ile korunmaktadır.
+            {isEn ? "Protected with secure connection." : "Güvenli bağlantı ile korunmaktadır."}
           </span>
         </motion.div>
 
@@ -296,7 +305,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           className="w-full text-center select-none pointer-events-none text-[#5F6773] mt-2"
         >
           <span className="text-[12px] font-normal leading-normal font-sans">
-            N'apsak? Gençlik Topluluğu
+            N'apsak? Youth Community
           </span>
         </motion.div>
       </form>

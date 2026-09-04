@@ -365,7 +365,7 @@ export function AccessibilityWidget() {
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-xs font-bold text-[#EEF7F3] flex items-center gap-1.5 font-headings">
               <Keyboard className="w-4 h-4 text-[#0A5C3A]" />
-              N'apsak? Sanal Klavye
+              {isEn ? "N'apsak? Virtual Keyboard" : "N'apsak? Sanal Klavye"}
             </span>
             <button
               type="button"
@@ -406,15 +406,15 @@ export function AccessibilityWidget() {
         id="accessibility-trigger"
         type="button"
         onClick={() => setIsOpen(true)}
-        aria-label="Erişilebilirlik Ayarları Paneli"
+        aria-label={isEn ? "Accessibility Settings Panel" : "Erişilebilirlik Ayarları Paneli"}
         aria-expanded={isOpen}
         aria-controls="accessibility-drawer"
-        data-a11y-tooltip="Erişilebilirlik Paneli"
+        data-a11y-tooltip={isEn ? "Accessibility Panel" : "Erişilebilirlik Paneli"}
         className={`fixed bottom-6 z-[999990] w-[56px] h-[56px] rounded-full bg-gradient-to-br from-[#07452C] to-[#0A5C3A] hover:from-[#0A5C3A] hover:to-[#0C7349] text-white flex items-center justify-center shadow-[0_12px_32px_rgba(7,69,44,0.35)] border-2 border-white/30 transition-all duration-300 ring-4 ring-[#07452C]/20 hover:ring-[#07452C]/40 hover:scale-105 active:scale-95 cursor-pointer ${
           settings.widgetPosition === "left" ? "left-6" : "right-6"
         }`}
       >
-        <span className="sr-only">Erişilebilirlik Paneli</span>
+        <span className="sr-only">{isEn ? "Accessibility Panel" : "Erişilebilirlik Paneli"}</span>
         <AccessibilityHumanIcon className="w-6 h-6 text-white access-widget-icon drop-shadow-xs" />
       </button>
 

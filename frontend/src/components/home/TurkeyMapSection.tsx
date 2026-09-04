@@ -277,10 +277,10 @@ export function TurkeyMapSection() {
           {/* Center Message Text */}
           <div className="flex-1 text-center">
             <p className="text-xs sm:text-sm text-[#5F6773] font-sans font-medium">
-              Daha fazla şehir, daha fazla genç, daha güçlü bir gelecek.
+              {t("map.callout_sub", "Daha fazla şehir, daha fazla genç, daha güçlü bir gelecek.")}
             </p>
             <p className="text-sm sm:text-base font-extrabold text-[#07452C] font-headings mt-0.5">
-              N'apsak? Birlikte yaparız!
+              {t("map.callout_title", "N'apsak? Birlikte yaparız!")}
             </p>
           </div>
 

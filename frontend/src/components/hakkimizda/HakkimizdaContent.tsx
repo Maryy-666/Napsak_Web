@@ -557,7 +557,7 @@ export default function HakkimizdaContent() {
                   <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/20">
                     <button
                       onClick={handlePrevSlide}
-                      aria-label="Önceki Görsel"
+                      aria-label={isEn ? "Previous Image" : "Önceki Görsel"}
                       className="w-6 h-6 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
                     >
                       <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
@@ -567,7 +567,7 @@ export default function HakkimizdaContent() {
                         <button
                           key={idx}
                           onClick={() => goToSlide(idx)}
-                          aria-label={`Görsel ${idx + 1}`}
+                          aria-label={isEn ? `Image ${idx + 1}` : `Görsel ${idx + 1}`}
                           className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                             idx === slideIndex ? "w-4 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
                           }`}
@@ -576,7 +576,7 @@ export default function HakkimizdaContent() {
                     </div>
                     <button
                       onClick={handleNextSlide}
-                      aria-label="Sonraki Görsel"
+                      aria-label={isEn ? "Next Image" : "Sonraki Görsel"}
                       className="w-6 h-6 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
                     >
                       <ChevronRight className="w-4 h-4 stroke-[2.5]" />

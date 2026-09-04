@@ -22,12 +22,15 @@ import { TeamsRepository } from "../../lib/teamsStore";
 import { PageContainer, Section } from "../ui";
 import { InnerPageBackground } from "../common/InnerPageBackground";
 import { ROUTES } from "../../constants/routes";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface TeamDetailContentProps {
   team: TeamData;
 }
 
 export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [currentTeam, setCurrentTeam] = useState<TeamData>(initialTeam);
   const [allTeams, setAllTeams] = useState<TeamData[]>(TEAMS_DATA);
 
@@ -61,14 +64,14 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               href="/"
               className="hover:text-[#0A5C3A] transition-colors flex items-center gap-1.5"
             >
-              <ArrowLeft className="w-4 h-4" /> Ana Sayfa
+              <ArrowLeft className="w-4 h-4" /> {isEn ? "Home" : "Ana Sayfa"}
             </Link>
             <span className="text-[#CDD1D5]">/</span>
             <Link href={ROUTES.EKIPLER} className="hover:text-[#0A5C3A] transition-colors">
-              Ekipler
+              {isEn ? "Teams" : "Ekipler"}
             </Link>
             <span className="text-[#CDD1D5]">/</span>
-            <span className="text-[#0F1115] font-semibold">{team.title}</span>
+            <span className="text-[#0F1115] font-semibold">{isEn ? (team.titleEn || team.title) : team.title}</span>
           </div>
 
           {/* Hero Grid */}
@@ -83,17 +86,17 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               {/* Badge Header */}
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] font-bold text-xs sm:text-sm tracking-wide uppercase mb-6 w-fit border border-[#0A5C3A]/15 shadow-sm">
                 <IconComp className="w-4 h-4 stroke-[2.5]" />
-                <span>N'APSAK? ÇALIŞMA EKİBİ</span>
+                <span>{isEn ? "N'APSAK? WORKING TEAM" : "N'APSAK? ÇALIŞMA EKİBİ"}</span>
               </div>
 
               {/* 1. Ekip Adı */}
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight leading-[1.15] mb-6">
-                {team.title}
+                {isEn ? (team.titleEn || team.title) : team.title}
               </h1>
 
               {/* 2. Kısa Tanıtım */}
               <p className="text-lg sm:text-xl font-sans text-[#5F6773] leading-relaxed mb-8">
-                {team.shortDescription}
+                {isEn ? (team.shortDescriptionEn || team.shortDescription) : team.shortDescription}
               </p>
 
               {/* Action CTA Buttons */}
@@ -102,14 +105,14 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                   href="/basvuru"
                   className="px-7 py-3.5 rounded-full bg-[#0A5C3A] text-white font-bold font-sans text-sm sm:text-base hover:bg-[#084A2F] transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 group"
                 >
-                  <span>Ekibe Katıl</span>
+                  <span>{isEn ? "Join Team" : "Ekibe Katıl"}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
                   href="#diger-ekipler"
                   className="px-6 py-3.5 rounded-full bg-white border border-[#EEF0F2] text-[#0F1115] font-semibold font-sans text-sm sm:text-base hover:bg-[#F8F9FA] hover:border-[#0A5C3A]/30 transition-all duration-200 shadow-sm"
                 >
-                  Tüm Ekipler
+                  {isEn ? "All Teams" : "Tüm Ekipler"}
                 </a>
               </div>
             </motion.div>
@@ -124,7 +127,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               <div className="relative rounded-[28px] overflow-hidden border-2 border-[#EEF0F2] shadow-xl group aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3]">
                 <Image
                   src={team.bgImage || "/images/istockphoto-1173149385-612x612.jpg"}
-                  alt={team.title}
+                  alt={isEn ? (team.titleEn || team.title) : team.title}
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 40vw"
@@ -135,7 +138,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                   <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white mb-2 border border-white/20">
                     <IconComp className="w-5 h-5 stroke-[2]" />
                   </div>
-                  <h3 className="text-xl font-bold font-headings">{team.title}</h3>
+                  <h3 className="text-xl font-bold font-headings">{isEn ? (team.titleEn || team.title) : team.title}</h3>
                   <p className="text-xs text-white/80 font-sans mt-1">N'apsak? Gençlik Topluluğu</p>
                 </div>
               </div>
@@ -162,11 +165,11 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                   <Users className="w-5.5 h-5.5 stroke-[2]" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold font-headings text-[#0F1115]">
-                  Ekip Hakkında
+                  {isEn ? "About Team" : "Ekip Hakkında"}
                 </h2>
               </div>
               <p className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed">
-                {team.about}
+                {isEn ? (team.aboutEn || team.about) : team.about}
               </p>
             </motion.div>
 
@@ -189,7 +192,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-4 left-4 right-4 text-white text-xs font-semibold font-sans flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <Leaf className="w-4 h-4 text-[#0A5C3A] bg-white rounded-full p-0.5" />
-                    <span>Sürdürülebilir & Doğa Dostu Gelecek</span>
+                    <span>{isEn ? "Sustainable & Eco-Friendly Future" : "Sürdürülebilir & Doğa Dostu Gelecek"}</span>
                   </div>
                 </div>
               </motion.div>
@@ -211,7 +214,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                     <Target className="w-5.5 h-5.5 stroke-[2]" />
                   </div>
                   <h2 className="text-2xl font-bold font-headings text-[#0F1115]">
-                    Çalışma Alanları
+                    {isEn ? "Focus Areas" : "Çalışma Alanları"}
                   </h2>
                 </div>
 
@@ -243,7 +246,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                     <Briefcase className="w-5.5 h-5.5 stroke-[2]" />
                   </div>
                   <h2 className="text-2xl font-bold font-headings text-[#0F1115]">
-                    Neler Yapıyoruz?
+                    {isEn ? "What We Do" : "Neler Yapıyoruz?"}
                   </h2>
                 </div>
 
@@ -274,14 +277,16 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                 <div>
                   <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0A5C3A] mb-1">
                     <Palette className="w-4 h-4" />
-                    <span>Yaratıcı Atölye & Üretim</span>
+                    <span>{isEn ? "Creative Workshop & Output" : "Yaratıcı Atölye & Üretim"}</span>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold font-headings text-[#0F1115]">
-                    {team.galleryTitle || "Sanatla Üretiyoruz"}
+                    {team.galleryTitle || (isEn ? "Creating with Art" : "Sanatla Üretiyoruz")}
                   </h2>
                 </div>
                 <p className="text-sm text-[#5F6773] max-w-md">
-                  Gençlerin hayal gücü ve estetik bakış açısıyla ürettiği özgün soyut formlar, illüstrasyonlar ve yaratıcı görsel çalışmalar.
+                  {isEn
+                    ? "Original abstract forms, illustrations, and creative visual work produced by youth with imagination and aesthetic perspective."
+                    : "Gençlerin hayal gücü ve estetik bakış açısıyla ürettiği özgün soyut formlar, illüstrasyonlar ve yaratıcı görsel çalışmalar."}
                 </p>
               </div>
 
@@ -332,7 +337,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                 <Layers className="w-5.5 h-5.5 stroke-[2]" />
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold font-headings text-[#0F1115]">
-                Ekip & Çalışma Yapısı
+                {isEn ? "Team & Working Structure" : "Ekip & Çalışma Yapısı"}
               </h2>
             </div>
             <p className="text-base sm:text-lg font-sans text-[#5F6773] leading-relaxed">
@@ -353,10 +358,12 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
 
             <div className="space-y-3 max-w-2xl relative z-10">
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight">
-                Sen de {team.title}'na Katıl!
+                {isEn ? `Join ${team.titleEn || team.title}!` : `Sen de ${team.title}'na Katıl!`}
               </h3>
               <p className="text-white/90 text-sm sm:text-base font-sans leading-relaxed">
-                Fikirlerini projeye dönüştürmek, yetkinliklerini geliştirmek ve üretken gençlerle bir araya gelmek için hemen başvurunu yap.
+                {isEn
+                  ? "Apply now to turn your ideas into projects, develop your skills, and meet productive youth."
+                  : "Fikirlerini projeye dönüştürmek, yetkinliklerini geliştirmek ve üretken gençlerle bir araya gelmek için hemen başvurunu yap."}
               </p>
             </div>
 
@@ -364,7 +371,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               href="/basvuru"
               className="px-8 py-4 rounded-full bg-white text-[#0A5C3A] font-bold font-sans text-base hover:bg-[#F8F9FA] transition-all shadow-lg hover:shadow-xl shrink-0 flex items-center gap-2 group relative z-10"
             >
-              <span>Ekibe Katıl</span>
+              <span>{isEn ? "Join Team" : "Ekibe Katıl"}</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -380,14 +387,16 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 text-left">
               <div>
                 <span className="text-[#0A5C3A] text-xs font-bold uppercase tracking-wider">
-                  KEŞFETMEYE DEVAM ET
+                  {isEn ? "KEEP EXPLORING" : "KEŞFETMEYE DEVAM ET"}
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-extrabold font-headings text-[#0F1115] mt-1">
-                  Diğer Ekiplerimiz
+                  {isEn ? "Our Other Teams" : "Diğer Ekiplerimiz"}
                 </h2>
               </div>
               <p className="text-sm text-[#5F6773] max-w-sm">
-                Topluluğumuz bünyesindeki tüm çalışma ekiplerini inceleyin ve ilgi alanınıza en uygun olanına hemen katılın.
+                {isEn
+                  ? "Explore all working teams in our community and join the one that suits your interests best."
+                  : "Topluluğumuz bünyesindeki tüm çalışma ekiplerini inceleyin ve ilgi alanınıza en uygun olanına hemen katılın."}
               </p>
             </div>
 
@@ -395,6 +404,8 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               {allTeams.map((item) => {
                 const ItemIconComp = TEAM_ICONS[item.iconName] || TEAM_ICONS["cpu"];
                 const isCurrent = item.slug === team.slug || item.id === team.id;
+                const itemTitle = isEn ? (item.titleEn || item.title) : item.title;
+                const itemShortDesc = isEn ? (item.shortDescriptionEn || item.shortDescription) : item.shortDescription;
 
                 if (isCurrent) {
                   return (
@@ -407,15 +418,15 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                           <ItemIconComp className="w-5 h-5 stroke-[2]" />
                         </div>
                         <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-[#0A5C3A] text-white uppercase tracking-wider shadow-sm">
-                          Buradasın
+                          {isEn ? "You Are Here" : "Buradasın"}
                         </span>
                       </div>
                       <div>
                         <h3 className="text-base font-bold font-headings text-[#0A5C3A] mb-1">
-                          {item.title}
+                          {itemTitle}
                         </h3>
                         <p className="text-xs font-sans text-[#5F6773] line-clamp-2">
-                          {item.shortDescription}
+                          {itemShortDesc}
                         </p>
                       </div>
                     </div>
@@ -438,10 +449,10 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                     </div>
                     <div>
                       <h3 className="text-base font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors mb-1">
-                        {item.title}
+                        {itemTitle}
                       </h3>
                       <p className="text-xs font-sans text-[#5F6773] line-clamp-2">
-                        {item.shortDescription}
+                        {itemShortDesc}
                       </p>
                     </div>
                   </Link>

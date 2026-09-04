@@ -109,6 +109,7 @@ export function TeamsIndexContent() {
             {TEAMS_DATA.map((team) => {
               const IconComp = TEAM_ICONS[team.iconName];
               const isSelected = team.id === selectedTeamId;
+              const teamTitle = isEn ? (team.titleEn || team.title) : team.title;
 
               return (
                 <button
@@ -121,7 +122,7 @@ export function TeamsIndexContent() {
                   }`}
                 >
                   <IconComp className={`w-4 h-4 stroke-[2] ${isSelected ? "text-white" : "text-[#0A5C3A]"}`} />
-                  <span>{team.title}</span>
+                  <span>{teamTitle}</span>
                 </button>
               );
             })}
@@ -147,22 +148,22 @@ export function TeamsIndexContent() {
                     </div>
                     <div>
                       <span className="text-xs font-extrabold uppercase tracking-wider text-[#0A5C3A] block">
-                        SEÇİLİ ÇALIŞMA EKİBİ
+                        {isEn ? "SELECTED WORKING TEAM" : "SEÇİLİ ÇALIŞMA EKİBİ"}
                       </span>
                       <h2 className="text-2xl sm:text-3xl font-extrabold font-headings text-[#0F1115]">
-                        {activeTeam.title}
+                        {isEn ? (activeTeam.titleEn || activeTeam.title) : activeTeam.title}
                       </h2>
                     </div>
                   </div>
 
                   <p className="text-base sm:text-lg text-[#5F6773] font-sans font-medium leading-relaxed">
-                    {activeTeam.about}
+                    {isEn ? (activeTeam.aboutEn || activeTeam.about) : activeTeam.about}
                   </p>
 
                   {/* ODAK ALANLARI */}
                   <div className="space-y-2.5 pt-2">
                     <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F1115] flex items-center gap-1.5">
-                      <Target className="w-4 h-4 text-[#0A5C3A]" /> Odak Alanları & Çalışmalar
+                      <Target className="w-4 h-4 text-[#0A5C3A]" /> {isEn ? "Focus Areas & Work" : "Odak Alanları & Çalışmalar"}
                     </span>
                     <div className="flex flex-wrap gap-2">
                       {activeTeam.focusAreas.map((area) => (
@@ -182,14 +183,14 @@ export function TeamsIndexContent() {
                       href={`/ekipler/${activeTeam.slug}`}
                       className="px-7 py-3.5 rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] text-white font-bold font-sans text-sm sm:text-base transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 group"
                     >
-                      <span>{activeTeam.title} Detayına Git</span>
+                      <span>{isEn ? `Go to ${activeTeam.titleEn || activeTeam.title} Details` : `${activeTeam.title} Detayına Git`}</span>
                       <ArrowRight className="w-4 h-4 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
                     </Link>
                     <Link
                       href="/basvuru"
                       className="px-6 py-3.5 rounded-xl bg-[#F8F9FA] hover:bg-[#EEF0F2] text-[#0F1115] border border-[#EEF0F2] font-semibold text-sm sm:text-base transition-colors"
                     >
-                      Ekibe Başvur
+                      {isEn ? "Apply to Team" : "Ekibe Başvur"}
                     </Link>
                   </div>
                 </div>
@@ -202,21 +203,21 @@ export function TeamsIndexContent() {
                   >
                     <Image
                       src={activeTeam.bgImage}
-                      alt={activeTeam.title}
+                      alt={isEn ? (activeTeam.titleEn || activeTeam.title) : activeTeam.title}
                       fill
                       sizes="(max-width: 1024px) 100vw, 40vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-6 text-white text-left z-10">
                       <span className="bg-[#0A5C3A] text-white text-[10px] font-extrabold px-3 py-1 rounded-md uppercase tracking-wider mb-2 w-fit">
-                        Keşfet
+                        {isEn ? "Discover" : "Keşfet"}
                       </span>
                       <h3 className="text-xl font-bold font-headings flex items-center justify-between">
-                        <span>{activeTeam.title}</span>
+                        <span>{isEn ? (activeTeam.titleEn || activeTeam.title) : activeTeam.title}</span>
                         <ChevronRight className="w-5 h-5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
                       </h3>
                       <p className="text-xs text-white/80 font-sans mt-1">
-                        Detaylı sayfa ve üretimleri incelemek için tıklayın
+                        {isEn ? "Click to inspect detailed page and productions" : "Detaylı sayfa ve üretimleri incelemek için tıklayın"}
                       </p>
                     </div>
                   </Link>
@@ -237,13 +238,15 @@ export function TeamsIndexContent() {
             <div className="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-white/5 pointer-events-none" />
             <div className="relative z-10 text-left">
               <span className="bg-white/15 text-white text-xs font-bold px-3 py-1 rounded-md mb-3 inline-block">
-                Üretmeye Başla
+                {isEn ? "Start Producing" : "Üretmeye Başla"}
               </span>
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight mb-2">
-                Hangi ekip sana daha yakın?
+                {isEn ? "Which team fits you best?" : "Hangi ekip sana daha yakın?"}
               </h3>
               <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl">
-                Yeteneğini geliştirmek ve projelerde aktif rol almak için mülakatlı üyelik başvurunu yapabilirsin.
+                {isEn
+                  ? "You can submit an interview-based application to develop your skills and take an active role in projects."
+                  : "Yeteneğini geliştirmek ve projelerde aktif rol almak için mülakatlı üyelik başvurunu yapabilirsin."}
               </p>
             </div>
             <Button
@@ -253,7 +256,7 @@ export function TeamsIndexContent() {
               rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
               className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold shrink-0 shadow-lg text-base px-6 h-12 relative z-10"
             >
-              Hemen Başvur
+              {isEn ? "Apply Now" : "Hemen Başvur"}
             </Button>
           </motion.div>
         </PageContainer>

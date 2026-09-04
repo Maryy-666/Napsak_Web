@@ -8,11 +8,15 @@ export interface NewsItem {
   id: string;
   slug: string;
   title: string;
+  titleEn?: string;
   date: string;
   category: string;
+  categoryEn?: string;
   excerpt: string;
+  excerptEn?: string;
   coverImage: string;
   content: string;
+  contentEn?: string;
   quote?: NewsQuote;
   images: string[];
 }

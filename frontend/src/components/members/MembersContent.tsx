@@ -155,7 +155,7 @@ export function MembersContent() {
                     : "bg-white text-[#0A5C3A] border-[#EEF0F2] hover:border-[#0A5C3A]/40 hover:bg-[#F8FBF9]"
                 }`}
               >
-                Tümü
+                {isEn ? "All" : "Tümü"}
               </button>
 
               {/* TEAM & BOARD TABS */}
@@ -183,7 +183,7 @@ export function MembersContent() {
               <Search className="w-4 h-4 text-[#5F6773] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Kişi veya görev ara..."
+                placeholder={isEn ? "Search person or role..." : "Kişi veya görev ara..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-9 py-2.5 bg-white rounded-full border border-[#EEF0F2] text-xs sm:text-sm font-medium text-[#0F1115] placeholder-[#5F6773] focus:outline-none focus:border-[#0A5C3A] transition-colors shadow-xs"
@@ -212,7 +212,9 @@ export function MembersContent() {
               <IconComponent className="w-4 h-4 text-[#0A5C3A]" />
               <span>
                 {selectedTeamFilter === "Tümü"
-                  ? "Ekibimiz"
+                  ? isEn
+                    ? "Our Team"
+                    : "Ekibimiz"
                   : selectedTeamFilter}
               </span>
               <span className="text-xs font-semibold text-[#5F6773] bg-white px-2 py-0.5 rounded-full border border-[#EEF0F2]">
@@ -246,10 +248,12 @@ export function MembersContent() {
                 <Filter className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold font-headings text-[#0F1115]">
-                Kişi Bulunamadı
+                {isEn ? "No Members Found" : "Kişi Bulunamadı"}
               </h3>
               <p className="text-xs sm:text-sm text-[#5F6773]">
-                Aradığınız kriterlere uygun ekip üyesi bulunamadı.
+                {isEn
+                  ? "No team members found matching your search criteria."
+                  : "Aradığınız kriterlere uygun ekip üyesi bulunamadı."}
               </p>
               <button
                 type="button"
@@ -259,7 +263,7 @@ export function MembersContent() {
                 }}
                 className="px-4 py-2 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-colors inline-block cursor-pointer"
               >
-                Filtreleri Temizle
+                {isEn ? "Clear Filters" : "Filtreleri Temizle"}
               </button>
             </div>
           )}

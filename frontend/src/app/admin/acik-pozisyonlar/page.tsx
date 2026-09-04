@@ -11,6 +11,12 @@ import {
   Zap,
   Sparkles,
   Search,
+  FileText,
+  Users,
+  Eye,
+  ExternalLink,
+  Clock,
+  MessageSquare,
 } from "lucide-react";
 import {
   AdminPageHeader,
@@ -25,21 +31,28 @@ import {
   AdminEmptyState,
 } from "@/components/admin/ui";
 import { PositionsRepository, OpenPosition } from "@/lib/positionsStore";
+import {
+  PositionApplicationsRepository,
+  PositionApplication,
+} from "@/lib/positionApplicationsStore";
 
 export default function AdminAcikPozisyonlarPage() {
+  const [activeTab, setActiveTab] = useState<"positions" | "applications">("positions");
+
+  // Positions State
   const [positions, setPositions] = useState<OpenPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [teamFilter, setTeamFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // Modal State
+  // Position Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState<OpenPosition | null>(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  // Form State
+  // Position Form State
   const [formData, setFormData] = useState<Partial<OpenPosition>>({
     title: "",
     titleEn: "",
@@ -63,7 +76,6 @@ export default function AdminAcikPozisyonlarPage() {
     displayOrder: 0,
   });
 
-  // Textarea raw states for multi-line array fields
   const [respText, setRespText] = useState("");
   const [respEnText, setRespEnText] = useState("");
   const [reqText, setReqText] = useState("");
@@ -71,13 +83,30 @@ export default function AdminAcikPozisyonlarPage() {
   const [prefText, setPrefText] = useState("");
   const [prefEnText, setPrefEnText] = useState("");
 
-  // Confirm Delete State
+  // Position Delete State
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Position Applications State
+  const [applications, setApplications] = useState<PositionApplication[]>([]);
+  const [appsLoading, setAppsLoading] = useState(false);
+  const [appSearchQuery, setAppSearchQuery] = useState("");
+  const [appPositionFilter, setAppPositionFilter] = useState("all");
+  const [appStatusFilter, setAppStatusFilter] = useState("all");
+
+  // Application Detail Modal State
+  const [selectedApp, setSelectedApp] = useState<PositionApplication | null>(null);
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [editingAppStatus, setEditingAppStatus] = useState<PositionApplication["status"]>("NEW");
+  const [editingAdminNote, setEditingAdminNote] = useState("");
+  const [updatingApp, setUpdatingApp] = useState(false);
+  const [deleteAppConfirmOpen, setDeleteAppConfirmOpen] = useState(false);
+  const [deletingAppId, setDeletingAppId] = useState<number | null>(null);
+
   useEffect(() => {
     loadPositions();
+    loadApplications();
   }, []);
 
   const loadPositions = async () => {
@@ -87,6 +116,16 @@ export default function AdminAcikPozisyonlarPage() {
       setPositions(data);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadApplications = async () => {
+    setAppsLoading(true);
+    try {
+      const apps = await PositionApplicationsRepository.fetchAllApplications();
+      setApplications(apps);
+    } finally {
+      setAppsLoading(false);
     }
   };
 
@@ -104,6 +143,12 @@ export default function AdminAcikPozisyonlarPage() {
       workTypeEn: "Volunteer / Remote",
       location: "Uzaktan / Çevrim İçi",
       locationEn: "Remote / Online",
+      responsibilities: [],
+      responsibilitiesEn: [],
+      requirements: [],
+      requirementsEn: [],
+      preferredQualifications: [],
+      preferredQualificationsEn: [],
       isActive: true,
       isUrgent: false,
       displayOrder: positions.length + 1,
@@ -133,25 +178,23 @@ export default function AdminAcikPozisyonlarPage() {
       location: pos.location,
       locationEn: pos.locationEn || "",
       isActive: pos.isActive,
-      isUrgent: pos.isUrgent,
-      displayOrder: pos.displayOrder,
+      isUrgent: pos.isUrgent || false,
+      displayOrder: pos.displayOrder || 0,
     });
-
     setRespText((pos.responsibilities || []).join("\n"));
     setRespEnText((pos.responsibilitiesEn || []).join("\n"));
     setReqText((pos.requirements || []).join("\n"));
     setReqEnText((pos.requirementsEn || []).join("\n"));
     setPrefText((pos.preferredQualifications || []).join("\n"));
     setPrefEnText((pos.preferredQualificationsEn || []).join("\n"));
-
     setFormError(null);
     setModalOpen(true);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSavePosition = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.title.trim()) {
-      setFormError("Pozisyon başlığı zorunludur.");
+    if (!formData.title?.trim() || !formData.shortDescription?.trim()) {
+      setFormError("Lütfen pozisyon başlığı ve kısa açıklamasını doldurun.");
       return;
     }
 
@@ -178,7 +221,7 @@ export default function AdminAcikPozisyonlarPage() {
       setModalOpen(false);
       await loadPositions();
     } catch (err: any) {
-      setFormError(err?.message || "İşlem sırasında bir hata oluştu.");
+      setFormError(err?.message || "Kayıt işlemi başarısız.");
     } finally {
       setSaving(false);
     }
@@ -191,11 +234,11 @@ export default function AdminAcikPozisyonlarPage() {
       });
       await loadPositions();
     } catch (err: any) {
-      alert(err?.message || "Durum değiştirilemedi.");
+      alert(err?.message || "Durum güncellenemedi.");
     }
   };
 
-  const handleConfirmDelete = async () => {
+  const handleDeletePosition = async () => {
     if (!deletingId) return;
     setDeleting(true);
     try {
@@ -210,7 +253,48 @@ export default function AdminAcikPozisyonlarPage() {
     }
   };
 
-  // Filtered List
+  // Application Actions
+  const handleOpenAppDetailModal = (app: PositionApplication) => {
+    setSelectedApp(app);
+    setEditingAppStatus(app.status);
+    setEditingAdminNote(app.adminNote || "");
+    setDetailModalOpen(true);
+  };
+
+  const handleUpdateAppStatus = async () => {
+    if (!selectedApp) return;
+    setUpdatingApp(true);
+    try {
+      const res = await PositionApplicationsRepository.updateStatus(
+        selectedApp.id,
+        editingAppStatus,
+        editingAdminNote
+      );
+
+      if (res.success) {
+        setDetailModalOpen(false);
+        await loadApplications();
+      } else {
+        alert(res.error || "Güncelleme başarısız.");
+      }
+    } finally {
+      setUpdatingApp(false);
+    }
+  };
+
+  const handleDeleteApplication = async () => {
+    if (!deletingAppId) return;
+    try {
+      await PositionApplicationsRepository.deleteApplication(deletingAppId);
+      setDeleteAppConfirmOpen(false);
+      setDeletingAppId(null);
+      await loadApplications();
+    } catch {
+      alert("Silme hatası.");
+    }
+  };
+
+  // Filtered List - Positions
   const filteredPositions = positions.filter((pos) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -218,9 +302,7 @@ export default function AdminAcikPozisyonlarPage() {
       (pos.titleEn && pos.titleEn.toLowerCase().includes(searchQuery.toLowerCase())) ||
       pos.team.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesTeam =
-      teamFilter === "all" || pos.teamCategory === teamFilter;
-
+    const matchesTeam = teamFilter === "all" || pos.teamCategory === teamFilter;
     const matchesStatus =
       statusFilter === "all" ||
       (statusFilter === "active" && pos.isActive) ||
@@ -229,7 +311,34 @@ export default function AdminAcikPozisyonlarPage() {
     return matchesSearch && matchesTeam && matchesStatus;
   });
 
-  const columns: Column<OpenPosition>[] = [
+  // Filtered List - Applications
+  const filteredApplications = applications.filter((app) => {
+    const q = appSearchQuery.toLowerCase().trim();
+    const userName = app.user?.name || "";
+    const userEmail = app.user?.email || "";
+    const posTitle = app.position?.title || "";
+    const school = app.school || "";
+    const dept = app.department || "";
+
+    const matchesQuery =
+      !q ||
+      userName.toLowerCase().includes(q) ||
+      userEmail.toLowerCase().includes(q) ||
+      posTitle.toLowerCase().includes(q) ||
+      school.toLowerCase().includes(q) ||
+      dept.toLowerCase().includes(q);
+
+    const matchesPos =
+      appPositionFilter === "all" || String(app.positionId) === appPositionFilter;
+
+    const matchesStatus =
+      appStatusFilter === "all" || app.status === appStatusFilter;
+
+    return matchesQuery && matchesPos && matchesStatus;
+  });
+
+  // Columns - Positions Table
+  const positionColumns: Column<OpenPosition>[] = [
     {
       key: "title",
       header: "Pozisyon Adı",
@@ -254,45 +363,45 @@ export default function AdminAcikPozisyonlarPage() {
     },
     {
       key: "team",
-      header: "Ekip / Katman",
+      header: "Ekip",
       accessor: (pos) => (
-        <div>
-          <AdminBadge variant="info" size="sm">
-            {pos.team}
-          </AdminBadge>
-        </div>
+        <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          {pos.team}
+        </span>
       ),
     },
-
     {
       key: "workType",
-      header: "Çalışma Şekli & Konum",
+      header: "Çalışma Şekli",
       accessor: (pos) => (
-        <div className="text-xs space-y-0.5 text-slate-600 dark:text-slate-300">
-          <div className="font-semibold text-slate-900 dark:text-slate-100">{pos.workType}</div>
-          <div className="text-slate-500">{pos.location}</div>
-        </div>
+        <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
+          {pos.workType} • {pos.location}
+        </span>
       ),
     },
     {
-      key: "status",
-      header: "Yayın Durumu",
+      key: "isActive",
+      header: "Durum",
       accessor: (pos) => (
         <button
           type="button"
           onClick={() => handleToggleStatus(pos)}
-          className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#0A5C3A] rounded-md transition-transform hover:scale-105"
+          className={`cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
+            pos.isActive
+              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700"
+              : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-300 dark:border-slate-700"
+          }`}
         >
           {pos.isActive ? (
-            <AdminBadge variant="success" size="sm">
-              <CheckCircle2 className="w-3 h-3 mr-1" />
+            <>
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               Aktif
-            </AdminBadge>
+            </>
           ) : (
-            <AdminBadge variant="neutral" size="sm">
-              <XCircle className="w-3 h-3 mr-1" />
+            <>
+              <XCircle className="w-3.5 h-3.5 text-slate-400" />
               Pasif
-            </AdminBadge>
+            </>
           )}
         </button>
       ),
@@ -300,13 +409,12 @@ export default function AdminAcikPozisyonlarPage() {
     {
       key: "actions",
       header: "İşlemler",
-      className: "text-right",
       accessor: (pos) => (
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => handleOpenEditModal(pos)}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-[#0A5C3A] hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors"
+            className="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-300 dark:hover:bg-slate-800 transition-colors"
             title="Düzenle"
           >
             <Edit2 className="w-4 h-4" />
@@ -317,7 +425,7 @@ export default function AdminAcikPozisyonlarPage() {
               setDeletingId(pos.id);
               setDeleteConfirmOpen(true);
             }}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+            className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
             title="Sil"
           >
             <Trash2 className="w-4 h-4" />
@@ -327,143 +435,357 @@ export default function AdminAcikPozisyonlarPage() {
     },
   ];
 
+  // Columns - Applications Table
+  const applicationColumns: Column<PositionApplication>[] = [
+    {
+      key: "user",
+      header: "Aday Bilgisi",
+      accessor: (app) => (
+        <div className="space-y-0.5">
+          <div className="font-bold text-slate-900 dark:text-slate-100">
+            {app.user?.name || "Bilinmeyen Kullanıcı"}
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400">
+            {app.user?.email}
+          </div>
+          {app.phone && (
+            <div className="text-[11px] text-slate-600 dark:text-slate-300">
+              Tel: {app.phone}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "position",
+      header: "Başvurulan Pozisyon",
+      accessor: (app) => (
+        <div className="space-y-1">
+          <div className="font-semibold text-slate-800 dark:text-slate-200">
+            {app.position?.title || `Pozisyon #${app.positionId}`}
+          </div>
+          <div className="text-xs text-[#0A5C3A] font-bold">
+            {app.position?.team}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "education",
+      header: "Okul / Bölüm",
+      accessor: (app) => (
+        <div className="text-xs text-slate-600 dark:text-slate-300">
+          <div>{app.school || "-"}</div>
+          <div className="text-slate-400">{app.department}</div>
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      header: "Başvuru Durumu",
+      accessor: (app) => {
+        const statusMap = {
+          NEW: { label: "Yeni", color: "bg-blue-100 text-blue-800 border-blue-200" },
+          IN_REVIEW: { label: "İnceleniyor", color: "bg-amber-100 text-amber-800 border-amber-200" },
+          INTERVIEW: { label: "Görüşmeye Davet", color: "bg-purple-100 text-purple-800 border-purple-200" },
+          ACCEPTED: { label: "Kabul Edildi", color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
+          REJECTED: { label: "Reddedildi", color: "bg-rose-100 text-rose-800 border-rose-200" },
+        };
+        const s = statusMap[app.status] || { label: app.status, color: "bg-slate-100 text-slate-800" };
+        return (
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${s.color}`}>
+            {s.label}
+          </span>
+        );
+      },
+    },
+    {
+      key: "cv",
+      header: "CV Dosyası",
+      accessor: (app) => (
+        app.cvUrl ? (
+          <a
+            href={app.cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold text-[#0A5C3A] transition-colors"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>CV Görüntüle</span>
+            <ExternalLink className="w-3 h-3 text-slate-400" />
+          </a>
+        ) : (
+          <span className="text-xs text-slate-400 font-medium">Yüklenmedi</span>
+        )
+      ),
+    },
+    {
+      key: "createdAt",
+      header: "Tarih",
+      accessor: (app) => (
+        <span className="text-xs text-slate-500 font-medium">
+          {new Date(app.createdAt).toLocaleDateString("tr-TR")}
+        </span>
+      ),
+    },
+    {
+      key: "actions",
+      header: "İşlemler",
+      accessor: (app) => (
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => handleOpenAppDetailModal(app)}
+            className="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-300 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 text-xs font-bold"
+            title="Başvuruyu İncele"
+          >
+            <Eye className="w-4 h-4" />
+            <span>İncele</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setDeletingAppId(app.id);
+              setDeleteAppConfirmOpen(true);
+            }}
+            className="p-2 rounded-xl text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+            title="Sil"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Açık Pozisyonlar Yönetimi"
-        subtitle="Topluluk için gönüllülük ve ekip üyesi pozisyonlarını yönetin. Aktif yapılan pozisyonlar kamuya açık sayfada anında listelenir."
+        title="Açık Pozisyonlar & Başvuru Yönetimi"
+        subtitle="Açık pozisyonları düzenleyin ve pozisyonlara yapılan özel aday başvurularını inceleyin."
         icon={Briefcase}
         action={
-
-          <button
-            type="button"
-            onClick={handleOpenCreateModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            Yeni Pozisyon Ekle
-          </button>
-        }
-      />
-
-      {/* SEARCH & FILTERS */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
-        <div className="flex-1">
-          <AdminSearch
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Pozisyon adı veya ekip ara..."
-          />
-        </div>
-
-        <div className="flex items-center gap-3 overflow-x-auto">
-          <AdminFilter
-            selectedValue={teamFilter}
-            onChange={setTeamFilter}
-            options={[
-              { label: "Tüm Ekipler", value: "all" },
-              { label: "İletişim ve Medya", value: "iletisim" },
-              { label: "Teknoloji", value: "teknoloji" },
-              { label: "Etkinlik", value: "etkinlik" },
-              { label: "Yönetim", value: "yonetim" },
-            ]}
-          />
-
-          <AdminFilter
-            selectedValue={statusFilter}
-            onChange={setStatusFilter}
-            options={[
-              { label: "Tüm Durumlar", value: "all" },
-              { label: "Aktif", value: "active" },
-              { label: "Pasif", value: "passive" },
-            ]}
-          />
-        </div>
-
-      </div>
-
-      {/* TABLE LISTING */}
-      {loading ? (
-        <AdminLoadingState />
-      ) : filteredPositions.length === 0 ? (
-        <AdminEmptyState
-          icon={Briefcase}
-          title="Açık pozisyon bulunamadı"
-          description="Arama kriterlerinize uyan pozisyon kaydı bulunmamaktadır."
-          action={
+          activeTab === "positions" ? (
             <button
               type="button"
               onClick={handleOpenCreateModal}
-              className="px-4 py-2 bg-[#0A5C3A] text-white rounded-xl text-xs font-bold"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
             >
-              Pozisyon Ekle
+              <Plus className="w-4 h-4" />
+              Yeni Pozisyon Ekle
             </button>
-          }
-        />
-      ) : (
-        <AdminTable
-          data={filteredPositions}
-          columns={columns}
-          keyExtractor={(pos) => pos.id}
-        />
+          ) : undefined
+        }
+      />
+
+      {/* TOP TABS BAR */}
+      <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab("positions")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+            activeTab === "positions"
+              ? "bg-[#0A5C3A] text-white shadow-md"
+              : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50"
+          }`}
+        >
+          <Briefcase className="w-4 h-4" />
+          <span>Açık Pozisyonlar ({positions.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("applications")}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+            activeTab === "applications"
+              ? "bg-[#0A5C3A] text-white shadow-md"
+              : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-50"
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          <span>Pozisyon Başvuruları ({applications.length})</span>
+          {applications.filter((a) => a.status === "NEW").length > 0 && (
+            <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-xs font-black">
+              {applications.filter((a) => a.status === "NEW").length} yeni
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* TAB 1: POSITIONS MANAGEMENT */}
+      {activeTab === "positions" && (
+        <div className="space-y-6">
+          {/* SEARCH & FILTERS */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+            <div className="flex-1">
+              <AdminSearch
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Pozisyon adı veya ekip ara..."
+              />
+            </div>
+
+            <div className="flex items-center gap-3 overflow-x-auto">
+              <AdminFilter
+                selectedValue={teamFilter}
+                onChange={setTeamFilter}
+                options={[
+                  { label: "Tüm Ekipler", value: "all" },
+                  { label: "İletişim ve Medya", value: "iletisim" },
+                  { label: "Teknoloji", value: "teknoloji" },
+                  { label: "Etkinlik", value: "etkinlik" },
+                  { label: "Yönetim", value: "yonetim" },
+                ]}
+              />
+
+              <AdminFilter
+                selectedValue={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  { label: "Tüm Durumlar", value: "all" },
+                  { label: "Aktif", value: "active" },
+                  { label: "Pasif", value: "passive" },
+                ]}
+              />
+            </div>
+          </div>
+
+          {/* TABLE LISTING */}
+          {loading ? (
+            <AdminLoadingState />
+          ) : filteredPositions.length === 0 ? (
+            <AdminEmptyState
+              icon={Briefcase}
+              title="Açık pozisyon bulunamadı"
+              description="Arama kriterlerinize uyan pozisyon kaydı bulunmamaktadır."
+              action={
+                <button
+                  type="button"
+                  onClick={handleOpenCreateModal}
+                  className="px-4 py-2 bg-[#0A5C3A] text-white rounded-xl text-xs font-bold"
+                >
+                  Pozisyon Ekle
+                </button>
+              }
+            />
+          ) : (
+            <AdminTable
+              data={filteredPositions}
+              columns={positionColumns}
+              keyExtractor={(pos) => pos.id}
+            />
+          )}
+        </div>
       )}
 
+      {/* TAB 2: POSITION APPLICATIONS MANAGEMENT */}
+      {activeTab === "applications" && (
+        <div className="space-y-6">
+          {/* APPLICATION FILTERS */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+            <div className="flex-1">
+              <AdminSearch
+                value={appSearchQuery}
+                onChange={setAppSearchQuery}
+                placeholder="Aday adı, e-posta, okul veya pozisyon ara..."
+              />
+            </div>
 
-      {/* CREATE & EDIT MODAL */}
+            <div className="flex items-center gap-3 overflow-x-auto">
+              <AdminFilter
+                selectedValue={appPositionFilter}
+                onChange={setAppPositionFilter}
+                options={[
+                  { label: "Tüm Pozisyonlar", value: "all" },
+                  ...positions.map((p) => ({ label: p.title, value: String(p.id) })),
+                ]}
+              />
+
+              <AdminFilter
+                selectedValue={appStatusFilter}
+                onChange={setAppStatusFilter}
+                options={[
+                  { label: "Tüm Durumlar", value: "all" },
+                  { label: "Yeni", value: "NEW" },
+                  { label: "İnceleniyor", value: "IN_REVIEW" },
+                  { label: "Görüşmeye Davet", value: "INTERVIEW" },
+                  { label: "Kabul Edildi", value: "ACCEPTED" },
+                  { label: "Reddedildi", value: "REJECTED" },
+                ]}
+              />
+            </div>
+          </div>
+
+          {/* APPLICATIONS TABLE */}
+          {appsLoading ? (
+            <AdminLoadingState />
+          ) : filteredApplications.length === 0 ? (
+            <AdminEmptyState
+              icon={Users}
+              title="Pozisyon başvurusu bulunamadı"
+              description="Henüz seçilen filtrelere uygun aday başvurusu bulunmamaktadır."
+            />
+          ) : (
+            <AdminTable
+              data={filteredApplications}
+              columns={applicationColumns}
+              keyExtractor={(app) => app.id}
+            />
+          )}
+        </div>
+      )}
+
+      {/* POSITION CREATE / EDIT MODAL */}
       <AdminModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         title={editingPosition ? "Pozisyonu Düzenle" : "Yeni Pozisyon Ekle"}
+        size="xl"
       >
-        <form onSubmit={handleSave} className="space-y-4">
+        <form onSubmit={handleSavePosition} className="space-y-4 text-left">
           {formError && (
-            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-medium">
+            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
               {formError}
             </div>
           )}
 
-          {/* Title TR & EN */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Pozisyon Adı (Türkçe) *
+                Pozisyon Adı (TR) *
               </label>
               <input
                 type="text"
+                required
                 value={formData.title || ""}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Örn: Yazılım Geliştirme Gönüllüsü"
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-                required
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Pozisyon Adı (English)
+                Pozisyon Adı (EN)
               </label>
               <input
                 type="text"
                 value={formData.titleEn || ""}
                 onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
-                placeholder="e.g. Software Development Volunteer"
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
           </div>
 
-          {/* Team TR, EN & Category */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Ekip Adı (TR)
+                Ekip Adı (TR) *
               </label>
               <input
                 type="text"
+                required
                 value={formData.team || ""}
                 onChange={(e) => setFormData({ ...formData, team: e.target.value })}
-                placeholder="İletişim ve Medya"
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
             <div>
@@ -474,222 +796,111 @@ export default function AdminAcikPozisyonlarPage() {
                 type="text"
                 value={formData.teamEn || ""}
                 onChange={(e) => setFormData({ ...formData, teamEn: e.target.value })}
-                placeholder="Communication & Media"
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Filtre Kategorisi
+                Ekip Kategorisi *
               </label>
               <select
                 value={formData.teamCategory || "iletisim"}
                 onChange={(e) => setFormData({ ...formData, teamCategory: e.target.value })}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               >
                 <option value="iletisim">İletişim ve Medya</option>
                 <option value="teknoloji">Teknoloji</option>
                 <option value="etkinlik">Etkinlik</option>
                 <option value="yonetim">Yönetim</option>
-                <option value="diger">Diğer</option>
               </select>
             </div>
           </div>
 
-          {/* Work Type & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Çalışma Şekli (TR / EN)
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  value={formData.workType || ""}
-                  onChange={(e) => setFormData({ ...formData, workType: e.target.value })}
-                  placeholder="TR: Gönüllü / Hibrit"
-                  className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-                />
-                <input
-                  type="text"
-                  value={formData.workTypeEn || ""}
-                  onChange={(e) => setFormData({ ...formData, workTypeEn: e.target.value })}
-                  placeholder="EN: Volunteer / Hybrid"
-                  className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Konum / Şehir (TR / EN)
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="text"
-                  value={formData.location || ""}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="TR: Uzaktan / Çevrim İçi"
-                  className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-                />
-                <input
-                  type="text"
-                  value={formData.locationEn || ""}
-                  onChange={(e) => setFormData({ ...formData, locationEn: e.target.value })}
-                  placeholder="EN: Remote / Online"
-                  className="h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Short Description TR & EN */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Kısa Açıklama (Türkçe)
+                Kısa Açıklama (TR) *
               </label>
               <textarea
+                required
+                rows={3}
                 value={formData.shortDescription || ""}
                 onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                placeholder="Pozisyonun kısa özeti..."
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Kısa Açıklama (English)
+                Kısa Açıklama (EN)
               </label>
               <textarea
+                rows={3}
                 value={formData.shortDescriptionEn || ""}
                 onChange={(e) => setFormData({ ...formData, shortDescriptionEn: e.target.value })}
-                placeholder="Short position summary..."
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
           </div>
 
-          {/* Responsibilities TR & EN */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Sorumluluklar (Her satıra 1 madde - TR)
+                Sorumluluklar (Her satıra bir tane)
               </label>
               <textarea
+                rows={3}
                 value={respText}
                 onChange={(e) => setRespText(e.target.value)}
-                placeholder="İçerik takvimi hazırlamak&#10;Metin yazarlığı yapmak"
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Responsibilities (Her satıra 1 madde - EN)
+                Sorumluluklar EN (Her satıra bir tane)
               </label>
               <textarea
+                rows={3}
                 value={respEnText}
                 onChange={(e) => setRespEnText(e.target.value)}
-                placeholder="Preparing content calendar&#10;Writing copy"
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
               />
             </div>
           </div>
 
-          {/* Requirements TR & EN */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Aranan Özellikler (Her satıra 1 madde - TR)
-              </label>
-              <textarea
-                value={reqText}
-                onChange={(e) => setReqText(e.target.value)}
-                placeholder="Sosyal medyaya ilgi&#10;Haftada 3-5 saat zaman"
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Requirements (Her satıra 1 madde - EN)
-              </label>
-              <textarea
-                value={reqEnText}
-                onChange={(e) => setReqEnText(e.target.value)}
-                placeholder="Interest in social media&#10;3-5 hours per week"
-                rows={3}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-              />
-            </div>
-          </div>
-
-          {/* Preferred Skills TR & EN */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Tercih Edilen Yetkinlikler (TR)
-              </label>
-              <textarea
-                value={prefText}
-                onChange={(e) => setPrefText(e.target.value)}
-                placeholder="Canva deneyimi&#10;Reels kurgu tecrübesi"
-                rows={2}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Preferred Qualifications (EN)
-              </label>
-              <textarea
-                value={prefEnText}
-                onChange={(e) => setPrefEnText(e.target.value)}
-                placeholder="Canva experience&#10;Reels editing"
-                rows={2}
-                className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium outline-none focus:border-[#0A5C3A]"
-              />
-            </div>
-          </div>
-
-          {/* Checkboxes: Active & Urgent */}
           <div className="flex items-center gap-6 pt-2">
             <label className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
-                checked={formData.isActive ?? true}
+                checked={formData.isActive || false}
                 onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="w-4 h-4 rounded text-[#0A5C3A] focus:ring-[#0A5C3A]"
+                className="rounded text-[#0A5C3A]"
               />
-              <span>Yayınlansın (Aktif Pozisyon)</span>
+              <span>Aktif Pozisyon</span>
             </label>
 
             <label className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
               <input
                 type="checkbox"
-                checked={formData.isUrgent ?? false}
+                checked={formData.isUrgent || false}
                 onChange={(e) => setFormData({ ...formData, isUrgent: e.target.checked })}
-                className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500"
+                className="rounded text-[#0A5C3A]"
               />
-              <span>Acil Pozisyon Rozeti</span>
+              <span>Acil Pozisyon Etiketi</span>
             </label>
           </div>
 
-          {/* Modal Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <div className="pt-4 flex justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold"
             >
-              Vazgeç
+              İptal
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl bg-[#0A5C3A] hover:bg-[#0D7449] text-white text-xs font-bold shadow-md transition-all disabled:opacity-50"
+              className="px-6 py-2 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold disabled:opacity-50"
             >
               {saving ? "Kaydediliyor..." : "Kaydet"}
             </button>
@@ -697,18 +908,144 @@ export default function AdminAcikPozisyonlarPage() {
         </form>
       </AdminModal>
 
-      {/* CONFIRM DELETE DIALOG */}
+      {/* APPLICATION DETAIL & STATUS MODAL */}
+      {selectedApp && (
+        <AdminModal
+          isOpen={detailModalOpen}
+          onClose={() => setDetailModalOpen(false)}
+          title="Pozisyon Başvuru Detayı"
+          size="lg"
+        >
+          <div className="space-y-5 text-left text-xs">
+            {/* Header info */}
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
+                  {selectedApp.user?.name}
+                </span>
+                <span className="text-slate-500 text-xs">
+                  {new Date(selectedApp.createdAt).toLocaleString("tr-TR")}
+                </span>
+              </div>
+              <div className="text-slate-600 dark:text-slate-300">
+                E-posta: <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedApp.user?.email}</span>
+                {selectedApp.phone && ` • Tel: ${selectedApp.phone}`}
+              </div>
+              <div className="text-slate-600 dark:text-slate-300">
+                Okul / Bölüm: <span className="font-semibold">{selectedApp.school || "-"}</span> / <span className="font-semibold">{selectedApp.department || "-"}</span>
+              </div>
+              <div className="pt-1 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <div>
+                  Başvurulan Pozisyon: <span className="font-bold text-[#0A5C3A]">{selectedApp.position?.title}</span> ({selectedApp.position?.team})
+                </div>
+                {selectedApp.cvUrl && (
+                  <a
+                    href={selectedApp.cvUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 rounded-lg bg-[#0A5C3A] text-white font-bold text-[11px] inline-flex items-center gap-1"
+                  >
+                    <FileText className="w-3 h-3" /> CV İndir / Aç
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Why Apply */}
+            <div className="space-y-1">
+              <label className="font-bold text-slate-900 dark:text-slate-100 block">
+                Başvuru Nedeni / Motivasyon:
+              </label>
+              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
+                {selectedApp.whyApply || "Belirtilmedi"}
+              </div>
+            </div>
+
+            {/* Experience */}
+            {selectedApp.experience && (
+              <div className="space-y-1">
+                <label className="font-bold text-slate-900 dark:text-slate-100 block">
+                  İlgili Deneyim & Yetenekler:
+                </label>
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 leading-relaxed font-sans">
+                  {selectedApp.experience}
+                </div>
+              </div>
+            )}
+
+            {/* Status & Admin Note Edit Form */}
+            <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+              <div>
+                <label className="font-bold text-slate-900 dark:text-slate-100 block mb-1">
+                  Başvuru Durumunu Güncelle:
+                </label>
+                <select
+                  value={editingAppStatus}
+                  onChange={(e) => setEditingAppStatus(e.target.value as any)}
+                  className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-bold"
+                >
+                  <option value="NEW">Yeni (İncelenmedi)</option>
+                  <option value="IN_REVIEW">İnceleniyor</option>
+                  <option value="INTERVIEW">Görüşmeye Davet Edildi</option>
+                  <option value="ACCEPTED">Kabul Edildi</option>
+                  <option value="REJECTED">Reddedildi</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-900 dark:text-slate-100 block mb-1">
+                  Yönetici Notu (Özel Admin Notu):
+                </label>
+                <textarea
+                  rows={3}
+                  value={editingAdminNote}
+                  onChange={(e) => setEditingAdminNote(e.target.value)}
+                  placeholder="Mülakat notu, değerlendirme açıklaması vb."
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
+                />
+              </div>
+            </div>
+
+            <div className="pt-4 flex justify-end gap-3 border-t border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setDetailModalOpen(false)}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold"
+              >
+                İptal
+              </button>
+              <button
+                type="button"
+                onClick={handleUpdateAppStatus}
+                disabled={updatingApp}
+                className="px-6 py-2 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold disabled:opacity-50"
+              >
+                {updatingApp ? "Kaydediliyor..." : "Durumu & Notu Kaydet"}
+              </button>
+            </div>
+          </div>
+        </AdminModal>
+      )}
+
+      {/* CONFIRM DELETE DIALOGS */}
       <AdminConfirmDialog
         isOpen={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
-        onConfirm={handleConfirmDelete}
+        onConfirm={handleDeletePosition}
         title="Pozisyonu Sil"
-        description="Bu açık pozisyonu silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
-        confirmText="Sil"
-        cancelText="Vazgeç"
+        description="Bu açık pozisyonu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+        confirmText="Evet, Sil"
         isLoading={deleting}
       />
 
+      <AdminConfirmDialog
+        isOpen={deleteAppConfirmOpen}
+        onClose={() => setDeleteAppConfirmOpen(false)}
+        onConfirm={handleDeleteApplication}
+        title="Pozisyon Başvurusunu Sil"
+        description="Bu aday başvurusunu silmek istediğinizden emin misiniz?"
+        confirmText="Evet, Sil"
+      />
     </div>
   );
 }

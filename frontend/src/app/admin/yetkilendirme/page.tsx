@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { ShieldCheck, RefreshCw, UserCog } from "lucide-react";
 
+import { getCurrentUser, saveCurrentUser } from "@/lib/memberAuth";
+
 interface User {
   id: number;
   name: string | null;
@@ -27,7 +29,8 @@ export default function YetkilendirmePage() {
 
       const data = await response.json().catch(() => ({}));
 
-      if (!response.ok) {
+      if (!response.ok || !Array.isArray(data)) {
+        setUsers([]);
         throw new Error(data.error || "Kullanıcılar alınamadı.");
       }
 
@@ -68,10 +71,26 @@ export default function YetkilendirmePage() {
         throw new Error(data.error || "Rol güncellenemedi.");
       }
 
+      // Check if logged-in user changed their own role from ADMIN to USER
+      const currentUser = getCurrentUser();
+      const isSelf =
+        currentUser &&
+        (String(currentUser.id) === String(id) ||
+          (currentUser.email && data.email && currentUser.email.toLowerCase() === data.email.toLowerCase()));
+
+      if (isSelf && data.role === "USER") {
+        saveCurrentUser({ ...currentUser, role: "USER" });
+        alert("Yönetici yetkiniz alındı. Sistem otomatik olarak Kullanıcı moduna geçiyor.");
+        window.location.href = "/";
+        return;
+      }
+
       setUsers((currentUsers) =>
-        currentUsers.map((user) =>
-          user.id === id ? { ...user, role: data.role } : user
-        )
+        Array.isArray(currentUsers)
+          ? currentUsers.map((user) =>
+              user.id === id ? { ...user, role: data.role } : user
+            )
+          : []
       );
     } catch (error) {
       console.error("ROLE UPDATE ERROR:", error);
@@ -135,7 +154,7 @@ export default function YetkilendirmePage() {
           <div className="p-10 text-center text-sm text-slate-500 dark:text-slate-400">
             Kullanıcılar yükleniyor...
           </div>
-        ) : users.length === 0 ? (
+        ) : !Array.isArray(users) || users.length === 0 ? (
           <div className="p-10 text-center">
             <UserCog className="w-10 h-10 mx-auto text-slate-300 mb-3" />
             <h3 className="font-bold text-slate-600 dark:text-slate-300">

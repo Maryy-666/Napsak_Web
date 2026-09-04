@@ -24,6 +24,7 @@ import mediaRouter from "./src/routes/media.js";
 import newsRouter from "./src/routes/news.js";
 import homepageRouter from "./src/routes/homepage.js";
 import positionsRouter from "./src/routes/positions.js";
+import positionApplicationsRouter from "./src/routes/positionApplications.js";
 import partnersRouter from "./src/routes/partners.js";
 import { globalLimiter, authLimiter, formLimiter } from "./src/middleware/rateLimiter.js";
 
@@ -126,6 +127,7 @@ app.use("/media", mediaRouter);
 app.use("/news", newsRouter);
 app.use("/homepage", homepageRouter);
 app.use("/positions", positionsRouter);
+app.use("/position-applications", positionApplicationsRouter);
 app.use("/partners", partnersRouter);
 
 

@@ -131,17 +131,29 @@ export default function BasvuruContent() {
       !formData.pastMember.trim() ||
       !formData.note.trim()
     ) {
-      setErrorMsg("Lütfen başvuru formundaki tüm zorunlu alanları doldurunuz.");
+      setErrorMsg(
+        isEn
+          ? "Please fill in all required fields in the application form."
+          : "Lütfen başvuru formundaki tüm zorunlu alanları doldurunuz."
+      );
       return;
     }
 
     if (formData.pastMember === "Evet" && !formData.pastTeam.trim()) {
-      setErrorMsg("Lütfen daha önce yer aldığınız ekibi/alanı belirtiniz.");
+      setErrorMsg(
+        isEn
+          ? "Please specify the team/organization you previously participated in."
+          : "Lütfen daha önce yer aldığınız ekibi/alanı belirtiniz."
+      );
       return;
     }
 
     if (!formData.kvkkAccepted) {
-      setErrorMsg("Başvurunuzu gönderebilmek için KVKK aydınlatma metnini okuyup kabul etmelisiniz.");
+      setErrorMsg(
+        isEn
+          ? "You must read and accept the KVKK privacy policy to submit your application."
+          : "Başvurunuzu gönderebilmek için KVKK aydınlatma metnini okuyup kabul etmelisiniz."
+      );
       return;
     }
 
@@ -172,7 +184,11 @@ export default function BasvuruContent() {
       router.push(ROUTES.BIZDEN_HABERDAR_OL);
     } catch (err: any) {
       console.error("Başvuru gönderimi hatası:", err);
-      setErrorMsg("Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin.");
+      setErrorMsg(
+        isEn
+          ? "An error occurred while submitting your application. Please try again."
+          : "Başvuru gönderilirken bir hata oluştu. Lütfen tekrar deneyin."
+      );
     } finally {
       setLoading(false);
     }
@@ -227,10 +243,12 @@ export default function BasvuruContent() {
 
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold font-headings text-slate-900">
-                      Başvurunuz Başarıyla Alındı!
+                      {isEn ? "Application Received Successfully!" : "Başvurunuz Başarıyla Alındı!"}
                     </h2>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                      N'apsak? Gençlik Topluluğu'na gösterdiğin ilgi için teşekkür ederiz. Başvurun ekibimiz tarafından değerlendirilecek ve belirtmiş olduğun iletişim bilgileri üzerinden dönüş yapılacaktır.
+                      {isEn
+                        ? "Thank you for your interest in N'apsak? Youth Community. Your application will be evaluated by our team and we will contact you via your provided contact info."
+                        : "N'apsak? Gençlik Topluluğu'na gösterdiğin ilgi için teşekkür ederiz. Başvurun ekibimiz tarafından değerlendirilecek ve belirtmiş olduğun iletişim bilgileri üzerinden dönüş yapılacaktır."}
                     </p>
                   </div>
 
@@ -239,7 +257,7 @@ export default function BasvuruContent() {
                       href={ROUTES.HOME}
                       className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#0A5C3A] text-white text-xs font-bold hover:bg-[#084A2F] transition-all shadow-md text-center"
                     >
-                      Ana Sayfaya Dön
+                      {isEn ? "Back to Home" : "Ana Sayfaya Dön"}
                     </Link>
                     <button
                       type="button"
@@ -264,14 +282,16 @@ export default function BasvuruContent() {
                       }}
                       className="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-all text-center"
                     >
-                      Yeni Başvuru Yap
+                      {isEn ? "Submit New Application" : "Yeni Başvuru Yap"}
                     </button>
                   </div>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6 font-sans text-xs">
                   <p className="text-xs text-[#5F6773] font-medium leading-relaxed">
-                    Formu doldurarak topluluğumuza doğrudan başvuru yapabilirsiniz. Başvurunuz ekibimize anında iletilecektir.
+                    {isEn
+                      ? "Fill out the form to apply directly to our community. Your application will be delivered to our team immediately."
+                      : "Formu doldurarak topluluğumuza doğrudan başvuru yapabilirsiniz. Başvurunuz ekibimize anında iletilecektir."}
                   </p>
 
                   {errorMsg && (
@@ -283,14 +303,14 @@ export default function BasvuruContent() {
                   {/* 1. KİŞİSEL BİLGİLER */}
                   <div className="space-y-4">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      1. Kişisel Bilgiler
+                      {isEn ? "1. Personal Information" : "1. Kişisel Bilgiler"}
                     </h3>
 
                     {/* Ad Soyad & E-posta */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          Ad Soyad <span className="text-rose-500">*</span>
+                          {isEn ? "Full Name" : "Ad Soyad"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -298,14 +318,14 @@ export default function BasvuruContent() {
                           required
                           value={formData.fullName}
                           onChange={handleChange}
-                          placeholder="Ad Soyad"
+                          placeholder={isEn ? "Full Name" : "Ad Soyad"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
 
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          E-posta Adresi <span className="text-rose-500">*</span>
+                          {isEn ? "Email Address" : "E-posta Adresi"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="email"
@@ -313,7 +333,7 @@ export default function BasvuruContent() {
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder="E-posta adresi"
+                          placeholder={isEn ? "Email Address" : "E-posta adresi"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
@@ -323,7 +343,7 @@ export default function BasvuruContent() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          Telefon Numarası <span className="text-rose-500">*</span>
+                          {isEn ? "Phone Number" : "Telefon Numarası"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="tel"
@@ -338,7 +358,7 @@ export default function BasvuruContent() {
 
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          İl <span className="text-rose-500">*</span>
+                          {isEn ? "City" : "İl"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -346,14 +366,14 @@ export default function BasvuruContent() {
                           required
                           value={formData.city}
                           onChange={handleChange}
-                          placeholder="İliniz"
+                          placeholder={isEn ? "Your City" : "İliniz"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
 
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          İlçe <span className="text-rose-500">*</span>
+                          {isEn ? "District" : "İlçe"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -361,7 +381,7 @@ export default function BasvuruContent() {
                           required
                           value={formData.district}
                           onChange={handleChange}
-                          placeholder="İlçeniz"
+                          placeholder={isEn ? "Your District" : "İlçeniz"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
@@ -371,14 +391,14 @@ export default function BasvuruContent() {
                   {/* 2. EĞİTİM BİLGİLERİ */}
                   <div className="space-y-4 pt-3 border-t border-slate-100">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      2. Eğitim Bilgileri
+                      {isEn ? "2. Educational Background" : "2. Eğitim Bilgileri"}
                     </h3>
 
                     {/* Okul & Bölüm */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          Okul <span className="text-rose-500">*</span>
+                          {isEn ? "School / University" : "Okul"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -386,14 +406,14 @@ export default function BasvuruContent() {
                           required
                           value={formData.school}
                           onChange={handleChange}
-                          placeholder="Okulunuzun adı"
+                          placeholder={isEn ? "Name of your school/university" : "Okulunuzun adı"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
 
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          Bölüm / Alan <span className="text-rose-500">*</span>
+                          {isEn ? "Department / Major" : "Bölüm / Alan"} <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -401,7 +421,7 @@ export default function BasvuruContent() {
                           required
                           value={formData.department}
                           onChange={handleChange}
-                          placeholder="Bölümünüz veya alanınız"
+                          placeholder={isEn ? "Your department or major" : "Bölümünüz veya alanınız"}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </div>
@@ -411,7 +431,7 @@ export default function BasvuruContent() {
                     <div className={`grid grid-cols-1 ${formData.graduationStatus === "Öğrenci" ? "sm:grid-cols-2" : "sm:grid-cols-1"} gap-4`}>
                       <div>
                         <label className="block font-bold text-slate-700 mb-1">
-                          Durum <span className="text-rose-500">*</span>
+                          {isEn ? "Status" : "Durum"} <span className="text-rose-500">*</span>
                         </label>
                         <select
                           name="graduationStatus"
@@ -427,15 +447,15 @@ export default function BasvuruContent() {
                           }}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs font-semibold focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all cursor-pointer"
                         >
-                          <option value="Öğrenci">Öğrenci</option>
-                          <option value="Mezun">Mezun</option>
+                          <option value="Öğrenci">{isEn ? "Student" : "Öğrenci"}</option>
+                          <option value="Mezun">{isEn ? "Graduate" : "Mezun"}</option>
                         </select>
                       </div>
 
                       {formData.graduationStatus === "Öğrenci" && (
                         <div>
                           <label className="block font-bold text-slate-700 mb-1">
-                            Sınıf <span className="text-rose-500">*</span>
+                            {isEn ? "Grade / Year" : "Sınıf"} <span className="text-rose-500">*</span>
                           </label>
                           <select
                             name="grade"
@@ -444,12 +464,12 @@ export default function BasvuruContent() {
                             onChange={handleChange}
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs font-semibold focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all cursor-pointer"
                           >
-                            <option value="Hazırlık">Hazırlık</option>
-                            <option value="1. Sınıf">1. Sınıf</option>
-                            <option value="2. Sınıf">2. Sınıf</option>
-                            <option value="3. Sınıf">3. Sınıf</option>
-                            <option value="4. Sınıf">4. Sınıf</option>
-                            <option value="Yüksek Lisans / Doktora">Yüksek Lisans / Doktora</option>
+                            <option value="Hazırlık">{isEn ? "Prep Class" : "Hazırlık"}</option>
+                            <option value="1. Sınıf">{isEn ? "1st Year" : "1. Sınıf"}</option>
+                            <option value="2. Sınıf">{isEn ? "2nd Year" : "2. Sınıf"}</option>
+                            <option value="3. Sınıf">{isEn ? "3rd Year" : "3. Sınıf"}</option>
+                            <option value="4. Sınıf">{isEn ? "4th Year" : "4. Sınıf"}</option>
+                            <option value="Yüksek Lisans / Doktora">{isEn ? "Master / PhD" : "Yüksek Lisans / Doktora"}</option>
                           </select>
                         </div>
                       )}
@@ -459,13 +479,13 @@ export default function BasvuruContent() {
                   {/* 3. TOPLULUK BİLGİLERİ */}
                   <div className="space-y-4 pt-3 border-t border-slate-100">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      3. Topluluk Bilgileri
+                      {isEn ? "3. Community Preferences" : "3. Topluluk Bilgileri"}
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                       <div className="flex flex-col justify-between h-full">
                         <label className="block font-bold text-slate-700 mb-1">
-                          Tercih Edilen Ekip / Çalışma Alanı <span className="text-rose-500">*</span>
+                          {isEn ? "Preferred Team / Domain" : "Tercih Edilen Ekip / Çalışma Alanı"} <span className="text-rose-500">*</span>
                         </label>
                         <select
                           name="program"
@@ -476,7 +496,15 @@ export default function BasvuruContent() {
                         >
                           {teamsList.map((teamName) => (
                             <option key={teamName} value={teamName}>
-                              {teamName}
+                              {isEn
+                                ? teamName
+                                    .replace("Teknoloji Ekibi", "Technology Team")
+                                    .replace("Sanat Ekibi", "Art Team")
+                                    .replace("Yaşam ve Sürdürülebilirlik Ekibi", "Health & Sustainability Team")
+                                    .replace("Programlar Ekibi", "Programs Team")
+                                    .replace("Kurumsal İletişim Ekibi", "Corporate Communication Team")
+                                    .replace("Genel Topluluk Üyeliği & Gönüllü", "General Community Membership & Volunteer")
+                                : teamName}
                             </option>
                           ))}
                         </select>
@@ -484,7 +512,10 @@ export default function BasvuruContent() {
 
                       <div className="flex flex-col justify-between h-full">
                         <label className="block font-bold text-slate-700 mb-1">
-                          Daha önce herhangi bir sivil toplum kuruluşunda veya toplulukta yer aldınız mı? <span className="text-rose-500">*</span>
+                          {isEn
+                            ? "Have you participated in any NGO or student community before?"
+                            : "Daha önce herhangi bir sivil toplum kuruluşunda veya toplulukta yer aldınız mı?"}{" "}
+                          <span className="text-rose-500">*</span>
                         </label>
                         <select
                           name="pastMember"
@@ -493,8 +524,8 @@ export default function BasvuruContent() {
                           onChange={handleChange}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs font-semibold focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all cursor-pointer"
                         >
-                          <option value="Evet">Evet</option>
-                          <option value="Hayır">Hayır</option>
+                          <option value="Evet">{isEn ? "Yes" : "Evet"}</option>
+                          <option value="Hayır">{isEn ? "No" : "Hayır"}</option>
                         </select>
                       </div>
                     </div>
@@ -507,7 +538,8 @@ export default function BasvuruContent() {
                         transition={{ duration: 0.2 }}
                       >
                         <label className="block font-bold text-slate-700 mb-1">
-                          Daha önce hangi STK / topluluk veya ekipte yer aldınız? <span className="text-rose-500">*</span>
+                          {isEn ? "Which NGO / community or team were you part of?" : "Daha önce hangi STK / topluluk veya ekipte yer aldınız?"}{" "}
+                          <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -515,7 +547,7 @@ export default function BasvuruContent() {
                           required={formData.pastMember === "Evet"}
                           value={formData.pastTeam}
                           onChange={handleChange}
-                          placeholder="Örn: Gençlik Kulübü, Kızılay vb."
+                          placeholder={isEn ? "e.g. Youth Club, Red Cross, etc." : "Örn: Gençlik Kulübü, Kızılay vb."}
                           className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                         />
                       </motion.div>
@@ -525,12 +557,15 @@ export default function BasvuruContent() {
                   {/* 4. BAŞVURU / MOTİVASYON */}
                   <div className="space-y-4 pt-3 border-t border-slate-100">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      4. Başvuru / Motivasyon
+                      {isEn ? "4. Motivation & Statement" : "4. Başvuru / Motivasyon"}
                     </h3>
 
                     <div>
                       <label className="block font-bold text-slate-700 mb-1">
-                        Kendinizden Bahsedin ve Topluluğa Katılma Motivasyonunuzu Açıklayın. <span className="text-rose-500">*</span>
+                        {isEn
+                          ? "Tell us about yourself and explain your motivation to join N'apsak?."
+                          : "Kendinizden Bahsedin ve Topluluğa Katılma Motivasyonunuzu Açıklayın."}{" "}
+                        <span className="text-rose-500">*</span>
                       </label>
                       <textarea
                         rows={4}
@@ -538,7 +573,11 @@ export default function BasvuruContent() {
                         required
                         value={formData.note}
                         onChange={handleChange}
-                        placeholder="İlgi alanlarınızdan, deneyimlerinizden ve neden N'apsak? topluluğuna katılmak istediğinizden kısaca bahsedebilirsiniz..."
+                        placeholder={
+                          isEn
+                            ? "Briefly tell us about your interests, experience, and why you want to join N'apsak?..."
+                            : "İlgi alanlarınızdan, deneyimlerinizden ve neden N'apsak? topluluğuna katılmak istediğinizden kısaca bahsedebilirsiniz..."
+                        }
                         className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                       />
                     </div>
@@ -547,12 +586,15 @@ export default function BasvuruContent() {
                   {/* 5. CV / ÖZGEÇMİŞ */}
                   <div className="space-y-4 pt-3 border-t border-slate-100">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      5. CV / Özgeçmiş
+                      {isEn ? "5. Resume / CV" : "5. CV / Özgeçmiş"}
                     </h3>
 
                     <div>
                       <label className="block font-bold text-slate-700 mb-1">
-                        Özgeçmiş / CV Ekle <span className="text-slate-400 font-normal text-[11px]">(Opsiyonel - PDF, DOC, DOCX)</span>
+                        {isEn ? "Add Resume / CV" : "Özgeçmiş / CV Ekle"}{" "}
+                        <span className="text-slate-400 font-normal text-[11px]">
+                          {isEn ? "(Optional - PDF, DOC, DOCX)" : "(Opsiyonel - PDF, DOC, DOCX)"}
+                        </span>
                       </label>
 
                       <div className="relative">
@@ -582,7 +624,7 @@ export default function BasvuruContent() {
                               onClick={handleRemoveCv}
                               className="px-2.5 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors shrink-0 cursor-pointer"
                             >
-                              Kaldır
+                              {isEn ? "Remove" : "Kaldır"}
                             </button>
                           </div>
                         ) : (
@@ -591,7 +633,11 @@ export default function BasvuruContent() {
                             className="w-full px-3.5 py-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-100/70 hover:border-[#0A5C3A]/40 flex items-center justify-center gap-2.5 text-xs text-slate-600 font-semibold cursor-pointer transition-all"
                           >
                             <UploadCloud className="w-4 h-4 text-[#0A5C3A]" />
-                            <span>CV / Özgeçmiş Dosyanı Seç (PDF, DOC, DOCX)</span>
+                            <span>
+                              {isEn
+                                ? "Select Resume / CV File (PDF, DOC, DOCX)"
+                                : "CV / Özgeçmiş Dosyanı Seç (PDF, DOC, DOCX)"}
+                            </span>
                           </label>
                         )}
                       </div>
@@ -612,14 +658,31 @@ export default function BasvuruContent() {
                         className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#0A5C3A] focus:ring-[#0A5C3A] cursor-pointer"
                       />
                       <span className="leading-snug">
-                        <Link
-                          href={ROUTES.KVKK}
-                          target="_blank"
-                          className="font-semibold text-[#0A5C3A] hover:underline"
-                        >
-                          KVKK kapsamında kişisel verilerimin işlenmesine ilişkin aydınlatma metnini
-                        </Link>{" "}
-                        okudum ve kabul ediyorum. <span className="text-rose-500">*</span>
+                        {isEn ? (
+                          <>
+                            I have read and accept the{" "}
+                            <Link
+                              href={ROUTES.KVKK}
+                              target="_blank"
+                              className="font-semibold text-[#0A5C3A] hover:underline"
+                            >
+                              Privacy Policy (KVKK)
+                            </Link>{" "}
+                            regarding the processing of my personal data.
+                          </>
+                        ) : (
+                          <>
+                            <Link
+                              href={ROUTES.KVKK}
+                              target="_blank"
+                              className="font-semibold text-[#0A5C3A] hover:underline"
+                            >
+                              KVKK kapsamında kişisel verilerimin işlenmesine ilişkin aydınlatma metnini
+                            </Link>{" "}
+                            okudum ve kabul ediyorum.
+                          </>
+                        )}{" "}
+                        <span className="text-rose-500">*</span>
                       </span>
                     </label>
                   </div>
@@ -634,11 +697,11 @@ export default function BasvuruContent() {
                       {loading ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Başvuru Gönderiliyor...</span>
+                          <span>{isEn ? "Submitting Application..." : "Başvuru Gönderiliyor..."}</span>
                         </>
                       ) : (
                         <>
-                          <span>Başvurumu Gönder</span>
+                          <span>{isEn ? "Submit My Application" : "Başvurumu Gönder"}</span>
                           <Send className="w-4 h-4" />
                         </>
                       )}
@@ -650,7 +713,7 @@ export default function BasvuruContent() {
                         className="inline-flex items-center gap-1 font-semibold text-[#5F6773] hover:text-[#0A5C3A] transition-colors"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
-                        <span>Giriş Sayfasına Dön</span>
+                        <span>{isEn ? "Back to Login" : "Giriş Sayfasına Dön"}</span>
                       </Link>
                     </div>
                   </div>

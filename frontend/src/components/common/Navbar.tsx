@@ -850,10 +850,10 @@ export const Navbar: React.FC = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <h2 id="logout-confirm-title" className="text-lg font-extrabold text-[#0F1115]">
-                        Çıkış Yap
+                        {language === "en" ? "Sign Out" : "Çıkış Yap"}
                       </h2>
                       <p className="mt-1 text-sm font-medium leading-relaxed text-[#5F6773]">
-                        Çıkış yapmak istediğinizden emin misiniz?
+                        {language === "en" ? "Are you sure you want to sign out?" : "Çıkış yapmak istediğinizden emin misiniz?"}
                       </p>
                     </div>
                   </div>
@@ -864,14 +864,14 @@ export const Navbar: React.FC = () => {
                       onClick={() => setLogoutConfirmOpen(false)}
                       className="rounded-xl border border-slate-200 bg-slate-100 px-4 py-2.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
                     >
-                      Vazgeç
+                      {language === "en" ? "Cancel" : "Vazgeç"}
                     </button>
                     <button
                       type="button"
                       onClick={handleLogout}
                       className="rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] px-4.5 py-2.5 text-xs font-bold text-white shadow-md shadow-[#0A5C3A]/20 transition-colors"
                     >
-                      Evet, Çıkış Yap
+                      {language === "en" ? "Yes, Sign Out" : "Evet, Çıkış Yap"}
                     </button>
                   </div>
                 </motion.div>

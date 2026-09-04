@@ -289,10 +289,12 @@ export default function EtkinliklerContent() {
             <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8 max-w-md mx-auto">
               <Calendar className="w-10 h-10 text-slate-400 mx-auto mb-3 stroke-[1.5]" />
               <h3 className="text-base font-bold text-slate-900 font-headings mb-1">
-                Bu kategoride etkinlik bulunmuyor
+                {isEn ? "No events found in this category" : "Bu kategoride etkinlik bulunmuyor"}
               </h3>
               <p className="text-xs text-slate-500 font-sans">
-                Farklı bir kategori seçerek diğer etkinlikleri listeleyebilirsiniz.
+                {isEn
+                  ? "You can select a different category to view other events."
+                  : "Farklı bir kategori seçerek diğer etkinlikleri listeleyebilirsiniz."}
               </p>
             </div>
           ) : (
@@ -356,7 +358,7 @@ export default function EtkinliklerContent() {
                               disabled
                               className="w-full h-10 rounded-full text-xs font-semibold bg-slate-100 text-slate-400 cursor-not-allowed text-center"
                             >
-                              Kontenjan Doldu
+                              {isEn ? "Quota Full" : "Kontenjan Doldu"}
                             </button>
                           ) : (
                             <button
@@ -364,7 +366,7 @@ export default function EtkinliklerContent() {
                               onClick={() => openApplication(event)}
                               className="w-full h-10 rounded-full bg-[#0A5C3A] hover:bg-[#128C59] text-white font-bold text-xs transition-all shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
                             >
-                              <span>Başvuru Yap</span>
+                              <span>{isEn ? "Apply Now" : "Başvuru Yap"}</span>
                               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
                             </button>
                           )
@@ -374,7 +376,7 @@ export default function EtkinliklerContent() {
                             onClick={() => setDetailEvent(event)}
                             className="w-full h-10 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-center cursor-pointer"
                           >
-                            Detayları Gör
+                            {isEn ? "View Details" : "Detayları Gör"}
                           </button>
                         )}
                       </div>
@@ -397,9 +399,10 @@ export default function EtkinliklerContent() {
         setters={{ setFullName, setEmail, setPhone, setCity, setSchool, setDepartment, setGrade, setNote }}
         onSubmit={handleFormSubmit}
         onClose={closeApplyModal}
+        isEn={isEn}
       />
 
-      <DetailModal event={detailEvent} onClose={() => setDetailEvent(null)} />
+      <DetailModal event={detailEvent} onClose={() => setDetailEvent(null)} isEn={isEn} />
     </PageBackground>
   );
 }
@@ -435,6 +438,7 @@ function ApplyModal({
   setters,
   onSubmit,
   onClose,
+  isEn,
 }: {
   event: EventItem | null;
   isSubmitted: boolean;
@@ -444,6 +448,7 @@ function ApplyModal({
   setters: ApplySetters;
   onSubmit: (event: React.FormEvent) => void;
   onClose: () => void;
+  isEn: boolean;
 }) {
   return (
     <AnimatePresence>
@@ -480,7 +485,7 @@ function ApplyModal({
                   <div className="space-y-2 mb-5 pb-3.5 border-b border-slate-100">
                     <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-wider text-[#0A5C3A] bg-[#EAF5EF] px-3 py-1 rounded-full border border-[#0A5C3A]/20">
                       <Ticket className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Etkinlik Kayıt Formu</span>
+                      <span>{isEn ? "Event Registration Form" : "Etkinlik Kayıt Formu"}</span>
                     </span>
                     <h2 className="text-xl font-extrabold font-headings text-slate-900 leading-snug pt-1">
                       {event.title}
@@ -500,8 +505,12 @@ function ApplyModal({
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
-                        <h3 className="text-xs font-bold text-slate-900 font-headings">Başvuru Bilgilerin</h3>
-                        <p className="mt-0.5 text-[11px] font-normal text-slate-500">Profilindeki bilgilerle başvuru yapılacak.</p>
+                        <h3 className="text-xs font-bold text-slate-900 font-headings">
+                          {isEn ? "Your Application Info" : "Başvuru Bilgilerin"}
+                        </h3>
+                        <p className="mt-0.5 text-[11px] font-normal text-slate-500">
+                          {isEn ? "Will apply with your profile info." : "Profilindeki bilgilerle başvuru yapılacak."}
+                        </p>
                       </div>
                       <Button
                         href={ROUTES.PROFIL}
@@ -509,27 +518,31 @@ function ApplyModal({
                         size="sm"
                         className="h-8 rounded-lg text-xs font-semibold"
                       >
-                        Güncelle
+                        {isEn ? "Update" : "Güncelle"}
                       </Button>
                     </div>
 
                     <div className="grid gap-2 text-xs sm:grid-cols-2">
-                      <SummaryItem label="Ad Soyad" value={values.fullName || "Profilde yok"} />
-                      <SummaryItem label="E-posta" value={values.email || "Profilde yok"} />
-                      <SummaryItem label="Telefon" value={values.phone || "Profilde yok"} />
-                      <SummaryItem label="Okul / Bölüm" value={[values.school, values.department].filter(Boolean).join(" / ") || "Profilde yok"} />
+                      <SummaryItem label={isEn ? "Full Name" : "Ad Soyad"} value={values.fullName || (isEn ? "Not set" : "Profilde yok")} />
+                      <SummaryItem label={isEn ? "Email" : "E-posta"} value={values.email || (isEn ? "Not set" : "Profilde yok")} />
+                      <SummaryItem label={isEn ? "Phone" : "Telefon"} value={values.phone || (isEn ? "Not set" : "Profilde yok")} />
+                      <SummaryItem label={isEn ? "School / Dept" : "Okul / Bölüm"} value={[values.school, values.department].filter(Boolean).join(" / ") || (isEn ? "Not set" : "Profilde yok")} />
                     </div>
                   </div>
 
                   <div className="space-y-3 pt-1">
                     <div>
                       <label className="text-xs font-bold text-slate-900 font-headings mb-1.5 block">
-                        Bu etkinlikten beklentin nedir? <span className="text-rose-500">*</span>
+                        {isEn ? "What are your expectations from this event?" : "Bu etkinlikten beklentin nedir?"} <span className="text-rose-500">*</span>
                       </label>
                       <textarea
                         rows={3}
                         required
-                        placeholder="Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
+                        placeholder={
+                          isEn
+                            ? "e.g. Meet new people, practice skills, learn about the topic..."
+                            : "Örn: Yeni insanlarla tanışmak, konu hakkında pratik yapmak, projeme fikir almak..."
+                        }
                         value={values.note}
                         onChange={(event) => setters.setNote(event.target.value)}
                         className="w-full p-3 rounded-xl border border-slate-200 text-xs font-sans font-normal text-slate-900 leading-relaxed focus:outline-none focus:border-[#0A5C3A]"
@@ -544,7 +557,7 @@ function ApplyModal({
                       className="w-full bg-[#0A5C3A] hover:bg-[#128C59] text-white font-bold text-xs h-11 rounded-full flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                     >
                       <Send className="w-4 h-4 stroke-[2]" />
-                      <span>{isSubmitting ? "Başvuru Gönderiliyor..." : "Başvuruyu Tamamla"}</span>
+                      <span>{isSubmitting ? (isEn ? "Submitting Application..." : "Başvuru Gönderiliyor...") : (isEn ? "Complete Registration" : "Başvuruyu Tamamla")}</span>
                     </button>
                   </div>
                 </form>
@@ -555,10 +568,10 @@ function ApplyModal({
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-slate-900 font-headings mb-1">
-                      Başvurunuz alındı
+                      {isEn ? "Registration Received" : "Başvurunuz alındı"}
                     </h3>
                     <p className="text-xs text-slate-500 font-sans font-normal max-w-sm mx-auto leading-relaxed">
-                      "{event.title}" için başvurun kaydedildi.
+                      {isEn ? `Your registration for "${event.title}" has been recorded.` : `"${event.title}" için başvurun kaydedildi.`}
                     </p>
                   </div>
                   <button
@@ -566,7 +579,7 @@ function ApplyModal({
                     onClick={onClose}
                     className="w-full bg-[#0A5C3A] text-white font-semibold text-xs h-10 rounded-full cursor-pointer"
                   >
-                    Tamam
+                    {isEn ? "OK" : "Tamam"}
                   </button>
                 </div>
               )}
@@ -587,7 +600,7 @@ function SummaryItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () => void }) {
+function DetailModal({ event, onClose, isEn }: { event: EventItem | null; onClose: () => void; isEn: boolean }) {
   return (
     <AnimatePresence>
       {event && (
@@ -615,21 +628,21 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
               </button>
               <div className="space-y-4">
                 <span className="text-[10.5px] font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full inline-block font-sans">
-                  Tamamlanan Etkinlik
+                  {isEn ? "Past Event" : "Tamamlanan Etkinlik"}
                 </span>
                 <h3 className="text-lg font-bold font-headings text-slate-900">{event.title}</h3>
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-medium space-y-2 text-slate-600">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-[#0A5C3A]" />
-                    <span>Tarih: {event.date} ({event.time})</span>
+                    <span>{isEn ? `Date: ${event.date} (${event.time})` : `Tarih: ${event.date} (${event.time})`}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-[#0A5C3A]" />
-                    <span>Konum: {event.location}</span>
+                    <span>{isEn ? `Location: ${event.location}` : `Konum: ${event.location}`}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-[#0A5C3A]" />
-                    <span>Katılımcı Sayısı: {event.appliedCount} Kişi</span>
+                    <span>{isEn ? `Participants: ${event.appliedCount} People` : `Katılımcı Sayısı: ${event.appliedCount} Kişi`}</span>
                   </div>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans font-normal">
@@ -641,7 +654,7 @@ function DetailModal({ event, onClose }: { event: EventItem | null; onClose: () 
                     onClick={onClose}
                     className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-5 h-10 rounded-full cursor-pointer"
                   >
-                    Kapat
+                    {isEn ? "Close" : "Kapat"}
                   </button>
                 </div>
               </div>

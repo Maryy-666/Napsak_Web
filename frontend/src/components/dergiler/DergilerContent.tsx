@@ -452,7 +452,7 @@ export default function DergilerContent() {
                   type="button"
                   onClick={() => setSelectedIssue(null)}
                   className="rounded-full p-2 text-[#5F6773] hover:bg-[#EEF0F2] hover:text-[#0F1115] transition-colors cursor-pointer"
-                  aria-label="Kapat"
+                  aria-label={isEn ? "Close" : "Kapat"}
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -493,7 +493,7 @@ export default function DergilerContent() {
                 <div className="md:col-span-8 space-y-3">
                   <div className="space-y-1">
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#07452C]">
-                      Editörden Not
+                      {isEn ? "Editorial Note" : "Editörden Not"}
                     </h4>
                     <p className="text-xs font-medium leading-relaxed text-[#5F6773] bg-[#F8FBF9] p-3 rounded-2xl border border-[#DDE7E1]">
                       {selectedIssue.editorialNote}
@@ -502,7 +502,7 @@ export default function DergilerContent() {
 
                   <div className="space-y-1">
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#07452C]">
-                      Bu Sayıdaki Makaleler
+                      {isEn ? "Articles in this Issue" : "Bu Sayıdaki Makaleler"}
                     </h4>
                     <div className="space-y-1.5">
                       {selectedIssue.articles.map((art, idx) => (
@@ -519,7 +519,7 @@ export default function DergilerContent() {
 
                   <div className="space-y-0.5">
                     <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#07452C]">
-                      Yazarlar ve Ekip
+                      {isEn ? "Contributors & Team" : "Yazarlar ve Ekip"}
                     </h4>
                     <p className="text-xs font-semibold text-[#5F6773]">
                       {selectedIssue.contributors.join(", ")}
@@ -531,7 +531,7 @@ export default function DergilerContent() {
               {/* Permanently Anchored Bottom Action Footer */}
               <div className="flex-none flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#EEF0F2] bg-[#F8FAFC] p-3.5 px-6 z-20">
                 <span className="text-xs font-bold text-[#5F6773]">
-                  {selectedIssue.pages} Sayfa • {selectedIssue.fileSize}
+                  {selectedIssue.pages} {isEn ? "Pages" : "Sayfa"} • {selectedIssue.fileSize}
                 </span>
 
                 <div className="flex items-center gap-2">
@@ -543,7 +543,7 @@ export default function DergilerContent() {
                     onClick={() => handleDownloadPDF(selectedIssue)}
                     className="rounded-xl"
                   >
-                    PDF İndir
+                    {isEn ? "Download PDF" : "PDF İndir"}
                   </Button>
                   <Button
                     type="button"
@@ -557,7 +557,7 @@ export default function DergilerContent() {
                     }}
                     className="rounded-xl !bg-[#07452C] hover:!bg-[#0A5C3A] text-white font-bold"
                   >
-                    Okumaya Başla (3D Dergi Modu)
+                    {isEn ? "Start Reading (3D Mode)" : "Okumaya Başla (3D Dergi Modu)"}
                   </Button>
                 </div>
               </div>

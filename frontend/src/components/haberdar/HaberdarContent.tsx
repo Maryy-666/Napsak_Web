@@ -7,8 +7,12 @@ import { FaWhatsapp, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import { Mail, Sparkles, ArrowRight, CheckCircle2, ArrowLeft } from "lucide-react";
 import { PageBackground } from "../common/PageBackground";
 import { ROUTES } from "../../constants/routes";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function HaberdarContent() {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
+
   return (
     <LayoutGroup id="haberdar-layout-group">
       <PageBackground id="haberdar-page-root" className="justify-center py-12 sm:py-16">
@@ -28,15 +32,18 @@ export default function HaberdarContent() {
                 className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/90 text-[#0A5C3A] text-xs font-bold shadow-sm"
               >
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Başvurunuz başarıyla alındı! 🎉</span>
+                <span>{isEn ? "Application received successfully! 🎉" : "Başvurunuz başarıyla alındı! 🎉"}</span>
               </motion.div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#0F1115] font-headings leading-tight">
-                Bizden Haberdar Ol
+                {t("haberdar.title", "Bizden Haberdar Ol")}
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed font-sans max-w-xl">
-                Artık N'apsak? Gençlik Topluluğu'nun bir parçası olmak için ilk adımı attın. Gelişmeleri kaçırmamak için bizi takip etmeyi unutma.
+                {t(
+                  "haberdar.subtitle",
+                  "Artık N'apsak? Gençlik Topluluğu'nun bir parçası olmak için ilk adımı attın. Gelişmeleri kaçırmamak için bizi takip etmeyi unutma."
+                )}
               </p>
             </div>
 
@@ -56,14 +63,16 @@ export default function HaberdarContent() {
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                          Ana İletişim Kanalı
+                          {t("haberdar.mainChannel", "Ana İletişim Kanalı")}
                         </span>
                       </div>
                       <h2 className="text-2xl font-bold font-headings text-slate-900">
                         WhatsApp
                       </h2>
                       <p className="text-sm text-slate-600 font-medium font-sans">
-                        Topluluk duyurularını ve gelişmeleri doğrudan takip et.
+                        {isEn
+                          ? "Follow community announcements and developments directly."
+                          : "Topluluk duyurularını ve gelişmeleri doğrudan takip et."}
                       </p>
                     </div>
                   </div>
@@ -74,7 +83,7 @@ export default function HaberdarContent() {
                     rel="noopener noreferrer"
                     className="w-full sm:w-auto h-12 px-6 rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 transition-all cursor-pointer shrink-0"
                   >
-                    <span>WhatsApp Topluluğuna Katıl</span>
+                    <span>{t("haberdar.whatsappBtn", "WhatsApp Topluluğuna Katıl")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>
@@ -90,7 +99,7 @@ export default function HaberdarContent() {
             >
               <div className="text-left select-none">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Diğer Takip Kanallarımız
+                  {t("haberdar.otherChannels", "Diğer Takip Kanallarımız")}
                 </span>
               </div>
 
@@ -112,7 +121,7 @@ export default function HaberdarContent() {
                   </div>
 
                   <div className="flex items-center justify-between text-xs font-bold text-rose-600 pt-1">
-                    <span>Takip Et</span>
+                    <span>{t("haberdar.follow", "Takip Et")}</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </a>
@@ -134,7 +143,7 @@ export default function HaberdarContent() {
                   </div>
 
                   <div className="flex items-center justify-between text-xs font-bold text-blue-600 pt-1">
-                    <span>Takip Et</span>
+                    <span>{t("haberdar.follow", "Takip Et")}</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </a>
@@ -149,7 +158,7 @@ export default function HaberdarContent() {
                       <Mail className="w-5 h-5 stroke-[2]" />
                     </div>
                     <span className="font-bold text-sm text-slate-900 font-headings group-hover:text-[#0A5C3A] transition-colors">
-                      E-posta
+                      {isEn ? "Email" : "E-posta"}
                     </span>
                   </div>
 
@@ -161,7 +170,7 @@ export default function HaberdarContent() {
               </div>
             </motion.div>
 
-            {/* 5. Alt Aksiyon: N'apsak?'a Geri Dön */}
+            {/* 5. Alt Aksiyon: Ana Sayfaya Geri Dön */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -173,7 +182,7 @@ export default function HaberdarContent() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 bg-white/80 text-slate-700 text-xs font-bold hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm group"
               >
                 <ArrowLeft className="w-3.5 h-3.5 text-slate-500 group-hover:-translate-x-0.5 transition-transform" />
-                <span>N'apsak?'a Geri Dön</span>
+                <span>{t("haberdar.backHome", "Ana Sayfaya Geri Dön")}</span>
               </Link>
             </motion.div>
           </motion.div>

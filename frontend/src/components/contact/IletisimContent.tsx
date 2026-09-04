@@ -88,7 +88,7 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
               {/* Social Media Section Header + Social Accounts */}
               <div className="mt-4">
                 <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-3">
-                  Sosyal Medyada N'apsak?
+                  {isEn ? "N'apsak? on Social Media" : "Sosyal Medyada N'apsak?"}
                 </p>
                 <div className="flex flex-col gap-2.5">
                   {SITE_CONFIG.social?.instagram && (
@@ -141,10 +141,12 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
             >
               <div className="mb-6 select-none">
                 <h2 className="text-2xl font-bold text-[#0F1115] font-headings tracking-tight">
-                  Bize Ulaşın
+                  {isEn ? "Contact Us" : "Bize Ulaşın"}
                 </h2>
                 <p className="text-sm text-[#5F6773] mt-1 font-medium font-sans">
-                  Aşağıdaki formu doldurarak mesajınızı doğrudan ekibimize iletebilirsiniz.
+                  {isEn
+                    ? "Fill out the form below to send your message directly to our team."
+                    : "Aşağıdaki formu doldurarak mesajınızı doğrudan ekibimize iletebilirsiniz."}
                 </p>
               </div>
               <ContactForm />

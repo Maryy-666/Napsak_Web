@@ -21,11 +21,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     "nav.positions": "Açık Pozisyonlar",
     "nav.partners": "Paydaşlarımız",
     "nav.works": "Çalışmalarımız",
-
-
     "nav.community": "Topluluk",
-
-    // Kullanıcı Eylemleri
     "nav.join": "Topluluğa Katıl",
     "nav.login": "Giriş Yap",
     "nav.register": "Kayıt Ol",
@@ -50,6 +46,26 @@ export const translations: Record<Language, TranslationDictionary> = {
     "common.next": "İleri",
     "common.success": "Başarılı",
     "common.error": "Hata",
+    "common.loading": "Yükleniyor...",
+    "common.noResults": "Henüz kayıt bulunamadı",
+    "common.backToHome": "Ana Sayfaya Dön",
+    "common.cancel": "İptal",
+    "common.save": "Kaydet",
+    "common.delete": "Sil",
+    "common.edit": "Düzenle",
+    "common.viewDetails": "Detayları Gör",
+    "common.sending": "Gönderiliyor...",
+    "common.saving": "Kaydediliyor...",
+    "common.filter": "Filtrele",
+    "common.allCategories": "Tüm Kategoriler",
+    "common.required": "Zorunlu",
+    "common.name": "Ad Soyad",
+    "common.email": "E-posta",
+    "common.phone": "Telefon",
+    "common.city": "Şehir",
+    "common.school": "Okul / Üniversite",
+    "common.department": "Bölüm",
+    "common.note": "Not / Açıklama",
 
     // Hero Bölümü
     "hero.badge": "2025'ten Beri Harekete Geçenler",
@@ -115,6 +131,34 @@ export const translations: Record<Language, TranslationDictionary> = {
     "footer.rights": "Tüm hakları saklıdır.",
     "footer.kvkk": "KVKK Aydınlatma Metni",
     "footer.cookies": "Çerez Politikası",
+
+    // Hakkımızda
+    "about.badge": "Hikayemiz & Misyonumuz",
+    "about.title": "Geleceği Birlikte Şekillendiren Gençlik Topluluğu",
+    "about.subtitle": "Farklı alanlarda üreten gençleri bir araya getiren, sürekli öğrenmeyi ve paylaşmayı odağına alan dinamik bir ekosistem.",
+
+    // İletişim
+    "contact.badge": "Bize Ulaşın",
+    "contact.title": "İletişime Geçin",
+    "contact.subtitle": "Sorularınız, iş birliği teklifleriniz veya geri bildirimleriniz için mesaj gönderebilirsiniz.",
+    "contact.successMsg": "Mesajınız başarıyla iletildi. En kısa sürede dönüş yapacağız.",
+
+    // Etkinlikler
+    "events.badge": "Gelişim & Buluşma",
+    "events.title": "Topluluk Etkinlikleri",
+    "events.subtitle": "Online atölyeler, yüz yüze zirveler ve sosyal buluşmalar.",
+    "events.applyModalTitle": "Etkinliğe Kaydol",
+    "events.applySuccess": "Etkinlik başvurunuz başarıyla alındı!",
+
+    // Bizden Haberdar Ol
+    "haberdar.badge": "Başvurunuz Alındı",
+    "haberdar.title": "Bizden Haberdar Ol",
+    "haberdar.subtitle": "Artık N'apsak? Gençlik Topluluğu'nun bir parçası olmak için ilk adımı attın. Gelişmeleri kaçırmamak için bizi takip etmeyi unutma.",
+    "haberdar.mainChannel": "Ana İletişim Kanalı",
+    "haberdar.whatsappBtn": "WhatsApp Topluluğuna Katıl",
+    "haberdar.otherChannels": "Diğer Takip Kanallarımız",
+    "haberdar.follow": "Takip Et",
+    "haberdar.backHome": "Ana Sayfaya Geri Dön",
   },
   en: {
     // Navigation
@@ -132,11 +176,7 @@ export const translations: Record<Language, TranslationDictionary> = {
     "nav.positions": "Open Positions",
     "nav.partners": "Partners & Supporters",
     "nav.works": "Our Works",
-
-
     "nav.community": "Community",
-
-    // User Actions
     "nav.join": "Join Community",
     "nav.login": "Sign In",
     "nav.register": "Register",
@@ -161,6 +201,26 @@ export const translations: Record<Language, TranslationDictionary> = {
     "common.next": "Next",
     "common.success": "Success",
     "common.error": "Error",
+    "common.loading": "Loading...",
+    "common.noResults": "No items found",
+    "common.backToHome": "Back to Home",
+    "common.cancel": "Cancel",
+    "common.save": "Save",
+    "common.delete": "Delete",
+    "common.edit": "Edit",
+    "common.viewDetails": "View Details",
+    "common.sending": "Sending...",
+    "common.saving": "Saving...",
+    "common.filter": "Filter",
+    "common.allCategories": "All Categories",
+    "common.required": "Required",
+    "common.name": "Full Name",
+    "common.email": "Email Address",
+    "common.phone": "Phone Number",
+    "common.city": "City",
+    "common.school": "School / University",
+    "common.department": "Department",
+    "common.note": "Note / Description",
 
     // Hero Section
     "hero.badge": "Taking Action Since 2025",
@@ -226,5 +286,34 @@ export const translations: Record<Language, TranslationDictionary> = {
     "footer.rights": "All rights reserved.",
     "footer.kvkk": "Privacy Policy (KVKK)",
     "footer.cookies": "Cookie Policy",
+
+    // About Us
+    "about.badge": "Our Story & Mission",
+    "about.title": "Youth Community Shaping the Future Together",
+    "about.subtitle": "A dynamic ecosystem uniting youth across fields, focusing on continuous learning and sharing.",
+
+    // Contact
+    "contact.badge": "Get in Touch",
+    "contact.title": "Contact Us",
+    "contact.subtitle": "Feel free to send us your inquiries, partnership proposals, or feedback.",
+    "contact.successMsg": "Your message has been sent successfully. We will get back to you soon.",
+
+    // Events
+    "events.badge": "Growth & Gatherings",
+    "events.title": "Community Events",
+    "events.subtitle": "Online workshops, in-person summits, and social meetups.",
+    "events.applyModalTitle": "Register for Event",
+    "events.applySuccess": "Your event registration was received successfully!",
+
+    // Stay Updated
+    "haberdar.badge": "Application Received",
+    "haberdar.title": "Stay Updated With Us",
+    "haberdar.subtitle": "You have taken the first step to join N'apsak? Youth Community. Follow us to not miss any updates.",
+    "haberdar.mainChannel": "Main Communication Channel",
+    "haberdar.whatsappBtn": "Join WhatsApp Community",
+    "haberdar.otherChannels": "Our Other Channels",
+    "haberdar.follow": "Follow",
+    "haberdar.backHome": "Back to Home",
   },
 };
+

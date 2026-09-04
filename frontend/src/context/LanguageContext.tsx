@@ -51,6 +51,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (langDict && langDict[key]) {
         return langDict[key];
       }
+      if (language !== "tr" && fallback) {
+        return fallback;
+      }
       // Fallback to Turkish if key missing in English
       if (language !== "tr" && translations.tr && translations.tr[key]) {
         return translations.tr[key];

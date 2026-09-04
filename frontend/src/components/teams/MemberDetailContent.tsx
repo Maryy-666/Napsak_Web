@@ -66,7 +66,7 @@ export function MemberDetailContent({ member }: MemberDetailContentProps) {
               href="/"
               className="hover:text-[#0A5C3A] transition-colors flex items-center gap-1 cursor-pointer"
             >
-              Ana Sayfa
+              {isEn ? "Home" : "Ana Sayfa"}
             </Link>
             <span className="text-[#CDD1D5]">/</span>
             <Link
@@ -114,7 +114,7 @@ export function MemberDetailContent({ member }: MemberDetailContentProps) {
 
                   {member.isPresident && (
                     <span className="px-3 py-1 rounded-full bg-[#0A5C3A] text-white font-extrabold text-xs uppercase tracking-wider shadow-xs">
-                      Topluluk Başkanı
+                      {isEn ? "Community President" : "Topluluk Başkanı"}
                     </span>
                   )}
                 </div>

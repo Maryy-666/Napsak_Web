@@ -21,9 +21,12 @@ type NewsCard = {
   id: string;
   slug: string;
   title: string;
+  titleEn?: string;
   date: string;
   category: string;
+  categoryEn?: string;
   excerpt: string;
+  excerptEn?: string;
   coverImage: string;
 };
 
@@ -31,14 +34,19 @@ const mapNewsItem = (item: any): NewsCard => ({
   id: String(item.id),
   slug: item.slug,
   title: item.title,
+  titleEn: item.titleEn,
   date: item.publishDate || "2026",
   category: item.category || "Duyuru",
+  categoryEn: item.categoryEn,
   excerpt: item.summary || item.content?.substring(0, 150) || "",
+  excerptEn: item.summaryEn || item.excerptEn || item.contentEn?.substring(0, 150),
   coverImage: item.coverImage || "/images/forest-hero.jpg",
 });
 
 export const NewsSection: React.FC = () => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
+
   const [newsList, setNewsList] = useState<NewsCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -133,7 +141,7 @@ export const NewsSection: React.FC = () => {
               onClick={handlePrev}
               disabled={totalNews <= 1}
               className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
-              aria-label="Önceki Haber"
+              aria-label={isEn ? "Previous News" : "Önceki Haber"}
             >
               <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
             </button>
@@ -142,7 +150,7 @@ export const NewsSection: React.FC = () => {
               onClick={handleNext}
               disabled={totalNews <= 1}
               className="w-12 h-12 rounded-full bg-white border border-[#EEF0F2] text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
-              aria-label="Sonraki Haber"
+              aria-label={isEn ? "Next News" : "Sonraki Haber"}
             >
               <ChevronRight className="w-6 h-6 stroke-[2.5]" />
             </button>
@@ -150,7 +158,7 @@ export const NewsSection: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="py-10 text-center text-sm font-medium text-[#5F6773]">Haberler yükleniyor...</div>
+          <div className="py-10 text-center text-sm font-medium text-[#5F6773]">{t("common.loading", "Yükleniyor...")}</div>
         ) : (
           <>
             <div
@@ -176,59 +184,65 @@ export const NewsSection: React.FC = () => {
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
-                {newsList.map((item) => (
-                  <div
-                    key={item.id || item.slug}
-                    className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 flex flex-col"
-                  >
-                    <Link
-                      href={`/haberler/${item.slug}`}
-                      className="flex flex-col h-full bg-white rounded-[24px] border border-[#EEF0F2] overflow-hidden shadow-[0_8px_30px_rgba(15,17,21,0.04)] hover:shadow-[0_16px_40px_rgba(10,92,58,0.14)] hover:border-[#0A5C3A]/50 transition-all duration-300 cursor-pointer group"
+                {newsList.map((item) => {
+                  const cardTitle = isEn ? (item.titleEn || item.title) : item.title;
+                  const cardCategory = isEn ? (item.categoryEn || item.category) : item.category;
+                  const cardExcerpt = isEn ? (item.excerptEn || item.excerpt) : item.excerpt;
+
+                  return (
+                    <div
+                      key={item.id || item.slug}
+                      className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 flex flex-col"
                     >
-                      <div className="relative block aspect-[16/10] overflow-hidden bg-[#FAFBFB] p-2">
-                        <Image
-                          src={item.coverImage}
-                          alt={item.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                      <Link
+                        href={`/haberler/${item.slug}`}
+                        className="flex flex-col h-full bg-white rounded-[24px] border border-[#EEF0F2] overflow-hidden shadow-[0_8px_30px_rgba(15,17,21,0.04)] hover:shadow-[0_16px_40px_rgba(10,92,58,0.14)] hover:border-[#0A5C3A]/50 transition-all duration-300 cursor-pointer group"
+                      >
+                        <div className="relative block aspect-[16/10] overflow-hidden bg-[#FAFBFB] p-2">
+                          <Image
+                            src={item.coverImage}
+                            alt={cardTitle}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-contain object-center transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                        <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#0A5C3A] text-white text-xs font-bold font-sans tracking-wide shadow-md">
-                          {item.category}
+                          <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-[#0A5C3A] text-white text-xs font-bold font-sans tracking-wide shadow-md">
+                            {cardCategory}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4">
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2 text-xs font-medium text-[#5F6773]">
-                            <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
-                            <span>{item.date}</span>
+                        <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-xs font-medium text-[#5F6773]">
+                              <Calendar className="w-3.5 h-3.5 text-[#0A5C3A]" />
+                              <span>{item.date}</span>
+                            </div>
+
+                            <h3 className="text-xl font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2">
+                              {cardTitle}
+                            </h3>
+
+                            <p className="text-sm font-sans text-[#5F6773] leading-relaxed line-clamp-3">
+                              {cardExcerpt}
+                            </p>
                           </div>
 
-                          <h3 className="text-xl font-bold font-headings text-[#0F1115] group-hover:text-[#0A5C3A] transition-colors leading-snug line-clamp-2">
-                            {item.title}
-                          </h3>
-
-                          <p className="text-sm font-sans text-[#5F6773] leading-relaxed line-clamp-3">
-                            {item.excerpt}
-                          </p>
-                        </div>
-
-                        <div className="pt-3 border-t border-[#EEF0F2] flex items-center justify-between">
-                          <div className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0A5C3A] group-hover:text-[#084A2F] transition-colors">
-                            <span>Detayları Gör</span>
-                            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
+                          <div className="pt-3 border-t border-[#EEF0F2] flex items-center justify-between">
+                            <div className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0A5C3A] group-hover:text-[#084A2F] transition-colors">
+                              <span>{t("common.viewDetails", "Detayları Gör")}</span>
+                              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
+                            </div>
+                            <span className="w-8 h-8 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors">
+                              <Newspaper className="w-4 h-4" />
+                            </span>
                           </div>
-                          <span className="w-8 h-8 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] flex items-center justify-center group-hover:bg-[#0A5C3A] group-hover:text-white transition-colors">
-                            <Newspaper className="w-4 h-4" />
-                          </span>
                         </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  );
+                })}
               </motion.div>
             </div>
 
@@ -243,7 +257,7 @@ export const NewsSection: React.FC = () => {
                       ? "w-8 bg-[#0A5C3A]"
                       : "w-2.5 bg-[#CDD1D5] hover:bg-[#0A5C3A]/40"
                   }`}
-                  aria-label={`Haber ${idx + 1}`}
+                  aria-label={isEn ? `News ${idx + 1}` : `Haber ${idx + 1}`}
                 />
               ))}
             </div>

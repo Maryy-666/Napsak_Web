@@ -6,6 +6,7 @@ import { Card } from "../ui/Card";
 import { LoginForm } from "./LoginForm";
 import { Logo } from "../common/Logo";
 import { TransitionPhase } from "./LoginPageContent";
+import { useLanguage } from "../../context/LanguageContext";
 
 interface LoginCardProps {
   phase: TransitionPhase;
@@ -20,6 +21,8 @@ export const LoginCard: React.FC<LoginCardProps> = ({
   isMobile = false,
   springConfig,
 }) => {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const shouldReduceMotion = useReducedMotion();
 
   // Success card mounts when the logo starts shrinking to its final position
@@ -110,7 +113,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                         transition={{ duration: 0.25, ease: "easeOut" }}
                         className="text-3xl sm:text-[40px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight sm:leading-none mb-4"
                       >
-                        Hoş Geldiniz
+                        {isEn ? "Welcome Back" : "Hoş Geldiniz"}
                       </motion.h2>
 
                       {/* "Başarıyla giriş yapıldı." (80ms delay) */}
@@ -120,7 +123,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                         transition={{ duration: 0.25, delay: 0.08, ease: "easeOut" }}
                         className="text-[#0A5C3A] font-semibold text-base"
                       >
-                        Başarıyla giriş yapıldı.
+                        {isEn ? "Logged in successfully." : "Başarıyla giriş yapıldı."}
                       </motion.p>
 
                       {/* "Yönlendiriliyorsunuz..." (120ms delay) */}
@@ -130,7 +133,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                         transition={{ duration: 0.25, delay: 0.12, ease: "easeOut" }}
                         className="text-sm text-[#5F6773] mt-1 font-medium font-sans"
                       >
-                        Yönlendiriliyorsunuz...
+                        {isEn ? "Redirecting..." : "Yönlendiriliyorsunuz..."}
                       </motion.p>
 
                       {/* 

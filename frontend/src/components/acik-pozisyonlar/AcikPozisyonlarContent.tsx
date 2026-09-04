@@ -21,6 +21,7 @@ import { PageBackground } from "../common/PageBackground";
 import { useLanguage } from "../../context/LanguageContext";
 import { ROUTES } from "../../constants/routes";
 import { PositionsRepository, OpenPosition } from "../../lib/positionsStore";
+import { PositionApplicationModal } from "./PositionApplicationModal";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 16 },
@@ -42,6 +43,7 @@ export default function AcikPozisyonlarContent() {
   const [selectedMode, setSelectedMode] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [applyingPosition, setApplyingPosition] = useState<OpenPosition | null>(null);
 
   useEffect(() => {
     PositionsRepository.fetchPositionsFromDB()
@@ -374,7 +376,7 @@ export default function AcikPozisyonlarContent() {
                         >
                           <span>
                             {isExpanded
-                              ? isEn ? "Detayları Gizle" : "Detayları Gizle"
+                              ? isEn ? "Hide Details" : "Detayları Gizle"
                               : isEn ? "View Details & Requirements" : "Detayları & Şartları İncele"}
                           </span>
                           <ChevronDown
@@ -384,16 +386,15 @@ export default function AcikPozisyonlarContent() {
                           />
                         </button>
 
-                        <Button
-                          href={ROUTES.BASVURU}
-                          variant="primary"
-                          size="sm"
-                          rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
-                          className="!bg-[#0A5C3A] hover:!bg-[#0D7449] !text-white font-bold text-xs px-4 h-9 shadow-sm shrink-0"
-                          aria-label={`${titleText} pozisyonuna başvur`}
+                        <button
+                          type="button"
+                          onClick={() => setApplyingPosition(pos)}
+                          className="inline-flex items-center justify-center gap-1.5 px-4 h-9 rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] text-white font-bold text-xs shadow-sm transition-all shrink-0 cursor-pointer"
+                          aria-label={isEn ? `Apply for ${titleText}` : `${titleText} pozisyonuna başvur`}
                         >
-                          {isEn ? "Apply" : "Başvur"}
-                        </Button>
+                          <span>{isEn ? "Apply to Position" : "Pozisyona Başvur"}</span>
+                          <ArrowRight className="w-3.5 h-3.5 stroke-[2]" />
+                        </button>
                       </div>
                     </Card>
                   </motion.div>
@@ -441,6 +442,13 @@ export default function AcikPozisyonlarContent() {
           </motion.div>
         </PageContainer>
       </Section>
+
+      {/* POSITION APPLICATION MODAL */}
+      <PositionApplicationModal
+        position={applyingPosition}
+        isOpen={!!applyingPosition}
+        onClose={() => setApplyingPosition(null)}
+      />
     </PageBackground>
   );
 }

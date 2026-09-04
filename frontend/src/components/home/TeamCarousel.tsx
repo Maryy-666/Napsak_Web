@@ -112,9 +112,11 @@ export const TeamCarousel: React.FC = () => {
     return (
       <div className="w-full flex flex-col items-center select-none py-4">
         <div className="w-full flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 pb-4 no-scrollbar">
-          {TEAMS_DATA.map((team, idx) => {
-            const IconComp = TEAM_ICONS[team.iconName];
+          {activeTeamsList.map((team, idx) => {
+            const IconComp = TEAM_ICONS[team.iconName] || TEAM_ICONS["cpu"];
             const isActive = idx === frontIndex;
+            const cardTitle = isEn ? (team.titleEn || team.title) : team.title;
+            const cardDesc = isEn ? (team.shortDescriptionEn || team.shortDescription) : team.shortDescription;
 
             return (
               <div
@@ -130,7 +132,7 @@ export const TeamCarousel: React.FC = () => {
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                   <img
                     src={team.bgImage}
-                    alt={team.title}
+                    alt={cardTitle}
                     className="w-full h-full object-cover"
                   />
                   <div
@@ -152,22 +154,22 @@ export const TeamCarousel: React.FC = () => {
                   </div>
                   {isActive && (
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#0A5C3A] text-white uppercase tracking-wider shadow-sm">
-                      Aktif
+                      {isEn ? "Active" : "Aktif"}
                     </span>
                   )}
                 </div>
 
                 <div className="relative z-10 flex flex-col text-left mt-2">
                   <h3 className="text-xl font-bold font-headings mb-2 text-white drop-shadow-sm">
-                    {team.title}
+                    {cardTitle}
                   </h3>
                   <p className="text-xs font-sans leading-relaxed text-white/90">
-                    {team.shortDescription}
+                    {cardDesc}
                   </p>
                 </div>
 
                 <div className="relative z-10 w-full pt-3 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
-                  <span className="text-white/90">N'apsak? Ekibi</span>
+                  <span className="text-white/90">{isEn ? "N'apsak? Team" : "N'apsak? Ekibi"}</span>
                   <Link
                     href={`/ekipler/${team.slug}`}
                     onClick={(e) => e.stopPropagation()}
@@ -176,8 +178,8 @@ export const TeamCarousel: React.FC = () => {
                         ? "bg-white text-[#0A5C3A] shadow-md hover:bg-[#0A5C3A] hover:text-white"
                         : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/40"
                     }`}
-                    title={`${team.title} Detayına Git`}
-                    aria-label={`${team.title} Detay Sayfası`}
+                    title={isEn ? `View ${cardTitle} Details` : `${cardTitle} Detayına Git`}
+                    aria-label={isEn ? `${cardTitle} Detail Page` : `${cardTitle} Detay Sayfası`}
                   >
                     →
                   </Link>
@@ -189,7 +191,7 @@ export const TeamCarousel: React.FC = () => {
 
         {/* Mobile Dots */}
         <div className="flex items-center gap-2 mt-4">
-          {TEAMS_DATA.map((_, idx) => (
+          {activeTeamsList.map((_, idx) => (
             <button
               key={idx}
               type="button"
@@ -216,7 +218,7 @@ export const TeamCarousel: React.FC = () => {
           type="button"
           onClick={handlePrev}
           className="absolute left-2 sm:left-4 z-50 w-12 h-12 rounded-full bg-white/90 border border-[#EEF0F2] text-[#0A5C3A] shadow-lg hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
-          aria-label="Önceki Ekip"
+          aria-label={isEn ? "Previous Team" : "Önceki Ekip"}
         >
           <ChevronLeft className="w-6 h-6 stroke-[2.5]" />
         </button>
@@ -226,7 +228,7 @@ export const TeamCarousel: React.FC = () => {
           type="button"
           onClick={handleNext}
           className="absolute right-2 sm:right-4 z-50 w-12 h-12 rounded-full bg-white/90 border border-[#EEF0F2] text-[#0A5C3A] shadow-lg hover:bg-[#0A5C3A] hover:text-white hover:border-[#0A5C3A] transition-all duration-200 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20"
-          aria-label="Sonraki Ekip"
+          aria-label={isEn ? "Next Team" : "Sonraki Ekip"}
         >
           <ChevronRight className="w-6 h-6 stroke-[2.5]" />
         </button>
@@ -238,6 +240,8 @@ export const TeamCarousel: React.FC = () => {
         >
           {activeTeamsList.map((team, idx) => {
             const IconComp = TEAM_ICONS[team.iconName] || TEAM_ICONS["cpu"];
+            const cardTitle = isEn ? (team.titleEn || team.title) : team.title;
+            const cardDesc = isEn ? (team.shortDescriptionEn || team.shortDescription) : team.shortDescription;
 
             // Compute exact angle on 360-degree cylinder
             const cardAngle = (rotationAngle + idx * angleStep) % 360;
@@ -304,7 +308,7 @@ export const TeamCarousel: React.FC = () => {
                 <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                   <img
                     src={team.bgImage}
-                    alt={team.title}
+                    alt={cardTitle}
                     className={`w-full h-full object-cover transition-transform duration-500 ease-out ${
                       isHovered ? "scale-105" : "scale-100"
                     }`}
@@ -342,7 +346,7 @@ export const TeamCarousel: React.FC = () => {
                 {/* Team Title & Description */}
                 <div className="relative z-10 flex flex-col text-left mt-3">
                   <h3 className="text-xl sm:text-2xl font-bold font-headings leading-snug mb-3 text-white drop-shadow-md">
-                    {team.title}
+                    {cardTitle}
                   </h3>
 
                   <p
@@ -352,7 +356,7 @@ export const TeamCarousel: React.FC = () => {
                         : "text-white/80 opacity-90"
                     }`}
                   >
-                    {team.shortDescription}
+                    {cardDesc}
                   </p>
                 </div>
 
@@ -368,8 +372,8 @@ export const TeamCarousel: React.FC = () => {
                         ? "bg-white text-[#0A5C3A] scale-110 shadow-md hover:bg-[#0A5C3A] hover:text-white"
                         : "bg-white/20 text-white backdrop-blur-sm hover:bg-white/40"
                     }`}
-                    title={`${team.title} Detayına Git`}
-                    aria-label={`${team.title} Detay Sayfası`}
+                    title={isEn ? `View ${cardTitle} Details` : `${cardTitle} Detayına Git`}
+                    aria-label={isEn ? `${cardTitle} Detail Page` : `${cardTitle} Detay Sayfası`}
                   >
                     →
                   </Link>
@@ -386,8 +390,24 @@ export const TeamCarousel: React.FC = () => {
           type="button"
           onClick={() => setIsPaused(!isPaused)}
           className="p-2 rounded-full bg-[#F8F9FA] border border-[#EEF0F2] text-[#0A5C3A] hover:bg-[#0A5C3A] hover:text-white transition-all cursor-pointer"
-          aria-label={isPaused ? "Döndürmeyi Başlat" : "Döndürmeyi Durdur"}
-          title={isPaused ? "Döndürmeyi Başlat" : "Döndürmeyi Durdur"}
+          aria-label={
+            isPaused
+              ? isEn
+                ? "Start Rotation"
+                : "Döndürmeyi Başlat"
+              : isEn
+              ? "Stop Rotation"
+              : "Döndürmeyi Durdur"
+          }
+          title={
+            isPaused
+              ? isEn
+                ? "Start Rotation"
+                : "Döndürmeyi Başlat"
+              : isEn
+              ? "Stop Rotation"
+              : "Döndürmeyi Durdur"
+          }
         >
           {isPaused ? <Play className="w-4 h-4 fill-current" /> : <Pause className="w-4 h-4 fill-current" />}
         </button>
@@ -404,7 +424,7 @@ export const TeamCarousel: React.FC = () => {
                   ? "w-8 bg-[#0A5C3A]"
                   : "w-2.5 bg-[#EEF0F2] hover:bg-[#0A5C3A]/40"
               }`}
-              aria-label={`Ekip ${idx + 1}`}
+              aria-label={isEn ? `Team ${idx + 1}` : `Ekip ${idx + 1}`}
             />
           ))}
         </div>

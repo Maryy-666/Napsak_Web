@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, Sparkles, Layers, UserCheck, ShieldCheck, ArrowRight } from "lucide-react";
 import { PublicMember } from "../../data/members";
 import { ImageWithFallback } from "../common/ImageWithFallback";
+import { useLanguage } from "../../context/LanguageContext";
 
 
 export interface PublicMemberModalProps {
@@ -15,6 +16,8 @@ export interface PublicMemberModalProps {
 }
 
 export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModalProps) {
+  const { language } = useLanguage();
+  const isEn = language === "en";
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -102,7 +105,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
         {/* BODY: GROUPED MEMBERSHIPS */}
         <div className="space-y-3 text-left">
           <span className="text-xs font-extrabold uppercase tracking-wider text-[#0F1115] flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-[#0A5C3A]" /> Ekip & Kurul Üyelikleri
+            <Layers className="w-4 h-4 text-[#0A5C3A]" /> {isEn ? "Team & Board Memberships" : "Ekip & Kurul Üyelikleri"}
           </span>
 
           <div className="space-y-3">
@@ -144,7 +147,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
               onClick={onClose}
               className="flex items-center justify-between w-full px-4 py-3 rounded-2xl bg-[#0A5C3A] hover:bg-[#0D7449] text-white text-xs font-bold transition-all shadow-sm font-sans"
             >
-              <span>Detaylı Profili Görüntüle</span>
+              <span>{isEn ? "View Detailed Profile" : "Detaylı Profili Görüntüle"}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -153,7 +156,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
         {/* FOOTER VERIFICATION BADGE */}
         <div className="pt-4 border-t border-[#EEF0F2] flex items-center justify-between text-xs text-[#5F6773] font-medium">
           <span className="flex items-center gap-1.5">
-            <UserCheck className="w-4 h-4 text-[#0A5C3A]" /> Doğrulanmış Ekip Üyesi
+            <UserCheck className="w-4 h-4 text-[#0A5C3A]" /> {isEn ? "Verified Team Member" : "Doğrulanmış Ekip Üyesi"}
           </span>
           <span>N'apsak? Gençlik Topluluğu</span>
         </div>

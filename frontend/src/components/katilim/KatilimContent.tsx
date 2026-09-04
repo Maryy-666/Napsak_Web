@@ -162,6 +162,157 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
 
   const isEn = language === "en";
 
+  const participationTypes = [
+    {
+      id: "gonullu",
+      title: isEn ? "Volunteer" : "Gönüllü",
+      subtitle: isEn ? "Flexible & Free Involvement" : "Esnek & Özgür Katılım",
+      icon: Heart,
+      badgeBg: "bg-[#EAF5EF] text-[#0A5C3A] border-[#0A5C3A]/20",
+      iconBg: "bg-[#EAF5EF] text-[#0A5C3A]",
+      desc: isEn
+        ? "Contribute flexible time to social impact projects, community movements, and periodic field initiatives."
+        : "Toplumsal etki projelerine, sosyal sorumluluk hareketlerine ve dönemsel saha çalışmalarına esnek zamanlı katkı sun.",
+      perks: isEn
+        ? [
+            "Flexible contribution hours",
+            "Field experience in social impact projects",
+            "Volunteer certificate and community network",
+          ]
+        : [
+            "Dönemsel ve esnek katkı saatleri",
+            "Sosyal etki projelerinde saha deneyimi",
+            "Gönüllülük katılım belgesi ve topluluk ağı",
+          ],
+      actionText: isEn ? "Become a Volunteer" : "Gönüllü Ol",
+      actionHref: `${ROUTES.BASVURU}?tur=gonullu`,
+      featured: false,
+    },
+    {
+      id: "ekip-uyesi",
+      title: isEn ? "Team Member" : "Ekip Üyesi",
+      subtitle: isEn ? "Regular Output & Responsibility" : "Düzenli Üretim & Sorumluluk",
+      icon: Users,
+      badgeBg: "bg-[#0A5C3A] text-white border-transparent shadow-2xs",
+      iconBg: "bg-[#0A5C3A] text-white shadow-sm shadow-[#0A5C3A]/20",
+      desc: isEn
+        ? "Take a regular role in our Technology, Art, Health & Environment, Communication, or Events teams to execute projects together."
+        : "Teknoloji, Sanat, Çevre, İletişim veya Etkinlik ekiplerimizden birinde düzenli rol alarak projeleri birlikte yürüt.",
+      perks: isEn
+        ? [
+            "Weekly team meetings & sustainable output",
+            "Project leadership & peer mentorship",
+            "Exclusive workshops & ecosystem privileges",
+          ]
+        : [
+            "Haftalık ekip toplantıları ve sürdürülebilir üretim",
+            "Proje liderliği ve takım içi mentörlük",
+            "Özel atölye ve ekosistem ayrıcalıkları",
+          ],
+      actionText: isEn ? "Explore Teams & Apply" : "Ekipleri İncele ve Başvur",
+      actionHref: ROUTES.EKIPLER,
+      featured: true,
+    },
+    {
+      id: "etkinlik-katilimcisi",
+      title: isEn ? "Event Participant" : "Etkinlik Katılımcısı",
+      subtitle: isEn ? "Inspiration & Networking" : "İlham & Networking",
+      icon: CalendarDays,
+      badgeBg: "bg-blue-50 text-blue-700 border-blue-200/60",
+      iconBg: "bg-blue-50 text-blue-600",
+      desc: isEn
+        ? "Meet our community by participating in in-person summits, online workshops, and idea camps."
+        : "Düzenlediğimiz yüz yüze zirvelere, çevrim içi atölyelere ve fikir kamplarına katılarak topluluğumuzla tanış.",
+      perks: isEn
+        ? [
+            "Free workshops and summit gatherings",
+            "Community networking based on interests",
+            "Priority registration for upcoming events",
+          ]
+        : [
+            "Ücretsiz atölye ve zirve buluşmaları",
+            "İlgi alanlarına göre topluluk networking'i",
+            "Gelecek etkinlikler için öncelikli kayıt",
+          ],
+      actionText: isEn ? "Explore Events" : "Etkinlikleri Keşfet",
+      actionHref: ROUTES.ETKINLIKLER,
+      featured: false,
+    },
+  ];
+
+  const processSteps = [
+    {
+      stepNumber: "01",
+      title: isEn ? "Choose Your Path" : "Yolunu Seç",
+      desc: isEn
+        ? "Determine how you want to contribute: as a volunteer, team member, or event participant."
+        : "Gönüllü, ekip üyesi veya etkinlik katılımcısı olarak hangi yolla katkı sunmak istediğini belirle.",
+      icon: Compass,
+    },
+    {
+      stepNumber: "02",
+      title: isEn ? "Submit Your Application" : "Başvurunu Gönder",
+      desc: isEn
+        ? "Fill out the short application form to share your interests, skills, and expectations with us."
+        : "Kısa başvuru formunu doldurarak ilgi alanlarını, becerilerini ve beklentilerini bizimle paylaş.",
+      icon: FileText,
+    },
+    {
+      stepNumber: "03",
+      title: isEn ? "Let's Meet" : "Tanışalım",
+      desc: isEn
+        ? "Have a 15-minute friendly chat with members of the relevant working team."
+        : "İlgili çalışma ekibinden arkadaşlarımızla 15 dakikalık samimi ve tatlı bir tanışma sohbeti yapalım.",
+      icon: UserCheck,
+    },
+    {
+      stepNumber: "04",
+      title: isEn ? "Start Together" : "Birlikte Başlayalım",
+      desc: isEn
+        ? "Join our communication channel, complete orientation, and start producing with excitement in your first project!"
+        : "İletişim kanalımıza dahil ol, oryantasyonunu tamamla ve ilk projende heyecanla üretmeye başla!",
+      icon: Rocket,
+    },
+  ];
+
+  const faqItems = [
+    {
+      id: "faq-1",
+      question: isEn ? "How is my application reviewed?" : "Başvurum nasıl incelenir?",
+      answer: isEn
+        ? "Your application is carefully and sincerely evaluated by the facilitators of our relevant working team based on your specified interests and participation type."
+        : "Başvurun, belirttiğin ilgi alanları ve katılım türüne göre ilgili çalışma ekibimizin kolaylaştırıcıları tarafından samimiyetle ve özenle değerlendirilir.",
+    },
+    {
+      id: "faq-2",
+      question: isEn ? "When will I get a response?" : "Ne zaman dönüş yapılır?",
+      answer: isEn
+        ? "Applications are reviewed regularly by our team. Depending on application volume, we contact you as soon as possible via email or message."
+        : "Başvurular ekibimiz tarafından dönemsel ve düzenli periyotlarda incelenir. Başvuru yoğunluğuna bağlı olarak en kısa sürede e-posta veya mesaj yoluyla seninle iletişime geçiyoruz.",
+    },
+    {
+      id: "faq-3",
+      question: isEn ? "What is the meeting chat like?" : "Tanışma görüşmesi nasıl olur?",
+      answer: isEn
+        ? "It is definitely not a formal job interview! It's an informal 15-20 minute online chat to get to know you, answer your questions, and share the spirit of our community."
+        : "Resmi ve kasıntı bir iş mülakatı kesinlikle değil! Seni tanımak, merak ettiklerini yanıtlamak ve topluluğumuzun ruhunu anlatmak için yaptığımız 15-20 dakikalık samimi bir çevrim içi sohbet.",
+    },
+    {
+      id: "faq-4",
+      question: isEn ? "Which team will I be directed to?" : "Hangi ekibe yönlendirilirim?",
+      answer: isEn
+        ? "You will be directed to the working team that will add the most value to you, based on the skills, interests, and growth goals specified in your form."
+        : "Başvuru formunda belirttiğin becerilerin, ilgi alanların ve gelişmek istediğin konular doğrultusunda sana en çok değer katacak çalışma ekibine yönlendirilirsin.",
+    },
+    {
+      id: "faq-5",
+      question: isEn ? "What happens after the process?" : "Süreçten sonra ne olur?",
+      answer: isEn
+        ? "You'll be added to the common communication channel of your assigned team. You'll meet your teammates during the first orientation meetup and join your first event."
+        : "Yönlendirildiğin ekibin ortak iletişim kanalına eklenirsin. İlk oryantasyon buluşmasında takım arkadaşlarınla tanışır ve ilk etkinliğinde yerini alırsın.",
+    },
+  ];
+
   return (
     <PageBackground id="katilim-root" className="select-none px-0 py-0 overflow-hidden bg-white text-slate-900">
       
@@ -224,20 +375,19 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
               </Link>
             </div>
 
-
             {/* Mini Değerler Rozeti */}
             <div className="pt-6 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-slate-500">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#0A5C3A]" />
-                <span>Samimi & Açık Ekosistem</span>
+                <span>{isEn ? "Friendly & Open Ecosystem" : "Samimi & Açık Ekosistem"}</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#0A5C3A]" />
-                <span>Birlikte Öğrenme ve Üretim</span>
+                <span>{isEn ? "Learning & Producing Together" : "Birlikte Öğrenme ve Üretim"}</span>
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#0A5C3A]" />
-                <span>Sıfır Bürokrasi, Yüksek Enerji</span>
+                <span>{isEn ? "Zero Bureaucracy, High Energy" : "Sıfır Bürokrasi, Yüksek Enerji"}</span>
               </span>
             </div>
           </motion.div>
@@ -258,19 +408,21 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             className="text-center max-w-2xl mx-auto mb-14 space-y-3"
           >
             <span className="text-xs font-semibold text-[#0A5C3A] uppercase tracking-widest bg-[#EAF5EF] px-3 py-1 rounded-full border border-[#0A5C3A]/20">
-              Senin Yolun Hangisi?
+              {isEn ? "Which Path is Yours?" : "Senin Yolun Hangisi?"}
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-headings">
-              Topluluğumuza Katılım Türleri
+              {isEn ? "Ways to Join Our Community" : "Topluluğumuza Katılım Türleri"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sans font-normal leading-relaxed">
-              Zamanına, hedeflerine ve enerjine en uygun katılım seçeneğini belirle.
+              {isEn
+                ? "Choose the participation option that best suits your time, goals, and energy."
+                : "Zamanına, hedeflerine ve enerjine en uygun katılım seçeneğini belirle."}
             </p>
           </motion.div>
 
           {/* 3 Açık Renk Kart Düzeni */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
-            {PARTICIPATION_TYPES.map((type, idx) => {
+            {participationTypes.map((type, idx) => {
               const Icon = type.icon;
               return (
                 <motion.div
@@ -291,7 +443,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                   >
                     {type.featured && (
                       <span className="absolute -top-3 left-6 text-[10.5px] font-bold bg-[#0A5C3A] text-white px-3.5 py-0.5 rounded-full shadow-2xs">
-                        Popüler Seçim
+                        {isEn ? "Popular Choice" : "Popüler Seçim"}
                       </span>
                     )}
 
@@ -361,19 +513,21 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             className="text-center max-w-2xl mx-auto mb-14 space-y-3"
           >
             <span className="text-xs font-semibold text-[#0A5C3A] uppercase tracking-widest bg-[#EAF5EF] px-3 py-1 rounded-full border border-[#0A5C3A]/20">
-              Şeffaf & Akıcı Adımlar
+              {isEn ? "Transparent & Smooth Steps" : "Şeffaf & Akıcı Adımlar"}
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-headings">
-              Katılım Süreci Nasıl İşler?
+              {isEn ? "How Does the Joining Process Work?" : "Katılım Süreci Nasıl İşler?"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sans font-normal leading-relaxed">
-              Kafa karışıklığı yok, kasıntı mülakatlar yok. 4 basit adımda topluluk yolculuğuna başla.
+              {isEn
+                ? "No confusion, no rigid interviews. Start your community journey in 4 simple steps."
+                : "Kafa karışıklığı yok, kasıntı mülakatlar yok. 4 basit adımda topluluk yolculuğuna başla."}
             </p>
           </motion.div>
 
           {/* 4 Adımlı Yatay Stepper Akışı */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative">
-            {PROCESS_STEPS.map((step, idx) => {
+            {processSteps.map((step, idx) => {
               const Icon = step.icon;
               return (
                 <motion.div
@@ -407,7 +561,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
 
                   {/* Alt Adım Göstergesi */}
                   <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-[#0A5C3A]">
-                    <span>Adım {idx + 1} / 4</span>
+                    <span>{isEn ? `Step ${idx + 1} / 4` : `Adım ${idx + 1} / 4`}</span>
                     {idx < 3 && <ChevronRight className="w-3.5 h-3.5 opacity-60 hidden lg:inline" />}
                   </div>
                 </motion.div>
@@ -431,19 +585,21 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             className="text-center max-w-xl mx-auto mb-12 space-y-3"
           >
             <span className="text-xs font-semibold text-[#0A5C3A] uppercase tracking-widest bg-[#EAF5EF] px-3 py-1 rounded-full border border-[#0A5C3A]/20">
-              Merak Edilenler
+              {isEn ? "Common Questions" : "Merak Edilenler"}
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-headings">
-              Aklındaki Sorular
+              {isEn ? "Questions on Your Mind" : "Aklındaki Sorular"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sans font-normal leading-relaxed">
-              Katılım süreci, değerlendirme ve yönlendirmeler hakkında bilmek istediklerin.
+              {isEn
+                ? "What you need to know about the joining process, evaluation, and team assignments."
+                : "Katılım süreci, değerlendirme ve yönlendirmeler hakkında bilmek istediklerin."}
             </p>
           </motion.div>
 
           {/* SSS Accordion Listesi */}
           <div className="space-y-3">
-            {FAQ_ITEMS.map((faq) => {
+            {faqItems.map((faq) => {
               const isOpen = openFaq === faq.id;
               return (
                 <div
@@ -495,7 +651,9 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             <div className="flex items-center gap-2.5">
               <HelpCircle className="w-5 h-5 text-[#0A5C3A] shrink-0" />
               <span className="text-xs sm:text-sm text-slate-600 font-medium">
-                Başka bir sorun mu var? SSS sayfamızı inceleyebilir veya dilediğin zaman bizimle iletişime geçebilirsin.
+                {isEn
+                  ? "Have another question? Browse our FAQ page or feel free to contact us anytime."
+                  : "Başka bir sorun mu var? SSS sayfamızı inceleyebilir veya dilediğin zaman bizimle iletişime geçebilirsin."}
               </span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -503,14 +661,14 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                 href={ROUTES.SSS}
                 className="inline-flex items-center gap-1 text-xs font-bold text-[#0A5C3A] bg-[#EAF5EF] hover:bg-[#0A5C3A] hover:text-white px-3.5 py-2 rounded-xl transition-all"
               >
-                <span>Tüm SSS'leri Gör</span>
+                <span>{isEn ? "View All FAQs" : "Tüm SSS'leri Gör"}</span>
                 <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </Link>
               <Link
                 href={ROUTES.ILETISIM}
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#0A5C3A] hover:underline"
               >
-                <span>İletişime Geç</span>
+                <span>{isEn ? "Contact Us" : "İletişime Geç"}</span>
                 <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
               </Link>
             </div>
@@ -537,15 +695,17 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
 
             <div className="relative z-10 space-y-2 max-w-2xl">
               <span className="bg-white/15 text-white text-xs font-bold px-3 py-1 rounded-lg inline-block font-sans">
-                Harekete Geç
+                {isEn ? "Take Action" : "Harekete Geç"}
               </span>
 
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight text-white leading-tight">
-                Sen de N'apsak?'ta yerini al!
+                {isEn ? "Take your place in N'apsak?!" : "Sen de N'apsak?'ta yerini al!"}
               </h3>
 
               <p className="text-xs sm:text-sm lg:text-base text-white/90 font-sans font-medium leading-relaxed">
-                “Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz. Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için üyelik başvurusu yapabilirsin.
+                {isEn
+                  ? "We are a community not of those saying 'I wish..', but of those asking 'N'apsak?' and taking action. You can submit your membership application to discover your potential, produce your projects, and meet like-minded youth."
+                  : "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz. Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için üyelik başvurusu yapabilirsin."}
               </p>
             </div>
             
@@ -557,7 +717,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2.5]" />}
                 className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold text-sm px-6 h-12 rounded-xl shadow-md cursor-pointer whitespace-nowrap w-full sm:w-auto justify-center"
               >
-                Topluluğa Katıl
+                {isEn ? "Join Community" : "Topluluğa Katıl"}
               </Button>
             </div>
           </motion.div>

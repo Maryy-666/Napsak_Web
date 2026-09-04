@@ -11,6 +11,7 @@ import { Button } from "../ui/Button";
 import { Logo } from "../common/Logo";
 import { ROUTES } from "../../constants/routes";
 import { PageBackground } from "../common/PageBackground";
+import { useLanguage } from "../../context/LanguageContext";
 
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(" ");
@@ -40,6 +41,8 @@ interface ResetPasswordContentProps {
 }
 
 export default function ResetPasswordContent({ token }: ResetPasswordContentProps) {
+  const { language, t } = useLanguage();
+  const isEn = language === "en";
   const router = useRouter();
   const [phase, setPhase] = useState<ResetPasswordPhase>("checking");
   const [windowSize, setWindowSize] = useState({ width: 1200, height: 800 });
@@ -130,29 +133,29 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
   const hasSpecial = checkSpecialChar(passwordVal);
 
   const criteria = [
-    { label: "Minimum 8 karakter", satisfied: hasMinLength },
-    { label: "Büyük harf", satisfied: hasUpperCase },
-    { label: "Küçük harf", satisfied: hasLowerCase },
-    { label: "Sayı", satisfied: hasDigit },
-    { label: "Özel karakter", satisfied: hasSpecial },
+    { label: isEn ? "Minimum 8 characters" : "Minimum 8 karakter", satisfied: hasMinLength },
+    { label: isEn ? "Uppercase letter" : "Büyük harf", satisfied: hasUpperCase },
+    { label: isEn ? "Lowercase letter" : "Küçük harf", satisfied: hasLowerCase },
+    { label: isEn ? "Number" : "Sayı", satisfied: hasDigit },
+    { label: isEn ? "Special character" : "Özel karakter", satisfied: hasSpecial },
   ];
 
   const satisfiedCount = criteria.filter((c) => c.satisfied).length;
 
-  let strengthLabel = "Zayıf";
+  let strengthLabel = isEn ? "Weak" : "Zayıf";
   let strengthPercent = "20%";
 
   if (satisfiedCount >= 5) {
-    strengthLabel = "Çok Güçlü";
+    strengthLabel = isEn ? "Very Strong" : "Çok Güçlü";
     strengthPercent = "100%";
   } else if (satisfiedCount === 4) {
-    strengthLabel = "Güçlü";
+    strengthLabel = isEn ? "Strong" : "Güçlü";
     strengthPercent = "80%";
   } else if (satisfiedCount === 3) {
-    strengthLabel = "Orta";
+    strengthLabel = isEn ? "Medium" : "Orta";
     strengthPercent = "60%";
   } else if (satisfiedCount === 2) {
-    strengthLabel = "Zayıf";
+    strengthLabel = isEn ? "Weak" : "Zayıf";
     strengthPercent = "40%";
   }
 
@@ -161,13 +164,13 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
 
     if (satisfiedCount < 5) {
       const { toast } = await import("sonner");
-      toast.error("Lütfen şifre güvenlik kriterlerinin tamamını karşılayın.");
+      toast.error(isEn ? "Please meet all password security requirements." : "Lütfen şifre güvenlik kriterlerinin tamamını karşılayın.");
       return;
     }
 
     if (data.password !== data.confirmPassword) {
       const { toast } = await import("sonner");
-      toast.error("Girdiğiniz şifreler uyuşmamaktadır.");
+      toast.error(isEn ? "Passwords do not match." : "Girdiğiniz şifreler uyuşmamaktadır.");
       return;
     }
 
@@ -190,12 +193,12 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
         }, 200);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Şifre güncellenemedi.");
+        throw new Error(errorData.error || (isEn ? "Password update failed." : "Şifre güncellenemedi."));
       }
     } catch (err: any) {
       setPhase("idle");
       const { toast } = await import("sonner");
-      toast.error(err.message || "Bir hata oluştu.");
+      toast.error(err.message || (isEn ? "An error occurred." : "Bir hata oluştu."));
     }
   };
 
@@ -310,7 +313,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
         {phase === "checking" && (
           <div className="z-20 flex flex-col items-center justify-center py-12 text-center">
             <div className="w-8 h-8 border-3 border-[#0A5C3A] border-t-transparent rounded-full animate-spin mb-4" />
-            <p className="text-sm font-semibold text-[#5F6773]">Bağlantı kontrol ediliyor...</p>
+            <p className="text-sm font-semibold text-[#5F6773]">{isEn ? "Verifying reset link..." : "Bağlantı kontrol ediliyor..."}</p>
           </div>
         )}
 
@@ -331,11 +334,11 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
               </div>
 
               <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight mb-3 select-none">
-                Bağlantının süresi dolmuş.
+                {isEn ? "Link has expired." : "Bağlantının süresi dolmuş."}
               </h1>
 
               <p className="text-base text-[#5F6773] leading-relaxed font-sans font-medium mb-8 max-w-[380px]">
-                {tokenError || "Bu şifre sıfırlama bağlantısı artık geçerli değil veya daha önce kullanılmış."}
+                {tokenError || (isEn ? "This password reset link is no longer valid or has already been used." : "Bu şifre sıfırlama bağlantısı artık geçerli değil veya daha önce kullanılmış.")}
               </p>
 
               <Button
@@ -344,7 +347,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                 fullWidth
                 className="!h-[56px] !rounded-[14px] text-base font-semibold bg-[#0A5C3A] hover:bg-[#0D7449] shadow-[0_1px_2px_rgba(10,92,58,0.18)] hover:shadow-[0_8px_20px_rgba(10,92,58,0.18)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150"
               >
-                Yeni Bağlantı Oluştur
+                {isEn ? "Request New Link" : "Yeni Bağlantı Oluştur"}
               </Button>
             </Card>
           </motion.div>
@@ -384,10 +387,10 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                   </motion.div>
                   <div className="flex flex-col justify-center min-w-0">
                     <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight mb-1 select-none">
-                      Yeni Şifre Oluştur
+                      {isEn ? "Create New Password" : "Yeni Şifre Oluştur"}
                     </h1>
                     <p className="text-xs sm:text-[13px] text-[#5F6773] leading-normal font-sans font-medium">
-                      Hesabınız için yeni bir güvenli şifre belirleyin.
+                      {isEn ? "Set a new secure password for your account." : "Hesabınız için yeni bir güvenli şifre belirleyin."}
                     </p>
                   </div>
                 </div>
@@ -398,8 +401,8 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     <Input
                       {...register("password")}
                       type={showPass ? "text" : "password"}
-                      label="Yeni Şifre"
-                      placeholder="Yeni şifrenizi girin"
+                      label={isEn ? "New Password" : "Yeni Şifre"}
+                      placeholder={isEn ? "Enter your new password" : "Yeni şifrenizi girin"}
                       required
                       disabled={disabled}
                       leftIcon={<Lock className="w-4.5 h-4.5" />}
@@ -412,7 +415,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                             setShowPass(!showPass);
                           }}
                           className="p-1 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus:outline-none transition-colors cursor-pointer select-none pointer-events-auto"
-                          aria-label={showPass ? "Şifreyi gizle" : "Şifreyi göster"}
+                          aria-label={showPass ? (isEn ? "Hide password" : "Şifreyi gizle") : (isEn ? "Show password" : "Şifreyi göster")}
                           tabIndex={0}
                         >
                           {showPass ? <EyeOff className="w-4.5 h-4.5 stroke-[1.75px]" /> : <Eye className="w-4.5 h-4.5 stroke-[1.75px]" />}
@@ -426,7 +429,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                   {passwordVal && (
                     <div className="w-full mb-6 select-none">
                       <div className="flex justify-between items-center mb-1.5">
-                        <span className="text-xs text-[#5F6773] font-medium font-sans">Şifre Gücü</span>
+                        <span className="text-xs text-[#5F6773] font-medium font-sans">{isEn ? "Password Strength" : "Şifre Gücü"}</span>
                         <span className="text-xs text-[#0A5C3A] font-bold font-sans">{strengthLabel}</span>
                       </div>
                       <div className="w-full h-1 bg-[rgba(10,92,58,0.08)] rounded-full overflow-hidden">
@@ -461,8 +464,8 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     <Input
                       {...register("confirmPassword")}
                       type={showConfirmPass ? "text" : "password"}
-                      label="Şifre Tekrar"
-                      placeholder="Yeni şifrenizi tekrar girin"
+                      label={isEn ? "Confirm Password" : "Şifre Tekrar"}
+                      placeholder={isEn ? "Re-enter your new password" : "Yeni şifrenizi tekrar girin"}
                       required
                       disabled={disabled}
                       leftIcon={<Lock className="w-4.5 h-4.5" />}
@@ -475,7 +478,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                             setShowConfirmPass(!showConfirmPass);
                           }}
                           className="p-1 rounded-full text-[#5F6773] hover:bg-[#F1F3F5] hover:text-[#0F1115] focus:outline-none transition-colors cursor-pointer select-none pointer-events-auto"
-                          aria-label={showConfirmPass ? "Şifreyi gizle" : "Şifreyi göster"}
+                          aria-label={showConfirmPass ? (isEn ? "Hide password" : "Şifreyi gizle") : (isEn ? "Show password" : "Şifreyi göster")}
                           tabIndex={0}
                         >
                           {showConfirmPass ? <EyeOff className="w-4.5 h-4.5 stroke-[1.75px]" /> : <Eye className="w-4.5 h-4.5 stroke-[1.75px]" />}
@@ -493,7 +496,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     disabled={disabled}
                     className="!h-[56px] !rounded-[14px] text-base font-semibold bg-[#0A5C3A] hover:bg-[#0D7449] hover:shadow-[0_8px_20px_rgba(10,92,58,0.18)] hover:-translate-y-[1px] active:translate-y-0 transition-all duration-150"
                   >
-                    Şifreyi Güncelle
+                    {isEn ? "Update Password" : "Şifreyi Güncelle"}
                   </Button>
                 </form>
               </Card>
@@ -519,7 +522,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     className="flex flex-col items-center w-full"
                   >
                     <h2 className="text-3xl sm:text-[40px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight sm:leading-none mb-4">
-                      Şifreniz Güncellendi
+                      {isEn ? "Password Updated" : "Şifreniz Güncellendi"}
                     </h2>
                   </motion.div>
                 )}
@@ -538,7 +541,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     className="w-full"
                   >
                     <p className="text-[#0A5C3A] font-semibold text-base">
-                      Yeni şifreniz başarıyla kaydedildi.
+                      {isEn ? "Your new password has been saved successfully." : "Yeni şifreniz başarıyla kaydedildi."}
                     </p>
                   </motion.div>
                 )}
@@ -556,7 +559,7 @@ export default function ResetPasswordContent({ token }: ResetPasswordContentProp
                     className="w-full mt-1.5"
                   >
                     <p className="text-sm text-[#5F6773] font-medium font-sans">
-                      Giriş ekranına yönlendiriliyorsunuz...
+                      {isEn ? "Redirecting to sign in page..." : "Giriş ekranına yönlendiriliyorsunuz..."}
                     </p>
                   </motion.div>
                 )}

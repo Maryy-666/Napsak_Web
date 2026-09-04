@@ -396,7 +396,7 @@ export function ReportsContent() {
                         {/* Show tag ONLY if report is Hazırlanıyor */}
                         {report.status === "Hazırlanıyor" && (
                           <span className="inline-block rounded-full bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 text-[10px] font-bold">
-                            Hazırlanıyor
+                            {isEn ? "In Preparation" : "Hazırlanıyor"}
                           </span>
                         )}
 
@@ -412,7 +412,7 @@ export function ReportsContent() {
 
                         {/* Single-Line Metadata Text */}
                         <p className="text-xs text-stone-500 font-sans font-medium pt-1">
-                          {report.publishDate} · {report.pages} Sayfa · PDF
+                          {report.publishDate} · {report.pages} {isEn ? "Pages" : "Sayfa"} · PDF
                         </p>
                       </div>
                     </div>
@@ -426,7 +426,7 @@ export function ReportsContent() {
                       onClick={() => setSelectedReport(report)}
                       className="h-10 sm:h-10.5 rounded-xl bg-[#07452C] hover:bg-[#0A5C3A] text-white font-bold text-xs sm:text-sm px-5 transition-all shadow-xs flex items-center gap-2 cursor-pointer"
                     >
-                      <span>Raporu İncele</span>
+                      <span>{isEn ? "Inspect Report" : "Raporu İncele"}</span>
                       <ArrowRight className="w-4 h-4" />
                     </button>
 
@@ -438,11 +438,11 @@ export function ReportsContent() {
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-stone-600 hover:text-[#07452C] px-3 py-2 rounded-xl hover:bg-[#07452C]/5 transition-colors cursor-pointer"
                       >
                         <Download className="w-4 h-4 text-[#07452C]" />
-                        <span>PDF İndir</span>
+                        <span>{isEn ? "Download PDF" : "PDF İndir"}</span>
                       </button>
                     ) : (
                       <span className="text-xs font-medium text-stone-400">
-                        (Yakında Yayınlanacak)
+                        {isEn ? "(Coming Soon)" : "(Yakında Yayınlanacak)"}
                       </span>
                     )}
                   </div>
@@ -454,7 +454,9 @@ export function ReportsContent() {
           {filteredReports.length === 0 && (
             <div className="rounded-2xl border border-dashed border-[#DDE7E1] bg-white p-12 text-center">
               <Search className="mx-auto h-10 w-10 text-[#5F6773] opacity-40 mb-3" />
-              <p className="text-sm font-semibold text-[#5F6773]">Filtrenize uygun araştırma raporu bulunamadı.</p>
+              <p className="text-sm font-semibold text-[#5F6773]">
+                {isEn ? "No research reports found matching your filter." : "Filtrenize uygun araştırma raporu bulunamadı."}
+              </p>
             </div>
           )}
         </PageContainer>
@@ -500,7 +502,7 @@ export function ReportsContent() {
                   type="button"
                   onClick={() => setSelectedReport(null)}
                   className="rounded-full p-2 text-[#5F6773] hover:bg-[#EEF0F2] hover:text-[#0F1115] transition-colors cursor-pointer"
-                  aria-label="Kapat"
+                  aria-label={isEn ? "Close" : "Kapat"}
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -516,14 +518,18 @@ export function ReportsContent() {
                 {/* Right: Details */}
                 <div className="md:col-span-8 space-y-3.5">
                   <div className="space-y-1">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">Yönetici Özeti</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
+                      {isEn ? "Executive Summary" : "Yönetici Özeti"}
+                    </h4>
                     <p className="text-xs sm:text-sm font-medium leading-relaxed text-[#5F6773] bg-[#F8FBF9] p-3.5 rounded-2xl border border-[#DDE7E1]">
                       {selectedReport.summary}
                     </p>
                   </div>
 
                   <div className="space-y-1">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">Öne Çıkan Bulgular</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
+                      {isEn ? "Key Takeaways" : "Öne Çıkan Bulgular"}
+                    </h4>
                     <div className="space-y-1.5">
                       {selectedReport.keyTakeaways.map((item, idx) => (
                         <div key={idx} className="flex items-start gap-2.5 rounded-xl border border-[#EEF0F2] p-2.5 text-xs font-semibold text-[#0F1115]">
@@ -535,7 +541,9 @@ export function ReportsContent() {
                   </div>
 
                   <div className="space-y-1">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">İçindekiler Bölümleri</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
+                      {isEn ? "Table of Contents" : "İçindekiler Bölümleri"}
+                    </h4>
                     <ul className="space-y-1 pl-1">
                       {selectedReport.tableOfContents.map((section, idx) => (
                         <li key={idx} className="text-xs font-semibold text-[#5F6773] flex items-center gap-2">
@@ -547,7 +555,9 @@ export function ReportsContent() {
                   </div>
 
                   <div className="space-y-1">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">Metodoloji & Veri Kaynağı</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-[#07452C]">
+                      {isEn ? "Methodology & Data Source" : "Metodoloji & Veri Kaynağı"}
+                    </h4>
                     <p className="text-xs sm:text-sm font-medium text-[#5F6773]">
                       {selectedReport.methodology}
                     </p>
@@ -558,7 +568,7 @@ export function ReportsContent() {
               {/* Permanently Anchored Action Footer */}
               <div className="flex-none flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#EEF0F2] bg-[#F8FAFC] p-3.5 px-6 z-20">
                 <span className="text-xs font-bold text-[#5F6773]">
-                  {selectedReport.period} · {selectedReport.pages} Sayfa · {selectedReport.fileSize} · PDF
+                  {selectedReport.period} · {selectedReport.pages} {isEn ? "Pages" : "Sayfa"} · {selectedReport.fileSize} · PDF
                 </span>
 
                 <div className="flex items-center gap-2">
@@ -569,7 +579,7 @@ export function ReportsContent() {
                     onClick={() => setSelectedReport(null)}
                     className="rounded-xl"
                   >
-                    Kapat
+                    {isEn ? "Close" : "Kapat"}
                   </Button>
 
                   <Button
@@ -584,7 +594,7 @@ export function ReportsContent() {
                     disabled={selectedReport.status !== "Yayınlandı"}
                     className="rounded-xl !bg-[#07452C] hover:!bg-[#0A5C3A] text-white font-bold"
                   >
-                    PDF Aç / İndir
+                    {isEn ? "Open / Download PDF" : "PDF Aç / İndir"}
                   </Button>
                 </div>
               </div>

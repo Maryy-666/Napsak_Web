@@ -6,10 +6,15 @@ export interface NewsItem {
   id: number;
   slug: string;
   title: string;
+  titleEn?: string | null;
   summary?: string | null;
+  summaryEn?: string | null;
   content: string;
+  contentEn?: string | null;
   coverImage?: string | null;
   category?: string | null;
+  categoryEn?: string | null;
+  excerptEn?: string | null;
   publishDate?: string | null;
   readTime?: string | null;
   publicationStatus: "DRAFT" | "PUBLISHED" | "ARCHIVED";
