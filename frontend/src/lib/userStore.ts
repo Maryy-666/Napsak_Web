@@ -27,7 +27,7 @@ if (userStore.size === 0) {
     id: "usr_admin",
     email: ADMIN_EMAIL,
     passwordHash: ADMIN_PASSWORD_HASH,
-    name: "N'apsak Admin",
+    name: "Ne Yapsak Admin",
     createdAt: new Date(),
     updatedAt: new Date(),
   });

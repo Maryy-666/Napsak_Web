@@ -279,7 +279,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               disabled={disabled}
               className="text-sm font-semibold text-[#5F6773] hover:text-[#0A5C3A] bg-transparent hover:bg-transparent p-0 h-auto transition-colors duration-150"
             >
-              {isEn ? "Join Community" : "Topluluğa Katıl"}
+              {isEn ? "Join Association" : "Derneğe Katıl"}
             </Button>
           </div>
         </motion.div>
@@ -305,7 +305,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           className="w-full text-center select-none pointer-events-none text-[#5F6773] mt-2"
         >
           <span className="text-[12px] font-normal leading-normal font-sans">
-            N'apsak? Youth Community
+            Ne Yapsak? Youth Association
           </span>
         </motion.div>
       </form>

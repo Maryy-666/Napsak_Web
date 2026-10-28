@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "N'apsak Backend çalışıyor!"
+    message: "Ne Yapsak Backend çalışıyor!"
   });
 });
 

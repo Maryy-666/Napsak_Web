@@ -4,9 +4,9 @@ import { Footer } from "../../components/common/Footer";
 import KatilimContent from "../../components/katilim/KatilimContent";
 import { PagesRepository } from "../../lib/pagesStore";
 
-const fallbackTitle = "Katılım | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "Katılım | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "İster gönüllü ol, ister ekip üyesi ol, ister etkinliklerimize katıl. N'apsak? Gençlik Topluluğu'nda katkı sunmanın ve birlikte üretmenin birçok yolu var.";
+  "İster gönüllü ol, ister ekip üyesi ol, ister etkinliklerimize katıl. Ne Yapsak? Gençlik Derneği'nda katkı sunmanın ve birlikte üretmenin birçok yolu var.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("katilim");
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

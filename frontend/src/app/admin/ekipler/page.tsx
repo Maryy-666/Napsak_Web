@@ -93,7 +93,7 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
     shortDescription:
       "Dijitalleşme, inovasyon, yazılım, yapay zeka ve sürdürülebilir teknoloji alanlarında eğitim içerikleri, projeler ve etkinlikler geliştirir.",
     about:
-      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin topluluk çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine kadar geniş bir yelpazede projeler üretir.",
+      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin dernek çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine kadar geniş bir yelpazede projeler üretir.",
     leaderName: "Ahmet Yılmaz",
     leaderTitle: "Teknoloji Ekip Lideri",
     leaderAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
@@ -105,7 +105,7 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
       "Açık Kaynak Projeler",
     ],
     whatWeDo: [
-      "Topluluk web sitesini ve yazılım altyapılarını geliştiriyoruz.",
+      "Dernek web sitesini ve yazılım altyapılarını geliştiriyoruz.",
       "Gençlere yönelik kodlama ve yapay zeka atölyeleri düzenliyoruz.",
       "Açık kaynak ekosistemine katkı sağlayan yenilikçi projeler üretiyoruz.",
     ],
@@ -137,7 +137,7 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
       "Fotoğrafçılık & Videografi",
     ],
     whatWeDo: [
-      "Topluluk projeleri için özgün görsel tasarımlar hazırlıyoruz.",
+      "Dernek projeleri için özgün görsel tasarımlar hazırlıyoruz.",
       "Tematik sanat atölyeleri ve çizim buluşmaları düzenliyoruz.",
     ],
     status: "Aktif",
@@ -210,9 +210,9 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
     iconName: "share-2",
     bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
     shortDescription:
-      "Topluluğun kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
+      "Derneğin kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
     about:
-      "Kurumsal İletişim Ekibimiz, N'apsak? Gençlik Topluluğu'nun vizyonunu kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi ve paydaş ilişkilerini yürütür.",
+      "Kurumsal İletişim Ekibimiz, Ne Yapsak? Gençlik Derneği'nun vizyonunu kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi ve paydaş ilişkilerini yürütür.",
     leaderName: "Emre Eren",
     leaderTitle: "İletişim Ekip Lideri",
     leaderAvatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
@@ -237,20 +237,20 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
     iconName: "shield-check",
     bgImage: "/images/krm.png",
     shortDescription:
-      "N'apsak? Gençlik Topluluğu'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
+      "Ne Yapsak? Gençlik Derneği'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
     about:
-      "Yönetim Kurulu, topluluğumuzun vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen ana karar organıdır.",
-    leaderName: "Topluluk Eş Başkanları",
+      "Yönetim Kurulu, derneğimizin vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen ana karar organıdır.",
+    leaderName: "Dernek Eş Başkanları",
     leaderTitle: "Yönetim Kurulu",
     leaderAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
     memberCount: 3,
     focusAreas: [
       "Stratejik Planlama & Karar Alma",
-      "Topluluk Yönetimi & Vizyon",
+      "Dernek Yönetimi & Vizyon",
       "Operasyonel Koordinasyon",
     ],
     whatWeDo: [
-      "Topluluğun vizyon ve stratejik hedeflerini belirliyoruz.",
+      "Derneğin vizyon ve stratejik hedeflerini belirliyoruz.",
       "Ekipler arası koordinasyon ve yönetim süreçlerini yürütüyoruz.",
     ],
     status: "Aktif",
@@ -264,9 +264,9 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
     iconName: "award",
     bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
     shortDescription:
-      "Topluluğumuzun vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
+      "Derneğimizin vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
     about:
-      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak topluluğun stratejik yönelimlerine rehberlik etmektedir.",
+      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak derneğin stratejik yönelimlerine rehberlik etmektedir.",
     leaderName: "Nevgül Bilsel Safkan",
     leaderTitle: "Sabancı Vakfı Genel Müdürü",
     leaderAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
@@ -276,7 +276,7 @@ const INITIAL_MOCK_TEAMS: AdminTeamItem[] = [
       "Sürdürülebilirlik & Gelecek Vizyonu",
     ],
     whatWeDo: [
-      "Topluluğun büyüme stratejilerine rehberlik ediyoruz.",
+      "Derneğin büyüme stratejilerine rehberlik ediyoruz.",
     ],
     status: "Aktif",
     displayOrder: 7,
@@ -859,7 +859,7 @@ export default function AdminEkiplerPage() {
       {/* SAYFA ÜST ŞERİDİ (HEADER) */}
       <AdminPageHeader
         title="Çalışma Ekipleri Yönetimi"
-        subtitle="N'apsak? bünyesindeki 5 ana ekibin içeriklerini, çalışma alanlarını ve lider atamalarını yönetin."
+        subtitle="Ne Yapsak? bünyesindeki 5 ana ekibin içeriklerini, çalışma alanlarını ve lider atamalarını yönetin."
         icon={Users}
         badge={{ text: `${teams.length} Ekip Kayıtlı`, variant: "info" }}
         action={
@@ -1276,7 +1276,7 @@ export default function AdminEkiplerPage() {
               rows={3}
               value={formData.whatWeDoText}
               onChange={(e) => setFormData((prev) => ({ ...prev, whatWeDoText: e.target.value }))}
-              placeholder="Madde 1: Topluluğumuzun dijital platformlarını geliştiriyoruz.&#10;Madde 2: Kodlama atölyeleri düzenliyoruz."
+              placeholder="Madde 1: Derneğimizin dijital platformlarını geliştiriyoruz.&#10;Madde 2: Kodlama atölyeleri düzenliyoruz."
               className={`w-full p-3 rounded-xl border outline-none font-medium resize-none ${
                 isDark
                   ? "bg-[#141C2E] border-slate-800 text-slate-100 focus:border-[#0A5C3A]"

@@ -5,13 +5,13 @@ import { Footer } from "../../components/common/Footer";
 import HaberdarContent from "../../components/haberdar/HaberdarContent";
 
 export const metadata: Metadata = {
-  title: "Bizden Haberdar Ol | N'apsak? Gençlik Topluluğu",
+  title: "Bizden Haberdar Ol | Ne Yapsak? Gençlik Derneği",
   description:
-    "Başvurunu aldık! N'apsak? Gençlik Topluluğu'ndan etkinlikleri, duyuruları ve yeni gelişmeleri kaçırmamak için bizi sosyal medya hesaplarımızdan takip edebilirsin.",
+    "Başvurunu aldık! Ne Yapsak? Gençlik Derneği'ndan etkinlikleri, duyuruları ve yeni gelişmeleri kaçırmamak için bizi sosyal medya hesaplarımızdan takip edebilirsin.",
   openGraph: {
-    title: "Bizden Haberdar Ol | N'apsak? Gençlik Topluluğu",
+    title: "Bizden Haberdar Ol | Ne Yapsak? Gençlik Derneği",
     description:
-      "Başvurunu aldık! N'apsak? Gençlik Topluluğu'ndan etkinlikleri, duyuruları ve yeni gelişmeleri kaçırmamak için bizi sosyal medya hesaplarımızdan takip edebilirsin.",
+      "Başvurunu aldık! Ne Yapsak? Gençlik Derneği'ndan etkinlikleri, duyuruları ve yeni gelişmeleri kaçırmamak için bizi sosyal medya hesaplarımızdan takip edebilirsin.",
     type: "website",
   },
 };

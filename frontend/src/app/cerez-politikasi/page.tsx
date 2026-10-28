@@ -5,9 +5,9 @@ import LegalDocumentContent from "../../components/legal/LegalDocumentContent";
 import { PagesRepository } from "../../lib/pagesStore";
 import { COOKIE_SECTIONS_FALLBACK, parseLegalSections } from "../../lib/legalPages";
 
-const fallbackTitle = "Çerez Politikası | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "Çerez Politikası | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "N'apsak? Gençlik Topluluğu web sitesinde kullanılan çerezler ve gizlilik tercihleri hakkında bilgilendirme.";
+  "Ne Yapsak? Gençlik Derneği web sitesinde kullanılan çerezler ve gizlilik tercihleri hakkında bilgilendirme.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("cerez-politikasi");
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

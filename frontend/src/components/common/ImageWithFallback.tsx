@@ -32,7 +32,7 @@ export function ImageWithFallback({
     <Image
       {...props}
       src={imgSrc}
-      alt={alt || "N'apsak Medya"}
+      alt={alt || "Ne Yapsak Medya"}
       className={className}
       onError={() => {
         if (fallbackSrc) {

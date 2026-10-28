@@ -13,8 +13,8 @@ const DEFAULT_REPORTS = [
     status: "Yayınlandı",
     featured: true,
     summary:
-      "Topluluk üyelerinin etkinlik, gönüllülük ve sivil katılım pratiklerini inceleyen kapsamlı alan araştırması.",
-    highlights: ["Katılım Motivasyonları", "Dijital Üretim Araçları", "Topluluk Dinamikleri"],
+      "Dernek üyelerinin etkinlik, gönüllülük ve sivil katılım pratiklerini inceleyen kapsamlı alan araştırması.",
+    highlights: ["Katılım Motivasyonları", "Dijital Üretim Araçları", "Dernek Dinamikleri"],
     pages: 42,
     fileSize: "4.8 MB",
     publishDate: "12 Şubat 2026",
@@ -33,7 +33,7 @@ const DEFAULT_REPORTS = [
       "5. Sonuç, Değerlendirme ve Gelecek Projeksiyonu",
     ],
     methodology:
-      "N'apsak? Gençlik Topluluğu bünyesindeki 450+ aktif üye ile gerçekleştirilen nicel anketler ve 24 odak grup görüşmesi analiz edilmiştir.",
+      "Ne Yapsak? Gençlik Derneği bünyesindeki 450+ aktif üye ile gerçekleştirilen nicel anketler ve 24 odak grup görüşmesi analiz edilmiştir.",
   },
   {
     id: "calisma-ekipleri-2026-q1",
@@ -50,7 +50,7 @@ const DEFAULT_REPORTS = [
     readCount: 950,
     downloadCount: 310,
     keyTakeaways: [
-      "Teknoloji ekibi açık kaynak 3 yeni topluluk aracını yayına aldı.",
+      "Teknoloji ekibi açık kaynak 3 yeni dernek aracını yayına aldı.",
       "Çevre & Sağlık ekibi 2 yerel farkındalık kampanyası tamamladı.",
     ],
     tableOfContents: [

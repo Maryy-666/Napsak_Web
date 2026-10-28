@@ -80,7 +80,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")
 // Ana sayfa
 app.get("/", (req, res) => {
   res.json({
-    message: "N'apsak Backend çalışıyor!",
+    message: "Ne Yapsak Backend çalışıyor!",
   });
 });
 

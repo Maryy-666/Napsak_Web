@@ -4,11 +4,11 @@ import { Footer } from "../../components/common/Footer";
 import DergilerContent from "../../components/dergiler/DergilerContent";
 
 export const metadata: Metadata = {
-  title: "Dergiler & Yayınlar | N'apsak? Gençlik Topluluğu",
+  title: "Dergiler & Yayınlar | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu dijital dergileri, fanzinleri ve özel yayınları. Gençlerin kaleme aldığı makaleler, röportajlar ve kültür-sanat yazıları.",
+    "Ne Yapsak? Gençlik Derneği dijital dergileri, fanzinleri ve özel yayınları. Gençlerin kaleme aldığı makaleler, röportajlar ve kültür-sanat yazıları.",
   keywords: [
-    "N'apsak",
+    "Ne Yapsak",
     "Gençlik Dergisi",
     "Dijital Dergi",
     "Fanzin",
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     "Açık Kaynak Yayın",
   ],
   openGraph: {
-    title: "Dergiler & Yayınlar | N'apsak? Gençlik Topluluğu",
+    title: "Dergiler & Yayınlar | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu dijital dergileri, fanzinleri ve kültür-sanat yazıları.",
+      "Ne Yapsak? Gençlik Derneği dijital dergileri, fanzinleri ve kültür-sanat yazıları.",
     type: "website",
   },
 };

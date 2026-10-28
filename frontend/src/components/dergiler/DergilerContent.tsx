@@ -68,7 +68,7 @@ const MAGAZINES: MagazineIssue[] = [
       borderFrame: "border-emerald-400/30",
     },
     summary:
-      "Geleceğin çalışma dünyasında gençlerin rolü, yapay zeka araçları ile üretim pratikleri ve açık kaynak topluluk kültürü üzerine özel röportajlar.",
+      "Geleceğin çalışma dünyasında gençlerin rolü, yapay zeka araçları ile üretim pratikleri ve açık kaynak dernek kültürü üzerine özel röportajlar.",
     articles: [
       "Açık Kaynak Kültürü ve Genç Geliştiriciler",
       "Yapay Zeka Çağında Yaratıcı Üretim",
@@ -161,17 +161,17 @@ const MAGAZINES: MagazineIssue[] = [
       borderFrame: "border-emerald-500/30",
     },
     summary:
-      "N'apsak? Gençlik Topluluğu'nun kuruluş felsefesi, çalışma ekiplerinin vizyonu ve ilk dönem üretimi olan lansman dergisi.",
+      "Ne Yapsak? Gençlik Derneği'nun kuruluş felsefesi, çalışma ekiplerinin vizyonu ve ilk dönem üretimi olan lansman dergisi.",
     articles: [
-      "N'apsak? Topluluk Manifestosu",
+      "Ne Yapsak? Dernek Manifestosu",
       "Ekip Çalışması ve Sivil Sinerji",
       "Gençler İçin Katılım Rehberi",
     ],
     pages: 36,
     fileSize: "4.1 MB",
     editorialNote:
-      "İlk dergimizle 'Keşke' demek yerine 'N'apsak?' diyerek yola çıkan gençlerin heyecanını ve hedeflerini kayıt altına aldık.",
-    contributors: ["Topluluk Yayın Kurulu"],
+      "İlk dergimizle 'Keşke' demek yerine 'Ne Yapsak?' diyerek yola çıkan gençlerin heyecanını ve hedeflerini kayıt altına aldık.",
+    contributors: ["Dernek Yayın Kurulu"],
     readCount: 3100,
     downloadCount: 1120,
   },
@@ -253,7 +253,7 @@ export default function DergilerContent() {
             pdfUrl: m.pdfUrl,
             coverImage: m.coverImage,
             editorialNote: m.description || "Dergi sayısı.",
-            contributors: ["N'apsak? Yayın Kurulu"],
+            contributors: ["Ne Yapsak? Yayın Kurulu"],
             readCount: m.readCount || 0,
             downloadCount: 0,
             coverStyle: {
@@ -359,11 +359,11 @@ export default function DergilerContent() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A5C3A]/10 border border-[#0A5C3A]/20 text-[#0A5C3A] font-extrabold text-xs sm:text-sm tracking-wide uppercase shadow-sm">
               <BookOpen className="w-4 h-4 text-[#0A5C3A]" />
-              <span>{isEn ? "N'apsak? Digital Publications & Library" : "N'apsak? Dijital Yayınlar & Dergi Kütüphanesi"}</span>
+              <span>{isEn ? "Ne Yapsak? Digital Publications & Library" : "Ne Yapsak? Dijital Yayınlar & Dergi Kütüphanesi"}</span>
             </div>
 
             <h1 className="font-headings text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] leading-tight">
-              {isEn ? "Community Magazines & Special Issues" : "Topluluk Dergileri & Özel Yayınlar"}
+              {isEn ? "Association Magazines & Special Issues" : "Dernek Dergileri & Özel Yayınlar"}
             </h1>
 
             <p className="mx-auto mt-2 max-w-xl text-sm sm:text-base font-medium leading-relaxed text-[#5F6773]">
@@ -467,7 +467,7 @@ export default function DergilerContent() {
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 rounded bg-black/10">
-                        N'APSAK?
+                        NE YAPSAK?
                       </span>
                       <span
                         className={`text-[10px] font-black px-2 py-0.5 rounded-full ${selectedIssue.coverStyle.badgeBg} ${selectedIssue.coverStyle.badgeText}`}

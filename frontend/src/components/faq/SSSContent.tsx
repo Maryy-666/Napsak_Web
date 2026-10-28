@@ -104,7 +104,7 @@ export default function SSSContent() {
               title={isEn ? "Frequently Asked Questions" : "Sıkça Sorulan Sorular"}
               description={
                 isEn
-                  ? "Find answers to everything you need to know about N'apsak? Youth Community."
+                  ? "Find answers to everything you need to know about Ne Yapsak? Youth Association."
                   : "Merak ettiğin tüm soruların cevaplarını burada bulabilirsin."
               }
               badge={isEn ? "Support & Info" : "Destek & Bilgi"}

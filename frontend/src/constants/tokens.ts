@@ -1,5 +1,5 @@
 /**
- * N'apsak? Gençlik Topluluğu - Frontend Design System v1 Tokens
+ * Ne Yapsak? Gençlik Derneği - Frontend Design System v1 Tokens
  * Centralized design tokens for colors, typography, spacing, radius, shadows, and transitions.
  */
 

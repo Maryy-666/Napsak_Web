@@ -210,7 +210,7 @@ model Activity {
   type                 String   @default("polaroid")
   title                String
   category             String   @default("Genel")
-  team                 String   @default("N'apsak Ekibi")
+  team                 String   @default("Ne Yapsak Ekibi")
   status               String   @default("Devam Eden")
   publicationStatus    String   @default("PUBLISHED")
   isFeatured           Boolean  @default(false)
@@ -403,7 +403,7 @@ model News {
 
 model HomepageHero {
   id               Int      @id @default(autoincrement())
-  badge            String?  @default("Gençlik Topluluğu")
+  badge            String?  @default("Gençlik Derneği")
   title            String
   highlightText    String?
   description      String

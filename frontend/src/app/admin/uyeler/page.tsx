@@ -416,7 +416,7 @@ export default function AdminUyelerPage() {
               <div className="flex items-center gap-1.5 font-bold text-sm">
                 <span>{m.name}</span>
                 {m.isPresident || m.name.toLowerCase().includes("yunus efe") ? (
-                  <span title={m.isPresident ? "Topluluk Eş Başkanı" : "Yönetim Kurulu Üyesi"}>
+                  <span title={m.isPresident ? "Dernek Eş Başkanı" : "Yönetim Kurulu Üyesi"}>
                     <Crown className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                   </span>
                 ) : isTeamLeader ? (
@@ -512,7 +512,7 @@ export default function AdminUyelerPage() {
       {/* Sayfa Başlığı */}
       <AdminPageHeader
         title="Üye Yönetimi (CMS)"
-        subtitle="N'apsak? Gençlik Topluluğu üye profillerini, çoklu ekip üyeliklerini ve unvanlarını yönetin."
+        subtitle="Ne Yapsak? Gençlik Derneği üye profillerini, çoklu ekip üyeliklerini ve unvanlarını yönetin."
         icon={UserCheck}
         action={
           <button
@@ -782,7 +782,7 @@ export default function AdminUyelerPage() {
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Topluluk Görevleri (TR)
+                Dernek Görevleri (TR)
               </label>
               <input
                 type="text"

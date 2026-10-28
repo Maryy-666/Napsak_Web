@@ -18,7 +18,7 @@ export const FAQS_TR = [
       "Liseden itibaren her genç, şehir fark etmeksizin başvuru yapabilir.",
   },
   {
-    question: "N'apsak? Gençlik Topluluğu ne yapar?",
+    question: "Ne Yapsak? Gençlik Derneği ne yapar?",
     answer:
       "Hayata geçirmek istediğimiz fikirleri birlikte üretmek için kuruldu. Amacımız sadece etkinlik yapmak değil; gençlerin potansiyelini keşfetmesini, yeteneklerini geliştirmesini ve topluma değer katan projeler üretmesini sağlamak.",
   },
@@ -30,7 +30,7 @@ export const FAQS_TR = [
   {
     question: "Tecrübem yok, katılabilir miyim?",
     answer:
-      `Eğer gelişmeye açık, öğrenmeye istekli ve "N'apsak?" deyip harekete geçmeye hazırsan hiçbir tecrübeye ihtiyacın yok. Biz, tecrübesi olmayan arkadaşlarımızın da tecrübe kazanması için buradayız.`,
+      `Eğer gelişmeye açık, öğrenmeye istekli ve "Ne Yapsak?" deyip harekete geçmeye hazırsan hiçbir tecrübeye ihtiyacın yok. Biz, tecrübesi olmayan arkadaşlarımızın da tecrübe kazanması için buradayız.`,
   },
   {
     question: "Daha önce böyle bir ortamda bulunmadım, süreç nasıl ilerliyor?",
@@ -40,7 +40,7 @@ export const FAQS_TR = [
   {
     question: "Kısaca...",
     answer:
-      `Biz "keşke" diyen değil, "N'apsak?" deyip harekete geçenlerin topluluğuyuz.`,
+      `Biz "keşke" diyen değil, "Ne Yapsak?" deyip harekete geçenlerin derneğiyiz.`,
   },
 ];
 
@@ -59,7 +59,7 @@ export const FAQS_EN = [
       "Any young person from high school onwards can apply regardless of city.",
   },
   {
-    question: "What does N'apsak? Youth Community do?",
+    question: "What does Ne Yapsak? Youth Association do?",
     answer:
       "It was established to create and produce ideas together. Our goal is not just organizing events, but enabling youth to discover their potential, develop skills, and create impactful projects.",
   },
@@ -74,14 +74,14 @@ export const FAQS_EN = [
       "You need no prior experience if you are open to growth, eager to learn, and ready to take action! We are here to help inexperienced members gain valuable experience.",
   },
   {
-    question: "I have never been in such a community, how does the process work?",
+    question: "I have never been in such an association, how does the process work?",
     answer:
       "No worries at all :). We support you throughout the process, introduce you to teams, and guide you step by step. Everyone here took their first step once.",
   },
   {
     question: "In short...",
     answer:
-      "We are a community not of those saying 'I wish', but of those asking 'N'apsak?' and taking action.",
+      "We are an association not of those saying 'I wish', but of those asking 'Ne Yapsak?' and taking action.",
   },
 ];
 
@@ -167,8 +167,8 @@ export function FAQSection({ showHeader = true, background = "transparent", cust
 
               <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans">
                 {language === "en"
-                  ? "Find answers to the most curious questions about N'apsak? here."
-                  : "N'apsak? hakkında en çok merak edilen soruların cevaplarını burada bulabilirsin."}
+                  ? "Find answers to the most curious questions about Ne Yapsak? here."
+                  : "Ne Yapsak? hakkında en çok merak edilen soruların cevaplarını burada bulabilirsin."}
               </p>
             </div>
           )}

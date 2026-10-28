@@ -9,10 +9,10 @@ import { useLanguage } from "../../context/LanguageContext";
 export const HeroSection: React.FC = () => {
   const { t } = useLanguage();
   const badgeText = t("hero.badge", "2025'ten Beri Harekete Geçenler");
-  const title = t("hero.title", "N'apsak? Gençlik Topluluğu");
+  const title = t("hero.title", "Ne Yapsak? Gençlik Derneği");
   const highlight = t(
     "hero.highlight",
-    "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz."
+    "“Keşke..” diyenlerin değil, “Ne Yapsak?” deyip harekete geçenlerin derneğiyiz."
   );
   const description = t(
     "hero.description",

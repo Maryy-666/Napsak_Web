@@ -129,7 +129,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full border border-stone-200/80 shadow-2xs font-sans">
                   <MapPin className="w-3.5 h-3.5 text-[#2A9D8F]" />
-                  <span>{isEn ? "N'apsak? Community Workshop" : "N'apsak? Topluluk Atölyesi"}</span>
+                  <span>{isEn ? "Ne Yapsak? Association Workshop" : "Ne Yapsak? Dernek Atölyesi"}</span>
                 </div>
               </div>
 
@@ -144,7 +144,7 @@ export const ActivityDetailModal: React.FC<ActivityDetailModalProps> = ({
             {/* Modal Footer Actions */}
             <div className="mt-5 pt-3.5 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
               <span className="text-xs font-medium text-stone-500 font-sans flex items-center gap-1.5">
-                📸 <span>{isEn ? "N'apsak? Memory Board Entry" : "N'apsak? Anı Panosu Kaydı"}</span>
+                📸 <span>{isEn ? "Ne Yapsak? Memory Board Entry" : "Ne Yapsak? Anı Panosu Kaydı"}</span>
               </span>
 
               <div className="flex items-center gap-2.5">

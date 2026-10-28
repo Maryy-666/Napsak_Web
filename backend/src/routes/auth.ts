@@ -25,7 +25,7 @@ const resend = process.env.RESEND_API_KEY
   : null;
 
 const FROM_EMAIL =
-  process.env.RESEND_FROM_EMAIL || "N'apsak? <onboarding@resend.dev>";
+  process.env.RESEND_FROM_EMAIL || "Ne Yapsak? <onboarding@resend.dev>";
 
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_DURATION = 15 * 60 * 1000;
@@ -352,11 +352,11 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şifrenizi Sıfırlayın | N'apsak?</title>
+  <title>Şifrenizi Sıfırlayın | Ne Yapsak?</title>
 </head>
 <body style="margin: 0; padding: 40px 16px; background-color: #F8FAFC; font-family: Arial, sans-serif; color: #0F1115;">
   <div style="max-width: 520px; margin: 0 auto; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 16px; padding: 32px;">
-    <h2 style="color: #0A5C3A; margin-top: 0;">N'apsak? Gençlik Topluluğu</h2>
+    <h2 style="color: #0A5C3A; margin-top: 0;">Ne Yapsak? Gençlik Derneği</h2>
     <h3 style="color: #0F1115;">Şifre Sıfırlama Talebi</h3>
     <p style="color: #475569; font-size: 15px; line-height: 1.6;">
       Hesabınız için bir şifre sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın:
@@ -387,7 +387,7 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
         await smtpTransporter.sendMail({
           from: fromEmail,
           to: user.email,
-          subject: "Şifrenizi Sıfırlayın | N'apsak?",
+          subject: "Şifrenizi Sıfırlayın | Ne Yapsak?",
           html: emailHtml,
         });
         emailSent = true;
@@ -403,7 +403,7 @@ router.post("/forgot-password", authLimiter, async (req, res) => {
         const { error } = await resend.emails.send({
           from: FROM_EMAIL,
           to: user.email,
-          subject: "Şifrenizi Sıfırlayın | N'apsak?",
+          subject: "Şifrenizi Sıfırlayın | Ne Yapsak?",
           html: emailHtml,
         });
         if (!error) {

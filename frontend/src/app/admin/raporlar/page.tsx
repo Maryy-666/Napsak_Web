@@ -303,7 +303,7 @@ export default function AdminRaporlarPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Rapor Yönetimi"
-        subtitle="Topluluk raporlarını oluşturun, düzenleyin ve PDF dosyalarını yönetin."
+        subtitle="Dernek raporlarını oluşturun, düzenleyin ve PDF dosyalarını yönetin."
         icon={FileText}
         action={
           <button

@@ -47,7 +47,7 @@ export default function FaaliyetlerContent() {
         <p className="mt-4 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
           {isEn
             ? "A live board view of all activities created, produced, and brought to life by youth across technology, art, environment, and social impact."
-            : "N'apsak? ekolojiden teknolojiye, sanattan toplumsal faydaya gençlerin birlikte ürettiği, hayal ettiği ve hayata geçirdiği tüm faaliyetlerin canlı pano görünümü."}
+            : "Ne Yapsak? ekolojiden teknolojiye, sanattan toplumsal faydaya gençlerin birlikte ürettiği, hayal ettiği ve hayata geçirdiği tüm faaliyetlerin canlı pano görünümü."}
         </p>
       </section>
 
@@ -60,7 +60,7 @@ export default function FaaliyetlerContent() {
       </section>
 
       {/* ---------------------------------------------------- */}
-      {/* OFFICIAL N'APSAK SITE-WIDE CTA BANNER                */}
+      {/* OFFICIAL NE YAPSAK SITE-WIDE CTA BANNER                */}
       {/* ---------------------------------------------------- */}
       <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16">
         <div className="rounded-[24px] bg-[#0A5C3A] text-white p-8 sm:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 select-none shadow-[0_20px_50px_rgba(10,92,58,0.20)] relative overflow-hidden">
@@ -70,7 +70,7 @@ export default function FaaliyetlerContent() {
               {isEn ? "Take Action" : "Harekete Geç"}
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight mb-2">
-              {isEn ? "Take your place in N'apsak?!" : "Sen de N'apsak?'ta yerini al!"}
+              {isEn ? "Take your place in Ne Yapsak?!" : "Sen de Ne Yapsak?'ta yerini al!"}
             </h3>
             <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl">
               {isEn
@@ -85,7 +85,7 @@ export default function FaaliyetlerContent() {
             rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
             className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold shrink-0 shadow-lg text-base px-6 h-12 relative z-10"
           >
-            {isEn ? "Join Community" : "Topluluğa Katıl"}
+            {isEn ? "Join Association" : "Derneğe Katıl"}
           </Button>
         </div>
       </section>

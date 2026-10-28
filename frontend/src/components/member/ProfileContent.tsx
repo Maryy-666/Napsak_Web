@@ -222,7 +222,7 @@ export default function ProfileContent() {
     router.replace(ROUTES.KAYIT);
   };
 
-  // Public loading state matching N'apsak? design system (zero flash)
+  // Public loading state matching Ne Yapsak? design system (zero flash)
   if (isLoading || !user || !profile) {
     return (
       <PageBackground className="pt-28 sm:pt-32 lg:pt-36 pb-28 lg:pb-36 min-h-screen">

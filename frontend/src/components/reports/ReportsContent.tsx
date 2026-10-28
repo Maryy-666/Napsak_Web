@@ -59,8 +59,8 @@ const REPORTS: Report[] = [
     status: "Yayınlandı",
     featured: true,
     summary:
-      "Topluluk üyelerinin etkinlik, gönüllülük ve sivil katılım pratiklerini inceleyen kapsamlı alan araştırması.",
-    highlights: ["Katılım Motivasyonları", "Dijital Üretim Araçları", "Topluluk Dinamikleri"],
+      "Dernek üyelerinin etkinlik, gönüllülük ve sivil katılım pratiklerini inceleyen kapsamlı alan araştırması.",
+    highlights: ["Katılım Motivasyonları", "Dijital Üretim Araçları", "Dernek Dinamikleri"],
     pages: 42,
     fileSize: "4.8 MB",
     publishDate: "12 Şubat 2026",
@@ -79,7 +79,7 @@ const REPORTS: Report[] = [
       "5. Sonuç, Değerlendirme ve Gelecek Projeksiyonu",
     ],
     methodology:
-      "N'apsak? Gençlik Topluluğu bünyesindeki 450+ aktif üye ile gerçekleştirilen nicel anketler ve 24 derinlemesine odak grup görüşmesinden elde edilen veriler analiz edilmiştir.",
+      "Ne Yapsak? Gençlik Derneği bünyesindeki 450+ aktif üye ile gerçekleştirilen nicel anketler ve 24 derinlemesine odak grup görüşmesinden elde edilen veriler analiz edilmiştir.",
   },
   {
     id: "calisma-ekipleri-2026-q1",
@@ -96,7 +96,7 @@ const REPORTS: Report[] = [
     readCount: 950,
     downloadCount: 310,
     keyTakeaways: [
-      "Teknoloji ekibi açık kaynak 3 yeni topluluk aracını yayına aldı.",
+      "Teknoloji ekibi açık kaynak 3 yeni dernek aracını yayına aldı.",
       "Çevre & Sağlık ekibi 2 yerel farkındalık kampanyası tamamladı.",
     ],
     tableOfContents: [
@@ -201,7 +201,7 @@ export function ReportsContent() {
             downloadCount: r.downloadCount || 0,
             keyTakeaways: r.summary ? [r.summary] : ["Rapor bulgusu."],
             tableOfContents: ["1. Giriş ve Araştırma Amacı", "2. Bulgular"],
-            methodology: r.description || "N'apsak? Gençlik Topluluğu araştırma yöntemi.",
+            methodology: r.description || "Ne Yapsak? Gençlik Derneği araştırma yöntemi.",
             pdfUrl: r.pdfUrl,
             coverImage: r.coverImage,
           }))
@@ -308,7 +308,7 @@ export function ReportsContent() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#07452C]/10 border border-[#07452C]/20 text-[#07452C] font-extrabold text-xs tracking-wide uppercase shadow-2xs">
               <BarChart3 className="w-3.5 h-3.5 text-[#07452C]" />
-              <span>{isEn ? "N'apsak? Digital Reports & Publication Archive" : "N'apsak? Dijital Rapor & Yayın Arşivi"}</span>
+              <span>{isEn ? "Ne Yapsak? Digital Reports & Publication Archive" : "Ne Yapsak? Dijital Rapor & Yayın Arşivi"}</span>
             </div>
 
             <h1 className="font-headings text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] leading-tight">

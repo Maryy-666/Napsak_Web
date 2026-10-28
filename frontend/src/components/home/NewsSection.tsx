@@ -101,7 +101,7 @@ export const NewsSection: React.FC = () => {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0A5C3A]/10 border border-[#0A5C3A]/20 text-[#0A5C3A] font-extrabold text-sm tracking-wide uppercase shadow-sm"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{t("news.badge", "N'apsak? Naptık!")}</span>
+              <span>{t("news.badge", "Ne Yapsak? Naptık!")}</span>
             </motion.div>
 
             <motion.h2
@@ -123,7 +123,7 @@ export const NewsSection: React.FC = () => {
             >
               {t(
                 "news.subtitle",
-                "Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan renkli hikayeleri."
+                "Derneğimizin en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan renkli hikayeleri."
               )}
             </motion.p>
           </div>

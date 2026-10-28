@@ -76,7 +76,7 @@ const WORKING_TEAMS = [
     title: "Teknoloji Ekibi",
     icon: Cpu,
     tag: "İnovasyon & Dijital",
-    description: "Yazılım, yapay zeka ve dijital ürünler geliştirir; yarışmalarda topluluğumuzu temsil eder.",
+    description: "Yazılım, yapay zeka ve dijital ürünler geliştirir; yarışmalarda derneğimizi temsil eder.",
     iconBg: "bg-emerald-100/60 text-[#0A5C3A] border border-emerald-300/60 group-hover:bg-[#0A5C3A] group-hover:text-white",
     tagBg: "bg-[#0A5C3A]/10 text-[#0A5C3A] font-bold",
   },
@@ -86,7 +86,7 @@ const WORKING_TEAMS = [
     title: "Medya ve İletişim Ekibi",
     icon: Megaphone,
     tag: "İçerik & Yayın",
-    description: "Sosyal medya yönetimi, dijital yayınlar, görsel tasarım ve topluluk duyurularını yürütür.",
+    description: "Sosyal medya yönetimi, dijital yayınlar, görsel tasarım ve dernek duyurularını yürütür.",
     iconBg: "bg-lime-50 text-lime-700 border border-lime-300/80 group-hover:bg-lime-600 group-hover:text-white",
     tagBg: "bg-lime-100 text-lime-800 font-bold",
   },
@@ -107,7 +107,7 @@ const TIMELINE_STEPS = [
   {
     step: "01",
     title: "2025 - Fikrin Doğuşu",
-    desc: "Gençlerin 'Keşke' demek yerine fikirlerini harekete geçireceği bağımsız bir topluluk kurma fikri doğdu.",
+    desc: "Gençlerin 'Keşke' demek yerine fikirlerini harekete geçireceği bağımsız bir dernek kurma fikri doğdu.",
   },
   {
     step: "02",
@@ -146,7 +146,7 @@ const MANIFESTO_ITEMS = [
   },
   {
     num: "05",
-    text: "N'apsak? bizim için büyük sözlerden çok, birlikte atılan küçük ama gerçek adımlar demek.",
+    text: "Ne Yapsak? bizim için büyük sözlerden çok, birlikte atılan küçük ama gerçek adımlar demek.",
   },
 ];
 
@@ -182,33 +182,33 @@ const JOINING_STEPS = [
 const ABOUT_SLIDES = [
   {
     src: "/images/news-ani-cover.jpg",
-    alt: "N'apsak? Gençlik Topluluğu Anı Defteri Atölyesi",
+    alt: "Ne Yapsak? Gençlik Derneği Anı Defteri Atölyesi",
     tag: "Gençlik Hareketi",
     caption: "Bilgiyi tecrübeye, merakı üretime dönüştüren bir gençlik alanı.",
   },
   {
     src: "/images/news-kariyer-cover.jpg",
-    alt: "N'apsak? Gençlik Topluluğu Kariyer Buluşması",
+    alt: "Ne Yapsak? Gençlik Derneği Kariyer Buluşması",
     tag: "Gelişim & Zirve",
     caption: "Gençlerin kendi geleceğinin mimarı olduğu özgür bir alan.",
   },
   {
     src: "/images/news-kil-main.png",
-    alt: "N'apsak? Gençlik Topluluğu Sanat Atölyesi",
+    alt: "Ne Yapsak? Gençlik Derneği Sanat Atölyesi",
     tag: "Sanat & Atölye",
     caption: "Resim, müzik, seramik ve dijital sanatla üretimi destekliyoruz.",
   },
   {
     src: "/images/news-23nisan-cover.jpg",
-    alt: "N'apsak? Gençlik Topluluğu 23 Nisan Buluşması",
-    tag: "Topluluk Ruhu",
+    alt: "Ne Yapsak? Gençlik Derneği 23 Nisan Buluşması",
+    tag: "Dernek Ruhu",
     caption: "Birlikte gelişen, paylaşan ve geleceğe yön veren gençlik.",
   },
   {
     src: "/images/news-cd-cover.jpg",
-    alt: "N'apsak? Gençlik Topluluğu Sosyal Buluşma Etkinliği",
+    alt: "Ne Yapsak? Gençlik Derneği Sosyal Buluşma Etkinliği",
     tag: "Sosyal Fayda",
-    caption: "Küçük adımlarla büyük değişimler yaratan tutkulu topluluk.",
+    caption: "Küçük adımlarla büyük değişimler yaratan tutkulu dernek.",
   },
 ];
 
@@ -225,33 +225,33 @@ export default function HakkimizdaContent() {
   const aboutSlides = [
     {
       src: "/images/news-ani-cover.jpg",
-      alt: "N'apsak? Youth Community Memory Book Workshop",
+      alt: "Ne Yapsak? Youth Association Memory Book Workshop",
       tag: isEn ? "Youth Movement" : "Gençlik Hareketi",
       caption: isEn ? "A youth space transforming knowledge into experience, curiosity into creation." : "Bilgiyi tecrübeye, merakı üretime dönüştüren bir gençlik alanı.",
     },
     {
       src: "/images/news-kariyer-cover.jpg",
-      alt: "N'apsak? Youth Community Career Meeting",
+      alt: "Ne Yapsak? Youth Association Career Meeting",
       tag: isEn ? "Growth & Summit" : "Gelişim & Zirve",
       caption: isEn ? "A free space where young people are architects of their own future." : "Gençlerin kendi geleceğinin mimarı olduğu özgür bir alan.",
     },
     {
       src: "/images/news-kil-main.png",
-      alt: "N'apsak? Youth Community Art Workshop",
+      alt: "Ne Yapsak? Youth Association Art Workshop",
       tag: isEn ? "Art & Workshop" : "Sanat & Atölye",
       caption: isEn ? "We support creation through painting, music, ceramics, and digital arts." : "Resim, müzik, seramik ve dijital sanatla üretimi destekliyoruz.",
     },
     {
       src: "/images/news-23nisan-cover.jpg",
-      alt: "N'apsak? Youth Community April 23 Event",
-      tag: isEn ? "Community Spirit" : "Topluluk Ruhu",
+      alt: "Ne Yapsak? Youth Association April 23 Event",
+      tag: isEn ? "Association Spirit" : "Dernek Ruhu",
       caption: isEn ? "Youth growing together, sharing, and shaping the future." : "Birlikte gelişen, paylaşan ve geleceğe yön veren gençlik.",
     },
     {
       src: "/images/news-cd-cover.jpg",
-      alt: "N'apsak? Youth Community Social Gathering",
+      alt: "Ne Yapsak? Youth Association Social Gathering",
       tag: isEn ? "Social Impact" : "Sosyal Fayda",
-      caption: isEn ? "A passionate community creating big changes with small steps." : "Küçük adımlarla büyük değişimler yaratan tutkulu topluluk.",
+      caption: isEn ? "A passionate association creating big changes with small steps." : "Küçük adımlarla büyük değişimler yaratan tutkulu dernek.",
     },
   ];
 
@@ -261,13 +261,13 @@ export default function HakkimizdaContent() {
       title: isEn ? "2025 - Birth of the Idea" : "2025 - Fikrin Doğuşu",
       desc: isEn
         ? "The idea was born to build an independent youth movement where young people act on their ideas instead of saying 'I wish'."
-        : "Gençlerin 'Keşke' demek yerine fikirlerini harekete geçireceği bağımsız bir topluluk kurma fikri doğdu.",
+        : "Gençlerin 'Keşke' demek yerine fikirlerini harekete geçireceği bağımsız bir dernek kurma fikri doğdu.",
     },
     {
       step: "02",
       title: isEn ? "Establishing Interview-Based Membership" : "Mülakatlı Üyelik Yapısının Kurulması",
       desc: isEn
-        ? "We formed a productive, qualified community structure by establishing clear criteria (86+ active members)."
+        ? "We formed a productive, qualified association structure by establishing clear criteria (86+ active members)."
         : "Kriterleri belirleyerek nitelikli ve üretken bir üye yapısı oluşturduk (86+ Aktif Lise ve Üniversite Üyesi).",
     },
     {
@@ -314,8 +314,8 @@ export default function HakkimizdaContent() {
     {
       num: "05",
       text: isEn
-        ? "For us, N'apsak? means real small steps taken together rather than big words."
-        : "N'apsak? bizim için büyük sözlerden çok, birlikte atılan küçük ama gerçek adımlar demek.",
+        ? "For us, Ne Yapsak? means real small steps taken together rather than big words."
+        : "Ne Yapsak? bizim için büyük sözlerden çok, birlikte atılan küçük ama gerçek adımlar demek.",
     },
   ];
 
@@ -433,8 +433,8 @@ export default function HakkimizdaContent() {
 
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
               {isEn
-                ? "Our community enables high school and university students to discover their potential, produce projects in workgroups, and prepare for the future with confidence."
-                : "Topluluğumuz; lise ve üniversite öğrencilerinin kendi potansiyellerini keşfetmesini, çalışma gruplarıyla projeler üretmesini ve geleceğe özgüvenle hazırlanmasını sağlar."}
+                ? "Our association enables high school and university students to discover their potential, produce projects in workgroups, and prepare for the future with confidence."
+                : "Derneğimiz; lise ve üniversite öğrencilerinin kendi potansiyellerini keşfetmesini, çalışma gruplarıyla projeler üretmesini ve geleceğe özgüvenle hazırlanmasını sağlar."}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
@@ -445,7 +445,7 @@ export default function HakkimizdaContent() {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
                 className="font-bold px-7 h-12 text-sm sm:text-base rounded-xl"
               >
-                {isEn ? "Join Community" : "Topluluğa Katıl"}
+                {isEn ? "Join Association" : "Derneğe Katıl"}
               </Button>
               <Button
                 href="#biz-kimiz"
@@ -484,8 +484,8 @@ export default function HakkimizdaContent() {
                 <div className="space-y-4 pt-1">
                   <p className="text-base sm:text-lg text-[#0F1115] font-headings font-bold leading-relaxed">
                     {isEn
-                      ? "N'apsak? Youth Community is an independent development movement established to make the potential of high school and university students visible, transform their ideas into projects, and instill the courage to leave a mark."
-                      : "N'apsak? Gençlik Topluluğu; lise ve üniversite öğrencilerinin potansiyellerini görünür kılmak, fikirlerini projeye dönüştürmek ve iz bırakma cesareti kazandırmak amacıyla kurulmuş bağımsız bir gelişim hareketidir."}
+                      ? "Ne Yapsak? Youth Association is an independent development movement established to make the potential of high school and university students visible, transform their ideas into projects, and instill the courage to leave a mark."
+                      : "Ne Yapsak? Gençlik Derneği; lise ve üniversite öğrencilerinin potansiyellerini görünür kılmak, fikirlerini projeye dönüştürmek ve iz bırakma cesareti kazandırmak amacıyla kurulmuş bağımsız bir gelişim hareketidir."}
                   </p>
                   <p className="text-sm sm:text-base text-[#5F6773] font-sans font-medium leading-relaxed">
                     {isEn
@@ -502,8 +502,8 @@ export default function HakkimizdaContent() {
                 </div>
                 <p className="text-sm sm:text-base font-medium italic text-[#0A5C3A] font-sans leading-relaxed">
                   {isEn
-                    ? "“We are the community not of those who say 'I wish', but of those who say 'N'apsak? (What to do?)'.”"
-                    : "“Keşke” diyenlerin değil, “N'apsak?” diyenlerin topluluğuyuz."}
+                    ? "“We are the association not of those who say 'I wish', but of those who say 'Ne Yapsak? (What to do?)'.”"
+                    : "“Keşke” diyenlerin değil, “Ne Yapsak?” diyenlerin derneğiyiz."}
                 </p>
               </div>
             </motion.div>
@@ -661,7 +661,7 @@ export default function HakkimizdaContent() {
                       </div>
 
                       <span className="text-[11px] px-3 py-1 rounded-md mb-3 inline-block font-bold bg-[#0A5C3A]/10 text-[#0A5C3A]">
-                        {isEn ? "N'apsak? Team" : "N'apsak? Ekibi"}
+                        {isEn ? "Ne Yapsak? Team" : "Ne Yapsak? Ekibi"}
                       </span>
 
                       <h3 className="text-lg sm:text-xl font-bold font-headings text-[#0F1115] mb-2 group-hover:text-[#0A5C3A] transition-colors">
@@ -755,8 +755,8 @@ export default function HakkimizdaContent() {
               <div className="space-y-3.5 text-sm sm:text-base text-[#5F6773] leading-relaxed font-sans font-medium">
                 <p className="text-base sm:text-lg text-[#0F1115] font-sans font-medium leading-relaxed">
                   {isEn
-                    ? "Our community was founded in 2025 with the belief that youth should be supported not only academically, but also socially, culturally, artistically, and technologically."
-                    : "Topluluğumuz, gençlerin yalnızca akademik olarak değil; sosyal, kültürel, sanatsal ve teknolojik alanlarda da desteklenmesi gerektiğine olan inançla 2025 yılında kuruldu."}
+                    ? "Our association was founded in 2025 with the belief that youth should be supported not only academically, but also socially, culturally, artistically, and technologically."
+                    : "Derneğimiz, gençlerin yalnızca akademik olarak değil; sosyal, kültürel, sanatsal ve teknolojik alanlarda da desteklenmesi gerektiğine olan inançla 2025 yılında kuruldu."}
                 </p>
                 <p className="text-sm sm:text-base">
                   {isEn
@@ -891,7 +891,7 @@ export default function HakkimizdaContent() {
               {isEn ? "Application Process" : "Katılım Süreci"}
             </Badge>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-3">
-              {isEn ? "How to Join Our Community?" : "Topluluğumuza Nasıl Katılırsın?"}
+              {isEn ? "How to Join Our Association?" : "Derneğimize Nasıl Katılırsın?"}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
               {isEn
@@ -973,7 +973,7 @@ export default function HakkimizdaContent() {
                 {isEn ? "Take Action" : "Harekete Geç"}
               </span>
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight mb-2">
-                {isEn ? "Take your place in N'apsak?!" : "Sen de N'apsak?'ta yerini al!"}
+                {isEn ? "Take your place in Ne Yapsak?!" : "Sen de Ne Yapsak?'ta yerini al!"}
               </h3>
               <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl">
                 {isEn
@@ -988,7 +988,7 @@ export default function HakkimizdaContent() {
               rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
               className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold shrink-0 shadow-lg text-base px-6 h-12 relative z-10"
             >
-              {isEn ? "Join Community" : "Topluluğa Katıl"}
+              {isEn ? "Join Association" : "Derneğe Katıl"}
             </Button>
           </motion.div>
         </PageContainer>

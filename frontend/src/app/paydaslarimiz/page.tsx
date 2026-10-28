@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import PaydaslarimizContent from "../../components/paydaslarimiz/PaydaslarimizContent";
 
 export const metadata: Metadata = {
-  title: "Paydaşlarımız & Destekçilerimiz | N'apsak? Gençlik Topluluğu",
+  title: "Paydaşlarımız & Destekçilerimiz | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu ile iş birliği yapan, destek veren ve gençlik projelerimize katkı sağlayan paydaşlarımız ve destekçilerimiz.",
+    "Ne Yapsak? Gençlik Derneği ile iş birliği yapan, destek veren ve gençlik projelerimize katkı sağlayan paydaşlarımız ve destekçilerimiz.",
   openGraph: {
-    title: "Paydaşlarımız & Destekçilerimiz | N'apsak? Gençlik Topluluğu",
+    title: "Paydaşlarımız & Destekçilerimiz | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu ile iş birliği yapan, destek veren ve gençlik projelerimize katkı sağlayan paydaşlarımız ve destekçilerimiz.",
+      "Ne Yapsak? Gençlik Derneği ile iş birliği yapan, destek veren ve gençlik projelerimize katkı sağlayan paydaşlarımız ve destekçilerimiz.",
     type: "website",
   },
 };

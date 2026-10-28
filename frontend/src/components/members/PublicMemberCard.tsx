@@ -53,13 +53,13 @@ export function PublicMemberCard({
   const { roleText, teamTagText, isLeaderRole } = useMemo(() => {
     if (member.isPresident) {
       return {
-        roleText: isEn ? "Community Co-President" : "Topluluk Eş Başkanı",
-        teamTagText: isEn ? "COMMUNITY CO-PRESIDENTS" : "TOPLULUK EŞ BAŞKANLARI",
+        roleText: isEn ? "Association Co-President" : "Dernek Eş Başkanı",
+        teamTagText: isEn ? "ASSOCIATION CO-PRESIDENTS" : "DERNEK EŞ BAŞKANLARI",
         isLeaderRole: true,
       };
     }
 
-    if (activeFilter && activeFilter !== "Tümü" && activeFilter !== "Topluluk Eş Başkanları") {
+    if (activeFilter && activeFilter !== "Tümü" && activeFilter !== "Dernek Eş Başkanları") {
       const matched = member.memberships?.find((m) =>
         m.team.toLowerCase().includes(activeFilter.toLowerCase())
       );
@@ -88,7 +88,7 @@ export function PublicMemberCard({
     const primaryMembership = member.memberships?.[0];
     let tag = primaryMembership
       ? primaryMembership.team.toUpperCase()
-      : (member.primaryTeam || "N'APSAK TOPLULUĞU").toUpperCase();
+      : (member.primaryTeam || "NE YAPSAK DERNEĞİ").toUpperCase();
 
     if (primaryMembership?.subRole) {
       const cleanTeamName = primaryMembership.team

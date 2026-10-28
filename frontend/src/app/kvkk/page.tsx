@@ -5,9 +5,9 @@ import LegalDocumentContent from "../../components/legal/LegalDocumentContent";
 import { PagesRepository } from "../../lib/pagesStore";
 import { KVKK_SECTIONS_FALLBACK, parseLegalSections } from "../../lib/legalPages";
 
-const fallbackTitle = "KVKK | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "KVKK | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "N'apsak? Gençlik Topluluğu Kişisel Verilerin Korunması Kanunu (KVKK) Aydınlatma Metni.";
+  "Ne Yapsak? Gençlik Derneği Kişisel Verilerin Korunması Kanunu (KVKK) Aydınlatma Metni.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("kvkk");
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

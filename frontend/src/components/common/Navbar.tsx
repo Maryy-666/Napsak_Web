@@ -42,7 +42,7 @@ export const Navbar: React.FC = () => {
     if (lower === "sss" || lower === "faq") return "FAQ";
     if (lower === "üyeler" || lower === "uyeler") return "Members";
     if (lower.startsWith("çalışmalar") || lower.startsWith("calismalar")) return "Our Works";
-    if (lower.startsWith("topluluk")) return "Community";
+    if (lower.startsWith("dernek")) return "Association";
     if (lower.includes("çalışma ekipleri") || lower.includes("calisma ekipleri")) return "Working Teams";
     if (lower === "ekibimiz" || lower === "bizim ekip") return "Our Team";
     if (lower.includes("etkileşim") || lower.includes("katılım") || lower.includes("katilim")) return "Join & Engage";
@@ -148,8 +148,8 @@ export const Navbar: React.FC = () => {
 
           const itemTitle = String(item.label || "").trim() === "Üyelerimiz" ? "Ekibimiz" : item.label;
 
-          // Always guarantee Açık Pozisyonlar & Paydaşlarımız are in Topluluk dropdown
-          if (itemTitle.toLowerCase().includes("topluluk")) {
+          // Always guarantee Açık Pozisyonlar & Paydaşlarımız are in Dernek dropdown
+          if (itemTitle.toLowerCase().includes("dernek")) {
             const finalChildren = children ? [...children] : [];
             const hasPositions = finalChildren.some(
               (c: any) =>
@@ -347,7 +347,7 @@ export const Navbar: React.FC = () => {
         <Link
           href={ROUTES.HOME}
           className="flex items-center justify-center select-none outline-none focus-visible:ring-4 focus-visible:ring-white/20 rounded-lg p-1 transition-all shrink-0"
-          aria-label="N'apsak? Ana Sayfa"
+          aria-label="Ne Yapsak? Ana Sayfa"
         >
           <Logo
             variant="default"
@@ -364,7 +364,7 @@ export const Navbar: React.FC = () => {
             const isPassive = item.status === "coming-soon";
             const active = isLinkActive(item.href);
 
-            // Dropdown Item (Çalışmalar, Topluluk etc.)
+            // Dropdown Item (Çalışmalar, Dernek etc.)
             if (hasSubItems) {
               const isOpen = activeDropdown === item.title;
               const hasActiveChild = item.items?.some((child: any) => isLinkActive(child.href));
@@ -494,7 +494,7 @@ export const Navbar: React.FC = () => {
           })}
         </nav>
 
-        {/* Right Action Buttons: Giriş Yap, Kayıt Ol, Topluluğa Katıl & Language Switcher (En sağda) */}
+        {/* Right Action Buttons: Giriş Yap, Kayıt Ol, Derneğe Katıl & Language Switcher (En sağda) */}
         <div className="hidden lg:flex items-center gap-2 lg:gap-3">
           {currentUser ? (
             isAdmin ? (
@@ -576,7 +576,7 @@ export const Navbar: React.FC = () => {
             </>
           )}
 
-          {/* Dil Seçici (En sağda, Topluluğa Katıl butonunun yanında) */}
+          {/* Dil Seçici (En sağda, Derneğe Katıl butonunun yanında) */}
           <LanguageSwitcher />
         </div>
 

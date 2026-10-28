@@ -64,7 +64,7 @@ export default function AdminFaaliyetlerPage() {
   // Form State
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Sanat & Atölye");
-  const [team, setTeam] = useState("N'apsak Ekibi");
+  const [team, setTeam] = useState("Ne Yapsak Ekibi");
   const [status, setStatus] = useState("Devam Eden");
   const [publicationStatus, setPublicationStatus] = useState<"DRAFT" | "PUBLISHED" | "ARCHIVED">("PUBLISHED");
   const [isFeatured, setIsFeatured] = useState(false);
@@ -148,7 +148,7 @@ export default function AdminFaaliyetlerPage() {
   const resetForm = () => {
     setTitle("");
     setCategory("Sanat & Atölye");
-    setTeam("N'apsak Ekibi");
+    setTeam("Ne Yapsak Ekibi");
     setStatus("Devam Eden");
     setPublicationStatus("PUBLISHED");
     setIsFeatured(false);
@@ -340,7 +340,7 @@ export default function AdminFaaliyetlerPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Faaliyet Yönetimi (CMS)"
-        subtitle="N'apsak? Gençlik Topluluğu gerçekleştirdiği çalışma ve faaliyetleri yönetin."
+        subtitle="Ne Yapsak? Gençlik Derneği gerçekleştirdiği çalışma ve faaliyetleri yönetin."
         icon={Activity}
         action={
           <button

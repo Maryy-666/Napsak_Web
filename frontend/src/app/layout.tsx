@@ -6,8 +6,8 @@ import { SkipLink } from "../components/common/SkipLink";
 import { LanguageProvider } from "../context/LanguageContext";
 
 export const metadata = {
-  title: "N'apsak? Gençlik Topluluğu",
-  description: "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji topluluğu.",
+  title: "Ne Yapsak? Gençlik Derneği",
+  description: "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji derneği.",
 };
 
 export default function RootLayout({

@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import EtkinliklerContent from "../../components/etkinlikler/EtkinliklerContent";
 
 export const metadata: Metadata = {
-  title: "Etkinlikler | N'apsak? Gençlik Topluluğu",
+  title: "Etkinlikler | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu etkinlik takvimi, zirveler, atölyeler ve geçmiş faaliyetlerimiz.",
+    "Ne Yapsak? Gençlik Derneği etkinlik takvimi, zirveler, atölyeler ve geçmiş faaliyetlerimiz.",
   openGraph: {
-    title: "Etkinlikler | N'apsak? Gençlik Topluluğu",
+    title: "Etkinlikler | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu etkinlik takvimi, zirveler, atölyeler ve geçmiş faaliyetlerimiz.",
+      "Ne Yapsak? Gençlik Derneği etkinlik takvimi, zirveler, atölyeler ve geçmiş faaliyetlerimiz.",
     type: "website",
   },
 };

@@ -45,7 +45,7 @@ export const ReportCoverPreview: React.FC<ReportCoverPreviewProps> = ({
 
         {/* Background Watermark Document Lines */}
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none overflow-hidden p-3 font-mono text-[7.5px] leading-tight">
-          <div>N'APSAK? RESEARCH REPORT DATA GRID ARCHIVE</div>
+          <div>NE YAPSAK? RESEARCH REPORT DATA GRID ARCHIVE</div>
           <div>METRIC INDEX: 0492-2026</div>
           <div className="mt-2">METHODOLOGY: QUANTITATIVE FIELD SURVEY</div>
           <div>SAMPLING: N=450 ACTIVE PARTICIPANTS</div>
@@ -54,7 +54,7 @@ export const ReportCoverPreview: React.FC<ReportCoverPreviewProps> = ({
         {/* Header Row (Shortened Badge & Clean Gap Alignment) */}
         <div className="relative z-10 flex items-center justify-between gap-1 overflow-hidden">
           <span className="text-[8px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded bg-black/10 backdrop-blur-xs shrink-0">
-            N'APSAK?
+            NE YAPSAK?
           </span>
           <span className={`text-[8.5px] font-black px-2 py-0.5 rounded-full shrink-0 ${badgeStyle}`}>
             {report.period}

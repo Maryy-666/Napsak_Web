@@ -81,7 +81,7 @@ export const VisionBoard: React.FC = () => {
       description: adminItem.summary,
       memoryCaption: adminItem.summary,
       category: cat,
-      categoryLabel: adminItem.category || (isEn ? "Community" : "Topluluk"),
+      categoryLabel: adminItem.category || (isEn ? "Association" : "Dernek"),
       date: adminItem.date || "2025",
       iconName:
         cat === "teknoloji"

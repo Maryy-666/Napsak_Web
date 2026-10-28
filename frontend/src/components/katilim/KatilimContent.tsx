@@ -53,7 +53,7 @@ const PARTICIPATION_TYPES = [
     perks: [
       "Dönemsel ve esnek katkı saatleri",
       "Sosyal etki projelerinde saha deneyimi",
-      "Gönüllülük katılım belgesi ve topluluk ağı",
+      "Gönüllülük katılım belgesi ve dernek ağı",
     ],
     actionText: "Gönüllü Ol",
     actionHref: `${ROUTES.BASVURU}?tur=gonullu`,
@@ -83,10 +83,10 @@ const PARTICIPATION_TYPES = [
     icon: CalendarDays,
     badgeBg: "bg-blue-50 text-blue-700 border-blue-200/60",
     iconBg: "bg-blue-50 text-blue-600",
-    desc: "Düzenlediğimiz yüz yüze zirvelere, çevrim içi atölyelere ve fikir kamplarına katılarak topluluğumuzla tanış.",
+    desc: "Düzenlediğimiz yüz yüze zirvelere, çevrim içi atölyelere ve fikir kamplarına katılarak derneğimizle tanış.",
     perks: [
       "Ücretsiz atölye ve zirve buluşmaları",
-      "İlgi alanlarına göre topluluk networking'i",
+      "İlgi alanlarına göre dernek networking'i",
       "Gelecek etkinlikler için öncelikli kayıt",
     ],
     actionText: "Etkinlikleri Keşfet",
@@ -138,7 +138,7 @@ const FAQ_ITEMS = [
   {
     id: "faq-3",
     question: "Tanışma görüşmesi nasıl olur?",
-    answer: "Resmi ve kasıntı bir iş mülakatı kesinlikle değil! Seni tanımak, merak ettiklerini yanıtlamak ve topluluğumuzun ruhunu anlatmak için yaptığımız 15-20 dakikalık samimi bir çevrim içi sohbet.",
+    answer: "Resmi ve kasıntı bir iş mülakatı kesinlikle değil! Seni tanımak, merak ettiklerini yanıtlamak ve derneğimizin ruhunu anlatmak için yaptığımız 15-20 dakikalık samimi bir çevrim içi sohbet.",
   },
   {
     id: "faq-4",
@@ -171,18 +171,18 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
       badgeBg: "bg-[#EAF5EF] text-[#0A5C3A] border-[#0A5C3A]/20",
       iconBg: "bg-[#EAF5EF] text-[#0A5C3A]",
       desc: isEn
-        ? "Contribute flexible time to social impact projects, community movements, and periodic field initiatives."
+        ? "Contribute flexible time to social impact projects, association movements, and periodic field initiatives."
         : "Toplumsal etki projelerine, sosyal sorumluluk hareketlerine ve dönemsel saha çalışmalarına esnek zamanlı katkı sun.",
       perks: isEn
         ? [
             "Flexible contribution hours",
             "Field experience in social impact projects",
-            "Volunteer certificate and community network",
+            "Volunteer certificate and association network",
           ]
         : [
             "Dönemsel ve esnek katkı saatleri",
             "Sosyal etki projelerinde saha deneyimi",
-            "Gönüllülük katılım belgesi ve topluluk ağı",
+            "Gönüllülük katılım belgesi ve dernek ağı",
           ],
       actionText: isEn ? "Become a Volunteer" : "Gönüllü Ol",
       actionHref: `${ROUTES.BASVURU}?tur=gonullu`,
@@ -221,17 +221,17 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
       badgeBg: "bg-blue-50 text-blue-700 border-blue-200/60",
       iconBg: "bg-blue-50 text-blue-600",
       desc: isEn
-        ? "Meet our community by participating in in-person summits, online workshops, and idea camps."
-        : "Düzenlediğimiz yüz yüze zirvelere, çevrim içi atölyelere ve fikir kamplarına katılarak topluluğumuzla tanış.",
+        ? "Meet our association by participating in in-person summits, online workshops, and idea camps."
+        : "Düzenlediğimiz yüz yüze zirvelere, çevrim içi atölyelere ve fikir kamplarına katılarak derneğimizle tanış.",
       perks: isEn
         ? [
             "Free workshops and summit gatherings",
-            "Community networking based on interests",
+            "Association networking based on interests",
             "Priority registration for upcoming events",
           ]
         : [
             "Ücretsiz atölye ve zirve buluşmaları",
-            "İlgi alanlarına göre topluluk networking'i",
+            "İlgi alanlarına göre dernek networking'i",
             "Gelecek etkinlikler için öncelikli kayıt",
           ],
       actionText: isEn ? "Explore Events" : "Etkinlikleri Keşfet",
@@ -294,8 +294,8 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
       id: "faq-3",
       question: isEn ? "What is the meeting chat like?" : "Tanışma görüşmesi nasıl olur?",
       answer: isEn
-        ? "It is definitely not a formal job interview! It's an informal 15-20 minute online chat to get to know you, answer your questions, and share the spirit of our community."
-        : "Resmi ve kasıntı bir iş mülakatı kesinlikle değil! Seni tanımak, merak ettiklerini yanıtlamak ve topluluğumuzun ruhunu anlatmak için yaptığımız 15-20 dakikalık samimi bir çevrim içi sohbet.",
+        ? "It is definitely not a formal job interview! It's an informal 15-20 minute online chat to get to know you, answer your questions, and share the spirit of our association."
+        : "Resmi ve kasıntı bir iş mülakatı kesinlikle değil! Seni tanımak, merak ettiklerini yanıtlamak ve derneğimizin ruhunu anlatmak için yaptığımız 15-20 dakikalık samimi bir çevrim içi sohbet.",
     },
     {
       id: "faq-4",
@@ -333,7 +333,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             {/* Üst Rozet */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF5EF] border border-[#0A5C3A]/20 text-[#0A5C3A] text-xs font-semibold tracking-wide">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{isEn ? "N'apsak? Community Joining Guide" : "N'apsak? Topluluk Katılım Rehberi"}</span>
+              <span>{isEn ? "Ne Yapsak? Association Joining Guide" : "Ne Yapsak? Dernek Katılım Rehberi"}</span>
             </div>
 
             {/* Büyük Başlık */}
@@ -352,8 +352,8 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
               {pageData?.shortDescription
                 ? pageData.shortDescription
                 : isEn
-                ? "There is always a place for your ideas, energy, and curiosity in N'apsak? Youth Community. Contribute to projects as a volunteer, produce regularly in our teams, or meet us at our events."
-                : "N'apsak? Gençlik Topluluğu'nda fikirlerin, enerjin ve merakın için her zaman bir yer var. İster gönüllü olarak projelere el ver, ister ekiplerimize katılarak düzenli üret, ister etkinliklerimizde bizimle buluş."}
+                ? "There is always a place for your ideas, energy, and curiosity in Ne Yapsak? Youth Association. Contribute to projects as a volunteer, produce regularly in our teams, or meet us at our events."
+                : "Ne Yapsak? Gençlik Derneği'nda fikirlerin, enerjin ve merakın için her zaman bir yer var. İster gönüllü olarak projelere el ver, ister ekiplerimize katılarak düzenli üret, ister etkinliklerimizde bizimle buluş."}
             </p>
 
             {/* CTA Butonları */}
@@ -411,7 +411,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
               {isEn ? "Which Path is Yours?" : "Senin Yolun Hangisi?"}
             </span>
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-headings">
-              {isEn ? "Ways to Join Our Community" : "Topluluğumuza Katılım Türleri"}
+              {isEn ? "Ways to Join Our Association" : "Derneğimize Katılım Türleri"}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sans font-normal leading-relaxed">
               {isEn
@@ -520,8 +520,8 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sans font-normal leading-relaxed">
               {isEn
-                ? "No confusion, no rigid interviews. Start your community journey in 4 simple steps."
-                : "Kafa karışıklığı yok, kasıntı mülakatlar yok. 4 basit adımda topluluk yolculuğuna başla."}
+                ? "No confusion, no rigid interviews. Start your association journey in 4 simple steps."
+                : "Kafa karışıklığı yok, kasıntı mülakatlar yok. 4 basit adımda dernek yolculuğuna başla."}
             </p>
           </motion.div>
 
@@ -699,13 +699,13 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
               </span>
 
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight text-white leading-tight">
-                {isEn ? "Take your place in N'apsak?!" : "Sen de N'apsak?'ta yerini al!"}
+                {isEn ? "Take your place in Ne Yapsak?!" : "Sen de Ne Yapsak?'ta yerini al!"}
               </h3>
 
               <p className="text-xs sm:text-sm lg:text-base text-white/90 font-sans font-medium leading-relaxed">
                 {isEn
-                  ? "We are a community not of those saying 'I wish..', but of those asking 'N'apsak?' and taking action. You can submit your membership application to discover your potential, produce your projects, and meet like-minded youth."
-                  : "“Keşke..” diyenlerin değil, “N'apsak?” deyip harekete geçenlerin topluluğuyuz. Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için üyelik başvurusu yapabilirsin."}
+                  ? "We are an association not of those saying 'I wish..', but of those asking 'Ne Yapsak?' and taking action. You can submit your membership application to discover your potential, produce your projects, and meet like-minded youth."
+                  : "“Keşke..” diyenlerin değil, “Ne Yapsak?” deyip harekete geçenlerin derneğiyiz. Potansiyelini keşfetmek, projelerini üretmek ve senin gibi düşünen gençlerle buluşmak için üyelik başvurusu yapabilirsin."}
               </p>
             </div>
             
@@ -717,7 +717,7 @@ export default function KatilimContent({ pageData }: { pageData?: any }) {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2.5]" />}
                 className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold text-sm px-6 h-12 rounded-xl shadow-md cursor-pointer whitespace-nowrap w-full sm:w-auto justify-center"
               >
-                {isEn ? "Join Community" : "Topluluğa Katıl"}
+                {isEn ? "Join Association" : "Derneğe Katıl"}
               </Button>
             </div>
           </motion.div>

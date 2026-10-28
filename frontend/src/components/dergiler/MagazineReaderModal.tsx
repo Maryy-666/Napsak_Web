@@ -93,7 +93,7 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     {issue.issueNumber} - {issue.title}
                   </h3>
                   <p className="text-[10px] sm:text-[11px] text-stone-400 font-sans">
-                    N'apsak? 3D Dijital Okuma Modu (Klavyeden Ok Yönleri & Dikey Kaydırma Destekli)
+                    Ne Yapsak? 3D Dijital Okuma Modu (Klavyeden Ok Yönleri & Dikey Kaydırma Destekli)
                   </p>
                 </div>
               </div>
@@ -140,7 +140,7 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                     <div className={`w-full min-h-[360px] rounded-xl bg-gradient-to-br ${issue.coverStyle.bgGradient} p-6 flex flex-col justify-between ${issue.coverStyle.textColor} shadow-inner my-auto`}>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-extrabold uppercase tracking-widest px-2.5 py-1 rounded bg-black/10">
-                          N'APSAK?
+                          NE YAPSAK?
                         </span>
                         <span className="text-xs font-black px-3 py-1 rounded-full bg-white text-stone-900 shadow-sm">
                           {issue.issueNumber}
@@ -198,12 +198,12 @@ export const MagazineReaderModal: React.FC<MagazineReaderModalProps> = ({
                       </span>
                     </div>
                     <h4 className="font-headings text-base sm:text-lg font-bold text-stone-900 leading-snug">
-                      {issue.articles[currentPage % issue.articles.length] || (isEn ? "Community File" : "Topluluk Dosyası")}
+                      {issue.articles[currentPage % issue.articles.length] || (isEn ? "Association File" : "Dernek Dosyası")}
                     </h4>
                     <p className="font-sans text-xs sm:text-sm text-stone-600 leading-relaxed font-normal">
                       {isEn
-                        ? "Digital content, open-source culture files, and independent publications prepared by N'apsak? youth community are thoroughly analyzed in this issue."
-                        : "N'apsak? gençlik topluluğunun hazırladığı dijital içerikler, açık kaynak kültür dosyaları ve genç sanatçıların bağımsız yayın çalışmaları bu sayıda detaylı olarak incelenmektedir."}
+                        ? "Digital content, open-source culture files, and independent publications prepared by Ne Yapsak? youth association are thoroughly analyzed in this issue."
+                        : "Ne Yapsak? gençlik derneğinin hazırladığı dijital içerikler, açık kaynak kültür dosyaları ve genç sanatçıların bağımsız yayın çalışmaları bu sayıda detaylı olarak incelenmektedir."}
                     </p>
 
                     <div className="p-3.5 rounded-2xl bg-white border border-stone-200/80 space-y-2 text-xs">

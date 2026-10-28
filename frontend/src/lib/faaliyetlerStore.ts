@@ -34,7 +34,7 @@ export interface FaaliyetItem {
   createdAt: number;
 }
 
-// N'apsak? Resmi Haberler ve Çalışmalar Arşivinden Gerçek Faaliyet Verileri
+// Ne Yapsak? Resmi Haberler ve Çalışmalar Arşivinden Gerçek Faaliyet Verileri
 const INITIAL_FAALIYETLER: FaaliyetItem[] = [
   {
     id: "kil-atolyesi",
@@ -124,7 +124,7 @@ const INITIAL_FAALIYETLER: FaaliyetItem[] = [
     team: "Etkinlik Ekibi",
     status: "Tamamlanan",
     date: "31 Ekim 2025",
-    location: "Topluluk Salonu",
+    location: "Dernek Salonu",
     summary: "Yaratıcı kostümler, tematik oyunlar ve müzik dinletisi eşliğinde üyelerimiz arasındaki bağları güçlendiren eğlenceli akşam.",
     image: "/images/news-cd-cover.jpg",
     rotation: "-rotate-2",
@@ -184,7 +184,7 @@ export const FaaliyetlerRepository = {
             type: item.type || "polaroid",
             title: item.title,
             category: item.category || "Genel",
-            team: item.team || "N'apsak Ekibi",
+            team: item.team || "Ne Yapsak Ekibi",
             status: item.status || "Devam Eden",
             date: item.date || "",
             location: item.location || "",

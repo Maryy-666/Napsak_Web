@@ -86,7 +86,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               {/* Badge Header */}
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0A5C3A]/8 text-[#0A5C3A] font-bold text-xs sm:text-sm tracking-wide uppercase mb-6 w-fit border border-[#0A5C3A]/15 shadow-sm">
                 <IconComp className="w-4 h-4 stroke-[2.5]" />
-                <span>{isEn ? "N'APSAK? WORKING TEAM" : "N'APSAK? ÇALIŞMA EKİBİ"}</span>
+                <span>{isEn ? "NE YAPSAK? WORKING TEAM" : "NE YAPSAK? ÇALIŞMA EKİBİ"}</span>
               </div>
 
               {/* 1. Ekip Adı */}
@@ -139,7 +139,7 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
                     <IconComp className="w-5 h-5 stroke-[2]" />
                   </div>
                   <h3 className="text-xl font-bold font-headings">{isEn ? (team.titleEn || team.title) : team.title}</h3>
-                  <p className="text-xs text-white/80 font-sans mt-1">N'apsak? Gençlik Topluluğu</p>
+                  <p className="text-xs text-white/80 font-sans mt-1">Ne Yapsak? Gençlik Derneği</p>
                 </div>
               </div>
             </motion.div>
@@ -395,8 +395,8 @@ export function TeamDetailContent({ team: initialTeam }: TeamDetailContentProps)
               </div>
               <p className="text-sm text-[#5F6773] max-w-sm">
                 {isEn
-                  ? "Explore all working teams in our community and join the one that suits your interests best."
-                  : "Topluluğumuz bünyesindeki tüm çalışma ekiplerini inceleyin ve ilgi alanınıza en uygun olanına hemen katılın."}
+                  ? "Explore all working teams in our association and join the one that suits your interests best."
+                  : "Derneğimiz bünyesindeki tüm çalışma ekiplerini inceleyin ve ilgi alanınıza en uygun olanına hemen katılın."}
               </p>
             </div>
 

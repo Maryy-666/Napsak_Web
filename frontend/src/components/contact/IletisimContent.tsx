@@ -24,7 +24,7 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
     },
     {
       icon: Phone,
-      title: isEn ? "Community Line" : "Topluluk Hattı",
+      title: isEn ? "Association Line" : "Dernek Hattı",
       value: SITE_CONFIG.contact.phone,
       href: `tel:${SITE_CONFIG.contact.phone.replace(/\s+/g, "")}`,
     },
@@ -88,7 +88,7 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
               {/* Social Media Section Header + Social Accounts */}
               <div className="mt-4">
                 <p className="text-xs font-semibold text-[#9FA6B2] uppercase tracking-wider mb-3">
-                  {isEn ? "N'apsak? on Social Media" : "Sosyal Medyada N'apsak?"}
+                  {isEn ? "Ne Yapsak? on Social Media" : "Sosyal Medyada Ne Yapsak?"}
                 </p>
                 <div className="flex flex-col gap-2.5">
                   {SITE_CONFIG.social?.instagram && (
@@ -118,7 +118,7 @@ export default function IletisimContent({ pageData }: { pageData?: any }) {
                         <FaLinkedin className="w-4 h-4" />
                       </div>
                       <span className="text-sm font-semibold font-sans">
-                        Napsak Gençlik Topluluğu
+                        Napsak Gençlik Derneği
                       </span>
                     </a>
                   )}

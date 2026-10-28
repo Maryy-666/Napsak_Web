@@ -38,8 +38,8 @@ export function MemberDetailContent({ member }: MemberDetailContentProps) {
   const initials = getInitials(member.name);
 
   const bioText = isEn
-    ? member.bioEn || member.bio || "N'apsak? Gençlik Topluluğu bünyesinde değerli katkılar sunmaktadır."
-    : member.bio || "N'apsak? Gençlik Topluluğu bünyesinde değerli katkılar sunmaktadır.";
+    ? member.bioEn || member.bio || "Ne Yapsak? Gençlik Derneği bünyesinde değerli katkılar sunmaktadır."
+    : member.bio || "Ne Yapsak? Gençlik Derneği bünyesinde değerli katkılar sunmaktadır.";
 
   const educationText = isEn
     ? member.educationEn || member.education || (member.school ? `${member.school} ${member.department ? `- ${member.department}` : ""}` : null)
@@ -114,7 +114,7 @@ export function MemberDetailContent({ member }: MemberDetailContentProps) {
 
                   {member.isPresident && (
                     <span className="px-3 py-1 rounded-full bg-[#0A5C3A] text-white font-extrabold text-xs uppercase tracking-wider shadow-xs">
-                      {isEn ? "Community President" : "Topluluk Başkanı"}
+                      {isEn ? "Association President" : "Dernek Başkanı"}
                     </span>
                   )}
                 </div>
@@ -247,7 +247,7 @@ export function MemberDetailContent({ member }: MemberDetailContentProps) {
                     <Briefcase className="w-5 h-5 stroke-[2]" />
                   </div>
                   <h2 className="text-xl font-bold font-headings text-[#0F1115]">
-                    {isEn ? "Community Roles & Tasks" : "Topluluk İçerisindeki Görevleri"}
+                    {isEn ? "Association Roles & Tasks" : "Dernek İçerisindeki Görevleri"}
                   </h2>
                 </div>
 

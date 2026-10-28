@@ -42,13 +42,13 @@ export default function AdminAnasayfaPage() {
 
   // Form Fields
   const [formData, setFormData] = useState<Partial<HomepageHeroItem>>({
-    badge: "Keşke Demek Yerine: N'apsak?",
+    badge: "Keşke Demek Yerine: Ne Yapsak?",
     title: "",
     highlightText: "",
     description: "",
     primaryCtaText: "Çalışma Ekiplerimiz",
     primaryCtaLink: "/ekipler",
-    secondaryCtaText: "Topluluğa Katıl",
+    secondaryCtaText: "Derneğe Katıl",
     secondaryCtaLink: "/katilim",
     imageUrl: "",
     displayOrder: 0,
@@ -83,13 +83,13 @@ export default function AdminAnasayfaPage() {
   const handleOpenCreateModal = () => {
     setEditingHero(null);
     setFormData({
-      badge: "Keşke Demek Yerine: N'apsak?",
+      badge: "Keşke Demek Yerine: Ne Yapsak?",
       title: "",
       highlightText: "",
       description: "",
       primaryCtaText: "Çalışma Ekiplerimiz",
       primaryCtaLink: "/ekipler",
-      secondaryCtaText: "Topluluğa Katıl",
+      secondaryCtaText: "Derneğe Katıl",
       secondaryCtaLink: "/katilim",
       imageUrl: "",
       displayOrder: heroSlides.length,
@@ -387,7 +387,7 @@ export default function AdminAnasayfaPage() {
               value={formData.badge || ""}
               onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] font-medium outline-none focus:border-[#0A5C3A]"
-              placeholder="Örn: Keşke Demek Yerine: N'apsak?"
+              placeholder="Örn: Keşke Demek Yerine: Ne Yapsak?"
             />
           </div>
 
@@ -401,7 +401,7 @@ export default function AdminAnasayfaPage() {
               value={formData.title || ""}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] font-medium outline-none focus:border-[#0A5C3A]"
-              placeholder="Örn: Gençlik Üretiyor, Topluluk Dönüştürüyor"
+              placeholder="Örn: Gençlik Üretiyor, Dernek Dönüştürüyor"
             />
           </div>
 

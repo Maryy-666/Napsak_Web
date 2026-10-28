@@ -39,14 +39,14 @@ const CORE_VALUES_TR: CoreValue[] = [
     id: "yenilikcilik",
     title: "Yenilikçilik",
     description:
-      "Değişen dünyaya uyum sağlamak için yeni fikirler üretmeyi ve gençlerin yaratıcılığını desteklemeyi önemsiyoruz. Yenilikçi yaklaşımlarla hem topluluğumuza hem de topluma katkı sunmayı amaçlıyoruz.",
+      "Değişen dünyaya uyum sağlamak için yeni fikirler üretmeyi ve gençlerin yaratıcılığını desteklemeyi önemsiyoruz. Yenilikçi yaklaşımlarla hem derneğimize hem de topluma katkı sunmayı amaçlıyoruz.",
     icon: Lightbulb,
   },
   {
     id: "birliktelik",
     title: "Birliktelik",
     description:
-      "Birlikte üretmenin ve farklı fikirleri bir araya getirmenin gücüne inanıyoruz. Ortak projeler geliştiriyor, ekip ruhunu ön planda tutuyor ve her üyeyi topluluğun önemli bir parçası olarak görüyoruz.",
+      "Birlikte üretmenin ve farklı fikirleri bir araya getirmenin gücüne inanıyoruz. Ortak projeler geliştiriyor, ekip ruhunu ön planda tutuyor ve her üyeyi derneğin önemli bir parçası olarak görüyoruz.",
     icon: HeartHandshake,
   },
   {
@@ -77,14 +77,14 @@ const CORE_VALUES_EN: CoreValue[] = [
     id: "yenilikcilik",
     title: "Innovation",
     description:
-      "We emphasize bringing new ideas to life and fostering youth creativity to adapt to a changing world. We aim to contribute to both our community and society through innovative approaches.",
+      "We emphasize bringing new ideas to life and fostering youth creativity to adapt to a changing world. We aim to contribute to both our association and society through innovative approaches.",
     icon: Lightbulb,
   },
   {
     id: "birliktelik",
     title: "Togetherness",
     description:
-      "We believe in the power of producing together and combining diverse perspectives. We build collaborative projects, prioritize team spirit, and value every member as a vital part of our community.",
+      "We believe in the power of producing together and combining diverse perspectives. We build collaborative projects, prioritize team spirit, and value every member as a vital part of our association.",
     icon: HeartHandshake,
   },
   {

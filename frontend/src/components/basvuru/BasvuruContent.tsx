@@ -32,7 +32,7 @@ export default function BasvuruContent() {
     "Yaşam ve Sürdürülebilirlik Ekibi",
     "Programlar Ekibi",
     "Kurumsal İletişim Ekibi",
-    "Genel Topluluk Üyeliği & Gönüllü",
+    "Genel Dernek Üyeliği & Gönüllü",
   ]);
 
   const [formData, setFormData] = useState({
@@ -96,7 +96,7 @@ export default function BasvuruContent() {
               !t.toLowerCase().includes("danışma") &&
               !t.toLowerCase().includes("kurul")
           );
-        const combined = Array.from(new Set([...titles, "Genel Topluluk Üyeliği & Gönüllü"]));
+        const combined = Array.from(new Set([...titles, "Genel Dernek Üyeliği & Gönüllü"]));
         setTeamsList(combined);
         if (titles.length > 0) {
           setFormData((prev) => ({
@@ -226,7 +226,7 @@ export default function BasvuruContent() {
                     <span>{isEn ? "Join Us" : "Aramıza Katıl"}</span>
                   </span>
                   <h1 className="text-2xl sm:text-[32px] font-bold tracking-tight text-[#0F1115] font-headings leading-tight">
-                    {isEn ? "Community Membership Application" : "Topluluğa Katıl Başvurusu"}
+                    {isEn ? "Association Membership Application" : "Derneğe Katıl Başvurusu"}
                   </h1>
                 </div>
               </div>
@@ -247,8 +247,8 @@ export default function BasvuruContent() {
                     </h2>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
                       {isEn
-                        ? "Thank you for your interest in N'apsak? Youth Community. Your application will be evaluated by our team and we will contact you via your provided contact info."
-                        : "N'apsak? Gençlik Topluluğu'na gösterdiğin ilgi için teşekkür ederiz. Başvurun ekibimiz tarafından değerlendirilecek ve belirtmiş olduğun iletişim bilgileri üzerinden dönüş yapılacaktır."}
+                        ? "Thank you for your interest in Ne Yapsak? Youth Association. Your application will be evaluated by our team and we will contact you via your provided contact info."
+                        : "Ne Yapsak? Gençlik Derneği'na gösterdiğin ilgi için teşekkür ederiz. Başvurun ekibimiz tarafından değerlendirilecek ve belirtmiş olduğun iletişim bilgileri üzerinden dönüş yapılacaktır."}
                     </p>
                   </div>
 
@@ -290,8 +290,8 @@ export default function BasvuruContent() {
                 <form onSubmit={handleSubmit} className="space-y-6 font-sans text-xs">
                   <p className="text-xs text-[#5F6773] font-medium leading-relaxed">
                     {isEn
-                      ? "Fill out the form to apply directly to our community. Your application will be delivered to our team immediately."
-                      : "Formu doldurarak topluluğumuza doğrudan başvuru yapabilirsiniz. Başvurunuz ekibimize anında iletilecektir."}
+                      ? "Fill out the form to apply directly to our association. Your application will be delivered to our team immediately."
+                      : "Formu doldurarak derneğimize doğrudan başvuru yapabilirsiniz. Başvurunuz ekibimize anında iletilecektir."}
                   </p>
 
                   {errorMsg && (
@@ -476,10 +476,10 @@ export default function BasvuruContent() {
                     </div>
                   </div>
 
-                  {/* 3. TOPLULUK BİLGİLERİ */}
+                  {/* 3. DERNEK BİLGİLERİ */}
                   <div className="space-y-4 pt-3 border-t border-slate-100">
                     <h3 className="text-xs font-bold text-[#0A5C3A] uppercase tracking-wider">
-                      {isEn ? "3. Community Preferences" : "3. Topluluk Bilgileri"}
+                      {isEn ? "3. Association Preferences" : "3. Dernek Bilgileri"}
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
@@ -503,7 +503,7 @@ export default function BasvuruContent() {
                                     .replace("Yaşam ve Sürdürülebilirlik Ekibi", "Health & Sustainability Team")
                                     .replace("Programlar Ekibi", "Programs Team")
                                     .replace("Kurumsal İletişim Ekibi", "Corporate Communication Team")
-                                    .replace("Genel Topluluk Üyeliği & Gönüllü", "General Community Membership & Volunteer")
+                                    .replace("Genel Dernek Üyeliği & Gönüllü", "General Association Membership & Volunteer")
                                 : teamName}
                             </option>
                           ))}
@@ -513,8 +513,8 @@ export default function BasvuruContent() {
                       <div className="flex flex-col justify-between h-full">
                         <label className="block font-bold text-slate-700 mb-1">
                           {isEn
-                            ? "Have you participated in any NGO or student community before?"
-                            : "Daha önce herhangi bir sivil toplum kuruluşunda veya toplulukta yer aldınız mı?"}{" "}
+                            ? "Have you participated in any NGO or student association before?"
+                            : "Daha önce herhangi bir sivil toplum kuruluşunda veya dernekte yer aldınız mı?"}{" "}
                           <span className="text-rose-500">*</span>
                         </label>
                         <select
@@ -538,7 +538,7 @@ export default function BasvuruContent() {
                         transition={{ duration: 0.2 }}
                       >
                         <label className="block font-bold text-slate-700 mb-1">
-                          {isEn ? "Which NGO / community or team were you part of?" : "Daha önce hangi STK / topluluk veya ekipte yer aldınız?"}{" "}
+                          {isEn ? "Which NGO / association or team were you part of?" : "Daha önce hangi STK / dernek veya ekipte yer aldınız?"}{" "}
                           <span className="text-rose-500">*</span>
                         </label>
                         <input
@@ -563,8 +563,8 @@ export default function BasvuruContent() {
                     <div>
                       <label className="block font-bold text-slate-700 mb-1">
                         {isEn
-                          ? "Tell us about yourself and explain your motivation to join N'apsak?."
-                          : "Kendinizden Bahsedin ve Topluluğa Katılma Motivasyonunuzu Açıklayın."}{" "}
+                          ? "Tell us about yourself and explain your motivation to join Ne Yapsak?."
+                          : "Kendinizden Bahsedin ve Derneğe Katılma Motivasyonunuzu Açıklayın."}{" "}
                         <span className="text-rose-500">*</span>
                       </label>
                       <textarea
@@ -575,8 +575,8 @@ export default function BasvuruContent() {
                         onChange={handleChange}
                         placeholder={
                           isEn
-                            ? "Briefly tell us about your interests, experience, and why you want to join N'apsak?..."
-                            : "İlgi alanlarınızdan, deneyimlerinizden ve neden N'apsak? topluluğuna katılmak istediğinizden kısaca bahsedebilirsiniz..."
+                            ? "Briefly tell us about your interests, experience, and why you want to join Ne Yapsak?..."
+                            : "İlgi alanlarınızdan, deneyimlerinizden ve neden Ne Yapsak? derneğine katılmak istediğinizden kısaca bahsedebilirsiniz..."
                         }
                         className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-xs focus:outline-none focus:border-[#0A5C3A] focus:bg-white transition-all"
                       />

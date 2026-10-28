@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         message: "Geliştirme modu girişi başarılı.",
         user: {
           id: "dev-admin",
-          name: "N'apsak Admin",
+          name: "Ne Yapsak Admin",
           email: "admin@napsak.com",
           role: "ADMIN",
         },

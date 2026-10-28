@@ -4,26 +4,26 @@ import HomeContent from "../components/home/HomeContent";
 import { Footer } from "../components/common/Footer";
 
 export const metadata: Metadata = {
-  title: "N'apsak? Gençlik Topluluğu | Gençlik Üretiyor, Topluluk Dönüştürüyor",
+  title: "Ne Yapsak? Gençlik Derneği | Gençlik Üretiyor, Dernek Dönüştürüyor",
   description:
     "Üreten, öğrenen ve birlikte gelişen gençlerin buluşma noktası. Sanat, teknoloji, çevre, sağlık ve programlar ekiplerimizle geleceği tasarlıyoruz.",
   alternates: {
     canonical: "https://napsak.org",
   },
   openGraph: {
-    title: "N'apsak? Gençlik Topluluğu",
+    title: "Ne Yapsak? Gençlik Derneği",
     description:
-      "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji ve kültür topluluğu.",
+      "Üreten, öğrenen ve birlikte gelişen gençlerin teknoloji ve kültür derneği.",
     url: "https://napsak.org",
-    siteName: "N'apsak? Gençlik Topluluğu",
+    siteName: "Ne Yapsak? Gençlik Derneği",
     locale: "tr_TR",
     type: "website",
-    images: [{ url: "https://napsak.org/images/forest-hero.jpg", alt: "N'apsak? Gençlik Topluluğu" }],
+    images: [{ url: "https://napsak.org/images/forest-hero.jpg", alt: "Ne Yapsak? Gençlik Derneği" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "N'apsak? Gençlik Topluluğu",
-    description: "Gençlik üretiyor, topluluk dönüştürüyor.",
+    title: "Ne Yapsak? Gençlik Derneği",
+    description: "Gençlik üretiyor, dernek dönüştürüyor.",
     images: ["https://napsak.org/images/forest-hero.jpg"],
   },
 };
@@ -32,10 +32,10 @@ export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "N'apsak? Gençlik Topluluğu",
+    name: "Ne Yapsak? Gençlik Derneği",
     url: "https://napsak.org",
     logo: "https://napsak.org/logo.png",
-    description: "Üreten, öğrenen ve birlikte gelişen gençlerin bağımsız topluluğu.",
+    description: "Üreten, öğrenen ve birlikte gelişen gençlerin bağımsız derneği.",
     sameAs: [
       "https://instagram.com/napsakgenclik",
       "https://linkedin.com/company/napsakgenclik",

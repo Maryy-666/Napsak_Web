@@ -4,9 +4,9 @@ import { Footer } from "../../components/common/Footer";
 import HakkimizdaContent from "../../components/hakkimizda/HakkimizdaContent";
 import { PagesRepository } from "../../lib/pagesStore";
 
-const fallbackTitle = "Hakkımızda | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "Hakkımızda | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "N'apsak? Gençlik Topluluğu'nun vizyonu, kuruluş hikayesi, çalışma ekipleri, bağımsız idari yapısı ve temel değerleri.";
+  "Ne Yapsak? Gençlik Derneği'nun vizyonu, kuruluş hikayesi, çalışma ekipleri, bağımsız idari yapısı ve temel değerleri.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("hakkimizda");
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

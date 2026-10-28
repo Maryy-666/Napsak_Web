@@ -5,9 +5,9 @@ import { Footer } from "../../components/common/Footer";
 import IletisimContent from "../../components/contact/IletisimContent";
 import { PagesRepository } from "../../lib/pagesStore";
 
-const fallbackTitle = "İletişim | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "İletişim | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "N'apsak? Gençlik Topluluğu ile iletişime geçin. Soru, görüş, öneri ve topluluk hakkındaki tüm konular için bize ulaşın.";
+  "Ne Yapsak? Gençlik Derneği ile iletişime geçin. Soru, görüş, öneri ve dernek hakkındaki tüm konular için bize ulaşın.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("iletisim");
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

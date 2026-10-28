@@ -127,7 +127,7 @@ export default function AdminUyeliklerPage() {
               isDark ? "text-slate-400" : "text-slate-500"
             }`}
           >
-            Topluluğa katılmak için başvuran gençlerin kayıt talepleri ve başvuru süreçleri.
+            Derneğe katılmak için başvuran gençlerin kayıt talepleri ve başvuru süreçleri.
           </p>
         </div>
 

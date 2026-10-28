@@ -8,7 +8,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:300
 const DEFAULT_USERS = [
   {
     id: 1,
-    name: "N'apsak Admin",
+    name: "Ne Yapsak Admin",
     email: "admin@napsak.com",
     role: "ADMIN",
     createdAt: new Date().toISOString(),

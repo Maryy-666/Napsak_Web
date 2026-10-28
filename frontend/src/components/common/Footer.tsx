@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
     if (lower === "hakkımızda") return t("nav.about");
     if (lower === "etkinlikler") return t("nav.events");
     if (lower === "çalışmalar" || lower === "faaliyetler") return t("nav.activities");
-    if (lower === "topluluk" || lower === "üyeler") return t("nav.community");
+    if (lower === "dernek" || lower === "üyeler") return t("nav.community");
     if (lower === "iletişim") return t("nav.contact");
     return title;
   };
@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
     { title: "Hakkımızda", href: ROUTES.HAKKIMIZDA },
     { title: "Etkinlikler", href: ROUTES.ETKINLIKLER },
     { title: "Çalışmalar", href: ROUTES.FAALIYETLER },
-    { title: "Topluluk", href: ROUTES.UYELER },
+    { title: "Dernek", href: ROUTES.UYELER },
     { title: "İletişim", href: ROUTES.ILETISIM },
   ];
 
@@ -73,21 +73,21 @@ export const Footer: React.FC = () => {
             <Link
               href={ROUTES.HOME}
               className="flex items-center outline-none focus-visible:ring-4 focus-visible:ring-[#0A5C3A]/20 rounded-lg transition-transform hover:scale-105"
-              aria-label="N'apsak? Ana Sayfa"
+              aria-label="Ne Yapsak? Ana Sayfa"
             >
               <Logo variant="default" size={84} priority />
             </Link>
 
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-medium break-words">
               {language === "en"
-                ? "N'apsak? Youth Community aims to unleash youth potential, prepare them for the future, and provide opportunities for self-development across tech & creative domains."
-                : "N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik topluluğudur."}
+                ? "Ne Yapsak? Youth Association aims to unleash youth potential, prepare them for the future, and provide opportunities for self-development across tech & creative domains."
+                : "Ne Yapsak? Gençlik Derneği, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik derneğidir."}
             </p>
 
             <p className="text-xs sm:text-sm font-bold text-[#0A5C3A] italic font-headings tracking-tight">
               {language === "en"
-                ? "Instead of saying 'I wish', take action by asking N'apsak?"
-                : "“Keşke” demeden, N'apsak? diyerek harekete geç."}
+                ? "Instead of saying 'I wish', take action by asking Ne Yapsak?"
+                : "“Keşke” demeden, Ne Yapsak? diyerek harekete geç."}
             </p>
           </div>
 
@@ -111,7 +111,7 @@ export const Footer: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#5F6773] font-medium text-center sm:text-left w-full">
           <p className="break-words">
-            © {currentYear} N'apsak? Gençlik Topluluğu. {t("footer.rights", "Tüm hakları saklıdır.")}
+            © {currentYear} Ne Yapsak? Gençlik Derneği. {t("footer.rights", "Tüm hakları saklıdır.")}
           </p>
 
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-4">

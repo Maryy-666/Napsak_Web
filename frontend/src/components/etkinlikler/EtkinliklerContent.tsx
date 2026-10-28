@@ -208,8 +208,8 @@ export default function EtkinliklerContent() {
             </h1>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
               {isEn
-                ? "Summits, workshops, nature walks, and social responsibility gatherings by our community. Register for upcoming events or browse past activities."
-                : "Topluluğumuzun düzenlediği zirveler, atölyeler, doğa yürüyüşleri ve sosyal sorumluluk buluşmaları. Aktif etkinliklere kaydolabilir, geçmiş faaliyetlerimizi inceleyebilirsin."}
+                ? "Summits, workshops, nature walks, and social responsibility gatherings by our association. Register for upcoming events or browse past activities."
+                : "Derneğimizin düzenlediği zirveler, atölyeler, doğa yürüyüşleri ve sosyal sorumluluk buluşmaları. Aktif etkinliklere kaydolabilir, geçmiş faaliyetlerimizi inceleyebilirsin."}
             </p>
           </motion.div>
         </PageContainer>

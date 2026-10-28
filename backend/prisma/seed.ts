@@ -21,7 +21,7 @@ const TEAMS_DATA = [
     shortDescription:
       "Dijitalleşme, inovasyon, yazılım, yapay zeka ve sürdürülebilir teknoloji alanlarında eğitim içerikleri, projeler ve etkinlikler geliştirir.",
     about:
-      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin topluluk çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine, veri analizinden dijital ürün tasarımına kadar geniş bir yelpazede yenilikçi projeler kurgular ve hayata geçirir.",
+      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin dernek çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine, veri analizinden dijital ürün tasarımına kadar geniş bir yelpazede yenilikçi projeler kurgular ve hayata geçirir.",
     focusAreas: [
       "Yazılım & Web Geliştirme",
       "Yapay Zeka & Veri Bilimi",
@@ -30,10 +30,10 @@ const TEAMS_DATA = [
       "Teknoloji Atölyeleri & Hackathonlar",
     ],
     whatWeDo: [
-      "Topluluğumuzun dijital platformlarını, web sitesini ve yazılım altyapılarını geliştiriyoruz.",
+      "Derneğimizin dijital platformlarını, web sitesini ve yazılım altyapılarını geliştiriyoruz.",
       "Gençlere yönelik kodlama, yapay zeka ve dijital beceri atölyeleri düzenliyoruz.",
       "Açık kaynak ekosistemine katkı sağlayan yenilikçi projeler kurguluyoruz.",
-      "Topluluk içi operasyonları otomatize eden dijital çözümler üretiyoruz.",
+      "Dernek içi operasyonları otomatize eden dijital çözümler üretiyoruz.",
     ],
     structure:
       "Ekibimiz Proje Yöneticisi, Yazılım Geliştiriciler, UI/UX Tasarımcıları ve Yapay Zeka / Veri masalarından oluşur. Haftalık çevrim içi buluşmalar ve esnek çalışma modelleriyle projelerimizi sürdürürüz.",
@@ -48,7 +48,7 @@ const TEAMS_DATA = [
     shortDescription:
       "Gençlerin sanatsal ve yaratıcı ifade becerilerini geliştirmelerini destekleyen atölyeler ve estetik projeler yürütür.",
     about:
-      "Sanat Ekibimiz, görsel sanatlardan dijital tasarıma, estetik ifade biçimlerinden kültür-sanat projelerine kadar gençlerin yaratıcı potansiyellerini keşfetmelerine alan açar. Disiplinlerarası atölyeler ve sergilerle yaratıcılığı topluluk ruhuyla buluşturur.",
+      "Sanat Ekibimiz, görsel sanatlardan dijital tasarıma, estetik ifade biçimlerinden kültür-sanat projelerine kadar gençlerin yaratıcı potansiyellerini keşfetmelerine alan açar. Disiplinlerarası atölyeler ve sergilerle yaratıcılığı dernek ruhuyla buluşturur.",
     focusAreas: [
       "Görsel Sanatlar & İllüstrasyon",
       "Dijital Sanat & Grafik Tasarım",
@@ -57,7 +57,7 @@ const TEAMS_DATA = [
       "Sergi & Disiplinlerarası Etkinlikler",
     ],
     whatWeDo: [
-      "Topluluk yayınları, sosyal medya ve projeler için özgün görsel tasarımlar hazırlıyoruz.",
+      "Dernek yayınları, sosyal medya ve projeler için özgün görsel tasarımlar hazırlıyoruz.",
       "Tematik sanat atölyeleri, çizim ve yaratıcılık buluşmaları düzenliyoruz.",
       "Genç sanatçıların eserlerini sergileyebileceği dijital ve fiziki sergiler organize ediyoruz.",
       "Kültür ve sanat odaklı disiplinlerarası ortak projelere imza atıyoruz.",
@@ -137,9 +137,9 @@ const TEAMS_DATA = [
     iconName: "share-2",
     bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
     shortDescription:
-      "Topluluğun kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
+      "Derneğin kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
     about:
-      "Kurumsal İletişim Ekibimiz, N'apsak? Gençlik Topluluğu'nun vizyonunu ve ürettiği değeri kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi, stratejik iletişim, basın ilişkileri ve kurumlar arası iş birliği süreçlerini yönetir.",
+      "Kurumsal İletişim Ekibimiz, Ne Yapsak? Gençlik Derneği'nun vizyonunu ve ürettiği değeri kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi, stratejik iletişim, basın ilişkileri ve kurumlar arası iş birliği süreçlerini yönetir.",
     focusAreas: [
       "Sosyal Medya Yönetimi & Stratejisi",
       "Marka Yönetimi & Kurumsal Kimlik",
@@ -148,8 +148,8 @@ const TEAMS_DATA = [
       "Medya İlişkileri & Duyurular",
     ],
     whatWeDo: [
-      "Topluluğumuzun tüm sosyal medya hesaplarını ve dijital iletişim kanallarını aktif şekilde yönetiyoruz.",
-      "Stratejik iletişim planları kurgulayarak topluluk duyurularını ve projelerini yayınlıyoruz.",
+      "Derneğimizin tüm sosyal medya hesaplarını ve dijital iletişim kanallarını aktif şekilde yönetiyoruz.",
+      "Stratejik iletişim planları kurgulayarak dernek duyurularını ve projelerini yayınlıyoruz.",
       "Sivil toplum, akademi ve özel sektör paydaşlarıyla sürdürülebilir iş birliği süreçleri yürütüyoruz.",
       "Bültenler, basın açıklamaları ve kurumsal tanıtım materyalleri hazırlıyoruz.",
     ],
@@ -164,17 +164,17 @@ const TEAMS_DATA = [
     iconName: "shield-check",
     bgImage: "/images/krm.png",
     shortDescription:
-      "N'apsak? Gençlik Topluluğu'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
+      "Ne Yapsak? Gençlik Derneği'nun stratejik kararlarını alan ve genel yönetim süreçlerini icra eden ana yönetim kuruludur.",
     about:
-      "Yönetim Kurulu, topluluğumuzun vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen, ekipler arası koordinasyonu sağlayan karar organıdır.",
+      "Yönetim Kurulu, derneğimizin vizyonunu, operasyonel hedeflerini ve genel yönetim ilkelerini belirleyen, ekipler arası koordinasyonu sağlayan karar organıdır.",
     focusAreas: [
       "Stratejik Planlama & Karar Alma",
-      "Topluluk Yönetimi & Vizyon",
+      "Dernek Yönetimi & Vizyon",
       "Operasyonel Koordinasyon",
       "Paydaş & Kurumsal İlişkiler",
     ],
     whatWeDo: [
-      "Topluluğumuzun stratejik hedeflerini ve vizyon belgelerini oluşturuyoruz.",
+      "Derneğimizin stratejik hedeflerini ve vizyon belgelerini oluşturuyoruz.",
       "Tüm çalışma ekiplerinin eş güdüm içerisinde faaliyet göstermesini sağlıyoruz.",
       "Kurumsal ve sivil toplum ortaklıklarının yönetimini yürütüyoruz.",
     ],
@@ -188,16 +188,16 @@ const TEAMS_DATA = [
     iconName: "award",
     bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
     shortDescription:
-      "Topluluğumuzun vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
+      "Derneğimizin vizyon, büyüme ve sürdürülebilirlik odaklı çalışmalarına rehberlik eden kıdemli danışmanlar kurulu.",
     about:
-      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak N'apsak? Gençlik Topluluğu'nun stratejik yönelimlerine ve toplumsal etki projelerine rehberlik etmektedir.",
+      "Danışma Kurulu; alanında uzman isimler ve kurumsal liderlerden oluşarak Ne Yapsak? Gençlik Derneği'nun stratejik yönelimlerine ve toplumsal etki projelerine rehberlik etmektedir.",
     focusAreas: [
       "Stratejik Danışmanlık & Rehberlik",
       "Sürdürülebilirlik & Gelecek Vizyonu",
       "Toplumsal Etki & Gençlik Politikaları",
     ],
     whatWeDo: [
-      "Topluluğun uzun vadeli büyüme stratejilerine danışmanlık sağlıyoruz.",
+      "Derneğin uzun vadeli büyüme stratejilerine danışmanlık sağlıyoruz.",
       "Gençlik alanındaki yenilikçi projelere kurumsal rehberlik sunuyoruz.",
     ],
     structure: "Danışma Kurulu seçkin liderler ve danışmanlardan oluşur.",
@@ -207,9 +207,9 @@ const TEAMS_DATA = [
 
 // STATİK MEMBERS VERİSİ
 const PUBLIC_MEMBERS = [
-  // TOPLULUK EŞ BAŞKANLARI & YÖNETİM/DANIŞMA KURULU
-  { id: "m-kadir-colmekci", name: "Kadir Çölmekci", initials: "KÇ", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
-  { id: "m-humeyra-erdonmez", name: "Hümeyra Erdönmez", initials: "HE", primaryTeam: "Topluluk Eş Başkanları", primaryRole: "Topluluk Eş Başkanı", isPresident: true, memberships: [{ team: "Topluluk Başkanlığı", role: "Topluluk Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
+  // DERNEK EŞ BAŞKANLARI & YÖNETİM/DANIŞMA KURULU
+  { id: "m-kadir-colmekci", name: "Kadir Çölmekci", initials: "KÇ", primaryTeam: "Dernek Eş Başkanları", primaryRole: "Dernek Eş Başkanı", isPresident: true, memberships: [{ team: "Dernek Başkanlığı", role: "Dernek Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
+  { id: "m-humeyra-erdonmez", name: "Hümeyra Erdönmez", initials: "HE", primaryTeam: "Dernek Eş Başkanları", primaryRole: "Dernek Eş Başkanı", isPresident: true, memberships: [{ team: "Dernek Başkanlığı", role: "Dernek Eş Başkanı" }, { team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
   { id: "m-yunus-efe-kolukisa", name: "Yunus Efe Kolukısa", initials: "YEK", primaryTeam: "Yönetim Kurulu", primaryRole: "Yönetim Kurulu Üyesi", isPresident: false, memberships: [{ team: "Yönetim Kurulu", role: "Yönetim Kurulu Üyesi" }] },
   { id: "m-nevgul-bilsel-safkan", name: "Nevgül Bilsel Safkan", initials: "NBS", primaryTeam: "Danışma Kurulu", primaryRole: "Sabancı Vakfı Genel Müdürü", isPresident: false, memberships: [{ team: "Danışma Kurulu", role: "Sabancı Vakfı Genel Müdürü" }] },
 
@@ -282,7 +282,7 @@ const NEWS_DATA = [
       "Gençlerimizin elleriyle şekil verdiği, el becerilerini ve sanatsal ifade güçlerini ortaya çıkardığı keyifli bir kil atölyesi gerçekleştirdik.",
     coverImage: "/images/news-kil-cover.jpg",
     content:
-      "N'apsak? Gençlik Topluluğu Sanat Ekibi organizasyonuyla düzenlenen Kil Atölyesi'nde gençler bir araya gelerek doğal kil hamuru ile kendi özgün tasarımlarını oluşturdular. Dokunsal üretimin huzuru ve yaratıcılığın coşkusuyla geçen etkinlikte katılımcılar hem stres attı hem de evlerine götürebilecekleri el yapımı seramik objeler ürettiler. Atölye boyunca seramik şekillendirme, rölyef dokuları ve renklendirme teknikleri deneyimlendi.",
+      "Ne Yapsak? Gençlik Derneği Sanat Ekibi organizasyonuyla düzenlenen Kil Atölyesi'nde gençler bir araya gelerek doğal kil hamuru ile kendi özgün tasarımlarını oluşturdular. Dokunsal üretimin huzuru ve yaratıcılığın coşkusuyla geçen etkinlikte katılımcılar hem stres attı hem de evlerine götürebilecekleri el yapımı seramik objeler ürettiler. Atölye boyunca seramik şekillendirme, rölyef dokuları ve renklendirme teknikleri deneyimlendi.",
     images: [
       "/images/news-kil-main.png",
       "/images/news-kil-cover.jpg",
@@ -302,7 +302,7 @@ const NEWS_DATA = [
       "Renkli kostümler, yaratıcı makyajlar ve tematik oyunlarla dolu eğlenceli bir Cadılar Bayramı buluşmasında bir araya geldik.",
     coverImage: "/images/news-cd-cover.jpg",
     content:
-      "Topluluğumuzun eğlenceli ve sosyalleşme odaklı etkinliklerinden biri olan Cadılar Bayramı temalı akşamda gençler yaratıcı kostümleriyle geceye renk kattı. Tematik oyunlar, müzik dinletisi ve lezzetli ikramlar eşliğinde gerçekleşen etkinlikte topluluk üyelerimiz arasındaki bağlar daha da güçlendi. Fotoğraf köşesi ve kostüm yarışması etkinliğin öne çıkan anları arasındaydı.",
+      "Derneğimizin eğlenceli ve sosyalleşme odaklı etkinliklerinden biri olan Cadılar Bayramı temalı akşamda gençler yaratıcı kostümleriyle geceye renk kattı. Tematik oyunlar, müzik dinletisi ve lezzetli ikramlar eşliğinde gerçekleşen etkinlikte dernek üyelerimiz arasındaki bağlar daha da güçlendi. Fotoğraf köşesi ve kostüm yarışması etkinliğin öne çıkan anları arasındaydı.",
     images: ["/images/news-cd-cover.jpg", "/images/news-cd-1.jpg"],
   },
   {
@@ -314,7 +314,7 @@ const NEWS_DATA = [
       "Fotoğraflar, illüstrasyonlar ve el yazılarıyla kişiselleştirilen özel anı defteri tasarımı atölyemizde yaratıcı fikirler buluştu.",
     coverImage: "/images/news-ani-cover.jpg",
     content:
-      "Görsel sanatlar ve tasarım meraklısı gençlerle gerçekleştirdiğimiz Anı Defteri Atölyesi'nde her katılımcı kendi hikayesini ve topluluk anılarını özgün defter sayfalarına dönüştürdü. Scrapbooking teknikleri, suluboya dokunuşları ve özel dikiş ciltleme yöntemleriyle hazırlanan defterler unutulmaz birer hatıra oldu. Katılımcılar fotoğraflarla süsledikleri sayfalarla kendi kişisel günlüklerini tasarladılar.",
+      "Görsel sanatlar ve tasarım meraklısı gençlerle gerçekleştirdiğimiz Anı Defteri Atölyesi'nde her katılımcı kendi hikayesini ve dernek anılarını özgün defter sayfalarına dönüştürdü. Scrapbooking teknikleri, suluboya dokunuşları ve özel dikiş ciltleme yöntemleriyle hazırlanan defterler unutulmaz birer hatıra oldu. Katılımcılar fotoğraflarla süsledikleri sayfalarla kendi kişisel günlüklerini tasarladılar.",
     images: [
       "/images/news-ani-cover.jpg",
       "/images/news-ani-1.jpg",
@@ -331,7 +331,7 @@ const NEWS_DATA = [
       "Gençliğin geleceğe yön veren yetkinliklerini artırmak amacıyla Kariyer Z ve 1923 vizyonu ile ortak projeler ve buluşmalar kurguladık.",
     coverImage: "/images/news-kariyer-cover.jpg",
     content:
-      "N'apsak? Gençlik Topluluğu ve Kariyer Z iş birliğinde düzenlenen stratejik gençlik buluşmasında, Z kuşağının iş hayatındaki rolü, girişimcilik ve geleceğin meslekleri ele alındı. İş birliği kapsamında düzenlenen törende gençler tecrübe paylaşımı fırsatı bulurken ilham verici sunumlar ve networking oturumları gerçekleştirildi. Cumhuriyetimizin 100 yılı aşan birikiminden güç alarak gençliğe vizyon katan ortak projeler duyuruldu.",
+      "Ne Yapsak? Gençlik Derneği ve Kariyer Z iş birliğinde düzenlenen stratejik gençlik buluşmasında, Z kuşağının iş hayatındaki rolü, girişimcilik ve geleceğin meslekleri ele alındı. İş birliği kapsamında düzenlenen törende gençler tecrübe paylaşımı fırsatı bulurken ilham verici sunumlar ve networking oturumları gerçekleştirildi. Cumhuriyetimizin 100 yılı aşan birikiminden güç alarak gençliğe vizyon katan ortak projeler duyuruldu.",
     images: [
       "/images/news-kariyer-cover.jpg",
       "/images/news-kariyer-1.jpg",
@@ -349,7 +349,7 @@ const NEWS_DATA = [
       "Gazi Mustafa Kemal Atatürk'ün çocuklara ve yarınlarımıza armağan ettiği 23 Nisan Ulusal Egemenlik ve Çocuk Bayramı'nı coşkuyla kutladık.",
     coverImage: "/images/ataturk-portrait.jpg",
     content:
-      "Gazi Mustafa Kemal Atatürk, Türkiye Büyük Millet Meclisi'nin açıldığı 23 Nisan gününü dünyada ilk ve tek çocuk bayramı olarak ulusumuzun ve tüm dünya çocuklarına armağan etmiştir. Atatürk'ün 'Çocuklar geleceğimizin güvencesi, yaşama sevincimizdir. Bugünün çocuğunu yetiştirmek yarının büyüğünü yetiştirmektir' anlayışından ilham alarak N'apsak? Gençlik Topluluğu olarak 23 Nisan coşkusunu sahada çocuklarla buluşturduk. Yüz boyama, oyun parkurları, resim atölyeleri ve tiyatro gösterileriyle 'Birlikte düşleyelim, birlikte değiştirelim!' sloganımızı hayata geçirdik.",
+      "Gazi Mustafa Kemal Atatürk, Türkiye Büyük Millet Meclisi'nin açıldığı 23 Nisan gününü dünyada ilk ve tek çocuk bayramı olarak ulusumuzun ve tüm dünya çocuklarına armağan etmiştir. Atatürk'ün 'Çocuklar geleceğimizin güvencesi, yaşama sevincimizdir. Bugünün çocuğunu yetiştirmek yarının büyüğünü yetiştirmektir' anlayışından ilham alarak Ne Yapsak? Gençlik Derneği olarak 23 Nisan coşkusunu sahada çocuklarla buluşturduk. Yüz boyama, oyun parkurları, resim atölyeleri ve tiyatro gösterileriyle 'Birlikte düşleyelim, birlikte değiştirelim!' sloganımızı hayata geçirdik.",
     quoteText:
       "Küçük hanımlar, küçük beyler! Sizler hepiniz geleceğin bir gülü, yıldızı ve ikbal ışığısınız. Memleketi asıl ışığa boğacak olan sizsiniz.",
     quoteAuthor: "Gazi Mustafa Kemal Atatürk",

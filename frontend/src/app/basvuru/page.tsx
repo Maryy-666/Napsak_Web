@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import BasvuruContent from "../../components/basvuru/BasvuruContent";
 
 export const metadata: Metadata = {
-  title: "Topluluğa Katıl | N'apsak? Gençlik Topluluğu",
+  title: "Derneğe Katıl | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu katılım başvuru sayfası. Üreten, öğrenen ve birlikte gelişen topluluğumuzun bir parçası olmak için başvurun.",
+    "Ne Yapsak? Gençlik Derneği katılım başvuru sayfası. Üreten, öğrenen ve birlikte gelişen derneğimizin bir parçası olmak için başvurun.",
   openGraph: {
-    title: "Topluluğa Katıl | N'apsak? Gençlik Topluluğu",
+    title: "Derneğe Katıl | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu katılım başvuru sayfası. Üreten, öğrenen ve birlikte gelişen topluluğumuzun bir parçası olmak için başvurun.",
+      "Ne Yapsak? Gençlik Derneği katılım başvuru sayfası. Üreten, öğrenen ve birlikte gelişen derneğimizin bir parçası olmak için başvurun.",
     type: "website",
   },
 };

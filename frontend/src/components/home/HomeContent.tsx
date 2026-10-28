@@ -31,7 +31,7 @@ export default function HomeContent() {
     {
       num: "01",
       title: t("culture.step1.title", "Keşfet"),
-      description: t("culture.step1.desc", "İlgi alanlarını keşfet, topluluğumuzu ve ekiplerimizi tanı."),
+      description: t("culture.step1.desc", "İlgi alanlarını keşfet, derneğimizi ve ekiplerimizi tanı."),
       icon: Compass,
     },
     {
@@ -49,7 +49,7 @@ export default function HomeContent() {
     {
       num: "04",
       title: t("culture.step4.title", "Geliş"),
-      description: t("culture.step4.desc", "Yeni şeyler öğren, deneyim kazan ve topluluğun gelişimine katkı sağla."),
+      description: t("culture.step4.desc", "Yeni şeyler öğren, deneyim kazan ve derneğin gelişimine katkı sağla."),
       icon: TrendingUp,
     },
   ];
@@ -60,19 +60,19 @@ export default function HomeContent() {
       {/* 1. HERO SECTION WITH FOREST BACKGROUND */}
       <HeroSection />
 
-      {/* 2. "N'APSAK'LI OLMAK NE DEMEK?" CULTURAL PROCESS SECTION */}
+      {/* 2. "NE YAPSAK'LI OLMAK NE DEMEK?" CULTURAL PROCESS SECTION */}
       <Section padding="none" background="white" className="py-12 sm:py-20 border-b border-[#EEF0F2]">
         <PageContainer>
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-10 select-none">
             <Badge variant="brand" size="md" className="mb-3">
-              {t("culture.badge", "Topluluk Kültürü")}
+              {t("culture.badge", "Dernek Kültürü")}
             </Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-3">
-              {t("culture.title", "N'apsak'lı olmak ne demek?")}
+              {t("culture.title", "Ne Yapsak'lı olmak ne demek?")}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
-              {t("culture.subtitle", "Sadece bir topluluğun parçası olmak değil; üretmek, öğrenmek ve birlikte gelişmek.")}
+              {t("culture.subtitle", "Sadece bir derneğin parçası olmak değil; üretmek, öğrenmek ve birlikte gelişmek.")}
             </p>
           </div>
 
@@ -126,12 +126,12 @@ export default function HomeContent() {
       {/* 2.6 BİZ HER YERDEYİZ (TÜRKİYE HARİTASI) */}
       <TurkeyMapSection />
 
-      {/* 3. KISA TOPLULUK TANITIMI (VİZYON & MİSYON) */}
+      {/* 3. KISA DERNEK TANITIMI (VİZYON & MİSYON) */}
       <Section padding="md" background="subtle">
         <PageContainer>
           <div className="text-center max-w-3xl mx-auto mb-12 select-none">
             <Badge variant="brand" size="md" className="mb-3">
-              {language === "en" ? "About Our Community" : "Topluluğumuz Hakkında"}
+              {language === "en" ? "About Our Association" : "Derneğimiz Hakkında"}
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0F1115] font-headings mb-4">
               {language === "en" ? "Unleashing Youth Potential Together" : "Gençlerin Potansiyelini Harekete Geçiriyoruz"}
@@ -198,7 +198,7 @@ export default function HomeContent() {
               {t("teams.title", "Farklı Alanlarda Birlikte Üretiyoruz")}
             </h2>
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium">
-              {t("teams.subtitle", "Topluluğumuz bünyesinde farklı ilgi alanlarına yönelik çalışmalar yürüten ekiplerimizle üretmenin ve gelişmenin gücünü birlikte keşfediyoruz.")}
+              {t("teams.subtitle", "Derneğimiz bünyesinde farklı ilgi alanlarına yönelik çalışmalar yürüten ekiplerimizle üretmenin ve gelişmenin gücünü birlikte keşfediyoruz.")}
             </p>
           </div>
 
@@ -207,7 +207,7 @@ export default function HomeContent() {
         </PageContainer>
       </Section> 
 
-      {/* 4.5 BİZDEN HABERLER (N'APSAK? NAPTIK! NEWS SECTION) */}
+      {/* 4.5 BİZDEN HABERLER (NE YAPSAK? NAPTIK! NEWS SECTION) */}
       <NewsSection />
 
       {/* 5. FINAL CTA BANNER */}
@@ -220,10 +220,10 @@ export default function HomeContent() {
 
             <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-headings tracking-tight mb-4 leading-tight">
-                {t("cta.title", "N'apsak?'ta birlikte üretelim.")}
+                {t("cta.title", "Ne Yapsak?'ta birlikte üretelim.")}
               </h2>
               <p className="text-base sm:text-lg text-white/85 font-sans font-medium mb-8 leading-relaxed">
-                {t("cta.subtitle", "Sen de potansiyelini harekete geçir, projelerini hayata geçir ve gelişen topluluğumuzun bir parçası ol.")}
+                {t("cta.subtitle", "Sen de potansiyelini harekete geçir, projelerini hayata geçir ve gelişen derneğimizin bir parçası ol.")}
               </p>
               <Button
                 href={ROUTES.BASVURU}
@@ -232,7 +232,7 @@ export default function HomeContent() {
                 rightIcon={<ArrowRight className="w-4 h-4 stroke-[2]" />}
                 className="!bg-white !text-[#0A5C3A] hover:!bg-[#F8F9FA] font-bold text-base px-8 h-14"
               >
-                {t("nav.join", "Topluluğa Katıl")}
+                {t("nav.join", "Derneğe Katıl")}
               </Button>
             </div>
           </div>

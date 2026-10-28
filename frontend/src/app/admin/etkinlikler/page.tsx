@@ -525,7 +525,7 @@ export default function AdminEtkinliklerPage() {
       {/* Sayfa Başlığı */}
       <AdminPageHeader
         title="Etkinlik Yönetimi (CMS)"
-        subtitle="N'apsak? Gençlik Topluluğu etkinliklerini oluşturun, taslak/yayın durumunu yönetin ve başvuruları inceleyin."
+        subtitle="Ne Yapsak? Gençlik Derneği etkinliklerini oluşturun, taslak/yayın durumunu yönetin ve başvuruları inceleyin."
         icon={Calendar}
         action={
           <button

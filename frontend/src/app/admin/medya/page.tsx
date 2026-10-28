@@ -376,7 +376,7 @@ export default function AdminMedyaPage() {
                 type="text"
                 value={editAltText}
                 onChange={(e) => setEditAltText(e.target.value)}
-                placeholder="Örn: N'apsak Etkinlik Afişi"
+                placeholder="Örn: Ne Yapsak Etkinlik Afişi"
                 className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E]"
               />
             </div>

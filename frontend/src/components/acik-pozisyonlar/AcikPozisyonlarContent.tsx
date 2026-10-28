@@ -133,8 +133,8 @@ export default function AcikPozisyonlarContent() {
 
             <p className="mx-auto mt-2 max-w-2xl text-base sm:text-lg font-medium leading-relaxed text-[#5F6773] font-sans">
               {isEn
-                ? "As N'apsak? Youth Community, we are expanding our team and looking for volunteers who want to produce, learn, and grow together."
-                : "N'apsak? Gençlik Topluluğu olarak ekibimizi büyütüyor, birlikte üretmek, öğrenmek ve gelişmek isteyen gönüllüler arıyoruz."}
+                ? "As Ne Yapsak? Youth Association, we are expanding our team and looking for volunteers who want to produce, learn, and grow together."
+                : "Ne Yapsak? Gençlik Derneği olarak ekibimizi büyütüyor, birlikte üretmek, öğrenmek ve gelişmek isteyen gönüllüler arıyoruz."}
             </p>
           </motion.div>
         </PageContainer>
@@ -426,7 +426,7 @@ export default function AcikPozisyonlarContent() {
               </h3>
               <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl leading-relaxed">
                 {isEn
-                  ? "You can make a general application to join our community membership process and take your place in all our project teams."
+                  ? "You can make a general application to join our association membership process and take your place in all our project teams."
                   : "Genel üyelik başvurusu yaparak mülakatlı katılım sürecimize dahil olabilir, potansiyeline uygun tüm çalışma ekiplerinde yerini alabilirsin."}
               </p>
             </div>

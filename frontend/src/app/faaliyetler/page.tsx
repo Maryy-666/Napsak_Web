@@ -4,11 +4,11 @@ import { Footer } from "../../components/common/Footer";
 import FaaliyetlerContent from "../../components/faaliyetler/FaaliyetlerContent";
 
 export const metadata: Metadata = {
-  title: "Faaliyetlerimiz & Projeler | N'apsak? Gençlik Topluluğu",
+  title: "Faaliyetlerimiz & Projeler | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu çalışma ekiplerinin dönemsel faaliyetleri, projeleri, atölyeleri ve ekoloji/teknoloji/sanat alanlarındaki toplumsal etki çalışmaları.",
+    "Ne Yapsak? Gençlik Derneği çalışma ekiplerinin dönemsel faaliyetleri, projeleri, atölyeleri ve ekoloji/teknoloji/sanat alanlarındaki toplumsal etki çalışmaları.",
   keywords: [
-    "N'apsak",
+    "Ne Yapsak",
     "Gençlik Faaliyetleri",
     "Dönemsel Projeler",
     "Açık Kod Kampüsü",
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     "Çalışma Ekipleri",
   ],
   openGraph: {
-    title: "Faaliyetlerimiz & Projeler | N'apsak? Gençlik Topluluğu",
+    title: "Faaliyetlerimiz & Projeler | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu çalışma ekiplerinin dönemsel faaliyetleri, projeleri ve toplumsal etki çalışmaları.",
+      "Ne Yapsak? Gençlik Derneği çalışma ekiplerinin dönemsel faaliyetleri, projeleri ve toplumsal etki çalışmaları.",
     type: "website",
   },
 };

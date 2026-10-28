@@ -299,7 +299,7 @@ export default function AdminPaydaslarPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Paydaş ve Destekçi Yönetimi"
-        subtitle="N'apsak? ile iş birliği yapan, projeleri destekleyen tüm kurum ve kuruluşları yönetin."
+        subtitle="Ne Yapsak? ile iş birliği yapan, projeleri destekleyen tüm kurum ve kuruluşları yönetin."
         icon={Building2}
         action={
           <button

@@ -64,15 +64,15 @@ export function NewsContent() {
             size="md"
             className="!bg-[#0A5C3A]/10 !text-[#0A5C3A] !border-[#0A5C3A]/20"
           >
-            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {isEn ? "N'apsak? Latest Updates!" : "N'apsak? Naptık!"}
+            <Sparkles className="w-3.5 h-3.5 mr-1.5" /> {isEn ? "Ne Yapsak? Latest Updates!" : "Ne Yapsak? Naptık!"}
           </Badge>
           <h1 className="text-3xl sm:text-5xl font-extrabold font-headings text-[#0F1115] tracking-tight">
             {isEn ? "News & Announcements" : "Haberler & Duyurular"}
           </h1>
           <p className="text-base sm:text-lg font-sans text-[#5F6773] max-w-2xl">
             {isEn
-              ? "The latest workshops, events, collaborations, and impactful stories from our community."
-              : "Topluluğumuzun en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan hikayeleri."}
+              ? "The latest workshops, events, collaborations, and impactful stories from our association."
+              : "Derneğimizin en güncel atölyeleri, etkinlikleri, iş birlikleri ve sahada iz bırakan hikayeleri."}
           </p>
         </div>
 

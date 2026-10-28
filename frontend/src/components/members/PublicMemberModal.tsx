@@ -158,7 +158,7 @@ export function PublicMemberModal({ member, isOpen, onClose }: PublicMemberModal
           <span className="flex items-center gap-1.5">
             <UserCheck className="w-4 h-4 text-[#0A5C3A]" /> {isEn ? "Verified Team Member" : "Doğrulanmış Ekip Üyesi"}
           </span>
-          <span>N'apsak? Gençlik Topluluğu</span>
+          <span>Ne Yapsak? Gençlik Derneği</span>
         </div>
 
       </div>

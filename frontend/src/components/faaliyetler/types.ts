@@ -11,7 +11,7 @@ export interface FaaliyetItem {
   categoryLabel: string;
   date: string;
   iconName: "briefcase" | "users" | "heart" | "laptop" | "book" | "sparkles" | "camera" | "palette";
-  imageUrl?: string; // Real N'apsak activity thumbnail photo!
+  imageUrl?: string; // Real Ne Yapsak activity thumbnail photo!
   noteVariant: NoteVariant;
   noteColor: NoteColor;
   rotation: number;

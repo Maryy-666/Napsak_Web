@@ -67,9 +67,9 @@ export const TEAMS_DATA: TeamData[] = [
     shortDescriptionEn:
       "Develops educational content, projects, and events in digitalization, innovation, software, AI, and sustainable technology.",
     about:
-      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin topluluk çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine, veri analizinden dijital ürün tasarımına kadar geniş bir yelpazede yenilikçi projeler kurgular ve hayata geçirir.",
+      "Teknoloji Ekibimiz, dijital dönüşümün ve modern teknolojik gelişmelerin dernek çalışmalarına ve gençlik projelerine entegrasyonunu sağlar. Web geliştirmeden yapay zeka çözümlerine, veri analizinden dijital ürün tasarımına kadar geniş bir yelpazede yenilikçi projeler kurgular ve hayata geçirir.",
     aboutEn:
-      "Our Technology Team integrates digital transformation and modern technological advancements into community work and youth projects. From web development to AI solutions, data analytics to digital product design, we craft and launch innovative projects.",
+      "Our Technology Team integrates digital transformation and modern technological advancements into association work and youth projects. From web development to AI solutions, data analytics to digital product design, we craft and launch innovative projects.",
     focusAreas: [
       "Yazılım & Web Geliştirme",
       "Yapay Zeka & Veri Bilimi",
@@ -78,10 +78,10 @@ export const TEAMS_DATA: TeamData[] = [
       "Teknoloji Atölyeleri & Hackathonlar",
     ],
     whatWeDo: [
-      "Topluluğumuzun dijital platformlarını, web sitesini ve yazılım altyapılarını geliştiriyoruz.",
+      "Derneğimizin dijital platformlarını, web sitesini ve yazılım altyapılarını geliştiriyoruz.",
       "Gençlere yönelik kodlama, yapay zeka ve dijital beceri atölyeleri düzenliyoruz.",
       "Açık kaynak ekosistemine katkı sağlayan yenilikçi projeler kurguluyoruz.",
-      "Topluluk içi operasyonları otomatize eden dijital çözümler üretiyoruz.",
+      "Dernek içi operasyonları otomatize eden dijital çözümler üretiyoruz.",
     ],
     structure:
       "Ekibimiz Proje Yöneticisi, Yazılım Geliştiriciler, UI/UX Tasarımcıları ve Yapay Zeka / Veri masalarından oluşur. Haftalık çevrim içi buluşmalar ve esnek çalışma modelleriyle projelerimizi sürdürürüz.",
@@ -98,9 +98,9 @@ export const TEAMS_DATA: TeamData[] = [
     shortDescriptionEn:
       "Conducts workshops and aesthetic projects supporting young people in developing artistic and creative expression skills.",
     about:
-      "Sanat Ekibimiz, görsel sanatlardan dijital tasarıma, estetik ifade biçimlerinden kültür-sanat projelerine kadar gençlerin yaratıcı potansiyellerini keşfetmelerine alan açar. Disiplinlerarası atölyeler ve sergilerle yaratıcılığı topluluk ruhuyla buluşturur.",
+      "Sanat Ekibimiz, görsel sanatlardan dijital tasarıma, estetik ifade biçimlerinden kültür-sanat projelerine kadar gençlerin yaratıcı potansiyellerini keşfetmelerine alan açar. Disiplinlerarası atölyeler ve sergilerle yaratıcılığı dernek ruhuyla buluşturur.",
     aboutEn:
-      "Our Art Team provides space for youth to explore their creative potential across visual arts, digital design, aesthetic expressions, and culture-art projects. Through interdisciplinary workshops and exhibitions, we bring creativity together with community spirit.",
+      "Our Art Team provides space for youth to explore their creative potential across visual arts, digital design, aesthetic expressions, and culture-art projects. Through interdisciplinary workshops and exhibitions, we bring creativity together with association spirit.",
     focusAreas: [
       "Görsel Sanatlar & İllüstrasyon",
       "Dijital Sanat & Grafik Tasarım",
@@ -109,7 +109,7 @@ export const TEAMS_DATA: TeamData[] = [
       "Sergi & Disiplinlerarası Etkinlikler",
     ],
     whatWeDo: [
-      "Topluluk yayınları, sosyal medya ve projeler için özgün görsel tasarımlar hazırlıyoruz.",
+      "Dernek yayınları, sosyal medya ve projeler için özgün görsel tasarımlar hazırlıyoruz.",
       "Tematik sanat atölyeleri, çizim ve yaratıcılık buluşmaları düzenliyoruz.",
       "Genç sanatçıların eserlerini sergileyebileceği dijital ve fiziki sergiler organize ediyoruz.",
       "Kültür ve sanat odaklı disiplinlerarası ortak projelere imza atıyoruz.",
@@ -161,7 +161,7 @@ export const TEAMS_DATA: TeamData[] = [
     about:
       "Yaşam ve Sürdürülebilirlik Ekibimiz; ekolojik farkındalık, iklim krizi, sıfır atık bilinci, ruh ve beden sağlığı ile toplumsal esenlik alanlarında gençlerde sürdürülebilir alışkanlıklar ve sorumluluk duygusu geliştirmeyi hedefler.",
     aboutEn:
-      "Our Life & Sustainability Team aims to cultivate sustainable habits and a sense of responsibility in youth across ecological awareness, climate action, zero waste, mental and physical health, and community wellbeing.",
+      "Our Life & Sustainability Team aims to cultivate sustainable habits and a sense of responsibility in youth across ecological awareness, climate action, zero waste, mental and physical health, and association wellbeing.",
     focusAreas: [
       "Ekolojik Farkındalık & İklim Eylemi",
       "Sıfır Atık & Sürdürülebilirlik",
@@ -217,13 +217,13 @@ export const TEAMS_DATA: TeamData[] = [
     iconName: "share-2",
     bgImage: "/images/world-map-global-business-communication-network-technology-connection-background_15037139(1).jpg!bw800",
     shortDescription:
-      "Topluluğun kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
+      "Derneğin kurumsal kimliğini, medya stratejilerini, dijital mecralarını ve paydaş iş birliklerini yönetir.",
     shortDescriptionEn:
-      "Manages corporate identity, media strategies, digital channels, and stakeholder partnerships of the community.",
+      "Manages corporate identity, media strategies, digital channels, and stakeholder partnerships of the association.",
     about:
-      "Kurumsal İletişim Ekibimiz, N'apsak? Gençlik Topluluğu'nun vizyonunu ve ürettiği değeri kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi, stratejik iletişim, basın ilişkileri ve kurumlar arası iş birliği süreçlerini yönetir.",
+      "Kurumsal İletişim Ekibimiz, Ne Yapsak? Gençlik Derneği'nun vizyonunu ve ürettiği değeri kamuoyuna ve gençliğe aktarır. Dijital medya yönetimi, stratejik iletişim, basın ilişkileri ve kurumlar arası iş birliği süreçlerini yönetir.",
     aboutEn:
-      "Our Corporate Communication Team communicates the vision and generated value of N'apsak? Youth Community to the public and youth. It handles digital media management, strategic communications, press relations, and inter-institutional partnerships.",
+      "Our Corporate Communication Team communicates the vision and generated value of Ne Yapsak? Youth Association to the public and youth. It handles digital media management, strategic communications, press relations, and inter-institutional partnerships.",
     focusAreas: [
       "Sosyal Medya Yönetimi & Stratejisi",
       "Marka Yönetimi & Kurumsal Kimlik",
@@ -232,8 +232,8 @@ export const TEAMS_DATA: TeamData[] = [
       "Medya İlişkileri & Duyurular",
     ],
     whatWeDo: [
-      "Topluluğumuzun tüm sosyal medya hesaplarını ve dijital iletişim kanallarını aktif şekilde yönetiyoruz.",
-      "Stratejik iletişim planları kurgulayarak topluluk duyurularını ve projelerini yayınlıyoruz.",
+      "Derneğimizin tüm sosyal medya hesaplarını ve dijital iletişim kanallarını aktif şekilde yönetiyoruz.",
+      "Stratejik iletişim planları kurgulayarak dernek duyurularını ve projelerini yayınlıyoruz.",
       "Sivil toplum, akademi ve özel sektör paydaşlarıyla sürdürülebilir iş birliği süreçleri yürütüyoruz.",
       "Bültenler, basın açıklamaları ve kurumsal tanıtım materyalleri hazırlıyoruz.",
     ],

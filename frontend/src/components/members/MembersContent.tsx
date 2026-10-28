@@ -132,8 +132,8 @@ export function MembersContent() {
 
             <p className="text-xs sm:text-sm text-[#5F6773] leading-relaxed font-sans font-medium">
               {isEn
-                ? "All working teams, executive board, and advisory board members driving N'apsak? Youth Community."
-                : "N'apsak? Gençlik Topluluğu'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz."}
+                ? "All working teams, executive board, and advisory board members driving Ne Yapsak? Youth Association."
+                : "Ne Yapsak? Gençlik Derneği'na değer katan tüm çalışma ekiplerimiz, yönetim kurulu ve danışma kurulu üyelerimiz."}
             </p>
           </motion.div>
         </PageContainer>

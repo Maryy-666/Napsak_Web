@@ -42,7 +42,7 @@ export default function HaberdarContent() {
               <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed font-sans max-w-xl">
                 {t(
                   "haberdar.subtitle",
-                  "Artık N'apsak? Gençlik Topluluğu'nun bir parçası olmak için ilk adımı attın. Gelişmeleri kaçırmamak için bizi takip etmeyi unutma."
+                  "Artık Ne Yapsak? Gençlik Derneği'nun bir parçası olmak için ilk adımı attın. Gelişmeleri kaçırmamak için bizi takip etmeyi unutma."
                 )}
               </p>
             </div>
@@ -71,8 +71,8 @@ export default function HaberdarContent() {
                       </h2>
                       <p className="text-sm text-slate-600 font-medium font-sans">
                         {isEn
-                          ? "Follow community announcements and developments directly."
-                          : "Topluluk duyurularını ve gelişmeleri doğrudan takip et."}
+                          ? "Follow association announcements and developments directly."
+                          : "Dernek duyurularını ve gelişmeleri doğrudan takip et."}
                       </p>
                     </div>
                   </div>
@@ -83,7 +83,7 @@ export default function HaberdarContent() {
                     rel="noopener noreferrer"
                     className="w-full sm:w-auto h-12 px-6 rounded-xl bg-[#0A5C3A] hover:bg-[#084A2F] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-[#0A5C3A]/20 hover:shadow-lg hover:shadow-[#0A5C3A]/30 transition-all cursor-pointer shrink-0"
                   >
-                    <span>{t("haberdar.whatsappBtn", "WhatsApp Topluluğuna Katıl")}</span>
+                    <span>{t("haberdar.whatsappBtn", "WhatsApp Derneğine Katıl")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </div>

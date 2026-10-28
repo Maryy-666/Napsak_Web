@@ -188,7 +188,7 @@ export const MagazineShowcaseSlider: React.FC<MagazineShowcaseSliderProps> = ({
                           : "bg-white/15 text-white border border-white/20"
                       }`}
                     >
-                      N'APSAK?
+                      NE YAPSAK?
                     </span>
                     <span
                       className={`text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-xs ${mag.coverStyle.badgeBg} ${mag.coverStyle.badgeText}`}

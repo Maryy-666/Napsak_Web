@@ -3,15 +3,15 @@ import { Navbar } from "../../components/common/Navbar";
 import { Footer } from "../../components/common/Footer";
 import LoginPageContent from "../../components/auth/LoginPageContent";
 
-// Premium SEO Metadata Configuration for N'apsak? Gençlik Topluluğu Login
+// Premium SEO Metadata Configuration for Ne Yapsak? Gençlik Derneği Login
 export const metadata: Metadata = {
-  title: "Giriş Yap | N'apsak? Gençlik Topluluğu",
+  title: "Giriş Yap | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
+    "Ne Yapsak? Gençlik Derneği resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
   openGraph: {
-    title: "Giriş Yap | N'apsak? Gençlik Topluluğu",
+    title: "Giriş Yap | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
+      "Ne Yapsak? Gençlik Derneği resmi platformuna giriş yapın. Teknoloji, girişimcilik ve gençlik ekosistemine katılın.",
     type: "website",
   },
 };

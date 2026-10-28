@@ -361,7 +361,7 @@ export default function AdminSayfalarPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Sayfa Yönetimi (Page CMS)"
-        subtitle="N'apsak? web sitesinin dinamik sayfalarını oluşturun, içeriklerini düzenleyin ve yayın durumunu yönetin."
+        subtitle="Ne Yapsak? web sitesinin dinamik sayfalarını oluşturun, içeriklerini düzenleyin ve yayın durumunu yönetin."
         icon={FileText}
         action={
           <button
@@ -564,7 +564,7 @@ export default function AdminSayfalarPage() {
                   type="text"
                   value={formData.metaTitle}
                   onChange={(e) => setFormData((prev) => ({ ...prev, metaTitle: e.target.value }))}
-                  placeholder="Başlık | N'apsak?"
+                  placeholder="Başlık | Ne Yapsak?"
                   className="w-full h-9 px-3 rounded-xl border outline-none font-medium text-xs dark:bg-[#141C2E] dark:border-slate-800"
                 />
               </div>

@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "N'apsak? <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "Ne Yapsak? <onboarding@resend.dev>";
 
 interface SendPasswordResetEmailParams {
   to: string;
@@ -17,7 +17,7 @@ function buildPasswordResetHtml(resetUrl: string): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şifrenizi Sıfırlayın | N'apsak?</title>
+  <title>Şifrenizi Sıfırlayın | Ne Yapsak?</title>
   <style>
     body {
       margin: 0;
@@ -127,7 +127,7 @@ function buildPasswordResetHtml(resetUrl: string): string {
   <div class="wrapper">
     <div class="container">
       <div class="header">
-        <span class="logo-text">N'apsak?</span>
+        <span class="logo-text">Ne Yapsak?</span>
       </div>
       <div class="content">
         <h1 class="h1">Şifre Sıfırlama Talebi</h1>
@@ -147,7 +147,7 @@ function buildPasswordResetHtml(resetUrl: string): string {
       </div>
       <div class="footer">
         <p class="footer-text">This link expires in 15 minutes. / Bu bağlantı 15 dakika içinde geçerliliğini yitirecektir.</p>
-        <p class="footer-sub">© ${new Date().getFullYear()} N'apsak? Gençlik Topluluğu. Tüm hakları saklıdır.</p>
+        <p class="footer-sub">© ${new Date().getFullYear()} Ne Yapsak? Gençlik Derneği. Tüm hakları saklıdır.</p>
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@ ${resetUrl}
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Şifrenizi Sıfırlayın | N'apsak?",
+      subject: "Şifrenizi Sıfırlayın | Ne Yapsak?",
       html: htmlContent,
     });
 

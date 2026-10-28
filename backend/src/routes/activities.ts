@@ -96,7 +96,7 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
         title,
         type: body.type || "polaroid",
         category: body.category || "Genel",
-        team: body.team || "N'apsak Ekibi",
+        team: body.team || "Ne Yapsak Ekibi",
         status: body.status || "Devam Eden",
         publicationStatus: body.publicationStatus || "PUBLISHED",
         isFeatured: Boolean(body.isFeatured),

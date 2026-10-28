@@ -35,8 +35,8 @@ const POLICY_CONFIGS: PolicyConfig[] = [
     publicPath: "/kvkk",
     description:
       "Kişisel Verilerin Korunması Kanunu kapsamında kullanıcı bilgilendirme metni.",
-    metaTitle: "KVKK Aydınlatma Metni | N'apsak? Gençlik Topluluğu",
-    metaDescription: "N'apsak? Gençlik Topluluğu KVKK Aydınlatma Metni.",
+    metaTitle: "KVKK Aydınlatma Metni | Ne Yapsak? Gençlik Derneği",
+    metaDescription: "Ne Yapsak? Gençlik Derneği KVKK Aydınlatma Metni.",
     fallbackContent: serializeLegalSections(KVKK_SECTIONS_FALLBACK),
     icon: Shield,
   },
@@ -46,9 +46,9 @@ const POLICY_CONFIGS: PolicyConfig[] = [
     slug: "cerez-politikasi",
     publicPath: "/cerez-politikasi",
     description: "Çerez kullanımı, tercih ayarları ve gizlilik bilgilendirmesi.",
-    metaTitle: "Çerez Politikası | N'apsak? Gençlik Topluluğu",
+    metaTitle: "Çerez Politikası | Ne Yapsak? Gençlik Derneği",
     metaDescription:
-      "N'apsak? Gençlik Topluluğu web sitesinde kullanılan çerezler hakkında bilgilendirme.",
+      "Ne Yapsak? Gençlik Derneği web sitesinde kullanılan çerezler hakkında bilgilendirme.",
     fallbackContent: serializeLegalSections(COOKIE_SECTIONS_FALLBACK),
     icon: FileCheck2,
   },

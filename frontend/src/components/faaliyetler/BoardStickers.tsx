@@ -135,7 +135,7 @@ export const PaperClip: React.FC<{ className?: string; color?: "silver" | "gold"
 };
 
 // ==========================================
-// 4. DECORATIVE YOUTH & COMMUNITY STICKERS
+// 4. DECORATIVE YOUTH & ASSOCIATION STICKERS
 // ==========================================
 
 // Headphone Sticker
@@ -254,7 +254,7 @@ export const StickerHeartBubble: React.FC<{ className?: string }> = ({ className
   </div>
 );
 
-// High-Five / Community Hands Sticker
+// High-Five / Association Hands Sticker
 export const StickerHighFive: React.FC<{ className?: string }> = ({ className = "" }) => (
   <div className={`sticker-wrapper p-1 transition-transform hover:scale-105 duration-300 ${className}`}>
     <div className="bg-white p-2 rounded-2xl shadow-lg border border-stone-200/80 transform rotate-[3deg]">

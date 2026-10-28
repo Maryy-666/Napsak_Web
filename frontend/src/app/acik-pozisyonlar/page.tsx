@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import AcikPozisyonlarContent from "../../components/acik-pozisyonlar/AcikPozisyonlarContent";
 
 export const metadata: Metadata = {
-  title: "Açık Pozisyonlar | N'apsak? Gençlik Topluluğu",
+  title: "Açık Pozisyonlar | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu olarak ekibimizi büyütüyor, birlikte üretmek isteyen gönüllüler arıyoruz. Ekip çalışma ve gönüllülük pozisyonlarını inceleyin.",
+    "Ne Yapsak? Gençlik Derneği olarak ekibimizi büyütüyor, birlikte üretmek isteyen gönüllüler arıyoruz. Ekip çalışma ve gönüllülük pozisyonlarını inceleyin.",
   openGraph: {
-    title: "Açık Pozisyonlar | N'apsak? Gençlik Topluluğu",
+    title: "Açık Pozisyonlar | Ne Yapsak? Gençlik Derneği",
     description:
-      "Topluluk içerisinde aktif olarak gönüllü ve ekip üyesi aranan pozisyonların listelendiği açık pozisyonlar sayfası.",
+      "Dernek içerisinde aktif olarak gönüllü ve ekip üyesi aranan pozisyonların listelendiği açık pozisyonlar sayfası.",
     type: "website",
   },
 };

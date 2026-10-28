@@ -18,17 +18,17 @@ interface DynamicPageProps {
 export async function generateMetadata({ params }: DynamicPageProps): Promise<Metadata> {
   if (params.slug === "hakkimizda") {
     return {
-      title: "Hakkımızda | N'apsak? Gençlik Topluluğu",
+      title: "Hakkımızda | Ne Yapsak? Gençlik Derneği",
     };
   }
   if (params.slug === "katilim") {
     return {
-      title: "Katılım | N'apsak? Gençlik Topluluğu",
+      title: "Katılım | Ne Yapsak? Gençlik Derneği",
     };
   }
   if (params.slug === "iletisim") {
     return {
-      title: "İletişim | N'apsak? Gençlik Topluluğu",
+      title: "İletişim | Ne Yapsak? Gençlik Derneği",
     };
   }
 
@@ -36,13 +36,13 @@ export async function generateMetadata({ params }: DynamicPageProps): Promise<Me
 
   if (!page || page.publicationStatus !== "PUBLISHED") {
     return {
-      title: "Sayfa Bulunamadı | N'apsak? Gençlik Topluluğu",
+      title: "Sayfa Bulunamadı | Ne Yapsak? Gençlik Derneği",
     };
   }
 
-  const metaTitle = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const metaTitle = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const metaDescription =
-    page.metaDescription || page.shortDescription || "N'apsak? Gençlik Topluluğu bağımsız gençlik projeleri ve çalışmaları.";
+    page.metaDescription || page.shortDescription || "Ne Yapsak? Gençlik Derneği bağımsız gençlik projeleri ve çalışmaları.";
 
   return {
     title: metaTitle,
@@ -119,7 +119,7 @@ export default async function DynamicSlugPage({ params }: DynamicPageProps) {
               <div className="space-y-4 text-left">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] font-bold text-xs uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>N'APSAK? BİLGİ SAYFASI</span>
+                  <span>NE YAPSAK? BİLGİ SAYFASI</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings">

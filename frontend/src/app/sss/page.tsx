@@ -5,9 +5,9 @@ import { Footer } from "../../components/common/Footer";
 import SSSContent from "../../components/faq/SSSContent";
 import { PagesRepository } from "../../lib/pagesStore";
 
-const fallbackTitle = "SSS | N'apsak? Gençlik Topluluğu";
+const fallbackTitle = "SSS | Ne Yapsak? Gençlik Derneği";
 const fallbackDescription =
-  "N'apsak? Gençlik Topluluğu hakkında en çok merak edilen sorular ve cevapları.";
+  "Ne Yapsak? Gençlik Derneği hakkında en çok merak edilen sorular ve cevapları.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await PagesRepository.fetchPageBySlugFromDB("sss");
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 
-  const title = page.metaTitle || `${page.title} | N'apsak? Gençlik Topluluğu`;
+  const title = page.metaTitle || `${page.title} | Ne Yapsak? Gençlik Derneği`;
   const description = page.metaDescription || page.shortDescription || fallbackDescription;
 
   return {

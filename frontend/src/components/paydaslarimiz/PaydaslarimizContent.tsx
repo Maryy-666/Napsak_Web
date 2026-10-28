@@ -125,8 +125,8 @@ export default function PaydaslarimizContent() {
 
             <p className="mx-auto mt-2 max-w-2xl text-base sm:text-lg font-medium leading-relaxed text-[#5F6773] font-sans">
               {isEn
-                ? "Institutions, organizations, and networks that share our vision, empower our youth initiatives, and produce value together with N'apsak?"
-                : "N'apsak? Gençlik Topluluğu olarak vizyonumuzu paylaşan, gençlik projelerimizi destekleyen ve birlikte değer ürettiğimiz kurum, kuruluş ve topluluklar."}
+                ? "Institutions, organizations, and networks that share our vision, empower our youth initiatives, and produce value together with Ne Yapsak?"
+                : "Ne Yapsak? Gençlik Derneği olarak vizyonumuzu paylaşan, gençlik projelerimizi destekleyen ve birlikte değer ürettiğimiz kurum, kuruluş ve topluluklar."}
             </p>
           </motion.div>
         </PageContainer>
@@ -203,7 +203,7 @@ export default function PaydaslarimizContent() {
               <p className="text-sm sm:text-base text-[#5F6773] font-medium max-w-md mx-auto leading-relaxed">
                 {isEn
                   ? "Reach out to us to explore collaboration opportunities."
-                  : "N'apsak? ile iş birliği yapmak veya destekçimiz olmak için bizimle iletişime geçebilirsiniz."}
+                  : "Ne Yapsak? ile iş birliği yapmak veya destekçimiz olmak için bizimle iletişime geçebilirsiniz."}
               </p>
               <div className="pt-2 flex justify-center">
                 <Button
@@ -332,8 +332,8 @@ export default function PaydaslarimizContent() {
               </span>
               <h3 className="text-2xl sm:text-3xl font-extrabold font-headings tracking-tight mb-2">
                 {isEn
-                  ? "Would you like to become a partner of N'apsak?"
-                  : "N'apsak? ile paydaş veya destekçi olmak ister misiniz?"}
+                  ? "Would you like to become a partner of Ne Yapsak?"
+                  : "Ne Yapsak? ile paydaş veya destekçi olmak ister misiniz?"}
               </h3>
               <p className="text-sm sm:text-base text-white/85 font-sans font-medium max-w-xl leading-relaxed">
                 {isEn

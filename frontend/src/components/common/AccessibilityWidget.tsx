@@ -365,7 +365,7 @@ export function AccessibilityWidget() {
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-xs font-bold text-[#EEF7F3] flex items-center gap-1.5 font-headings">
               <Keyboard className="w-4 h-4 text-[#0A5C3A]" />
-              {isEn ? "N'apsak? Virtual Keyboard" : "N'apsak? Sanal Klavye"}
+              {isEn ? "Ne Yapsak? Virtual Keyboard" : "Ne Yapsak? Sanal Klavye"}
             </span>
             <button
               type="button"
@@ -400,7 +400,7 @@ export function AccessibilityWidget() {
         </div>
       )}
 
-      {/* N'APSAK FLOATING ACCESSIBILITY TRIGGER BUTTON */}
+      {/* NE YAPSAK FLOATING ACCESSIBILITY TRIGGER BUTTON */}
       <button
         ref={triggerRef}
         id="accessibility-trigger"
@@ -469,7 +469,7 @@ export function AccessibilityWidget() {
                   : "sm:rounded-l-3xl sm:border-l"
               }`}
             >
-              {/* N'APSAK BRANDED HEADER BANNER */}
+              {/* NE YAPSAK BRANDED HEADER BANNER */}
               <div className="flex-none bg-gradient-to-br from-[#07452C] via-[#0A5C3A] to-[#0D7047] text-white p-5 px-6 relative overflow-hidden shadow-md">
                 {/* Decorative background circles */}
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-48 h-48 rounded-full bg-white/10 pointer-events-none" />
@@ -1193,7 +1193,7 @@ export function AccessibilityWidget() {
                   {isEn ? "Accessibility Statement | Report Issue" : "Erişilebilirlik Bildirimi | Sorun Bildir"}
                 </button>
                 <span className="text-[10px] text-stone-400 font-sans font-semibold">
-                  N'apsak? A11y v3.5
+                  Ne Yapsak? A11y v3.5
                 </span>
               </div>
             </motion.div>
@@ -1230,8 +1230,8 @@ export function AccessibilityWidget() {
 
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
                 {isEn
-                  ? "As N'apsak? Youth Community, we aim for our website to be barrier-free and accessible for all individuals. You can directly report any accessibility feedback to us."
-                  : "N'apsak? Gençlik Topluluğu olarak web sitemizin tüm bireyler için engel tanımadan kullanılabilir olmasını amaçlıyoruz. Karşılaştığınız her türlü erişilebilirlik durumunu bize doğrudan bildirebilirsiniz."}
+                  ? "As Ne Yapsak? Youth Association, we aim for our website to be barrier-free and accessible for all individuals. You can directly report any accessibility feedback to us."
+                  : "Ne Yapsak? Gençlik Derneği olarak web sitemizin tüm bireyler için engel tanımadan kullanılabilir olmasını amaçlıyoruz. Karşılaştığınız her türlü erişilebilirlik durumunu bize doğrudan bildirebilirsiniz."}
               </p>
 
               {feedbackSent ? (

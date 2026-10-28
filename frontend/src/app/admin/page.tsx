@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
           Yönetim Paneli Genel Bakış
         </h1>
         <p className={`text-xs mt-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-          Topluluk canlı verileri ve yönetim modülleri.
+          Dernek canlı verileri ve yönetim modülleri.
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
             Üyelik Başvuruları
           </h3>
           <p className={`text-xs mt-2 mb-4 leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-            Topluluk üye kayıtlarını ve katılımcı başvurularını onaylayın veya yönetin.
+            Dernek üye kayıtlarını ve katılımcı başvurularını onaylayın veya yönetin.
           </p>
           <div className="flex items-center gap-2 text-xs font-bold text-emerald-600">
             <span>Başvurulara Git</span>

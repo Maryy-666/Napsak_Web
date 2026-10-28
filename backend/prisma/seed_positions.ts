@@ -19,9 +19,9 @@ const POSITIONS = [
     teamEn: "Communication & Media",
     teamCategory: "iletisim",
     shortDescription:
-      "Topluluğumuzun dijital platformlardaki sesini güçlendirmek, yaratıcı içerik stratejileri geliştirmek ve sosyal medya etkileşimini yönetmek üzere ekip arkadaşları arıyoruz.",
+      "Derneğimizin dijital platformlardaki sesini güçlendirmek, yaratıcı içerik stratejileri geliştirmek ve sosyal medya etkileşimini yönetmek üzere ekip arkadaşları arıyoruz.",
     shortDescriptionEn:
-      "We are looking for team members to amplify our community's voice across digital platforms, develop creative content strategies, and manage social media engagement.",
+      "We are looking for team members to amplify our association's voice across digital platforms, develop creative content strategies, and manage social media engagement.",
     workType: "Gönüllü",
     workTypeEn: "Volunteer / Remote",
     location: "Uzaktan / Çevrim İçi",
@@ -32,14 +32,14 @@ const POSITIONS = [
     responsibilities: [
       "Haftalık sosyal medya içerik takviminin hazırlanması ve güncellenmesi",
       "Instagram, LinkedIn ve YouTube için özgün görsel metinlerin (caption) kaleme alınması",
-      "Topluluk duyurularının ve etkinlik lansmanlarının dijital platformlarda yaygınlaştırılması",
+      "Dernek duyurularının ve etkinlik lansmanlarının dijital platformlarda yaygınlaştırılması",
       "Sosyal medya takipçi etkileşiminin ve gelen mesajların düzenli takibi",
     ],
     responsibilitiesEn: [
       "Preparing and updating weekly social media content calendars",
       "Drafting engaging captions and copy for Instagram, LinkedIn, and YouTube",
-      "Promoting community announcements and event launches on digital platforms",
-      "Monitoring audience engagement and community inquiries on social channels",
+      "Promoting association announcements and event launches on digital platforms",
+      "Monitoring audience engagement and association inquiries on social channels",
     ],
     requirements: [
       "Sosyal medya dinamiklerine ve içerik trendlerine ilgili olmak",
@@ -72,9 +72,9 @@ const POSITIONS = [
     teamEn: "Communication & Media",
     teamCategory: "iletisim",
     shortDescription:
-      "N'apsak? markasının görsel kimliğini besleyecek afiş, sosyal medya postları, dergi kapakları ve lansman materyalleri tasarlayacak yaratıcı gönüllüler arıyoruz.",
+      "Ne Yapsak? markasının görsel kimliğini besleyecek afiş, sosyal medya postları, dergi kapakları ve lansman materyalleri tasarlayacak yaratıcı gönüllüler arıyoruz.",
     shortDescriptionEn:
-      "We are seeking creative volunteers to design posters, social media graphics, magazine covers, and launch materials that nurture N'apsak?'s visual identity.",
+      "We are seeking creative volunteers to design posters, social media graphics, magazine covers, and launch materials that nurture Ne Yapsak?'s visual identity.",
     workType: "Gönüllü",
     workTypeEn: "Volunteer / Remote",
     location: "Uzaktan / Çevrim İçi",
@@ -83,12 +83,12 @@ const POSITIONS = [
     isActive: true,
     displayOrder: 2,
     responsibilities: [
-      "Topluluk etkinlikleri için dijital afiş ve duyuru görselleri tasarlamak",
+      "Dernek etkinlikleri için dijital afiş ve duyuru görselleri tasarlamak",
       "Dergilerimiz ve raporlarımız için yayın materyali ve kapak konseptleri üretmek",
       "Marka kimliği standartlarımızı koruyarak özgün görsel bileşenler oluşturmak",
     ],
     responsibilitiesEn: [
-      "Designing digital posters and announcement visuals for community events",
+      "Designing digital posters and announcement visuals for association events",
       "Creating publication layouts and cover concepts for our magazines and reports",
       "Crafting original visual assets while maintaining brand identity guidelines",
     ],
@@ -119,9 +119,9 @@ const POSITIONS = [
     teamEn: "Technology",
     teamCategory: "teknoloji",
     shortDescription:
-      "Topluluk web platformumuzu, açık kaynak araçlarımızı ve iç otomasyon sistemlerimizi geliştirecek kod odaklı gönüllüler arıyoruz.",
+      "Dernek web platformumuzu, açık kaynak araçlarımızı ve iç otomasyon sistemlerimizi geliştirecek kod odaklı gönüllüler arıyoruz.",
     shortDescriptionEn:
-      "We are looking for code-passionate volunteers to build our web platform, open-source community tools, and internal automation systems.",
+      "We are looking for code-passionate volunteers to build our web platform, open-source association tools, and internal automation systems.",
     workType: "Hibrit",
     workTypeEn: "Volunteer / Hybrid",
     location: "Uzaktan & Kampüs",
@@ -132,12 +132,12 @@ const POSITIONS = [
     responsibilities: [
       "Next.js ve React tabanlı modern web arayüz bileşenleri geliştirmek",
       "Kullanıcı deneyimi (UX) ve erişilebilirlik (a11y) standartlarına uygun kod yazmak",
-      "Topluluğun açık kaynak projelerine katkı sağlamak ve kod incelemelerine (PR review) katılmak",
+      "Derneğin açık kaynak projelerine katkı sağlamak ve kod incelemelerine (PR review) katılmak",
     ],
     responsibilitiesEn: [
       "Building modern web interface components with Next.js and React",
       "Writing accessible code complying with UX and web standards",
-      "Contributing to community open-source repositories and participating in PR code reviews",
+      "Contributing to association open-source repositories and participating in PR code reviews",
     ],
     requirements: [
       "JavaScript / TypeScript veya Web Teknolojilerine temel düzeyde hâkim olmak",
@@ -168,7 +168,7 @@ const POSITIONS = [
     teamEn: "Technology",
     teamCategory: "teknoloji",
     shortDescription:
-      "N'apsak? altyapısının güvenliğini sağlamak, güvenlik farkındalığı içerikleri üretmek ve zafiyet analizleri gerçekleştirmek üzere gönüllü arıyoruz.",
+      "Ne Yapsak? altyapısının güvenliğini sağlamak, güvenlik farkındalığı içerikleri üretmek ve zafiyet analizleri gerçekleştirmek üzere gönüllü arıyoruz.",
     shortDescriptionEn:
       "We are looking for cybersecurity volunteers to audit our infrastructure, craft security awareness guides, and perform vulnerability assessments.",
     workType: "Gönüllü",
@@ -180,23 +180,23 @@ const POSITIONS = [
     displayOrder: 4,
     responsibilities: [
       "Web uygulamalarımız ve API sistemlerimiz üzerinde temel güvenlik testleri yürütmek",
-      "Topluluk üyeleri için siber güvenlik ve veri gizliliği farkındalık dokümanları hazırlamak",
+      "Dernek üyeleri için siber güvenlik ve veri gizliliği farkındalık dokümanları hazırlamak",
       "Olası güvenlik zafiyetlerine karşı iyileştirme önerileri sunmak",
     ],
     responsibilitiesEn: [
       "Conducting fundamental security testing on web applications and API endpoints",
-      "Preparing cybersecurity and privacy awareness resources for community members",
+      "Preparing cybersecurity and privacy awareness resources for association members",
       "Proposing remediation strategies for identified vulnerability risks",
     ],
     requirements: [
       "Ağ temelleri, web protokolleri (HTTP/S) ve bilgi güvenliği ilkelerine meraklı olmak",
       "Etik korsanlık ve güvenlik araştırmalarına ilgi duymak",
-      "Dürüstlük, gizlilik ve topluluk güvenliği ilkelerine bağlılık",
+      "Dürüstlük, gizlilik ve dernek güvenliği ilkelerine bağlılık",
     ],
     requirementsEn: [
       "Curiosity about network fundamentals, web protocols (HTTP/S), and info-security concepts",
       "Interest in ethical hacking, vulnerability research, and defensive security",
-      "Adherence to integrity, confidentiality, and community safety guidelines",
+      "Adherence to integrity, confidentiality, and association safety guidelines",
     ],
     preferredQualifications: [
       "OWASP Top 10 zafiyetlerine hâkimiyet",
@@ -249,7 +249,7 @@ const POSITIONS = [
     ],
     preferredQualifications: [
       "Daha önce kulüp veya STK etkinliklerinde görev almış olmak",
-      "Topluluk önünde sunum veya sunuculuk deneyimi",
+      "Dernek önünde sunum veya sunuculuk deneyimi",
     ],
     preferredQualificationsEn: [
       "Prior experience organizing university club or NGO events",
@@ -264,9 +264,9 @@ const POSITIONS = [
     teamEn: "Management",
     teamCategory: "yonetim",
     shortDescription:
-      "Topluluğumuza yeni katılacak gençlerin mülakat süreçlerini yönetmek, üye oryantasyonunu sağlamak ve topluluk içi bağları güçlendirmek üzere çalışacak arkadaşlar arıyoruz.",
+      "Derneğimize yeni katılacak gençlerin mülakat süreçlerini yönetmek, üye oryantasyonunu sağlamak ve dernek içi bağları güçlendirmek üzere çalışacak arkadaşlar arıyoruz.",
     shortDescriptionEn:
-      "We are seeking teammates to facilitate membership interviews, coordinate volunteer onboarding, and strengthen community bonds.",
+      "We are seeking teammates to facilitate membership interviews, coordinate volunteer onboarding, and strengthen association bonds.",
     workType: "Gönüllü",
     workTypeEn: "Volunteer / Remote",
     location: "Uzaktan / Çevrim İçi",
@@ -275,15 +275,15 @@ const POSITIONS = [
     isActive: true,
     displayOrder: 6,
     responsibilities: [
-      "Topluluk üyelik başvurularının ön değerlendirmesinin yapılması",
+      "Dernek üyelik başvurularının ön değerlendirmesinin yapılması",
       "Çevrim içi mülakat oturumlarının planlanması ve yürütülmesi",
-      "Yeni üyelerin topluluğa uyum (onboarding) sürecine rehberlik etmek",
-      "Gönüllü memnuniyeti ve topluluk içi etkileşimi artırıcı etkinlikler kurgulamak",
+      "Yeni üyelerin derneğe uyum (onboarding) sürecine rehberlik etmek",
+      "Gönüllü memnuniyeti ve dernek içi etkileşimi artırıcı etkinlikler kurgulamak",
     ],
     responsibilitiesEn: [
-      "Reviewing and screening incoming community membership applications",
+      "Reviewing and screening incoming association membership applications",
       "Scheduling and conducting online volunteer interview sessions",
-      "Guiding new members through community orientation and onboarding",
+      "Guiding new members through association orientation and onboarding",
       "Designing initiatives to enhance volunteer satisfaction and member bonding",
     ],
     requirements: [

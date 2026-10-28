@@ -241,7 +241,7 @@ export default function RegisterContent() {
               {isEn ? "Sign Up" : "Kayıt ol"}
             </span>
             <h1 className="mt-4 max-w-[420px] font-headings text-3xl font-bold tracking-tight text-[#0F1115] sm:text-[40px] sm:leading-[1.12]">
-              {isEn ? "Are you asking \"What to do?\"" : "Sen de N'apsak? diyenlerden misin?"}
+              {isEn ? "Are you asking \"What to do?\"" : "Sen de Ne Yapsak? diyenlerden misin?"}
             </h1>
             <p className="mt-4 max-w-sm text-base leading-7 text-[#5F6773]">
               {isEn

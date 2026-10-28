@@ -7,12 +7,12 @@ export const KVKK_SECTIONS_FALLBACK: LegalSection[] = [
   {
     title: "Veri Sorumlusunun Kimliği",
     content:
-      "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, N'apsak? Gençlik Topluluğu olarak kişisel verilerinizi mevzuata uygun şekilde işliyor ve koruyoruz.",
+      "6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) uyarınca, Ne Yapsak? Gençlik Derneği olarak kişisel verilerinizi mevzuata uygun şekilde işliyor ve koruyoruz.",
   },
   {
     title: "Kişisel Verilerin İşlenme Amacı",
     content: [
-      "Kişisel verileriniz; üyelik başvurularının değerlendirilmesi, topluluk içi iletişimin sağlanması, etkinlik ve eğitim organizasyonlarının yürütülmesi amacıyla işlenmektedir.",
+      "Kişisel verileriniz; üyelik başvurularının değerlendirilmesi, dernek içi iletişimin sağlanması, etkinlik ve eğitim organizasyonlarının yürütülmesi amacıyla işlenmektedir.",
       "Ayrıca kurumsal e-posta ve duyuru bültenlerinin iletilmesi ve yasal yükümlülüklerin ifası amacıyla verileriniz işlenmektedir.",
     ],
   },

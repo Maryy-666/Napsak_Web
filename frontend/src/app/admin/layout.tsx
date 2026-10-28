@@ -44,7 +44,7 @@ type NavItem = {
 
 const NAV_SECTIONS: Array<{ title: string; items: NavItem[] }> = [
   {
-    title: "YÖNETİM & TOPLULUK",
+    title: "YÖNETİM & DERNEK",
     items: [
       { title: "Genel Bakış", href: "/admin", icon: LayoutDashboard, badge: null, published: true },
       { title: "Medya Kütüphanesi", href: "/admin/medya", icon: ImageIcon, badge: "Media CMS", published: true },
@@ -117,7 +117,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
             </div>
             <div>
               <h2 className={`font-extrabold font-headings text-base tracking-tight flex items-center gap-1.5 ${isDark ? "text-white" : "text-[#0F1115]"}`}>
-                <span>N&apos;apsak? Admin</span>
+                <span>Ne Yapsak? Admin</span>
               </h2>
               <p className="text-[10.5px] text-[#0A5C3A] font-bold font-sans">
                 Yönetim & İdari Merkez
@@ -267,7 +267,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
 
             <div className={`text-xs font-semibold hidden sm:flex items-center gap-2 ${isDark ? "text-slate-300" : "text-slate-700"}`}>
               <Sparkles className="w-4 h-4 text-emerald-500 stroke-[2]" />
-              <span>N&apos;apsak? Gençlik Topluluğu Panel Alanı</span>
+              <span>Ne Yapsak? Gençlik Derneği Panel Alanı</span>
             </div>
           </div>
 

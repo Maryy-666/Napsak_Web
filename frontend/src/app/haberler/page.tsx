@@ -5,22 +5,22 @@ import { Footer } from "@/components/common/Footer";
 import { NewsContent } from "@/components/news/NewsContent";
 
 export const metadata: Metadata = {
-  title: "Haberler & Duyurular | N'apsak? Gençlik Topluluğu",
+  title: "Haberler & Duyurular | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu atölyeleri, duyuruları, etkinlik haberleri ve sahada üreten gençlerin hikayeleri.",
+    "Ne Yapsak? Gençlik Derneği atölyeleri, duyuruları, etkinlik haberleri ve sahada üreten gençlerin hikayeleri.",
   openGraph: {
-    title: "Haberler & Duyurular | N'apsak? Gençlik Topluluğu",
+    title: "Haberler & Duyurular | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu atölyeleri, duyuruları, etkinlik haberleri ve sahada üreten gençlerin hikayeleri.",
+      "Ne Yapsak? Gençlik Derneği atölyeleri, duyuruları, etkinlik haberleri ve sahada üreten gençlerin hikayeleri.",
     url: "https://napsak.org/haberler",
-    siteName: "N'apsak? Gençlik Topluluğu",
+    siteName: "Ne Yapsak? Gençlik Derneği",
     locale: "tr_TR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Haberler & Duyurular | N'apsak? Gençlik Topluluğu",
-    description: "N'apsak? Gençlik Topluluğu en güncel haberler ve duyurular.",
+    title: "Haberler & Duyurular | Ne Yapsak? Gençlik Derneği",
+    description: "Ne Yapsak? Gençlik Derneği en güncel haberler ve duyurular.",
   },
   alternates: {
     canonical: "https://napsak.org/haberler",

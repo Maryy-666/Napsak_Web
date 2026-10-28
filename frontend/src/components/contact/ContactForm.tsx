@@ -313,7 +313,7 @@ export const ContactForm: React.FC = () => {
               }`}
             >
               <option value="Genel Bilgi">{isEn ? "General Information" : "Genel Bilgi"}</option>
-              <option value="Topluluk Hakkında">{isEn ? "About Community" : "Topluluk Hakkında"}</option>
+              <option value="Dernek Hakkında">{isEn ? "About Association" : "Dernek Hakkında"}</option>
               <option value="Etkinlikler">{isEn ? "Events" : "Etkinlikler"}</option>
               <option value="İş Birliği">{isEn ? "Collaboration" : "İş Birliği"}</option>
               <option value="Sponsorluk">{isEn ? "Sponsorship" : "Sponsorluk"}</option>

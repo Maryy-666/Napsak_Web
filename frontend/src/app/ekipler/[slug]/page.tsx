@@ -42,10 +42,10 @@ export async function generateMetadata({
   const team = getTeamBySlug(params.slug);
   if (team) {
     return {
-      title: `${team.title} | N'apsak? Gençlik Topluluğu`,
+      title: `${team.title} | Ne Yapsak? Gençlik Derneği`,
       description: team.shortDescription,
       openGraph: {
-        title: `${team.title} | N'apsak? Gençlik Topluluğu`,
+        title: `${team.title} | Ne Yapsak? Gençlik Derneği`,
         description: team.shortDescription,
         type: "website",
       },
@@ -56,20 +56,20 @@ export async function generateMetadata({
   const member = await fetchMemberFromBackendOrStatic(params.slug);
   if (member) {
     const roleText = member.primaryRole || "Üye";
-    const teamText = member.primaryTeam || "N'apsak Gençlik Topluluğu";
+    const teamText = member.primaryTeam || "Ne Yapsak Gençlik Derneği";
     return {
-      title: `${member.name} - ${roleText} | N'apsak? Gençlik Topluluğu`,
-      description: `${member.name}, N'apsak? Gençlik Topluluğu ${teamText} bünyesinde ${roleText} olarak görev yapmaktadır.`,
+      title: `${member.name} - ${roleText} | Ne Yapsak? Gençlik Derneği`,
+      description: `${member.name}, Ne Yapsak? Gençlik Derneği ${teamText} bünyesinde ${roleText} olarak görev yapmaktadır.`,
       openGraph: {
-        title: `${member.name} - ${roleText} | N'apsak? Gençlik Topluluğu`,
-        description: `${member.name}, N'apsak? Gençlik Topluluğu ${teamText} bünyesinde ${roleText} olarak görev yapmaktadır.`,
+        title: `${member.name} - ${roleText} | Ne Yapsak? Gençlik Derneği`,
+        description: `${member.name}, Ne Yapsak? Gençlik Derneği ${teamText} bünyesinde ${roleText} olarak görev yapmaktadır.`,
         type: "profile",
       },
     };
   }
 
   return {
-    title: "Sayfa Bulunamadı | N'apsak? Gençlik Topluluğu",
+    title: "Sayfa Bulunamadı | Ne Yapsak? Gençlik Derneği",
   };
 }
 

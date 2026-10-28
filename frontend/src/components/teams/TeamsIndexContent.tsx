@@ -60,7 +60,7 @@ export function TeamsIndexContent() {
             className="text-center max-w-4xl mx-auto space-y-6"
           >
             <Badge variant="brand" size="md" className="mx-auto">
-              {isEn ? "N'apsak? Working Teams" : "N'apsak? Çalışma Ekipleri"}
+              {isEn ? "Ne Yapsak? Working Teams" : "Ne Yapsak? Çalışma Ekipleri"}
             </Badge>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1115] font-headings leading-tight">
@@ -74,7 +74,7 @@ export function TeamsIndexContent() {
             <p className="text-base sm:text-lg text-[#5F6773] leading-relaxed font-sans font-medium max-w-3xl mx-auto">
               {isEn
                 ? "Our 5 independent working teams enable youth to unleash their skills across art, technology, environment, education, and communications."
-                : "Topluluğumuz bünyesindeki 5 bağımsız çalışma ekibi; sanat, teknoloji, çevre, eğitim ve iletişim alanlarında gençlerin yeteneklerini ortaya çıkarmasına olanak tanır."}
+                : "Derneğimiz bünyesindeki 5 bağımsız çalışma ekibi; sanat, teknoloji, çevre, eğitim ve iletişim alanlarında gençlerin yeteneklerini ortaya çıkarmasına olanak tanır."}
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -93,7 +93,7 @@ export function TeamsIndexContent() {
                 size="lg"
                 className="font-semibold px-6 h-12 text-sm sm:text-base rounded-xl border-[#EEF0F2]"
               >
-                {isEn ? "Discover Community" : "Topluluğu Tanı"}
+                {isEn ? "Discover Association" : "Derneği Tanı"}
               </Button>
             </div>
           </motion.div>

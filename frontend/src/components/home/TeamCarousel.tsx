@@ -169,7 +169,7 @@ export const TeamCarousel: React.FC = () => {
                 </div>
 
                 <div className="relative z-10 w-full pt-3 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
-                  <span className="text-white/90">{isEn ? "N'apsak? Team" : "N'apsak? Ekibi"}</span>
+                  <span className="text-white/90">{isEn ? "Ne Yapsak? Team" : "Ne Yapsak? Ekibi"}</span>
                   <Link
                     href={`/ekipler/${team.slug}`}
                     onClick={(e) => e.stopPropagation()}
@@ -363,7 +363,7 @@ export const TeamCarousel: React.FC = () => {
                 {/* Bottom Card Footer Accent */}
                 <div className="relative z-10 w-full pt-4 border-t border-white/20 flex items-center justify-between text-xs font-semibold">
                   <span className="text-white/90">
-                    {isEn ? "N'apsak? Team" : "N'apsak? Ekibi"}
+                    {isEn ? "Ne Yapsak? Team" : "Ne Yapsak? Ekibi"}
                   </span>
                   <Link
                     href={`/ekipler/${team.slug}`}

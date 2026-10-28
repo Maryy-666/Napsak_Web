@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import { MembersContent } from "../../components/members/MembersContent";
 
 export const metadata: Metadata = {
-  title: "Ekibimiz | N'apsak? Gençlik Topluluğu",
+  title: "Ekibimiz | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? topluluğuna değer katan ekip ve kurul üyelerimiz.",
+    "Ne Yapsak? derneğine değer katan ekip ve kurul üyelerimiz.",
   openGraph: {
-    title: "Ekibimiz | N'apsak? Gençlik Topluluğu",
+    title: "Ekibimiz | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? topluluğuna değer katan ekip ve kurul üyelerimiz.",
+      "Ne Yapsak? derneğine değer katan ekip ve kurul üyelerimiz.",
     type: "website",
   },
 };

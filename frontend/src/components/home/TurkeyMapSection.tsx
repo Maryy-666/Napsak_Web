@@ -62,7 +62,7 @@ export function TurkeyMapSection() {
           {/* Top Pill Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#0A5C3A]/25 text-[#07452C] font-semibold text-xs sm:text-sm shadow-xs">
             <MapPin className="w-4 h-4 text-[#0A5C3A]" />
-            <span>{t("map.badge", "Topluluk Haritası")}</span>
+            <span>{t("map.badge", "Dernek Haritası")}</span>
           </div>
 
           {/* Main Title */}
@@ -280,7 +280,7 @@ export function TurkeyMapSection() {
               {t("map.callout_sub", "Daha fazla şehir, daha fazla genç, daha güçlü bir gelecek.")}
             </p>
             <p className="text-sm sm:text-base font-extrabold text-[#07452C] font-headings mt-0.5">
-              {t("map.callout_title", "N'apsak? Birlikte yaparız!")}
+              {t("map.callout_title", "Ne Yapsak? Birlikte yaparız!")}
             </p>
           </div>
 

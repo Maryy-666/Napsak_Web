@@ -3,15 +3,15 @@ import { Navbar } from "../../components/common/Navbar";
 import { Footer } from "../../components/common/Footer";
 import ForgotPasswordContent from "../../components/auth/ForgotPasswordContent";
 
-// Premium SEO Metadata Configuration for N'apsak? Gençlik Topluluğu Forgot Password
+// Premium SEO Metadata Configuration for Ne Yapsak? Gençlik Derneği Forgot Password
 export const metadata: Metadata = {
-  title: "Şifremi Unuttum | N'apsak? Gençlik Topluluğu",
+  title: "Şifremi Unuttum | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu platformu şifre sıfırlama bağlantı talebi sayfası. Güvenli şekilde şifrenizi sıfırlayın.",
+    "Ne Yapsak? Gençlik Derneği platformu şifre sıfırlama bağlantı talebi sayfası. Güvenli şekilde şifrenizi sıfırlayın.",
   openGraph: {
-    title: "Şifremi Unuttum | N'apsak? Gençlik Topluluğu",
+    title: "Şifremi Unuttum | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu platformu şifre sıfırlama bağlantı talebi sayfası. Güvenli şekilde şifrenizi sıfırlayın.",
+      "Ne Yapsak? Gençlik Derneği platformu şifre sıfırlama bağlantı talebi sayfası. Güvenli şekilde şifrenizi sıfırlayın.",
     type: "website",
   },
 };

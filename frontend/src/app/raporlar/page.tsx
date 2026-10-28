@@ -4,11 +4,11 @@ import { Footer } from "../../components/common/Footer";
 import ReportsContent from "../../components/reports/ReportsContent";
 
 export const metadata: Metadata = {
-  title: "Raporlar & Gençlik Gözlemleri | N'apsak? Gençlik Topluluğu",
+  title: "Raporlar & Gençlik Gözlemleri | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu araştırmaları, saha gözlemleri, etkinlik çıktıları ve çalışma ekipleri faaliyet raporları. Veriye dayalı şeffaf sivil gençlik üretimi.",
+    "Ne Yapsak? Gençlik Derneği araştırmaları, saha gözlemleri, etkinlik çıktıları ve çalışma ekipleri faaliyet raporları. Veriye dayalı şeffaf sivil gençlik üretimi.",
   keywords: [
-    "N'apsak",
+    "Ne Yapsak",
     "Gençlik Raporları",
     "Gençlik Katılımı",
     "Sivil Toplum Raporları",
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     "Çalışma Ekipleri",
   ],
   openGraph: {
-    title: "Raporlar & Gençlik Gözlemleri | N'apsak? Gençlik Topluluğu",
+    title: "Raporlar & Gençlik Gözlemleri | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu araştırmaları, saha gözlemleri ve çalışma ekipleri faaliyet raporları.",
+      "Ne Yapsak? Gençlik Derneği araştırmaları, saha gözlemleri ve çalışma ekipleri faaliyet raporları.",
     type: "website",
   },
 };

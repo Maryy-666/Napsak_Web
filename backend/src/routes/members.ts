@@ -238,7 +238,7 @@ router.post("/", authenticate, requireAdmin, async (req: AuthRequest, res) => {
                 shortDescription: `${teamTitle} çalışma grubu.`,
                 about: `${teamTitle} hakkında detaylı bilgi.`,
                 bgImage: "/images/istockphoto-1173149385-612x612.jpg",
-                structure: "Gençlik Topluluğu Çalışma Grubu",
+                structure: "Gençlik Derneği Çalışma Grubu",
               },
             });
           }
@@ -380,7 +380,7 @@ router.patch("/:id", authenticate, requireAdmin, async (req: AuthRequest, res) =
                 shortDescription: `${teamTitle} çalışma grubu.`,
                 about: `${teamTitle} hakkında detaylı bilgi.`,
                 bgImage: "/images/istockphoto-1173149385-612x612.jpg",
-                structure: "Gençlik Topluluğu Çalışma Grubu",
+                structure: "Gençlik Derneği Çalışma Grubu",
               },
             });
           }

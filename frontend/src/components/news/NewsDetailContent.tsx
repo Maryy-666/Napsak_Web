@@ -63,7 +63,7 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0A5C3A] text-white font-bold text-xs uppercase tracking-wide shadow-sm">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>{isEn ? "N'apsak? Latest!" : "N'apsak? Naptık!"}</span>
+                <span>{isEn ? "Ne Yapsak? Latest!" : "Ne Yapsak? Naptık!"}</span>
               </div>
               <span className="px-3.5 py-1.5 rounded-full bg-[#0A5C3A]/10 text-[#0A5C3A] font-extrabold text-xs uppercase tracking-wide border border-[#0A5C3A]/20">
                 {displayCategory}
@@ -223,8 +223,8 @@ export function NewsDetailContent({ news }: NewsDetailContentProps) {
               </div>
               <p className="text-sm text-[#5F6773] max-w-sm">
                 {isEn
-                  ? "Explore all featured news, events, and announcements from our community."
-                  : "Topluluğumuzun öne çıkan tüm haberlerini, etkinliklerini ve duyurularını inceleyin."}
+                  ? "Explore all featured news, events, and announcements from our association."
+                  : "Derneğimizin öne çıkan tüm haberlerini, etkinliklerini ve duyurularını inceleyin."}
               </p>
             </div>
 

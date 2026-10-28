@@ -51,12 +51,12 @@ export async function generateMetadata({
   const news = await fetchNewsItem(params.slug);
   if (!news) {
     return {
-      title: "Haber Bulunamadı | N'apsak? Gençlik Topluluğu",
+      title: "Haber Bulunamadı | Ne Yapsak? Gençlik Derneği",
     };
   }
 
-  const title = `${news.title} | N'apsak? Gençlik Topluluğu`;
-  const description = news.summary || news.content?.substring(0, 160) || "N'apsak? Gençlik Topluluğu haberi.";
+  const title = `${news.title} | Ne Yapsak? Gençlik Derneği`;
+  const description = news.summary || news.content?.substring(0, 160) || "Ne Yapsak? Gençlik Derneği haberi.";
   const url = `https://napsak.org/haberler/${news.slug}`;
   const ogImage = news.coverImage || "/images/forest-hero.jpg";
 
@@ -70,7 +70,7 @@ export async function generateMetadata({
       title,
       description,
       url,
-      siteName: "N'apsak? Gençlik Topluluğu",
+      siteName: "Ne Yapsak? Gençlik Derneği",
       type: "article",
       images: [{ url: ogImage, alt: news.title }],
     },
@@ -102,7 +102,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     quote: newsItem.quoteText
       ? {
           text: newsItem.quoteText,
-          author: newsItem.quoteAuthor || "N'apsak?",
+          author: newsItem.quoteAuthor || "Ne Yapsak?",
           title: newsItem.quoteTitle,
         }
       : undefined,
@@ -118,7 +118,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
     datePublished: newsItem.publishDate || new Date().toISOString(),
     publisher: {
       "@type": "Organization",
-      name: "N'apsak? Gençlik Topluluğu",
+      name: "Ne Yapsak? Gençlik Derneği",
       url: "https://napsak.org",
     },
   };

@@ -288,7 +288,7 @@ export default function AdminHaberlerPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Haber & Duyuru Yönetimi"
-        subtitle="Topluluk haberlerini, basın duyurularını ve içeriklerini oluşturun ve yayınlayın."
+        subtitle="Dernek haberlerini, basın duyurularını ve içeriklerini oluşturun ve yayınlayın."
         icon={Newspaper}
         action={createButton}
       />

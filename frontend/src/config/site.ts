@@ -10,10 +10,10 @@ export interface NavItem {
 }
 
 export const SITE_CONFIG = {
-  name: "N'apsak? Gençlik Topluluğu",
-  slogan: "“Keşke..” diyenlerin değil, “N’apsak?” deyip harekete geçenlerin topluluğuyuz.",
+  name: "Ne Yapsak? Gençlik Derneği",
+  slogan: "“Keşke..” diyenlerin değil, “Ne Yapsak?” deyip harekete geçenlerin derneğiyiz.",
   description:
-    "N'apsak? Gençlik Topluluğu, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik topluluğudur.",
+    "Ne Yapsak? Gençlik Derneği, gençlerin potansiyellerini ortaya çıkarmayı, onları geleceğe hazırlamayı ve farklı alanlarda kendilerini geliştirmelerine fırsat sunmayı amaçlayan bir gençlik derneğidir.",
   url: "https://napsak.org",
   established: "2025",
   contact: {
@@ -63,8 +63,8 @@ export const SITE_CONFIG = {
       ],
     },
     {
-      title: "Topluluk",
-      href: "#topluluk",
+      title: "Dernek",
+      href: "#dernek",
       status: "active",
       items: [
         {

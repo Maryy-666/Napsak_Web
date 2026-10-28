@@ -68,7 +68,7 @@ export function downloadReportPdf(report: ReportPdfData) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text(sanitizeTurkish("N'apsak? Genclik Toplulugu"), margin, 12);
+  doc.text(sanitizeTurkish("Ne Yapsak? Genclik Toplulugu"), margin, 12);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
@@ -188,7 +188,7 @@ export function downloadReportPdf(report: ReportPdfData) {
     doc.setTextColor(120, 120, 120);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.text(sanitizeTurkish("N'apsak? Genclik Toplulugu | www.napsak.org"), margin, pageHeight - 9);
+    doc.text(sanitizeTurkish("Ne Yapsak? Genclik Toplulugu | www.napsak.org"), margin, pageHeight - 9);
     doc.text(`Sayfa ${i} / ${pageCount}`, pageWidth - margin, pageHeight - 9, { align: "right" });
   }
 
@@ -217,7 +217,7 @@ export function downloadMagazinePdf(mag: MagazinePdfData) {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text(sanitizeTurkish("N'apsak? Genclik Toplulugu E-Dergi"), margin, 12);
+  doc.text(sanitizeTurkish("Ne Yapsak? Genclik Toplulugu E-Dergi"), margin, 12);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
@@ -338,7 +338,7 @@ export function downloadMagazinePdf(mag: MagazinePdfData) {
     doc.setTextColor(120, 120, 120);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.text(sanitizeTurkish("N'apsak? Genclik Toplulugu | www.napsak.org"), margin, pageHeight - 9);
+    doc.text(sanitizeTurkish("Ne Yapsak? Genclik Toplulugu | www.napsak.org"), margin, pageHeight - 9);
     doc.text(`Sayfa ${i} / ${pageCount}`, pageWidth - margin, pageHeight - 9, { align: "right" });
   }
 

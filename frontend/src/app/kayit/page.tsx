@@ -4,13 +4,13 @@ import { Footer } from "../../components/common/Footer";
 import RegisterContent from "../../components/member/RegisterContent";
 
 export const metadata: Metadata = {
-  title: "Kayıt Ol | N'apsak? Gençlik Topluluğu",
+  title: "Kayıt Ol | Ne Yapsak? Gençlik Derneği",
   description:
-    "N'apsak? Gençlik Topluluğu platformuna kayıt olun. Gençlik ekosistemine katılın, etkinlikleri ve topluluk çalışmalarını takip edin.",
+    "Ne Yapsak? Gençlik Derneği platformuna kayıt olun. Gençlik ekosistemine katılın, etkinlikleri ve dernek çalışmalarını takip edin.",
   openGraph: {
-    title: "Kayıt Ol | N'apsak? Gençlik Topluluğu",
+    title: "Kayıt Ol | Ne Yapsak? Gençlik Derneği",
     description:
-      "N'apsak? Gençlik Topluluğu platformuna kayıt olun. Gençlik ekosistemine katılın, etkinlikleri ve topluluk çalışmalarını takip edin.",
+      "Ne Yapsak? Gençlik Derneği platformuna kayıt olun. Gençlik ekosistemine katılın, etkinlikleri ve dernek çalışmalarını takip edin.",
     type: "website",
   },
 };

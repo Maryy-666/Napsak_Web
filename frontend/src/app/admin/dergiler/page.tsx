@@ -299,7 +299,7 @@ export default function AdminDergilerPage() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Dergi Yönetimi"
-        subtitle="Topluluk dergi sayılarını oluşturun, düzenleyin, PDF ve kapak görsellerini yönetin."
+        subtitle="Dernek dergi sayılarını oluşturun, düzenleyin, PDF ve kapak görsellerini yönetin."
         icon={BookOpen}
         action={
           <button
@@ -374,7 +374,7 @@ export default function AdminDergilerPage() {
               value={formData.title || ""}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#141C2E] font-medium outline-none focus:border-[#0A5C3A]"
-              placeholder="Örn: N'apsak? Dergi - Bahar 2026 Sayısı"
+              placeholder="Örn: Ne Yapsak? Dergi - Bahar 2026 Sayısı"
             />
           </div>
 

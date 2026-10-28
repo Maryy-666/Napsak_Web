@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:300
 const DEFAULT_MAGAZINES = [
   {
     id: "sayi-4-genclik-ve-gelecek",
-    title: "N'apsak? Dergi Sayı #4 - Gençlik, Dijital Üretim ve Geleceğin Meslekleri",
+    title: "Ne Yapsak? Dergi Sayı #4 - Gençlik, Dijital Üretim ve Geleceğin Meslekleri",
     publishDate: "05 Ocak 2026",
     pages: 56,
     readCount: 2410,
@@ -14,7 +14,7 @@ const DEFAULT_MAGAZINES = [
   },
   {
     id: "sayi-3-sanat-ve-toplum",
-    title: "N'apsak? Dergi Sayı #3 - Yerel Sanat, Kamusal Alan ve Genç Ekspresyonu",
+    title: "Ne Yapsak? Dergi Sayı #3 - Yerel Sanat, Kamusal Alan ve Genç Ekspresyonu",
     publishDate: "15 Ekim 2025",
     pages: 48,
     readCount: 1750,
@@ -23,7 +23,7 @@ const DEFAULT_MAGAZINES = [
   },
   {
     id: "sayi-2-cevre-ve-iklim",
-    title: "N'apsak? Dergi Sayı #2 - Ekolojik Dönüşüm ve Genç İklim Aktivizmi",
+    title: "Ne Yapsak? Dergi Sayı #2 - Ekolojik Dönüşüm ve Genç İklim Aktivizmi",
     publishDate: "20 Temmuz 2025",
     pages: 40,
     readCount: 1420,
@@ -32,7 +32,7 @@ const DEFAULT_MAGAZINES = [
   },
   {
     id: "sayi-1-ilk-adim",
-    title: "N'apsak? Dergi Sayı #1 - Tanışma ve Kuruluş Özel Sayısı",
+    title: "Ne Yapsak? Dergi Sayı #1 - Tanışma ve Kuruluş Özel Sayısı",
     publishDate: "10 Mayıs 2025",
     pages: 32,
     readCount: 1100,
