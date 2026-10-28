@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    const response = await fetch("http://localhost:3001/auth/login", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -14,7 +14,7 @@ interface NewsDetailPageProps {
 
 async function fetchNewsItem(slug: string) {
   try {
-    const res = await fetch(`http://localhost:3001/news/${slug}`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/news/${slug}`, { cache: "no-store" });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {

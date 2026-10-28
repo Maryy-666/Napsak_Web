@@ -16,7 +16,7 @@ interface DetailPageProps {
 
 async function fetchMemberFromBackendOrStatic(slug: string) {
   try {
-    const res = await fetch(`http://localhost:3001/members`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/members`, { cache: "no-store" });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {

@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch dynamic slugs if available
   try {
-    const res = await fetch('http://localhost:3001/news', { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/news`, { cache: 'no-store' });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {

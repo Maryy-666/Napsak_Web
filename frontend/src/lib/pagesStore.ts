@@ -21,7 +21,7 @@ const getApiBaseUrl = (): string => {
     const host = window.location.hostname;
     return `http://${host}:3001`;
   }
-  return "http://localhost:3001";
+  return (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001");
 };
 
 export const PagesRepository = {

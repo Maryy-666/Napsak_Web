@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const normalizedEmail = email.trim().toLowerCase();
 
     // 1. Backend Express /auth/register endpoint'ine istek gönder
-    const registerResponse = await fetch("http://localhost:3001/auth/register", {
+    const registerResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Kayıt sonrası otomatik oturum açmak için backend /auth/login çağrısı yap
-    const loginResponse = await fetch("http://localhost:3001/auth/login", {
+    const loginResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001"}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
